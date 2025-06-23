@@ -1,0 +1,8 @@
+services:
+  structurizr:
+    image: structurizr/lite
+    container_name: structurizr
+    ports:
+      - 8090:8080
+    volumes:
+      - ${PWD}/design:/usr/local/structurizr
