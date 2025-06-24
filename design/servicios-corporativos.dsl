@@ -25,6 +25,11 @@ workspace {
             tags "Admin"
         }
 
+        operationalUser = person "Usuario Operativo" {
+            description "Usuario que opera los sistemas corporativos"
+            tags "User"
+        }
+
         // Usuarios de las aplicaciones de cada país (Peru, Ecuador, Colombia y México)
         userPeru = person "Usuario\nPerú" {
             description "Usuario que usa aplicaciones de Perú"
@@ -107,6 +112,23 @@ workspace {
             descartes = softwareSystem "Descartes" {
                 description "Proveedor de servicios de mensajería IATA"
                 tags "External, Descartes"
+            }
+        }
+
+        configPlatform = externalSystem  "AWS Configuration Platform" {
+            description "Sistema de mensajería IATA para aerolíneas"
+            tags "External, AWS"
+
+            configService = application "Parameter Store" {
+                // technology = "AWS SSM"
+                description "Servicio de configuración dinámica por tenant y entorno."
+                tags "AWS SSM, Configuration"
+            }
+
+            secretsService = application "Secrets Manager" {
+                // technology = "AWS Secrets Manager"
+                description "Almacén seguro de claves, tokens y secretos por servicio."
+                tags "AWS Secrets Manager, Secrets"
             }
         }
 
