@@ -1,20 +1,21 @@
 trackAndTrace = softwareSystem "Track & Trace" {
     description "Sistema de trazabilidad para equipaje, carga y pasajeros"
+    tags "Track & Trace" "001 - Fase 1"
 
     // Cola de mensajes compartida
     queue = store "Event Broadcast Queue" {
         description "Cola de transmisión de eventos para sistemas externos"
         technology "RabbitMQ"
-        tags "Message Bus" "RabbitMQ"
+        tags "Message Bus" "RabbitMQ" "001 - Fase 1"
 
-        iataMessaging.eventProcessor.eventConsumer -> this "Consume eventos de seguimiento"
+        iataMessaging.eventProcessor.eventConsumer -> this "Consume eventos de seguimiento" "" "001 - Fase 1"
     }
 
     // Cola de eventos para servicios suscritos
     eventIngestionQueue = store "Event Ingestion Queue" {
         description "Cola que desacopla la recepción de eventos del procesamiento."
         technology "RabbitMQ"
-        tags "Message Bus" "RabbitMQ"
+        tags "Message Bus" "RabbitMQ" "001 - Fase 1"
 
         // iataMessaging.eventProcessor.eventConsumer -> this "Consume eventos de seguimiento" "RabbitMQ"
     }
@@ -23,69 +24,75 @@ trackAndTrace = softwareSystem "Track & Trace" {
     ingestApi = container "Track Ingest API" {
         description "API REST que recibe eventos de tracking y los publica en la cola de ingesta."
         technology "C#, ASP.NET Core, REST API"
-        tags "CSharp"
+        tags "CSharp" "001 - Fase 1"
 
         // Controladores para diferentes funcionalidades
         eventController = component "Event Controller" {
             technology "ASP.NET Core"
-            description "Recibe y procesa eventos de seguimiento desde sistemas externos"
+            description "Expone un endpoint HTTP para recibir eventos externos de tracking"
+            tags "001 - Fase 1"
 
-            appPeru -> this "Registra eventos" "HTTPS via API Gateway"
-            appEcuador -> this "Registra eventos" "HTTPS via API Gateway"
+            appPeru -> this "Registra eventos" "HTTPS via API Gateway" "001 - Fase 1"
+            appEcuador -> this "Registra eventos" "HTTPS via API Gateway" "001 - Fase 1"
             appColombia -> this "Registra eventos" "HTTPS via API Gateway"
             appMexico -> this "Registra eventos" "HTTPS via API Gateway"
         }
 
-        tenantController = component "Tenant Controller" {
-            technology "ASP.NET Core"
-            description "Gestiona configuraciones específicas por país/tenant"
+        // tenantController = component "Tenant Controller" {
+        //     technology "ASP.NET Core"
+        //     description "Gestiona configuraciones específicas por país/tenant"
 
-            // admin -> this "Administra configuraciones por país" "HTTPS via API Gateway"
-        }
+        //     // admin -> this "Administra configuraciones por país" "HTTPS via API Gateway"
+        // }
 
         // Servicios de dominio
-        eventProcessorService = component "Event Processor Service" {
+        eventService = component "Event Service" {
             technology "C#"
-            description "Valida, transforma y procesa eventos de seguimiento"
+            description "Valida y encola eventos de seguimiento"
+            tags "001 - Fase 1"
 
-            eventController -> this "Usa"
+            eventController -> this "Usa" "" "001 - Fase 1"
         }
 
-        tenantService = component "Tenant Service" {
-            technology "C#"
-            description "Gestiona configuraciones y metadatos por país"
+        // tenantService = component "Tenant Service" {
+        //     technology "C#"
+        //     description "Gestiona configuraciones y metadatos por país"
 
-            tenantController -> this "Usa"
-        }
+        //     tenantController -> this "Usa"
+        // }
 
-        // Componentes de acceso a datos multitenancy
-        dataAccessManager = component "Data Access Manager" {
-            technology "C#, Entity Framework Core"
-            description "Gestiona la conexión a la base de datos correcta según el tenant"
+        // // Componentes de acceso a datos multitenancy
+        // trackingRepository = component "Data Access Manager" {
+        //     technology "C#, Entity Framework Core"
+        //     description "Gestiona la conexión a la base de datos correcta según el tenant"
 
-            eventProcessorService -> this "Usa"
-            tenantService -> this "Usa"
-        }
+        //     eventService -> this "Usa"
+        //     tenantService -> this "Usa"
+        // }
 
         // Colas y publicación de eventos
-        eventPublisher = component "Event Queue Publisher" {
+        eventPublisher = component "Event Publisher" {
             technology "C#, RabbitMQ Client"
-            description "Publica eventos procesados en la cola para procesamiento asíncrono"
+            description "Publica los eventos recibidos en una cola de ingesta para ser procesados asincrónicamente"
+            tags "001 - Fase 1"
 
-            // eventProcessorService -> this "Publica eventos validados"
-            this -> eventIngestionQueue "Publica\n eventos"
+            eventService -> this "Usa" "" "001 - Fase 1"
+            this -> eventIngestionQueue "Publica\n eventos" "" "001 - Fase 1"
         }
 
         configManager = component "Configuration Manager" {
             technology "C#, AWS SDK"
-            description "Administra configuraciones dinámicas por tenant"
+            description "Obtiene configuraciones y secretos desde Configuration Platform"
+            tags "001 - Fase 1"
 
-            this -> configPlatform.configService "Lee configuraciones"
-            tenantService -> this "Usa"
+            this -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+            // eventService -> this "Usa"
+            // eventPublisher -> this "Usa"
+            // tenantService -> this "Usa"
         }
 
-        apiGateway.yarp.authorization -> eventController "Redirige solicitudes a" "HTTPS"
-        apiGateway.yarp.authorization -> tenantController "Redirige solicitudes a" "HTTPS"
+        apiGateway.yarp.authorization -> eventController "Redirige solicitudes a" "HTTPS" "001 - Fase 1"
+        // apiGateway.yarp.authorization -> tenantController "Redirige solicitudes a" "HTTPS"
     }
 
     // API principal - Punto de entrada para consultas y operaciones
@@ -108,25 +115,25 @@ trackAndTrace = softwareSystem "Track & Trace" {
         // Servicios de dominio
         trackingService = component "Tracking Service" {
             technology "C#"
-            description "Servicio para consultas de trazabilidad e historial"
+            description "Orquesta las operaciones de consulta y aplica lógica de negocio o filtros"
 
             trackingController -> this "Usa"
         }
 
         // Componentes de acceso a datos multitenancy
-        dataAccessManager = component "Data Access Manager" {
+        trackingRepository = component "Tracking Repository" {
             technology "C#, Entity Framework Core"
-            description "Gestiona la conexión a la base de datos correcta según el tenant"
+            description "Accede a la base de datos para recuperar eventos almacenados"
 
             trackingService -> this "Usa"
         }
 
         configManager = component "Configuration Manager" {
             technology "C#, AWS SDK"
-            description "Administra configuraciones dinámicas por tenant"
+            description "Obtiene configuraciones y secretos desde Configuration Platform"
 
-            this -> configPlatform.configService "Lee configuraciones"
-            trackingService -> this "Usa"
+            this -> configPlatform.configService "Lee configuraciones y secretos"
+            // trackingService -> this "Usa"
         }
 
         apiGateway.yarp.authorization -> trackingController "Redirige solicitudes a" "HTTPS"
@@ -134,67 +141,73 @@ trackAndTrace = softwareSystem "Track & Trace" {
 
     // API principal - Punto de entrada para consultas y operaciones
     eventProcessor = container "Event Processor" {
-        description "Servicio que valida, enriquece y almacena eventos; publica en la cola de broadcast.
+        description "Servicio que valida, enriquece y almacena eventos; publica en la cola de broadcast"
         technology "C#, ASP.NET Core, REST API"
-        tags "CSharp"
+        tags "CSharp" "001 - Fase 1"
 
         // Consumidores de eventos
         eventConsumer = component "Event Consumer" {
             technology "C#, RabbitMQ Client"
-            description "Consume eventos de la cola de mensajes"
+            description "Consume eventos desde la cola de ingesta y los delega para su procesamiento"
+            tags "001 - Fase 1"
 
-            this -> eventIngestionQueue "Consume eventos"
+            this -> eventIngestionQueue "Consume eventos" "" "001 - Fase 1"
         }
 
         eventHandler = component "Event Handler" {
             technology "C#"
-            description "Procesa los eventos recibidos y actualiza el estado de seguimiento"
+            description "Recibe eventos, aplica validaciones y delega la lógica al servicio correspondiente"
+            tags "001 - Fase 1"
 
-            eventConsumer -> this "Envía eventos para procesar"
+            eventConsumer -> this "Envía eventos para procesar" "" "001 - Fase 1"
         }
 
-        // Servicios de dominio
-        trackingService = component "Tracking Service" {
+        // // Servicios de dominio
+        // trackingService = component "Tracking Service" {
+        //     technology "C#"
+        //     description "Servicio para consultas de trazabilidad e historial"
+
+        //     eventHandler -> this "Usa"
+        // }
+
+        eventService = component "Event Service" {
             technology "C#"
-            description "Servicio para consultas de trazabilidad e historial"
+            description "Contiene la lógica de negocio: enriquece el evento, coordina la persistencia y la publicación"
+            tags "001 - Fase 1"
 
-            eventHandler -> this "Usa"
-        }
-
-        eventProcessorService = component "Event Processor Service" {
-            technology "C#"
-            description "Valida, transforma y procesa eventos de seguimiento"
-
-            eventHandler -> this "Usa"
+            eventHandler -> this "Usa" "" "001 - Fase 1"
         }
 
         // Componentes de acceso a datos multitenancy
-        dataAccessManager = component "Data Access Manager" {
+        eventRepository = component "Event Repository" {
             technology "C#, Entity Framework Core"
-            description "Gestiona la conexión a la base de datos correcta según el tenant"
+            description "Persiste eventos crudos o enriquecidos en la base de datos para trazabilidad y análisis"
+            tags "001 - Fase 1"
 
-            trackingService -> this "Usa"
-            eventProcessorService -> this "Usa"
+            // trackingService -> this "Usa"
+            eventService -> this "Usa" "" "001 - Fase 1"
         }
 
         // Colas y publicación de eventos
-        eventPublisher = component "Event Queue Publisher" {
+        eventPublisher = component "Event Publisher" {
             technology "C#, RabbitMQ Client"
-            description "Publica eventos procesados en la cola para procesamiento asíncrono"
+            description "Publica eventos enriquecidos a una cola de salida para que otros sistemas los consuman"
+            tags "001 - Fase 1"
 
-            eventProcessorService -> this "Publica eventos validados"
-            this -> queue "Publica\n eventos"
+            // eventProcessorService -> this "Publica eventos validados"
+            this -> queue "Publica\n eventos" "" "001 - Fase 1"
+            eventService -> this "Usa" "" "001 - Fase 1"
         }
 
         configManager = component "Configuration Manager" {
             technology "C#, AWS SDK"
-            description "Administra configuraciones dinámicas por tenant"
+            description "Obtiene configuraciones y secretos desde Configuration Platform"
+            tags "001 - Fase 1"
 
-            this -> configPlatform.configService "Lee configuraciones"
-            trackingService -> this "Usa"
-            eventProcessorService -> this "Usa"}
+            this -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+            // eventHandler -> this "Usa"
         }
-    }    
+    }
 
     // Dashboards y visualización
     dashboard = container "Track & Trace Monitoreo" {
@@ -202,7 +215,7 @@ trackAndTrace = softwareSystem "Track & Trace" {
         technology "React, TypeScript"
         tags "Web App"
 
-        operationalUser -> this "Consulta trazabilidad" "HTTPS via API Gateway"
+        operationalUser -> this "Consulta trazabilidad"
         this -> queryApi "Consulta datos de trazabilidad" "HTTPS"
     }
 
@@ -212,7 +225,7 @@ trackAndTrace = softwareSystem "Track & Trace" {
     //     technology "PostgreSQL"
     //     tags "Database" "PostgreSQL" "Peru"
 
-    //     eventProcessor.dataAccessManager -> this "Lee y escribe datos (tenant: PE)"
+    //     eventProcessor.trackingRepository -> this "Lee y escribe datos (tenant: PE)"
     //     // iataMessaging.eventProcessor.eventHandler -> this "Lee datos (tenant: PE)"
     // }
 
@@ -221,7 +234,7 @@ trackAndTrace = softwareSystem "Track & Trace" {
     //     technology "PostgreSQL"
     //     tags "Database" "PostgreSQL" "Ecuador"
 
-    //     eventProcessor.dataAccessManager -> this "Lee y escribe datos (tenant: EC)"
+    //     eventProcessor.trackingRepository -> this "Lee y escribe datos (tenant: EC)"
     //     // iataMessaging.eventProcessor.eventHandler -> this "Lee datos (tenant: EC)"
     // }
 
@@ -230,7 +243,7 @@ trackAndTrace = softwareSystem "Track & Trace" {
     //     technology "PostgreSQL"
     //     tags "Database" "PostgreSQL" "Colombia"
 
-    //     eventProcessor.dataAccessManager -> this "Lee y escribe datos (tenant: CO)"
+    //     eventProcessor.trackingRepository -> this "Lee y escribe datos (tenant: CO)"
     //     // iataMessaging.eventProcessor.eventHandler -> this "Lee datos (tenant: CO)"
     // }
 
@@ -239,19 +252,19 @@ trackAndTrace = softwareSystem "Track & Trace" {
     //     technology "PostgreSQL"
     //     tags "Database" "PostgreSQL" "Mexico"
 
-    //     eventProcessor.dataAccessManager -> this "Lee y escribe datos (tenant: MX)"
+    //     eventProcessor.trackingRepository -> this "Lee y escribe datos (tenant: MX)"
     //     // iataMessaging.eventProcessor.eventHandler -> this "Lee datos (tenant: MX)"
     // }
 
     trackAndTraceDb = store "Track & Trace DB" {
         description "Base de datos que almacena todos los eventos y el estado actual de tracking."
         technology "PostgreSQL"
-        tags "Database" "PostgreSQL"
+        tags "Database" "PostgreSQL" "001 - Fase 1"
 
-        eventProcessor.dataAccessManager -> this "Lee y escribe datos"
-        queryApi.dataAccessManager -> this "Lee datos de trazabilidad"
-        // trackingService.dataAccessManager -> this "Lee configuraciones"
-        // tenantService.dataAccessManager -> this "Lee configuraciones"
+        eventProcessor.eventRepository -> this "Lee y escribe datos" "" "001 - Fase 1"
+        queryApi.trackingRepository -> this "Lee datos de trazabilidad"
+        // trackingService.trackingRepository -> this "Lee configuraciones"
+        // tenantService.trackingRepository -> this "Lee configuraciones"
     }
 
     // // Base de datos para configuración de tenants

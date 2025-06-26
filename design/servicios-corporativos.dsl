@@ -22,7 +22,7 @@ workspace {
 
         admin = person "Admin" {
             description "Usuario administrador que gestiona configuraciones de los sistemas"
-            tags "Admin"
+            tags "Admin" "001 - Fase 1"
         }
 
         operationalUser = person "Usuario Operativo" {
@@ -33,32 +33,36 @@ workspace {
         // Usuarios de las aplicaciones de cada país (Peru, Ecuador, Colombia y México)
         userPeru = person "Usuario\nPerú" {
             description "Usuario que usa aplicaciones de Perú"
+            tags "Peru" "001 - Fase 1"
         }
 
         userEcuador = person "Usuario Ecuador" {
             description "Usuario que usa aplicaciones de Ecuador"
+            tags "Ecuador" "001 - Fase 1"
         }
 
         userColombia = person "Usuario Colombia" {
             description "Usuario que usa aplicaciones de Colombia"
+            tags "Colombia"
         }
 
         userMexico = person "Usuario México" {
             description "Usuario que usa aplicaciones de México"
+            tags "Mexico"
         }
 
         consumerGroup = group "Consumidores" {
 
             appPeru = externalSystem "Aplicaciones Perú" {
                 description "Aplicaciones, sistemas y dispositivos de captura"
-                tags "Peru"
+                tags "Peru" "001 - Fase 1"
 
                 userPeru -> this "Usa"
             }
 
             appEcuador = externalSystem "Aplicaciones Ecuador" {
                 description "Aplicaciones, sistemas y dispositivos de captura"
-                tags "Ecuador"
+                tags "Ecuador"  "001 - Fase 1"
 
                 userEcuador -> this "Usa"
             }
@@ -83,7 +87,7 @@ workspace {
 
             emailProvider = softwareSystem "Email Notification Provider" {
                 description "Proveedor de notificaciones email"
-                tags "External, Email, AWS SES"
+                tags "External, Email, AWS SES, 001 - Fase 1"
             }
 
             smsProvider = softwareSystem "SMS Notification Provider" {
@@ -106,29 +110,29 @@ workspace {
         iataClientsGroup = group "Receptores de mensajería IATA" {
             airlines = softwareSystem "Airlines" {
                 description "Sistema de mensajería IATA para aerolíneas"
-                tags "External, Airlines"
+                tags "External, Airlines, 001 - Fase 1"
             }
 
             descartes = softwareSystem "Descartes" {
                 description "Proveedor de servicios de mensajería IATA"
-                tags "External, Descartes"
+                tags "External, Descartes, 001 - Fase 1"
             }
         }
 
-        configPlatform = externalSystem  "AWS Configuration Platform" {
-            description "Sistema de mensajería IATA para aerolíneas"
-            tags "External, AWS"
+        configPlatform = externalSystem  "Configuration Platform" {
+            description "Plataforma centralizada de configuración y secretos"
+            tags "External, AWS, 001 - Fase 1"
 
             configService = application "Parameter Store" {
                 // technology = "AWS SSM"
                 description "Servicio de configuración dinámica por tenant y entorno."
-                tags "AWS SSM, Configuration"
+                tags "AWS SSM, Configuration, 001 - Fase 1"
             }
 
             secretsService = application "Secrets Manager" {
                 // technology = "AWS Secrets Manager"
                 description "Almacén seguro de claves, tokens y secretos por servicio."
-                tags "AWS Secrets Manager, Secrets"
+                tags "AWS Secrets Manager, Secrets, 001 - Fase 1"
             }
         }
 
@@ -150,6 +154,7 @@ workspace {
 
         systemLandscape "corporate_services" {
             include *
+            exclude configPlatform
             exclude "* -> identity"
             exclude "* -> notification"
             exclude "* -> iataMessaging"
