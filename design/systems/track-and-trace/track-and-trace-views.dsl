@@ -4,7 +4,7 @@ container trackAndTrace "track_and_trace_system" {
 
     // Incluir los sistemas externos relacionados
     // include notification
-    // include iataMessaging
+    // include sitaMessaging
 
     // Excluir sistemas y sus relaciones que no queremos ver
     exclude apiGateway
@@ -13,14 +13,14 @@ container trackAndTrace "track_and_trace_system" {
     // exclude "appEcuador -> notification"
     // exclude "appColombia -> notification"
     // exclude "appMexico -> notification"
-    // exclude "appPeru -> iataMessaging"
-    // exclude "appEcuador -> iataMessaging"
-    // exclude "appColombia -> iataMessaging"
-    // exclude "appMexico -> iataMessaging"
+    // exclude "appPeru -> sitaMessaging"
+    // exclude "appEcuador -> sitaMessaging"
+    // exclude "appColombia -> sitaMessaging"
+    // exclude "appMexico -> sitaMessaging"
 
-    // // Excluir comunicaciones del admin con notification e iataMessaging
+    // // Excluir comunicaciones del admin con notification e sitaMessaging
     // exclude "admin -> notification"
-    // exclude "admin -> iataMessaging"
+    // exclude "admin -> sitaMessaging"
 
     title "[Diagrama de Contenedores] Track and Trace"
 }
@@ -29,7 +29,7 @@ container trackAndTrace "track_and_trace_system_fase_1" {
     include *
 
     // Incluir los sistemas externos relacionados
-    include iataMessaging
+    include sitaMessaging
 
     // Excluir sistemas y sus relaciones que no queremos ver
     exclude apiGateway

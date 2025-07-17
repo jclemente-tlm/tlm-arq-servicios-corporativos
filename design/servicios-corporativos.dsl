@@ -107,14 +107,14 @@ workspace {
         }
 
         // Aerolíneas asociadas
-        iataClientsGroup = group "Receptores de mensajería IATA" {
+        sitaClientsGroup = group "Receptores de mensajería SITA" {
             airlines = softwareSystem "Airlines" {
-                description "Sistema de mensajería IATA para aerolíneas"
+                description "Sistema de mensajería SITA para aerolíneas"
                 tags "External, Airlines, 001 - Fase 1"
             }
 
-            descartes = softwareSystem "Descartes" {
-                description "Proveedor de servicios de mensajería IATA"
+            descartes = softwareSystem "Descartes / SITATEX" {
+                description "Proveedor de servicios de mensajería SITA"
                 tags "External, Descartes, 001 - Fase 1"
             }
         }
@@ -141,10 +141,10 @@ workspace {
             !include ./systems/api-gateway/api-gateway-models.dsl
             !include ./systems/identity/identity-models.dsl
             !include ./systems/notification/notification-models.dsl
-            !include ./systems/iata-messaging/iata-messaging-models.dsl
+            !include ./systems/sita-messaging/sita-messaging-models.dsl
             !include ./systems/track-and-trace/track-and-trace-models.dsl
 
-            // iataMessaging.eventProcessor.eventConsumer -> trackAndTrace "Consume eventos de tracking" "RabbitMQ"
+            // sitaMessaging.eventProcessor.eventConsumer -> trackAndTrace "Consume eventos de tracking" "RabbitMQ"
         }
     }
 
@@ -157,10 +157,10 @@ workspace {
             exclude configPlatform
             exclude "* -> identity"
             exclude "* -> notification"
-            exclude "* -> iataMessaging"
+            exclude "* -> sitaMessaging"
             exclude "* -> trackAndTrace"
             include "apiGateway -> *"
-            include "iataMessaging -> trackAndTrace"
+            include "sitaMessaging -> trackAndTrace"
             title "[Diagrama de Contexto] Servicios Corporativos"
         }
 
@@ -168,7 +168,7 @@ workspace {
         !include ./systems/api-gateway/api-gateway-views.dsl
         !include ./systems/identity/identity-views.dsl
         !include ./systems/notification/notification-views.dsl
-        !include ./systems/iata-messaging/iata-messaging-views.dsl
+        !include ./systems/sita-messaging/sita-messaging-views.dsl
         !include ./systems/track-and-trace/track-and-trace-views.dsl
 
         // Estilos

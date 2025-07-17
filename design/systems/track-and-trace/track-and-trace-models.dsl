@@ -8,7 +8,7 @@ trackAndTrace = softwareSystem "Track & Trace" {
         technology "RabbitMQ"
         tags "Message Bus" "RabbitMQ" "001 - Fase 1"
 
-        iataMessaging.eventProcessor.eventConsumer -> this "Consume eventos de seguimiento" "" "001 - Fase 1"
+        sitaMessaging.eventProcessor.eventConsumer -> this "Consume eventos de seguimiento" "" "001 - Fase 1"
     }
 
     // Cola de eventos para servicios suscritos
@@ -17,7 +17,7 @@ trackAndTrace = softwareSystem "Track & Trace" {
         technology "RabbitMQ"
         tags "Message Bus" "RabbitMQ" "001 - Fase 1"
 
-        // iataMessaging.eventProcessor.eventConsumer -> this "Consume eventos de seguimiento" "RabbitMQ"
+        // sitaMessaging.eventProcessor.eventConsumer -> this "Consume eventos de seguimiento" "RabbitMQ"
     }
 
     // API principal - Punto de entrada para consultas y operaciones
@@ -226,7 +226,7 @@ trackAndTrace = softwareSystem "Track & Trace" {
     //     tags "Database" "PostgreSQL" "Peru"
 
     //     eventProcessor.trackingRepository -> this "Lee y escribe datos (tenant: PE)"
-    //     // iataMessaging.eventProcessor.eventHandler -> this "Lee datos (tenant: PE)"
+    //     // sitaMessaging.eventProcessor.eventHandler -> this "Lee datos (tenant: PE)"
     // }
 
     // ecuadorDb = store "Ecuador Tracking DB" {
@@ -235,7 +235,7 @@ trackAndTrace = softwareSystem "Track & Trace" {
     //     tags "Database" "PostgreSQL" "Ecuador"
 
     //     eventProcessor.trackingRepository -> this "Lee y escribe datos (tenant: EC)"
-    //     // iataMessaging.eventProcessor.eventHandler -> this "Lee datos (tenant: EC)"
+    //     // sitaMessaging.eventProcessor.eventHandler -> this "Lee datos (tenant: EC)"
     // }
 
     // colombiaDb = store "Colombia Tracking DB" {
@@ -244,7 +244,7 @@ trackAndTrace = softwareSystem "Track & Trace" {
     //     tags "Database" "PostgreSQL" "Colombia"
 
     //     eventProcessor.trackingRepository -> this "Lee y escribe datos (tenant: CO)"
-    //     // iataMessaging.eventProcessor.eventHandler -> this "Lee datos (tenant: CO)"
+    //     // sitaMessaging.eventProcessor.eventHandler -> this "Lee datos (tenant: CO)"
     // }
 
     // mexicoDb = store "Mexico Tracking DB" {
@@ -253,7 +253,7 @@ trackAndTrace = softwareSystem "Track & Trace" {
     //     tags "Database" "PostgreSQL" "Mexico"
 
     //     eventProcessor.trackingRepository -> this "Lee y escribe datos (tenant: MX)"
-    //     // iataMessaging.eventProcessor.eventHandler -> this "Lee datos (tenant: MX)"
+    //     // sitaMessaging.eventProcessor.eventHandler -> this "Lee datos (tenant: MX)"
     // }
 
     trackAndTraceDb = store "Track & Trace DB" {
@@ -278,6 +278,6 @@ trackAndTrace = softwareSystem "Track & Trace" {
     //     eventProcessor.eventHandler -> this "Lee configuraciones de tenants"
 
     //     admin -> this "Administra configuraciones por país" "HTTPS via API Gateway"
-    //     // iataMessaging.eventProcessor.eventHandler -> this "Consulta configuraciones específicas por país"
+    //     // sitaMessaging.eventProcessor.eventHandler -> this "Consulta configuraciones específicas por país"
     // }
 }
