@@ -1,6 +1,6 @@
 container notification "notification_system" {
     include *
-    exclude apiGateway
+    exclude apiGateway configPlatform
     exclude "* -> trackAndTrace"
     title "[Diagrama de Contenedores] Notification System"
 }
