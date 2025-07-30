@@ -397,20 +397,31 @@ La siguiente tabla describe todos los campos posibles en el payload multicanal r
 
 ## 6. Vista de tiempo de ejecución
 
-### Diagrama de secuencia: Envío de notificación multicanal
+A continuación se describen los escenarios más relevantes para el servicio de notificaciones, cubriendo los principales flujos y casos de uso arquitectónicos:
+
+### 6.1 Envío multicanal (flujo principal)
+
+**Descripción:** Un usuario o sistema solicita el envío de una notificación, que es procesada y entregada por los canales configurados (email, SMS, push, WhatsApp, etc.), considerando reglas multi-tenant y multipaís.
+
+**Diagrama de secuencia:**
 
 ```mermaid
 sequenceDiagram
     participant App as App Talma
     participant API as Notification API
+    participant TenantCfg as TenantConfigRepository
     participant SQS as SQS
     participant Proc as Notification Processor
     participant SNS as SNS
     participant Canal as Canal Processor
     participant Prov as Proveedor Externo
     App->>API: Solicitud de notificación
+    API->>TenantCfg: Consulta configuración y preferencias
+    TenantCfg-->>API: Configuración y parámetros
     API->>SQS: Encola mensaje
     SQS->>Proc: Mensaje recibido
+    Proc->>TenantCfg: Consulta configuración por tenant/país
+    TenantCfg-->>Proc: Configuración y parámetros
     Proc->>SNS: Publica evento (fan-out)
     SNS->>Canal: Entrega por canal (email, sms, push, whatsapp)
     Canal->>Prov: Envía notificación
@@ -419,7 +430,33 @@ sequenceDiagram
     Proc->>API: Estado final
 ```
 
-### Diagrama de flujo: Manejo de reintentos y DLQ
+**Ejemplo:**
+Un usuario solicita el envío de una notificación por email y WhatsApp. El sistema consulta preferencias, valida límites, encola el mensaje y los procesadores de canal realizan la entrega por ambos canales.
+
+### 6.2 Validación de preferencias y límites
+
+**Descripción:** Antes de procesar una notificación, se valida que el usuario y el tenant tengan habilitado el canal, no hayan excedido límites diarios/horarios y cumplan con las reglas de opt-in/opt-out.
+
+**Diagrama de secuencia:**
+
+```mermaid
+sequenceDiagram
+    participant API as Notification API
+    participant TenantCfg as TenantConfigRepository
+    API->>TenantCfg: Consulta preferencias y límites
+    TenantCfg-->>API: Preferencias y límites
+    API-->>API: Valida reglas
+    API-->>App: Rechaza o acepta solicitud
+```
+
+**Ejemplo:**
+Un usuario intenta enviar una notificación SMS, pero ha superado el límite diario. El sistema rechaza la solicitud y notifica el motivo.
+
+### 6.3 Manejo de reintentos y Dead Letter Queue (DLQ)
+
+**Descripción:** Si la entrega de una notificación falla, el sistema realiza reintentos automáticos. Si se exceden los intentos, el mensaje se envía a la DLQ para análisis y recuperación manual.
+
+**Diagrama de flujo:**
 
 ```mermaid
 flowchart TD
@@ -433,10 +470,76 @@ flowchart TD
     E --> F[Notifica y registra para análisis]
 ```
 
-- El servicio de notificación valida, consulta preferencias, programa si es necesario, formatea el mensaje y lo pone en cola.
-- Procesadores de canal consumen la cola, entregan la notificación y registran el estado.
-- Reintentos automáticos y DLQ para mensajes fallidos.
-- Monitoreo, métricas y alertas centralizadas.
+**Ejemplo:**
+El proveedor de email está caído. El sistema reintenta 3 veces y luego envía el mensaje a la DLQ para revisión manual.
+
+### 6.4 Programación de notificaciones
+
+**Descripción:** El usuario programa una notificación para ser enviada en el futuro. El Scheduler gestiona el envío en la fecha y hora programada.
+
+**Diagrama de secuencia:**
+
+```mermaid
+sequenceDiagram
+    participant App as App Talma
+    participant API as Notification API
+    participant DB as DB
+    participant Scheduler as Scheduler
+    participant SQS as SQS
+    App->>API: Solicitud de notificación programada
+    API->>DB: Guarda notificación programada
+    Scheduler->>DB: Consulta notificaciones pendientes
+    Scheduler->>SQS: Encola notificación en fecha/hora
+    SQS->>Proc: Procesa envío
+```
+
+**Ejemplo:**
+Un usuario agenda una notificación para el día siguiente. El Scheduler la envía automáticamente en la fecha indicada.
+
+### 6.5 Gestión de adjuntos
+
+**Descripción:** El sistema permite adjuntar archivos a las notificaciones, gestionando su almacenamiento y recuperación.
+
+**Diagrama de secuencia:**
+
+```mermaid
+sequenceDiagram
+    participant App as App Talma
+    participant API as Notification API
+    participant S3 as S3
+    participant DB as DB
+    participant Proc as Notification Processor
+    participant Canal as Canal Processor
+    App->>API: Sube archivo adjunto
+    API->>S3: Almacena archivo
+    API->>DB: Registra metadato
+    Proc->>DB: Consulta metadato de adjunto
+    Canal->>S3: Descarga archivo para entrega
+```
+
+**Ejemplo:**
+El usuario adjunta un PDF a la notificación. El archivo se almacena en S3 y el procesador de canal lo descarga para enviarlo por email.
+
+### 6.6 Escenario de error y recuperación
+
+**Descripción:** El sistema detecta un error inesperado (por ejemplo, caída de un proveedor externo) y activa mecanismos de recuperación y alerta.
+
+**Diagrama de secuencia:**
+
+```mermaid
+sequenceDiagram
+    participant Canal as Canal Processor
+    participant DLQ as Dead Letter Queue
+    participant Ops as Operaciones
+    Canal-->>Canal: Detecta error
+    Canal->>Canal: Reintenta entrega
+    Canal->>DLQ: Envía mensaje fallido
+    DLQ->>Ops: Genera alerta y registro
+    Ops->>DLQ: Recupera mensaje manualmente
+```
+
+**Ejemplo:**
+El proveedor de WhatsApp rechaza la entrega. El sistema reintenta, envía a DLQ y genera una alerta para el equipo de operaciones, que puede recuperar el mensaje manualmente.
 
 ## 7. Vista de implementación
 
@@ -456,7 +559,9 @@ flowchart TD
 | RDS PostgreSQL          | RDS (EC2)                  | t3.micro, 20GB, 1 AZ        | t3.small, 50GB, 2 AZ        | m5.large, 200GB, multi-AZ          | API, Processor, Scheduler, Canal Processors | Multi-AZ, backups automáticos |
 | SQS (Colas de mensajes)     | AWS SQS (Serverless)         | 5 colas estándar/FIFO, DLQ, retención  | 5 colas estándar/FIFO, DLQ, retención  | 5 colas estándar/FIFO, DLQ, retención, colas por canal/tipo | IAM, integración con ECS, SNS, RDS | Autoescalado, alta disponibilidad, tolerancia a fallos |
 | SNS (Notificaciones)        | AWS SNS (Serverless)         | 1 tópico, integración básica | 1 tópico, integración por canal | 1 tópico, integración avanzada | IAM, integración con SQS | Autoescalado, alta disponibilidad |
-| S3 (Almacenamiento adjuntos)| AWS S3 (Serverless)          | Bucket por ambiente, versionado, cifrado | Bucket por ambiente, versionado, cifrado | Bucket por ambiente, versionado, cifrado, ciclo de vida | IAM, integración con ECS, RDS, API | Multi-AZ, alta durabilidad, ilimitado, ciclo de vida |
+| Email/SMS/Push/WhatsApp Provider | 10        | 20            | 100           | Proveedor test/dev, bajo volumen | Proveedor test/stg, volumen medio | Proveedor productivo, alto volumen |
+| IAM, CloudWatch, otros      | 5             | 10            | 30            | IAM mínimo, logs básicos | IAM mínimo, logs y métricas | IAM mínimo, logs, métricas, alertas |
+| **Total estimado**          | **154**        | **375**        | **1590**      |                         |                         |                         |
 
 **Notas por componente:**
 
