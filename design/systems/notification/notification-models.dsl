@@ -85,70 +85,70 @@ notification = softwareSystem "Notification System" {
         }
     }
 
-    configurationApi = container "Configuration API" {
-        technology "ASP.NET Core 8 / C#"
-        description "API para gestionar plantillas, canales, reglas y configuraciones por tenant."
-        tags "CSharp" "001 - Fase 1"
+    // configurationApi = container "Configuration API" {
+    //     technology "ASP.NET Core 8 / C#"
+    //     description "API para gestionar plantillas, canales, reglas y configuraciones por tenant."
+    //     tags "CSharp" "001 - Fase 1"
 
-        templatesController = component "Templates Controller" {
-            technology "ASP.NET Core, C#"
-            description "Expone endpoints para gestionar plantillas de notificación (correo, SMS, etc.)."
-            tags "001 - Fase 1"
-        }
+    //     templatesController = component "Templates Controller" {
+    //         technology "ASP.NET Core, C#"
+    //         description "Expone endpoints para gestionar plantillas de notificación (correo, SMS, etc.)."
+    //         tags "001 - Fase 1"
+    //     }
 
-        templateService = component "Template Service" {
-            technology "C#"
-            description "Contiene la lógica de negocio para la gestión de plantillas de notificación."
-            tags "001 - Fase 1"
-        }
+    //     templateService = component "Template Service" {
+    //         technology "C#"
+    //         description "Contiene la lógica de negocio para la gestión de plantillas de notificación."
+    //         tags "001 - Fase 1"
+    //     }
 
-        templateRepository = component "Template Repository" {
-            technology "C#, Entity Framework Core"
-            description "Gestiona registros de plantillas de notificación."
-            tags "001 - Fase 1"
-        }
+    //     templateRepository = component "Template Repository" {
+    //         technology "C#, Entity Framework Core"
+    //         description "Gestiona registros de plantillas de notificación."
+    //         tags "001 - Fase 1"
+    //     }
 
-        channelsController = component "Channels Controller" {
-            technology "ASP.NET Core, C#"
-            description "Expone endpoints para gestionar la configuración de canales de notificación (correo, SMS, etc.)."
-            tags "001 - Fase 1"
-        }
+    //     channelsController = component "Channels Controller" {
+    //         technology "ASP.NET Core, C#"
+    //         description "Expone endpoints para gestionar la configuración de canales de notificación (correo, SMS, etc.)."
+    //         tags "001 - Fase 1"
+    //     }
 
-        channelService = component "Channel Service" {
-            technology "C#"
-            description "Contiene la lógica de negocio para la gestión de canales de notificación."
-            tags "001 - Fase 1"
-        }
+    //     channelService = component "Channel Service" {
+    //         technology "C#"
+    //         description "Contiene la lógica de negocio para la gestión de canales de notificación."
+    //         tags "001 - Fase 1"
+    //     }
 
-        channelRepository = component "Channel Repository" {
-            technology "C#, Entity Framework Core"
-            description "Gestiona registros de canales."
-            tags "001 - Fase 1"
-        }
+    //     channelRepository = component "Channel Repository" {
+    //         technology "C#, Entity Framework Core"
+    //         description "Gestiona registros de canales."
+    //         tags "001 - Fase 1"
+    //     }
 
-        // configController = component "Config Controller" {
-        //     technology "ASP.NET Core, C#"
-        //     description "Expone endpoints para gestionar configuraciones del servicio de notificaciones."
-        //     tags "001 - Fase 1"
-        // }
+    //     // configController = component "Config Controller" {
+    //     //     technology "ASP.NET Core, C#"
+    //     //     description "Expone endpoints para gestionar configuraciones del servicio de notificaciones."
+    //     //     tags "001 - Fase 1"
+    //     // }
 
-        // configService = component "Config Service" {
-        //     technology "C#"
-        //     description "Contiene la lógica de negocio para la gestión de configuraciones del servicio de notificaciones."
-        //     tags "001 - Fase 1"
-        // }
+    //     // configService = component "Config Service" {
+    //     //     technology "C#"
+    //     //     description "Contiene la lógica de negocio para la gestión de configuraciones del servicio de notificaciones."
+    //     //     tags "001 - Fase 1"
+    //     // }
 
-        // configRepository = component "Config Repository" {
-        //     technology "C#, Entity Framework Core"
-        //     description "Gestiona registros de configuraciones del servicio de notificaciones."
-        //     tags "001 - Fase 1"
-        // }
+    //     // configRepository = component "Config Repository" {
+    //     //     technology "C#, Entity Framework Core"
+    //     //     description "Gestiona registros de configuraciones del servicio de notificaciones."
+    //     //     tags "001 - Fase 1"
+    //     // }
 
-        configManager = component "Configuration Manager" {
-            technology "C#, AWS SDK"
-            description "Obtiene configuraciones y secretos desde Configuration Platform"
-        }
-    }
+    //     configManager = component "Configuration Manager" {
+    //         technology "C#, AWS SDK"
+    //         description "Obtiene configuraciones y secretos desde Configuration Platform"
+    //     }
+    // }
 
     db = store "Notification DB" {
         technology "PostgreSQL"
@@ -410,16 +410,16 @@ notification = softwareSystem "Notification System" {
     api.attachmentManager -> storage "Sube archivos adjuntos" "" "001 - Fase 1"
     api.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
 
-    configurationApi.templatesController -> configurationApi.templateService "Usa" "" "001 - Fase 1"
-    configurationApi.templateService -> configurationApi.templateRepository "Usa" "" "001 - Fase 1"
-    configurationApi.templateRepository -> db "Lee y escribe datos" "" "001 - Fase 1"
-    configurationApi.channelsController -> configurationApi.channelService "Usa" "" "001 - Fase 1"
-    configurationApi.channelService -> configurationApi.channelRepository "Usa" "" "001 - Fase 1"
-    configurationApi.channelRepository -> db "Lee y escribe datos" "" "001 - Fase 1"
-    // configurationApi.configController -> configurationApi.configService "Usa" "" "001 - Fase 1"
-    // configurationApi.configService -> configurationApi.configRepository "Usa" "" "001 - Fase 1"
-    // configurationApi.configRepository -> db "Lee y escribe datos" "" "001 - Fase 1"
-    configurationApi.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+    // configurationApi.templatesController -> configurationApi.templateService "Usa" "" "001 - Fase 1"
+    // configurationApi.templateService -> configurationApi.templateRepository "Usa" "" "001 - Fase 1"
+    // configurationApi.templateRepository -> db "Lee y escribe datos" "" "001 - Fase 1"
+    // configurationApi.channelsController -> configurationApi.channelService "Usa" "" "001 - Fase 1"
+    // configurationApi.channelService -> configurationApi.channelRepository "Usa" "" "001 - Fase 1"
+    // configurationApi.channelRepository -> db "Lee y escribe datos" "" "001 - Fase 1"
+    // // configurationApi.configController -> configurationApi.configService "Usa" "" "001 - Fase 1"
+    // // configurationApi.configService -> configurationApi.configRepository "Usa" "" "001 - Fase 1"
+    // // configurationApi.configRepository -> db "Lee y escribe datos" "" "001 - Fase 1"
+    // configurationApi.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
 
 
     queue -> notificationProcessor "Entrega mensajes al Processor."
@@ -488,6 +488,6 @@ notification = softwareSystem "Notification System" {
     appColombia -> api.attachmentsController "Gestiona archivos adjuntos" "HTTPS vía API Gateway"
     appMexico -> api.attachmentsController "Gestiona archivos adjuntos" "HTTPS vía API Gateway"
 
-    admin -> configurationApi.templatesController "Gestiona plantillas" "HTTPS vía API Gateway" "001 - Fase 1"
-    admin -> configurationApi.channelsController "Gestiona canales" "HTTPS vía API Gateway" "001 - Fase 1"
+    // admin -> configurationApi.templatesController "Gestiona plantillas" "HTTPS vía API Gateway" "001 - Fase 1"
+    // admin -> configurationApi.channelsController "Gestiona canales" "HTTPS vía API Gateway" "001 - Fase 1"
 }
