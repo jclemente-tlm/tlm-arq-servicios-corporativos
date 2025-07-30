@@ -144,6 +144,7 @@ workspace {
             !include ./systems/sita-messaging/sita-messaging-models.dsl
             !include ./systems/track-and-trace/track-and-trace-models.dsl
 
+            !include ./systems/notification/notification-deployment-models.dsl
             // sitaMessaging.eventProcessor.eventConsumer -> trackAndTrace "Consume eventos de tracking" "RabbitMQ"
         }
     }
@@ -171,8 +172,13 @@ workspace {
         !include ./systems/sita-messaging/sita-messaging-views.dsl
         !include ./systems/track-and-trace/track-and-trace-views.dsl
 
+        // Vistas de los sistemas externos
+        !include ./systems/notification/notification-deployment-views.dsl
+
         // Estilos
         !include ./common/styles/branding.dsl
         !include ./common/styles/default.dsl
+        themes https://static.structurizr.com/themes/amazon-web-services-2020.04.30/theme.json
+        themes https://static.structurizr.com/themes/amazon-web-services-2023.01.31/theme.json
     }
 }

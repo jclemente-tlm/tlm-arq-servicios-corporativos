@@ -74,6 +74,14 @@ sitaMessaging = softwareSystem "SITA Messaging" {
         apiGateway.yarp.authorization -> controller "Redirige solicitudes a" "HTTPS" "001 - Fase 1"
     }
 
+    sitaQueue = store "SITA Message Queue" {
+        description "Cola SQS suscrita al topic de eventos enriquecidos de Track & Trace"
+        technology "AWS SQS"
+        tags "Message Bus" "SQS"
+
+        // trackAndTrace.broadcastTopic -> this "Fan-out automático"
+    }
+
     // Nuevo worker para procesar eventos SITA
     eventProcessor = container "SITA Event Processor" {
         technology "C#, .NET Worker Service"
@@ -85,7 +93,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
             description "Consume eventos de la cola de mensajes de Track & Trace"
             tags "001 - Fase 1"
 
-            // this -> trackAndTrace.eventsQueue "Consume eventos de seguimiento" "RabbitMQ"
+            this -> sitaQueue "Consume eventos de seguimiento" "RabbitMQ"
         }
 
         eventHandler = component "Event Handler" {

@@ -79,9 +79,16 @@ notification = softwareSystem "Notification System" {
             tags "001 - Fase 1"
         }
 
+        tenantConfigRepository = component "TenantConfigRepository" {
+            technology "C#, Entity Framework Core"
+            description "Gestiona y provee configuraciones, reglas y parámetros por tenant para el servicio."
+            tags "Multi-tenant" "Configuración" "001 - Fase 1"
+        }
+
         configManager = component "Configuration Manager" {
             technology "C#, AWS SDK"
-            description "Obtiene configuraciones y secretos desde Configuration Platform"
+            description "Obtiene configuraciones y secretos desde TenantConfigRepository y Configuration Platform"
+            tags "Configuración" "001 - Fase 1"
         }
     }
 
@@ -157,9 +164,9 @@ notification = softwareSystem "Notification System" {
     }
 
     queue = store "Notification Queue" {
-        technology "RabbitMQ"
+        technology "AWS SQS"
         description "Cola de mensajes para gestionar el envío de notificaciones."
-        tags "Message Bus" "RabbitMQ" "001 - Fase 1"
+        tags "Message Bus" "AWS SQS" "001 - Fase 1"
     }
 
     queueEmail = store "Queue Email" {
@@ -197,9 +204,39 @@ notification = softwareSystem "Notification System" {
         description "Consume mensajes de SQS Inbox y publica en colas por canal usando SNS."
         tags "CSharp" "001 - Fase 1"
 
+        consumer = component "Consumer" {
+            technology "C#"
+            description "Consume mensajes de la cola de notificaciones."
+            tags "001 - Fase 1"
+        }
+
+        service = component "Service" {
+            technology "C#"
+            description "Contiene la lógica de negocio para el procesamiento y distribución de notificaciones a los canales."
+            tags "001 - Fase 1"
+        }
+
+        repository = component "Repository" {
+            technology "C#, Entity Framework Core"
+            description "Actualiza estado de notificaciones procesadas."
+            tags "001 - Fase 1"
+        }
+
+        adapter = component "Adapter" {
+            technology "C#"
+            description "Adaptador para la publicación en SNS y colas SQS por canal."
+            tags "001 - Fase 1"
+        }
+
+        tenantConfigRepository = component "TenantConfigRepository" {
+            technology "C#, Entity Framework Core"
+            description "Gestiona y provee configuraciones, reglas y parámetros por tenant para el servicio."
+            tags "Multi-tenant" "Configuración" "001 - Fase 1"
+        }
         configManager = component "Configuration Manager" {
             technology "C#, AWS SDK"
-            description "Obtiene configuraciones y secretos desde Configuration Platform"
+            description "Obtiene configuraciones y secretos desde TenantConfigRepository y Configuration Platform"
+            tags "Configuración" "001 - Fase 1"
         }
     }
 
@@ -228,9 +265,15 @@ notification = softwareSystem "Notification System" {
             description "Publica mensajes en la cola de notificaciones."
         }
 
+        tenantConfigRepository = component "TenantConfigRepository" {
+            technology "C#, Entity Framework Core"
+            description "Gestiona y provee configuraciones, reglas y parámetros por tenant para el servicio."
+            tags "Multi-tenant" "Configuración" "001 - Fase 1"
+        }
         configManager = component "Configuration Manager" {
             technology "C#, AWS SDK"
-            description "Obtiene configuraciones y secretos desde Configuration Platform"
+            description "Obtiene configuraciones y secretos desde TenantConfigRepository y Configuration Platform"
+            tags "Configuración" "001 - Fase 1"
         }
     }
 
@@ -276,10 +319,15 @@ notification = softwareSystem "Notification System" {
             tags "001 - Fase 1"
         }
 
+        tenantConfigRepository = component "TenantConfigRepository" {
+            technology "C#, Entity Framework Core"
+            description "Gestiona y provee configuraciones, reglas y parámetros por tenant para el servicio."
+            tags "Multi-tenant" "Configuración" "001 - Fase 1"
+        }
         configManager = component "Configuration Manager" {
             technology "C#, AWS SDK"
-            description "Obtiene configuraciones y secretos desde Configuration Platform"
-            tags "001 - Fase 1"
+            description "Obtiene configuraciones y secretos desde TenantConfigRepository y Configuration Platform"
+            tags "Configuración" "001 - Fase 1"
         }
     }
 
@@ -308,9 +356,15 @@ notification = softwareSystem "Notification System" {
             description "Adaptador para el proveedor de SMS."
         }
 
+        tenantConfigRepository = component "TenantConfigRepository" {
+            technology "C#, Entity Framework Core"
+            description "Gestiona y provee configuraciones, reglas y parámetros por tenant para el servicio."
+            tags "Multi-tenant" "Configuración" "001 - Fase 1"
+        }
         configManager = component "Configuration Manager" {
             technology "C#, AWS SDK"
-            description "Obtiene configuraciones y secretos desde Configuration Platform"
+            description "Obtiene configuraciones y secretos desde TenantConfigRepository y Configuration Platform"
+            tags "Configuración" "001 - Fase 1"
         }
     }
 
@@ -349,9 +403,15 @@ notification = softwareSystem "Notification System" {
             description "Gestiona la obtención de archivos adjuntos desde el almacenamiento."
         }
 
+        tenantConfigRepository = component "TenantConfigRepository" {
+            technology "C#, Entity Framework Core"
+            description "Gestiona y provee configuraciones, reglas y parámetros por tenant para el servicio."
+            tags "Multi-tenant" "Configuración" "001 - Fase 1"
+        }
         configManager = component "Configuration Manager" {
             technology "C#, AWS SDK"
-            description "Obtiene configuraciones y secretos desde Configuration Platform"
+            description "Obtiene configuraciones y secretos desde TenantConfigRepository y Configuration Platform"
+            tags "Configuración" "001 - Fase 1"
         }
     }
 
@@ -390,9 +450,15 @@ notification = softwareSystem "Notification System" {
             description "Gestiona la obtención de archivos adjuntos desde el almacenamiento."
         }
 
+        tenantConfigRepository = component "TenantConfigRepository" {
+            technology "C#, Entity Framework Core"
+            description "Gestiona y provee configuraciones, reglas y parámetros por tenant para el servicio."
+            tags "Multi-tenant" "Configuración" "001 - Fase 1"
+        }
         configManager = component "Configuration Manager" {
             technology "C#, AWS SDK"
-            description "Obtiene configuraciones y secretos desde Configuration Platform"
+            description "Obtiene configuraciones y secretos desde TenantConfigRepository y Configuration Platform"
+            tags "Configuración" "001 - Fase 1"
         }
     }
 
@@ -408,34 +474,22 @@ notification = softwareSystem "Notification System" {
     api.attachmentService -> api.attachmentRepository "Usa" "" "001 - Fase 1"
     api.attachmentService -> api.attachmentManager "Gestiona archivos adjuntos" "" "001 - Fase 1"
     api.attachmentManager -> storage "Sube archivos adjuntos" "" "001 - Fase 1"
-    api.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+    api.configManager -> configPlatform.configService "Lee configuraciones y secretos" "001 - Fase 1"
+    api.configManager -> api.tenantConfigRepository "Lee configuraciones por tenant" "Multi-tenant" "001 - Fase 1"
+    api.tenantConfigRepository -> db "Lee y actualiza configuraciones por tenant" "Multi-tenant"
 
-    // configurationApi.templatesController -> configurationApi.templateService "Usa" "" "001 - Fase 1"
-    // configurationApi.templateService -> configurationApi.templateRepository "Usa" "" "001 - Fase 1"
-    // configurationApi.templateRepository -> db "Lee y escribe datos" "" "001 - Fase 1"
-    // configurationApi.channelsController -> configurationApi.channelService "Usa" "" "001 - Fase 1"
-    // configurationApi.channelService -> configurationApi.channelRepository "Usa" "" "001 - Fase 1"
-    // configurationApi.channelRepository -> db "Lee y escribe datos" "" "001 - Fase 1"
-    // // configurationApi.configController -> configurationApi.configService "Usa" "" "001 - Fase 1"
-    // // configurationApi.configService -> configurationApi.configRepository "Usa" "" "001 - Fase 1"
-    // // configurationApi.configRepository -> db "Lee y escribe datos" "" "001 - Fase 1"
-    // configurationApi.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
-
-
-    queue -> notificationProcessor "Entrega mensajes al Processor."
-
-    scheduler.worker -> scheduler.service "Usa" "" "001 - Fase 1"
-    scheduler.service -> scheduler.repository "Usa" "" "001 - Fase 1"
-    scheduler.repository -> db "Registra notificaciones programadas" "" "001 - Fase 1"
-    scheduler.publisher -> queue "Encola notificaciones programadas" "" "001 - Fase 1"
-    scheduler.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
-
-    notificationProcessor -> db "Registra notificaciones" "" "001 - Fase 1"
-    notificationProcessor -> queueEmail "Publica mensajes de Email" "fan-out vía SNS" "001 - Fase 1"
-    notificationProcessor -> queueSms "Publica mensajes de SMS" "fan-out vía SNS"
-    notificationProcessor -> queueWhatsapp "Publica mensajes de WhatsApp" "fan-out vía SNS"
-    notificationProcessor -> queuePush "Publica mensajes de Push" "fan-out vía SNS"
-    notificationProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" ""
+    queue -> notificationProcessor.consumer "Entrega mensajes al Processor."
+    notificationProcessor.consumer -> notificationProcessor.service "Usa"
+    notificationProcessor.service -> notificationProcessor.repository "Usa"
+    notificationProcessor.service -> notificationProcessor.adapter "Usa"
+    notificationProcessor.adapter -> queueEmail "Publica mensajes de Email" "fan-out vía SNS" "SNS, 001 - Fase 1"
+    notificationProcessor.adapter -> queueSms "Publica mensajes de SMS" "fan-out vía SNS" "SNS"
+    notificationProcessor.adapter -> queueWhatsapp "Publica mensajes de WhatsApp" "fan-out vía SNS" "SNS"
+    notificationProcessor.adapter -> queuePush "Publica mensajes de Push" "fan-out vía SNS" "SNS"
+    notificationProcessor.repository -> db "Registra notificaciones" "" "001 - Fase 1"
+    notificationProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "001 - Fase 1"
+    notificationProcessor.configManager -> notificationProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Multi-tenant" "001 - Fase 1"
+    notificationProcessor.tenantConfigRepository -> db "Lee y actualiza configuraciones por tenant" "Multi-tenant"
 
     emailProcessor.consumer -> queueEmail "Consume mensajes" "" "001 - Fase 1"
     emailProcessor.consumer -> emailProcessor.service "Usa" "" "001 - Fase 1"
@@ -446,7 +500,9 @@ notification = softwareSystem "Notification System" {
     emailProcessor.service -> emailProcessor.attachmentService "Usa" "" "001 - Fase 1"
     emailProcessor.attachmentService -> emailProcessor.attachmentFetcher "Usa"
     emailProcessor.attachmentFetcher -> storage "Obtiene archivos adjuntos" "" "001 - Fase 1"
-    emailProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+    emailProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "001 - Fase 1"
+    emailProcessor.configManager -> emailProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Multi-tenant" "001 - Fase 1"
+    emailProcessor.tenantConfigRepository -> db "Lee y actualiza configuraciones por tenant" "Multi-tenant"
 
     smsProcessor.consumer -> queueSms "Consume mensajes"
     smsProcessor.consumer -> smsProcessor.service "Usa"
@@ -455,6 +511,8 @@ notification = softwareSystem "Notification System" {
     smsProcessor.service -> smsProcessor.adapter "Usa"
     smsProcessor.adapter -> smsProvider "Usa"
     smsProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos"
+    smsProcessor.configManager -> smsProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Multi-tenant" "001 - Fase 1"
+    smsProcessor.tenantConfigRepository -> db "Lee y actualiza configuraciones por tenant" "Multi-tenant"
 
     whatsappProcessor.consumer -> queueWhatsapp "Consume mensajes"
     whatsappProcessor.consumer -> whatsappProcessor.service "Usa"
@@ -466,6 +524,8 @@ notification = softwareSystem "Notification System" {
     whatsappProcessor.attachmentService -> whatsappProcessor.attachmentFetcher "Usa"
     whatsappProcessor.attachmentFetcher -> storage "Obtiene archivos adjuntos"
     whatsappProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos"
+    whatsappProcessor.configManager -> whatsappProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Multi-tenant" "001 - Fase 1"
+    whatsappProcessor.tenantConfigRepository -> db "Lee y actualiza configuraciones por tenant" "Multi-tenant"
 
     pushProcessor.consumer -> queuePush "Consume mensajes"
     pushProcessor.consumer -> pushProcessor.service "Usa"
@@ -476,7 +536,9 @@ notification = softwareSystem "Notification System" {
     pushProcessor.service -> pushProcessor.attachmentService "Usa"
     pushProcessor.attachmentService -> pushProcessor.attachmentFetcher "Usa"
     pushProcessor.attachmentFetcher -> storage "Obtiene archivos adjuntos"
-    pushProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+    pushProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "001 - Fase 1"
+    pushProcessor.configManager -> pushProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Multi-tenant" "001 - Fase 1"
+    pushProcessor.tenantConfigRepository -> db "Lee y actualiza configuraciones por tenant" "Multi-tenant"
 
     appPeru -> api.controller "Solicita envío de notificación" "HTTPS vía API Gateway" "001 - Fase 1"
     appEcuador -> api.controller "Solicita envío de notificación" "HTTPS vía API Gateway" "001 - Fase 1"
@@ -490,4 +552,12 @@ notification = softwareSystem "Notification System" {
 
     // admin -> configurationApi.templatesController "Gestiona plantillas" "HTTPS vía API Gateway" "001 - Fase 1"
     // admin -> configurationApi.channelsController "Gestiona canales" "HTTPS vía API Gateway" "001 - Fase 1"
+
+    scheduler.worker -> scheduler.service "Usa"
+    scheduler.service -> scheduler.repository "Usa"
+    scheduler.repository -> db "Lee notificaciones programadas pendientes"
+    scheduler.publisher -> queue "Encola notificaciones programadas"
+    scheduler.configManager -> configPlatform.configService "Lee configuraciones y secretos"
+    scheduler.configManager -> scheduler.tenantConfigRepository "Lee configuraciones por tenant" "Multi-tenant" "001 - Fase 1"
+    scheduler.tenantConfigRepository -> db "Lee y actualiza configuraciones por tenant" "Multi-tenant"
 }

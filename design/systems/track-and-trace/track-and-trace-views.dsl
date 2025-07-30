@@ -25,22 +25,22 @@ container trackAndTrace "track_and_trace_system" {
     title "[Diagrama de Contenedores] Track and Trace"
 }
 
-container trackAndTrace "track_and_trace_system_fase_1" {
-    include *
+// container trackAndTrace "track_and_trace_system_fase_1" {
+//     include *
 
-    // Incluir los sistemas externos relacionados
-    include sitaMessaging
+//     // Incluir los sistemas externos relacionados
+//     include sitaMessaging
 
-    // Excluir sistemas y sus relaciones que no queremos ver
-    exclude apiGateway
-    exclude appColombia
-    exclude appMexico
-    exclude trackAndTrace.queryApi
-    exclude trackAndTrace.dashboard
-    exclude operationalUser
+//     // Excluir sistemas y sus relaciones que no queremos ver
+//     exclude apiGateway
+//     exclude appColombia
+//     exclude appMexico
+//     exclude trackAndTrace.queryApi
+//     exclude trackAndTrace.dashboard
+//     exclude operationalUser
 
-    title "[Diagrama de Contenedores] Track and Trace - Fase 1"
-}
+//     title "[Diagrama de Contenedores] Track and Trace - Fase 1"
+// }
 
 component trackAndTrace.ingestApi "track_and_trace_ingest_api" {
     include *
