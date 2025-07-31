@@ -118,7 +118,7 @@ notification = softwareSystem "Notification System" {
 
     notificationProcessor = application "Notification Processor" {
         technology "Worker Service, C# .NET 8"
-        description "Consume mensajes de SQS Inbox y publica en colas por canal usando SNS."
+        description "Consume mensajes de SQS Inbox, valida, construye mensajes por canal y publica en colas de canal. Registra en BD."
         tags "CSharp" "001 - Fase 1"
 
         consumer = component "Consumer" {
@@ -129,20 +129,38 @@ notification = softwareSystem "Notification System" {
 
         service = component "Service" {
             technology "C# .NET 8"
-            description "Contiene la lógica de negocio para el procesamiento y distribución de notificaciones a los canales."
+            description "Lógica de negocio: valida, construye y distribuye notificaciones por canal."
+            tags "001 - Fase 1"
+        }
+
+        messageBuilder = component "Message Builder" {
+            technology "C# .NET 8"
+            description "Construye y formatea el mensaje final para cada canal usando templates y datos."
+            tags "Builder" "001 - Fase 1"
+        }
+
+        adapter = component "Adapter" {
+            technology "C# .NET 8, AWS SDK"
+            description "Publica mensajes en las colas de canal (Email, SMS, WhatsApp, Push)."
             tags "001 - Fase 1"
         }
 
         repository = component "Repository" {
             technology "C# .NET 8, Entity Framework Core"
-            description "Actualiza estado de notificaciones procesadas."
+            description "Registra estado y eventos de notificaciones procesadas en BD."
             tags "001 - Fase 1"
         }
 
-        adapter = component "Adapter" {
+        configManager = component "Configuration Manager" {
             technology "C# .NET 8, AWS SDK"
-            description "Adaptador para la publicación en SNS y colas SQS por canal."
-            tags "001 - Fase 1"
+            description "Obtiene configuraciones, plantillas y configuración de canales desde los repositorios."
+            tags "Configuración" "001 - Fase 1"
+        }
+
+        templateRepository = component "Template Repository" {
+            technology "C# .NET 8, Entity Framework Core"
+            description "Gestiona registros y versiones de plantillas de notificación."
+            tags "Template" "001 - Fase 1"
         }
 
         tenantConfigRepository = component "TenantConfigRepository" {
@@ -150,37 +168,11 @@ notification = softwareSystem "Notification System" {
             description "Gestiona y provee configuraciones, reglas y parámetros por tenant para el servicio."
             tags "001 - Fase 1"
         }
-        configManager = component "Configuration Manager" {
-            technology "C# .NET 8, AWS SDK"
-            description "Obtiene configuraciones y secretos desde TenantConfigRepository y Configuration Platform"
-            tags "Configuración" "001 - Fase 1"
-        }
 
-        templateService = component "Template Service" {
-            technology "C# .NET 8"
-            description "Gestiona la lógica de plantillas de notificación (selección, variables, formato por canal)."
-            tags "Template" "001 - Fase 1"
-        }
-        templateRepository = component "Template Repository" {
+        channelConfigRepository = component "ChannelConfigRepository" {
             technology "C# .NET 8, Entity Framework Core"
-            description "Gestiona registros y versiones de plantillas de notificación."
-            tags "Template" "001 - Fase 1"
-        }
-        channelSelector = component "Channel Selector" {
-            technology "C# .NET 8"
-            description "Determina los canales de entrega según preferencias y reglas."
-            tags "Canal" "001 - Fase 1"
-        }
-        channelManager = component "Channel Manager" {
-            technology "C# .NET 8"
-            description "Gestiona la lógica y configuración de los canales disponibles."
-            tags "Canal" "001 - Fase 1"
-        }
-
-        messageBuilder = component "Message Builder" {
-            technology "C# .NET 8"
-            description "Construye y formatea el mensaje final para cada canal usando templates y datos."
-            tags "Builder" "001 - Fase 1"
+            description "Gestiona y provee configuraciones específicas de cada canal (Email, SMS, WhatsApp, Push)."
+            tags "Configuración" "001 - Fase 1"
         }
     }
 
@@ -454,26 +446,26 @@ notification = softwareSystem "Notification System" {
 
     queue -> notificationProcessor.consumer "Entrega mensajes al Processor." "AWS SQS" "001 - Fase 1"
     notificationProcessor.consumer -> notificationProcessor.service "Usa" "" "001 - Fase 1"
-    notificationProcessor.service -> notificationProcessor.repository "Registra mensaje construido" "Entity Framework Core" "001 - Fase 1"
+    notificationProcessor.service -> notificationProcessor.messageBuilder "Construye mensaje por canal" "" "001 - Fase 1"
     notificationProcessor.service -> notificationProcessor.adapter "Distribuye por canal" "" "001 - Fase 1"
-    notificationProcessor.service -> notificationProcessor.configManager "Obtiene configuraciones y secretos" "" "001 - Fase 1"
-    notificationProcessor.configManager -> notificationProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
-    notificationProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
-    notificationProcessor.service -> notificationProcessor.templateService "Gestiona lógica de plantillas" "" "001 - Fase 1"
-    notificationProcessor.templateService -> notificationProcessor.templateRepository "Gestiona registros y versiones de plantillas" "Entity Framework Core" "001 - Fase 1"
-    notificationProcessor.service -> notificationProcessor.channelSelector "Determina canales de entrega" "" "001 - Fase 1"
-    notificationProcessor.channelSelector -> notificationProcessor.channelManager "Gestiona lógica y configuración de canales" "" "001 - Fase 1"
-    notificationProcessor.service -> notificationProcessor.messageBuilder "Construye y formatea mensaje final" "" "001 - Fase 1"
-    notificationProcessor.repository -> db "Registra mensaje construido" "Entity Framework Core" "001 - Fase 1"
+    notificationProcessor.service -> notificationProcessor.repository "Registra en BD" "Entity Framework Core" "001 - Fase 1"
+    notificationProcessor.service -> notificationProcessor.configManager "Obtiene configuración, plantillas y canales" "" "001 - Fase 1"
+    notificationProcessor.configManager -> notificationProcessor.templateRepository "Lee plantillas" "Entity Framework Core" "001 - Fase 1"
+    notificationProcessor.configManager -> notificationProcessor.tenantConfigRepository "Lee configuración por tenant" "Entity Framework Core" "001 - Fase 1"
+    notificationProcessor.configManager -> notificationProcessor.channelConfigRepository "Lee configuración de canales" "Entity Framework Core" "001 - Fase 1"
     notificationProcessor.adapter -> queueEmail "Publica mensajes de Email" "fan-out vía SNS" "SNS, 001 - Fase 1"
     notificationProcessor.adapter -> queueSms "Publica mensajes de SMS" "fan-out vía SNS" "SNS, 001 - Fase 1"
     notificationProcessor.adapter -> queueWhatsapp "Publica mensajes de WhatsApp" "fan-out vía SNS" "SNS, 001 - Fase 1"
     notificationProcessor.adapter -> queuePush "Publica mensajes de Push" "fan-out vía SNS" "SNS, 001 - Fase 1"
+    notificationProcessor.repository -> db "Registra mensaje construido" "Entity Framework Core" "001 - Fase 1"
+    notificationProcessor.templateRepository -> db "Lee plantillas" "Entity Framework Core" "001 - Fase 1"
+    notificationProcessor.tenantConfigRepository -> db "Lee configuración por tenant" "Entity Framework Core" "001 - Fase 1"
+    notificationProcessor.channelConfigRepository -> db "Lee configuración de canales" "Entity Framework Core" "001 - Fase 1"
     emailProcessor.repository -> db "Actualiza estado de notificación email" "Entity Framework Core" "001 - Fase 1"
     smsProcessor.repository -> db "Actualiza estado de notificación SMS" "Entity Framework Core" "001 - Fase 1"
     whatsappProcessor.repository -> db "Actualiza estado de notificación WhatsApp" "Entity Framework Core" "001 - Fase 1"
     pushProcessor.repository -> db "Actualiza estado de notificación push" "Entity Framework Core" "001 - Fase 1"
-    notificationProcessor.tenantConfigRepository -> db "Lee y actualiza configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
+    // notificationProcessor.tenantConfigRepository -> db "Lee y actualiza configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
 
     emailProcessor.consumer -> queueEmail "Consume mensajes" "AWS SQS" "001 - Fase 1"
     emailProcessor.consumer -> emailProcessor.service "Usa" "" "001 - Fase 1"
@@ -483,7 +475,7 @@ notification = softwareSystem "Notification System" {
     emailProcessor.attachmentFetcher -> storage "Obtiene archivos adjuntos" "AWS S3" "001 - Fase 1"
     emailProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
     emailProcessor.configManager -> emailProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
-    emailProcessor.tenantConfigRepository -> db "Lee y actualiza configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
+    // emailProcessor.tenantConfigRepository -> db "Lee y actualiza configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
     emailProcessor.configManager -> emailProcessor.channelConfigRepository "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
     emailProcessor.channelConfigRepository -> db "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
     // emailProcessor.service -> emailProcessor.configManager "Obtiene configuraciones de canal" "" "001 - Fase 1"
