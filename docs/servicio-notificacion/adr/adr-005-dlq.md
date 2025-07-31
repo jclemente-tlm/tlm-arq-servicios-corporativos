@@ -1,4 +1,4 @@
-# ADR-006: Implementación de Dead Letter Queue (DLQ)
+# ADR-005: Implementación de Dead Letter Queue (DLQ)
 
 ## Estado
 
@@ -22,6 +22,23 @@ Se implementa **DLQ** en las colas de notificación para gestionar mensajes fall
 - Mejora la trazabilidad y auditoría de errores.
 - Integración nativa con AWS SQS y CloudWatch.
 - Reduce el riesgo de pérdida de información.
+
+### Comparativa de alternativas
+
+| Criterio                | DLQ en AWS SQS     | Reintentos sin DLQ |
+|-------------------------|--------------------|--------------------|
+| Trazabilidad            | Alta               | Baja               |
+| Recuperación            | Manual/Automatizada| Limitada           |
+| Auditoría               | Integrada (CloudWatch) | Limitada      |
+| Riesgo de pérdida       | Bajo               | Alto               |
+| Costo operativo         | Bajo (incluido en SQS) | Bajo              |
+| Mantenimiento           | Bajo               | Bajo               |
+| Ejemplos en la industria| AWS, Mercado Libre, Nubank | -           |
+
+**Evidencia:**
+
+- AWS, Mercado Libre y Nubank utilizan DLQ para garantizar trazabilidad y recuperación ante fallos en sistemas críticos.
+- Reintentos sin DLQ solo se usan en sistemas donde la pérdida de mensajes no es relevante.
 
 ## Alternativas descartadas
 

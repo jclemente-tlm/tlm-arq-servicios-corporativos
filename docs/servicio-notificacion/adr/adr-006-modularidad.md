@@ -1,4 +1,4 @@
-# ADR-007: Modularidad por canal y función
+# ADR-006: Modularidad por canal y función
 
 ## Estado
 
