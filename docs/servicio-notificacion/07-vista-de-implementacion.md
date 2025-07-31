@@ -49,11 +49,26 @@
 | IAM, CloudWatch, otros      | 5             | 10            | 30            | IAM mínimo, logs básicos | IAM mínimo, logs y métricas | IAM mínimo, logs, métricas, alertas |
 | **Total estimado**          | **154**        | **375**        | **1590**      |                         |                         |                         |
 
+
+---
+
+### Comparativa de proveedores de notificaciones (ejemplo)
+
+La siguiente tabla muestra ejemplos de costos reales para envío de mensajes por canal y proveedor. Los valores son aproximados y pueden variar según país, volumen y acuerdos comerciales. Se recomienda consultar las calculadoras oficiales de cada proveedor para estimaciones precisas.
+
+| Proveedor   | Canal     | Costo por mensaje (USD) | Ejemplo: 10,000 mensajes | Observaciones |
+|-------------|-----------|------------------------|--------------------------|--------------|
+| Amazon SES  | Email     | 0.0001                 | 1.00                     | Primeros 62,000/mes gratis en AWS EC2. [Calculadora SES](https://calculator.aws.amazon.com/calculator/home?nc2=h_ql_prod_awscalc)
+| Twilio      | SMS (MX)  | 0.045                  | 450.00                   | Varía por país. [Precios Twilio](https://www.twilio.com/sms/pricing/mx)
+| Infobip     | WhatsApp  | 0.045-0.075            | 450-750                  | Depende de tipo de mensaje y país. [Precios Infobip](https://www.infobip.com/pricing)
+| SendGrid    | Email     | 0.0009-0.001            | 9-10                     | Planes escalables. [Precios SendGrid](https://sendgrid.com/pricing/)
+| Firebase    | Push      | Gratis                  | 0.00                     | Solo costo de backend propio. [Firebase Cloud Messaging](https://firebase.google.com/pricing)
+
 **Notas:**
 
 - La arquitectura actual utiliza 5 colas SQS y 1 tópico SNS en todos los ambientes, lo que reduce el costo de SNS respecto a una arquitectura con múltiples tópicos por canal. La estimación refleja este ahorro y la lógica de simplificación. Si se requiere mayor granularidad por canal, se puede escalar a más tópicos SNS en el futuro, lo que incrementaría el costo.
 - Los valores son referenciales y deben ajustarse según uso real, región y acuerdos con proveedores.
 - Los costos de SQS y S3 dependen del volumen de mensajes y almacenamiento, así como de la configuración (DLQ, versionado, ciclo de vida).
 - Los costos de Fargate y RDS dependen de la cantidad de tareas, vCPU/RAM y tipo de instancia.
-- Los proveedores externos (Email, SMS, WhatsApp, Push) pueden variar significativamente según el volumen y el país.
+- Los proveedores externos (Email, SMS, WhatsApp, Push) pueden variar significativamente según el volumen, país y tipo de mensaje. Consultar siempre la calculadora oficial del proveedor.
 - No se incluyen costos de transferencia de datos entre zonas/regiones ni backups adicionales.
