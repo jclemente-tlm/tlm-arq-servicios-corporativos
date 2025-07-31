@@ -49,7 +49,7 @@ Se adopta **GitHub Actions** como plataforma estándar de CI/CD para todos los r
 
 *Precios aproximados, sujetos a variación según proveedor, volumen y configuración. Jenkins requiere operación propia, GitHub Actions y GitLab CI pueden tener costos por minutos o runners adicionales.
 
-### Argumentos de agnosticismo y lock-in
+### Agnosticismo, lock-in y mitigación
 
 - **Lock-in:** GitHub Actions y CodePipeline implican dependencia de sus plataformas, mientras que Jenkins y GitLab CI pueden desplegarse en cualquier infraestructura.
 - **Mitigación:** El uso de pipelines como código y contenedores facilita la migración entre plataformas CI/CD.

@@ -56,7 +56,7 @@ Se utilizará YARP (Yet Another Reverse Proxy) como API Gateway para los microse
 
 *Precios aproximados, sujetos a variación según región, volumen y configuración. AWS API Gateway puede escalar costos rápidamente según tráfico.
 
-### Argumentos de agnosticismo y lock-in
+### Agnosticismo, lock-in y mitigación
 
 - **Lock-in:** AWS API Gateway implica dependencia de AWS, mientras que YARP, NGINX, Ocelot, Kong y KrakenD pueden desplegarse en cualquier infraestructura.
 - **Mitigación:** El uso de proxies y gateways open source permite migrar entre nubes y on-premises, aunque requiere esfuerzo de integración y operación.

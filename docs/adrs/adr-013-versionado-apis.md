@@ -43,7 +43,7 @@ Se adopta el **versionado en path** (por ejemplo, `/v1/`) como estrategia están
 
 *Precios aproximados, sujetos a variación según proveedor, volumen y configuración. El costo real depende del tráfico y la solución elegida.
 
-### Argumentos de agnosticismo y lock-in
+### Agnosticismo, lock-in y mitigación
 
 - **Lock-in:** El versionado en path es un patrón estándar y ampliamente soportado, minimiza lock-in. Algunas herramientas pueden tener implementaciones propietarias, pero el patrón es portable.
 - **Mitigación:** Usar convenciones estándar y documentar los contratos de API facilita la migración entre plataformas y herramientas.

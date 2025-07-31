@@ -50,21 +50,7 @@ Se selecciona **ECS Fargate** para el despliegue de microservicios y sistemas co
 
 *Precios aproximados, sujetos a variación según región, tipo de instancia y uso. EC2 puede requerir costos adicionales por almacenamiento, operación y alta disponibilidad.
 
-### Argumentos de agnosticismo y lock-in
-
-- **Lock-in:** ECS Fargate implica dependencia de AWS, pero se justifica por la operación simplificada, escalabilidad y menor mantenimiento en un entorno 100% AWS.
-- **Mitigación:** El uso de contenedores y estándares como Docker permite migrar a otros orquestadores (Kubernetes, Azure Container Instances) si el contexto cambia, aunque con esfuerzo de integración.
-
-### Comparativa de costos estimados (2025)
-
-| Solución        | Costo mensual base* | Costo por vCPU/hora | Infraestructura propia |
-|-----------------|---------------------|---------------------|-----------------------|
-| ECS Fargate     | ~US$15 (1 vCPU, 2GB RAM, 30 días) | US$0.04048           | No                    |
-| EC2 t3.medium   | ~US$25 (on-demand, 1 vCPU, 4GB RAM, 30 días) | US$0.0416            | No                    |
-
-*Precios aproximados, sujetos a variación según región, tipo de instancia y uso. EC2 puede requerir costos adicionales por almacenamiento, operación y alta disponibilidad.
-
-### Argumentos de agnosticismo y lock-in
+### Agnosticismo, lock-in y mitigación
 
 - **Lock-in:** ECS Fargate implica dependencia de AWS, pero se justifica por la operación simplificada, escalabilidad y menor mantenimiento en un entorno 100% AWS.
 - **Mitigación:** El uso de contenedores y estándares como Docker permite migrar a otros orquestadores (Kubernetes, Azure Container Instances) si el contexto cambia, aunque con esfuerzo de integración.

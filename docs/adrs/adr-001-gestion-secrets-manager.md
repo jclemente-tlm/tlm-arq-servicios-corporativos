@@ -1,19 +1,23 @@
-# ADR-001: Gestión de secretos con AWS Secrets Manager
+# ADR-001: Selección de AWS Secrets Manager para gestión de secretos
 
 ## Estado
+
 Aceptada – Julio 2025
 
 ## Contexto
-Se requiere una solución centralizada, segura y auditable para la gestión de secretos (credenciales, tokens, claves API) en los servicios corporativos multi-tenant desplegados en AWS. Las alternativas evaluadas fueron:
+
+El sistema de notificaciones requiere gestionar secretos y credenciales (tokens, claves API, contraseñas de servicios externos) de forma segura, centralizada y auditable. Las alternativas evaluadas fueron:
 
 - **AWS Secrets Manager**
 - **Azure Key Vault**
 - **HashiCorp Vault**
 
 ## Decisión
-Se utilizará AWS Secrets Manager como servicio estándar para la gestión de secretos en todos los microservicios y sistemas que requieran almacenar información sensible.
+
+Se selecciona **AWS Secrets Manager** como solución para la gestión de secretos en todos los entornos del servicio de notificaciones.
 
 ## Justificación
+
 - Integración nativa con AWS IAM y servicios AWS (EC2, Lambda, ECS, SQS, etc.), facilitando la gestión de permisos y rotación automática de credenciales.
 - Reducción de complejidad operativa: No requiere despliegue ni mantenimiento adicional, a diferencia de HashiCorp Vault.
 - Alta disponibilidad y escalabilidad gestionada por AWS, sin necesidad de configuración manual.
@@ -52,22 +56,26 @@ Se utilizará AWS Secrets Manager como servicio estándar para la gestión de se
 ### Ejemplos de cálculo de costos mensuales
 
 #### AWS Secrets Manager
+
 - 100 secretos activos: 100 × US$0.40 = US$40/mes
 - 100,000 operaciones API: 10 × US$0.05 = US$0.50/mes
 - **Total estimado:** US$40.50/mes
 
 #### Azure Key Vault
+
 - 100 secretos activos: 100 × US$0.03 = US$3/mes
 - 100,000 operaciones API: 10 × US$0.03 = US$0.30/mes
 - **Total estimado:** US$3.30/mes
 
 #### HashiCorp Vault (OSS, instalación mínima)
+
 - Licencia OSS: US$0
 - Infraestructura mínima: 1 VM t3.medium AWS (~US$30/mes), almacenamiento y backup (~US$5/mes)
 - Operación y mantenimiento: estimado US$50/mes (tiempo técnico)
 - **Total estimado:** US$85/mes (solo infraestructura y operación básica, sin HA ni soporte)
 
 #### HashiCorp Vault (Enterprise, instalación mínima)
+
 - Licencia Enterprise: ~US$2,000/mes (precio base, puede variar)
 - Infraestructura mínima: 1 VM t3.medium AWS (~US$30/mes), almacenamiento y backup (~US$5/mes)
 - Operación y mantenimiento: estimado US$50/mes (tiempo técnico)
@@ -76,24 +84,29 @@ Se utilizará AWS Secrets Manager como servicio estándar para la gestión de se
 > Nota: HashiCorp Vault OSS no genera gastos por licencias, pero sí por infraestructura, operación y mantenimiento. La versión Enterprise puede superar los US$2,000/mes dependiendo de la escala y soporte.
 
 ### Límites y consideraciones
+
 - **AWS Secrets Manager:** hasta 500,000 secretos por cuenta, 10,000 solicitudes API/segundo, tamaño máximo de secreto 64 KB.
 - **Azure Key Vault:** hasta 1 millón de secretos por bóveda, límites de solicitudes API por región.
 - **HashiCorp Vault:** sin límites por software, pero limitado por capacidad de infraestructura y configuración.
 
-### Argumentos de agnosticismo y lock-in
+### Agnosticismo, lock-in y mitigación
+
 - **Lock-in:** AWS Secrets Manager implica dependencia de AWS, pero se justifica por la integración nativa, menor latencia y operación simplificada en un entorno 100% AWS.
 - **Mitigación:** El uso de SDKs estándar y automatización IaC permite migrar a otras soluciones si el contexto cambia. La arquitectura desacopla el acceso a secretos mediante interfaces, facilitando un eventual reemplazo.
 
 ## Alternativas descartadas
+
 - **Azure Key Vault:** Requiere integración adicional y mayor latencia fuera de Azure; no aporta ventajas en el contexto AWS.
 - **HashiCorp Vault:** Solución robusta pero implica mayor complejidad operativa, despliegue y mantenimiento, innecesarios para el alcance actual.
 
 ## Implicaciones
+
 - El ciclo de vida de los secretos será gestionado exclusivamente en AWS.
 - Las aplicaciones y microservicios deben autenticarse vía IAM para acceder a los secretos.
 - Se documentará el uso y acceso en los manuales de operación y seguridad.
 
 ## Referencias
+
 - [AWS Secrets Manager Pricing](https://aws.amazon.com/secrets-manager/pricing/)
 - [AWS Secrets Manager Docs](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html)
 - [Azure Key Vault Pricing](https://azure.microsoft.com/en-us/pricing/details/key-vault/)

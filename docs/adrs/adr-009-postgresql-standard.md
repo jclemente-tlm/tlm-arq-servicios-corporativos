@@ -54,6 +54,11 @@ Se adopta PostgreSQL como base de datos relacional estándar para todos los serv
 
 *Precios aproximados, sujetos a variación según proveedor, región y configuración. SQL Server y Oracle requieren licencias y pueden tener costos adicionales por soporte y HA.
 
+### Agnosticismo, lock-in y mitigación
+
+- **Lock-in:** PostgreSQL es open source, ampliamente soportado y portable entre proveedores cloud y on-premises, minimizando lock-in. Permite migración entre nubes y despliegue híbrido.
+- **Mitigación:** Usar SQL estándar, evitar extensiones propietarias y mantener automatización de migraciones facilita la portabilidad y reduce riesgos de dependencia.
+
 ## Alternativas descartadas
 - MySQL/MariaDB: Menor soporte para JSON y extensiones avanzadas.
 - SQL Server/Oracle: Costos de licenciamiento y menor flexibilidad para modelos multi-tenant.

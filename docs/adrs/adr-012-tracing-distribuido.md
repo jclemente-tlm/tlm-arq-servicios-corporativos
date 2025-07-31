@@ -44,7 +44,7 @@ Se adopta **AWS X-Ray** como solución principal de tracing distribuido para los
 
 *Precios aproximados, sujetos a variación según región, volumen y configuración. X-Ray escala según uso, OpenTelemetry/Jaeger requieren operación propia.
 
-### Argumentos de agnosticismo y lock-in
+### Agnosticismo, lock-in y mitigación
 
 - **Lock-in:** AWS X-Ray implica dependencia de AWS, mientras que OpenTelemetry/Jaeger pueden desplegarse en cualquier infraestructura.
 - **Mitigación:** El uso de estándares abiertos (OpenTelemetry) facilita la migración entre soluciones de tracing.

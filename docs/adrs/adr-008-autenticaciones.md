@@ -52,7 +52,7 @@ Se define **Keycloak** como estándar de autenticación OAuth2, usando `client_c
 
 *Precios aproximados, sujetos a variación según proveedor y volumen. Los IdPs gestionados pueden tener costos por usuario, autenticación o características avanzadas.
 
-### Argumentos de agnosticismo y lock-in
+### Agnosticismo, lock-in y mitigación
 - **Lock-in:** Keycloak es open source y ampliamente soportado, minimiza lock-in frente a proveedores propietarios. Permite despliegue on-premises, en cloud o gestionado.
 - **Mitigación:** Usar claims y scopes estándar y evitar dependencias propietarias facilita la migración entre IdPs.
 

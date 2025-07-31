@@ -52,8 +52,11 @@ Se selecciona **SNS + SQS** como solución de mensajería estándar para los sis
 
 *Precios aproximados, sujetos a variación según región, volumen y configuración. RabbitMQ gestionado y auto-gestionado pueden requerir costos adicionales por alta disponibilidad, soporte y operación.
 
-### Argumentos de agnosticismo y lock-in
+### Agnosticismo, lock-in y mitigación
 
+- **Lock-in:** SNS + SQS implica dependencia de AWS, pero se justifica por la integración nativa, menor latencia y operación simplificada en un entorno 100% AWS.
+- **Mitigación:** El uso de interfaces desacopladas y patrones de mensajería estándar (pub/sub, colas) permite migrar a otras soluciones si el contexto cambia. RabbitMQ es más agnóstico, pero requiere mayor esfuerzo de integración y operación.
+- **Evidencia:** En escenarios multi-cloud o on-premises, RabbitMQ puede ser preferible por su portabilidad, pero a costa de mayor complejidad y costos operativos.
 
 ## Alternativas descartadas
 

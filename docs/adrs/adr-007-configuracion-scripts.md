@@ -36,7 +36,7 @@ La configuración de los servicios se gestionará mediante scripts versionados e
 | Riesgo de errores       | Bajo (procedimientos controlados) | Medio/Alto (exposición pública) |
 | Ejemplos en la industria| Mercado Libre, Nubank, AWS, Google | Salesforce, Twilio, Auth0         |
 
-### Agnosticismo y lock-in
+### Agnosticismo, lock-in y mitigación
 
 - **Scripts/CLI:** Agnóstico respecto a proveedor cloud o plataforma, ya que los scripts pueden ejecutarse en cualquier entorno compatible (on-premises, AWS, Azure, GCP, etc.). No genera lock-in tecnológico.
 - **API de configuración:** Puede generar lock-in si depende de APIs propietarias de un proveedor cloud o plataforma específica.

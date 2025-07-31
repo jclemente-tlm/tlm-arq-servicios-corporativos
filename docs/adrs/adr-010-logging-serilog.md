@@ -36,7 +36,7 @@ Se adopta Serilog como librería estándar de logging estructurado para todos lo
 | Comunidad              | Alta    | Alta  | Media   |
 | Enriquecimiento        | Sí      | Parcial | Parcial |
 
-### Argumentos de agnosticismo y lock-in
+### Agnosticismo, lock-in y mitigación
 
 - **Lock-in:** Serilog, NLog y log4net son open source y portables entre plataformas .NET, minimizando lock-in. Sin embargo, el uso de sinks propietarios (Seq, Datadog, etc.) puede generar dependencia.
 - **Mitigación:** Usar formatos estándar (JSON, GELF) y sinks open source facilita la migración entre soluciones de logging y observabilidad.
