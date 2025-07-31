@@ -1,5 +1,7 @@
 # 11. Riesgos y deuda técnica
 
+Esta sección identifica los principales riesgos técnicos y de negocio, así como la deuda técnica relevante. Se mantiene actualizada para priorizar mitigaciones y facilitar la toma de decisiones.
+
 | Riesgo | Impacto | Mitigación |
 |--------|---------|------------|
 | Dependencia de AWS | Alto | Estrategia multi-cloud y backups |

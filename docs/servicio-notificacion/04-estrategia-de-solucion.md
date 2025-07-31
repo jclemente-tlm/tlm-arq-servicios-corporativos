@@ -1,5 +1,7 @@
 # 4. Estrategia de solución
 
+La estrategia de solución define cómo se abordan los objetivos de calidad y requisitos clave del sistema, alineando cada necesidad con un enfoque técnico concreto. Se prioriza la escalabilidad, seguridad, mantenibilidad y soporte multi-tenant/multi-país, usando componentes desacoplados y tecnologías probadas.
+
 | Objetivo de calidad | Enfoque de solución |
 |---------------------|--------------------|
 | Escalabilidad | Procesadores por canal, colas desacopladas, escalabilidad horizontal |

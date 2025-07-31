@@ -1,5 +1,7 @@
 # 10. Requisitos de calidad
 
+Esta sección describe los requisitos de calidad clave y los escenarios que guían el diseño y validación del sistema. Se priorizan la escalabilidad, disponibilidad, seguridad y mantenibilidad, con métricas y respuestas concretas para cada caso.
+
 ## 10.1 Descripción general
 
 | Categoría | Descripción |

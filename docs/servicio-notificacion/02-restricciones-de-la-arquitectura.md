@@ -21,13 +21,6 @@ Las siguientes restricciones son obligatorias para el diseño, implementación y
 
 - Todas las modificaciones en canales y funciones deben ser trazables y versionadas.
 
-## Referencias
-
-- [ADR-006: Modularidad por canal y función](docs/servicio-notificacion/adr/adr-006-modularidad.md)
-- [Microservicios y modularidad](https://martinfowler.com/articles/microservices.html)
-- [Arc42: Restricciones de arquitectura](https://arc42.org/section-2/)
-
----
 
 ### Resumen de restricciones técnicas clave
 
@@ -41,3 +34,11 @@ Las siguientes restricciones son obligatorias para el diseño, implementación y
 | Serverless preferido | Servicios gestionados                       |
 | Multi-tenant         | Separación lógica de datos y recursos       |
 | Multipaís            | Configuración regional y soporte de localización |
+
+---
+
+## Referencias
+
+- [ADR-006: Modularidad por canal y función](docs/servicio-notificacion/adr/adr-006-modularidad.md)
+- [Microservicios y modularidad](https://martinfowler.com/articles/microservices.html)
+- [Arc42: Restricciones de arquitectura](https://arc42.org/section-2/)

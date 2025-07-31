@@ -1,5 +1,7 @@
 # 12. Glosario
 
+Este glosario define los términos clave utilizados en la arquitectura y documentación del servicio de notificaciones. Se actualiza conforme evoluciona el sistema.
+
 | Término | Definición |
 |---------|-----------|
 | SQS | Simple Queue Service (AWS) |
