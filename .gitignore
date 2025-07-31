@@ -1,0 +1,60 @@
+# Configuración de IDEs y editores
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Archivos temporales y de sistema
+*.DS_Store
+Thumbs.db
+ehthumbs.db
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python (por si hay scripts)
+__pycache__/
+*.pyc
+
+# Archivos de configuración local y secretos
+*.env
+.env.*
+*.local
+*.secret
+
+# Archivos de backup de editores
+*~
+*.orig
+
+# Archivos de integración continua y cobertura
+/.sonarqube/
+coverage/
+test-results/
+*.lcov
+
+# Archivos de docker y contenedores
+*.pid
+*.pid.lock
+
+# Archivos de exportación y temporales de documentación
+/export/
+docs/**/*.html
+docs/**/*.pdf
+docs/**/*.docx
+docs/**/*.tmp
+
+# Archivos de caché de Structurizr Lite
+.structurizr/
+structurizr.dsl.cache
+
+# NO ignores design/, docs/, diagrams/, ni archivos .dsl/.md/.json/.png
+# Los diagramas PNG sí se versionan
+# Si tienes otros archivos que quieras ignorar, agrégalos

@@ -17,17 +17,12 @@ Se adopta una arquitectura modular, separando componentes por canal (Email, SMS,
 
 ## Justificación
 
-- Facilita la evolución y el mantenimiento.
-- Permite escalar y desplegar canales de forma independiente.
-- Reduce el impacto de cambios y errores.
-- Mejora la trazabilidad y el control de versiones.
-- Alineado con buenas prácticas de microservicios y Clean Architecture.
 
-## Alternativas descartadas
+# Este ADR ha sido migrado a /docs/adrs/adr-006-modularidad.md
+
+Consulta la versión centralizada para la decisión arquitectónica actualizada.
 
 - **Monolito único**: Menor flexibilidad, mayor riesgo de regresiones y menor escalabilidad.
-
-## Implicaciones
 
 - Los canales y funciones pueden evolucionar y desplegarse de forma independiente.
 - El sistema es más resiliente y adaptable a nuevos requerimientos.

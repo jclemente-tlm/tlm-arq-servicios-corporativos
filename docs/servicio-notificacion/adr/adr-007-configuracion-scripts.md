@@ -42,14 +42,13 @@ Se gestiona la configuración mediante scripts y herramientas de línea de coman
 
 ## Alternativas descartadas
 
-- **API de configuración**: Mayor complejidad, costo y riesgos de seguridad innecesarios para el contexto actual.
 
 ## Implicaciones
 
-- Los cambios de configuración requieren acceso controlado y personal técnico.
-- Se documentan los procedimientos y scripts utilizados.
 
-## Referencias
+# Este ADR ha sido migrado a /docs/adrs/adr-007-configuracion-scripts.md
+
+Consulta la versión centralizada para la decisión arquitectónica actualizada.
 
 - [Gestión de configuración por scripts](https://12factor.net/config)
-- [Arc42: Decisiones de arquitectura](https://arc42.org/decision/)
+- [Gestión de configuración por scripts](https://12factor.net/config)
