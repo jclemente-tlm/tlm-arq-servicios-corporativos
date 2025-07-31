@@ -70,11 +70,11 @@ La siguiente tabla muestra ejemplos de costos reales para envío de mensajes por
 
 Algunos proveedores ofrecen servicios integrados para múltiples canales de notificación (email, SMS, push, WhatsApp, etc.) en una sola plataforma. La siguiente tabla muestra ejemplos de costos y características de estos proveedores multicanal. Los valores son aproximados y pueden variar según país, canal, volumen y acuerdos comerciales. Consultar siempre la calculadora oficial del proveedor para estimaciones precisas.
 
-| Proveedor    | Canales soportados                | Costo por canal (ejemplo)                                                                 | Moneda | Observaciones |
-|--------------|------------------------------------|------------------------------------------------------------------------------------------|--------|--------------|
-| Twilio       | Email, SMS, WhatsApp, Voice, Push | Email: desde $0.0008<br>SMS (MX): $0.045<br>WhatsApp: $0.045-0.075<br>Push: Gratis     | USD    | Plataforma global, API unificada, precios varían por país y canal. [Precios Twilio](https://www.twilio.com/pricing) |
-| Infobip      | Email, SMS, WhatsApp, Push        | Email: desde $0.0006<br>SMS (MX): $0.040<br>WhatsApp: $0.045-0.075<br>Push: Gratis     | USD    | API multicanal, soporte local, precios negociables. [Precios Infobip](https://www.infobip.com/pricing) |
-| MessageBird  | Email, SMS, WhatsApp, Voice, Push | Email: desde $0.001<br>SMS (MX): $0.045<br>WhatsApp: $0.050-0.080<br>Push: Gratis     | USD    | Plataforma europea, API unificada, precios varían por canal/país. [Precios MessageBird](https://www.messagebird.com/pricing/) |
+| Proveedor    | Canales soportados                | Costo por canal (ejemplo)                                                                 | Ejemplo: 10,000 mensajes | Moneda | Observaciones |
+|--------------|------------------------------------|------------------------------------------------------------------------------------------|--------------------------|--------|--------------|
+| Twilio       | Email, SMS, WhatsApp, Voice, Push | Email: desde $0.0008<br>SMS (MX): $0.045<br>WhatsApp: $0.045-0.075<br>Push: Gratis     | Email: $8<br>SMS: $450<br>WhatsApp: $450-750<br>Push: $0 | USD    | Plataforma global, API unificada, precios varían por país y canal. [Precios Twilio](https://www.twilio.com/pricing) |
+| Infobip      | Email, SMS, WhatsApp, Push        | Email: desde $0.0006<br>SMS (MX): $0.040<br>WhatsApp: $0.045-0.075<br>Push: Gratis     | Email: $6<br>SMS: $400<br>WhatsApp: $450-750<br>Push: $0 | USD    | API multicanal, soporte local, precios negociables. [Precios Infobip](https://www.infobip.com/pricing) |
+| MessageBird  | Email, SMS, WhatsApp, Voice, Push | Email: desde $0.001<br>SMS (MX): $0.045<br>WhatsApp: $0.050-0.080<br>Push: Gratis     | Email: $10<br>SMS: $450<br>WhatsApp: $500-800<br>Push: $0 | USD    | Plataforma europea, API unificada, precios varían por canal/país. [Precios MessageBird](https://www.messagebird.com/pricing/) |
 
 **Notas sobre proveedores multicanal:**
 
