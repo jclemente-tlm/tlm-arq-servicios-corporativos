@@ -64,11 +64,39 @@ La siguiente tabla muestra ejemplos de costos reales para envío de mensajes por
 | SendGrid    | Email     | 0.0009-0.001            | 9-10                     | Planes escalables. [Precios SendGrid](https://sendgrid.com/pricing/)
 | Firebase    | Push      | Gratis                  | 0.00                     | Solo costo de backend propio. [Firebase Cloud Messaging](https://firebase.google.com/pricing)
 
-**Notas:**
+---
+
+### Comparativa de proveedores multicanal ("todo en uno")
+
+Algunos proveedores ofrecen servicios integrados para múltiples canales de notificación (email, SMS, push, WhatsApp, etc.) en una sola plataforma. La siguiente tabla muestra ejemplos de costos y características de estos proveedores multicanal. Los valores son aproximados y pueden variar según país, canal, volumen y acuerdos comerciales. Consultar siempre la calculadora oficial del proveedor para estimaciones precisas.
+
+| Proveedor    | Canales soportados                | Costo por canal (ejemplo)                                                                 | Moneda | Observaciones |
+|--------------|------------------------------------|------------------------------------------------------------------------------------------|--------|--------------|
+| Twilio       | Email, SMS, WhatsApp, Voice, Push | Email: desde $0.0008<br>SMS (MX): $0.045<br>WhatsApp: $0.045-0.075<br>Push: Gratis     | USD    | Plataforma global, API unificada, precios varían por país y canal. [Precios Twilio](https://www.twilio.com/pricing) |
+| Infobip      | Email, SMS, WhatsApp, Push        | Email: desde $0.0006<br>SMS (MX): $0.040<br>WhatsApp: $0.045-0.075<br>Push: Gratis     | USD    | API multicanal, soporte local, precios negociables. [Precios Infobip](https://www.infobip.com/pricing) |
+| MessageBird  | Email, SMS, WhatsApp, Voice, Push | Email: desde $0.001<br>SMS (MX): $0.045<br>WhatsApp: $0.050-0.080<br>Push: Gratis     | USD    | Plataforma europea, API unificada, precios varían por canal/país. [Precios MessageBird](https://www.messagebird.com/pricing/) |
+
+**Notas sobre proveedores multicanal:**
+
+- Los precios pueden variar significativamente según el país, tipo de mensaje y volumen mensual.
+- Todos los proveedores ofrecen APIs unificadas, panel de control y reportes centralizados.
+- Algunos proveedores permiten negociar precios para grandes volúmenes o acuerdos empresariales.
+- Es recomendable evaluar integraciones, soporte y SLA además del costo unitario.
+
+
+**Notas generales:**
 
 - La arquitectura actual utiliza 5 colas SQS y 1 tópico SNS en todos los ambientes, lo que reduce el costo de SNS respecto a una arquitectura con múltiples tópicos por canal. La estimación refleja este ahorro y la lógica de simplificación. Si se requiere mayor granularidad por canal, se puede escalar a más tópicos SNS en el futuro, lo que incrementaría el costo.
 - Los valores son referenciales y deben ajustarse según uso real, región y acuerdos con proveedores.
 - Los costos de SQS y S3 dependen del volumen de mensajes y almacenamiento, así como de la configuración (DLQ, versionado, ciclo de vida).
 - Los costos de Fargate y RDS dependen de la cantidad de tareas, vCPU/RAM y tipo de instancia.
 - Los proveedores externos (Email, SMS, WhatsApp, Push) pueden variar significativamente según el volumen, país y tipo de mensaje. Consultar siempre la calculadora oficial del proveedor.
+
 - No se incluyen costos de transferencia de datos entre zonas/regiones ni backups adicionales.
+
+---
+
+**Referencias:**
+- [Twilio Pricing](https://www.twilio.com/pricing)
+- [Infobip Pricing](https://www.infobip.com/pricing)
+- [MessageBird Pricing](https://www.messagebird.com/pricing/)
