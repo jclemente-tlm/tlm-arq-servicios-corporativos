@@ -1,5 +1,12 @@
-
 # 8. Conceptos transversales
+
+- **Seguridad:** Autenticación <code>OAuth2</code> con <code>JWT</code>, autorización por roles y aislamiento multi-tenant.
+- **Observabilidad:** <b>Serilog</b> para logs estructurados, métricas y trazabilidad.
+- **Escalabilidad:** Despliegue horizontal en <b>AWS</b> y uso de <b>Kafka</b> para desacoplar procesos.
+- **Mantenibilidad:** Modularidad, pruebas automatizadas (<b>xUnit</b>), integración continua.
+- **Extensibilidad:** Integración de nuevos canales y proveedores mediante interfaces.
+- **Resiliencia:** Reintentos automáticos, tolerancia a fallos y recuperación ante errores.
+- **Cumplimiento:** Adaptación a normativas locales de mensajería y privacidad.
 
 > Nota: Las decisiones arquitectónicas clave están documentadas en los [ADRs comunes](../../adrs/README.md).
 
