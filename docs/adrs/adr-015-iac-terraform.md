@@ -15,20 +15,21 @@ Las alternativas evaluadas fueron:
 - **[Terraform](https://www.terraform.io/)** (`open source`, `multi-cloud`, módulos reutilizables)
 - **[AWS CloudFormation](https://aws.amazon.com/cloudformation/)** (solo `AWS`, integración nativa)
 - **[Pulumi](https://www.pulumi.com/)** (`open source`, `multi-cloud`, programación en varios lenguajes)
+- **[AWS CDK](https://aws.amazon.com/cdk/)** (Infraestructura como código en C#/TypeScript, solo AWS)
 - Scripts manuales (`CLI`, `SDK`)
 
 ### Comparativa de alternativas
 
-| Criterio                | Terraform | CloudFormation | Pulumi | Scripts manuales |
-|------------------------|-----------|---------------|--------|------------------|
-| Agnosticismo           | Alto (`multi-cloud`, `open source`) | Bajo (`AWS`-only) | Alto (`multi-cloud`, `open source`) | Bajo (dependencia de `CLI`/`SDK`) |
-| Soporte multi-cloud     | Sí        | No            | Sí     | Parcial          |
-| Reutilización de módulos| Alta      | Media         | Alta   | Baja             |
-| Comunidad              | Muy alta  | Alta          | Media  | N/A              |
-| Control de cambios     | Sí        | Sí            | Sí     | No               |
-| Integración CI/CD      | Sí        | Sí            | Sí     | Parcial          |
-| Curva de aprendizaje   | Media     | Baja          | Media  | Baja             |
-| Costos                 | Gratis (`open source`) | Gratis   | Gratis (`open source`) | Bajo              |
+| Criterio                | Terraform | CloudFormation | Pulumi | AWS CDK | Scripts manuales |
+|------------------------|-----------|---------------|--------|---------|------------------|
+| Agnosticismo           | Alto (`multi-cloud`, `open source`) | Bajo (`AWS`-only) | Alto (`multi-cloud`, `open source`) | Bajo (`AWS`-only) | Bajo (dependencia de `CLI`/`SDK`) |
+| Soporte multi-cloud     | Sí        | No            | Sí     | No      | Parcial          |
+| Reutilización de módulos| Alta      | Media         | Alta   | Alta    | Baja             |
+| Comunidad              | Muy alta  | Alta          | Media  | Alta    | N/A              |
+| Control de cambios     | Sí        | Sí            | Sí     | Sí      | No               |
+| Integración CI/CD      | Sí        | Sí            | Sí     | Sí      | Parcial          |
+| Curva de aprendizaje   | Media     | Baja          | Media  | Media   | Baja             |
+| Costos                 | Gratis (`open source`) | Gratis   | Gratis (`open source`) | Gratis | Bajo              |
 
 ### Comparativa de costos estimados (2025)
 
@@ -67,6 +68,7 @@ Se adopta **[Terraform](https://www.terraform.io/)** como herramienta estándar 
 
 - **[AWS CloudFormation](https://aws.amazon.com/cloudformation/)**: Solo soporta `AWS`, menor portabilidad y comunidad más limitada fuera de `AWS`.
 - **[Pulumi](https://www.pulumi.com/)**: Potente y flexible, pero menor adopción y comunidad que `Terraform`.
+- **[AWS CDK](https://aws.amazon.com/cdk/)**: Muy relevante para desarrolladores .NET/C#, pero genera lock-in con AWS y menor portabilidad multi-cloud.
 - Scripts manuales: Mayor riesgo de errores, menor trazabilidad y automatización, dependientes de `CLI`/`SDK` propietarios.
 
 ---

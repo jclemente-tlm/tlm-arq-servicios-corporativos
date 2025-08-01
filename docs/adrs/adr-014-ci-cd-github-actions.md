@@ -16,20 +16,22 @@ Las alternativas evaluadas fueron:
 - **[GitLab CI](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/)** (`open source`, portable)
 - **[AWS CodePipeline](https://aws.amazon.com/codepipeline/)** (servicio gestionado de `AWS`)
 - **[Jenkins](https://www.jenkins.io/)** (`open source`, gestión de `pipelines` y `runners` propios)
+- **[Azure DevOps Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/)** (`cloud`, integración nativa con Azure y .NET)
 
 ### Comparativa de alternativas
 
-| Criterio                | GitHub Actions | GitLab CI | CodePipeline | Jenkins |
-|------------------------|---------------|-----------|--------------|---------|
-| Agnosticismo           | Medio (lock-in `GitHub`, portable vía contenedores) | Alto (`open source`, portable) | Bajo (lock-in `AWS`) | Alto (`open source`, portable) |
-| Integración GitHub     | Nativa        | Parcial   | Parcial      | Parcial |
-| Facilidad de uso       | Alta          | Alta      | Media        | Media   |
-| Comunidad              | Muy alta      | Alta      | Media        | Muy alta|
-| Integración AWS        | Sí            | Sí        | Nativa       | Sí      |
-| Costos                 | Bajo/Incluido | Bajo      | Pago por uso | Infra propia |
-| Seguridad              | Alta          | Alta      | Alta         | Media   |
-| Escalabilidad          | Alta          | Alta      | Alta         | Alta    |
-| Operación              | Gestionada por proveedor | Gestionada por proveedor | Gestionada por proveedor | Gestionada por el equipo |
+| Criterio                | GitHub Actions | GitLab CI | CodePipeline | Jenkins | Azure DevOps Pipelines |
+|------------------------|---------------|-----------|--------------|---------|-----------------------|
+| Agnosticismo           | Medio (lock-in `GitHub`, portable vía contenedores) | Alto (`open source`, portable) | Bajo (lock-in `AWS`) | Alto (`open source`, portable) | Medio (lock-in `Azure`, portable vía contenedores) |
+| Integración GitHub     | Nativa        | Parcial   | Parcial      | Parcial | Parcial |
+| Facilidad de uso       | Alta          | Alta      | Media        | Media   | Alta    |
+| Comunidad              | Muy alta      | Alta      | Media        | Muy alta| Alta    |
+| Integración AWS        | Sí            | Sí        | Nativa       | Sí      | Parcial |
+| Integración Azure      | Parcial       | Parcial   | No           | Parcial | Nativa  |
+| Costos                 | Bajo/Incluido | Bajo      | Pago por uso | Infra propia | Bajo/Incluido |
+| Seguridad              | Alta          | Alta      | Alta         | Media   | Alta    |
+| Escalabilidad          | Alta          | Alta      | Alta         | Alta    | Alta    |
+| Operación              | Gestionada por proveedor | Gestionada por proveedor | Gestionada por proveedor | Gestionada por el equipo | Gestionada por proveedor |
 
 ### Comparativa de costos estimados (2025)
 
@@ -39,6 +41,7 @@ Las alternativas evaluadas fueron:
 | `GitLab CI`       | Incluido en `GitLab` (400 min/mes gratis) | ~US$0.003/min extra | No              |
 | `CodePipeline`    | ~US$1/mes por pipeline | -                  | No                    |
 | `Jenkins`         | ~US$20/mes (VM pequeña) | Mantenimiento, soporte | Sí            |
+| `Azure DevOps Pipelines` | Incluido en Azure (1,800 min/mes gratis) | ~US$0.005/min extra | No              |
 
 *Precios aproximados, sujetos a variación según proveedor, volumen y configuración. `Jenkins` requiere operación propia, `GitHub Actions` y `GitLab CI` pueden tener costos por minutos o `runners` adicionales.
 
@@ -67,6 +70,7 @@ Se adopta **[GitHub Actions](https://github.com/features/actions)** como platafo
 - **[GitLab CI](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/)**: Menor integración con `GitHub` y `AWS`.
 - **[AWS CodePipeline](https://aws.amazon.com/codepipeline/)**: Menos flexible y menos comunidad.
 - **[Jenkins](https://www.jenkins.io/)**: Mayor complejidad operativa y mantenimiento, requiere gestión de `pipelines` y `runners` propios.
+- **[Azure DevOps Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/)**: Muy relevante para proyectos .NET y Azure, pero menos adoptado en ecosistemas AWS puros.
 
 ---
 
