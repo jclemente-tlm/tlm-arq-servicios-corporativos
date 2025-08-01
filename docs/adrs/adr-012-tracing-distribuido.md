@@ -1,4 +1,4 @@
-# ADR-012: Gestión de trazas distribuidas (Distributed Tracing)
+# ADR-012: Gestión de trazas distribuidas ([Distributed Tracing](https://opentelemetry.io/docs/concepts/distributed-tracing/))
 
 ## ✅ ESTADO
 
@@ -8,19 +8,19 @@ Aceptada – Julio 2025
 
 ## 🗺️ CONTEXTO
 
-Para diagnosticar problemas y analizar el flujo de peticiones entre microservicios, se requiere trazabilidad distribuida.
+Para diagnosticar problemas y analizar el flujo de peticiones entre `microservicios`, se requiere trazabilidad distribuida.
 
 Las alternativas evaluadas fueron:
 
-- AWS X-Ray
-- OpenTelemetry + Jaeger
+- [AWS X-Ray](https://aws.amazon.com/xray/)
+- [OpenTelemetry](https://opentelemetry.io/) + [Jaeger](https://www.jaegertracing.io/)
 - Sin tracing
 
 ### Comparativa de alternativas
 
 | Criterio                | AWS X-Ray | OpenTelemetry/Jaeger | Sin tracing |
 |------------------------|-----------|----------------------|-------------|
-| Agnosticismo           | Bajo (lock-in AWS) | Alto (multi-cloud, open source) | N/A         |
+| Agnosticismo           | Bajo (lock-in `AWS`) | Alto (`multi-cloud`, `open source`) | N/A         |
 | Integración AWS        | Nativa    | Parcial              | -           |
 | Escalabilidad          | Alta      | Media                | -           |
 | Costos                 | Pago por uso | Infra propia        | -           |
@@ -31,30 +31,21 @@ Las alternativas evaluadas fueron:
 
 | Solución        | Costo mensual base* | Costos adicionales | Infraestructura propia |
 |-----------------|---------------------|--------------------|-----------------------|
-| AWS X-Ray       | ~US$5/mes por 1M segmentos | Dashboards, traces | No                    |
-| OpenTelemetry/Jaeger | ~US$20/mes (VM pequeña) | Mantenimiento, soporte | Sí                    |
+| `AWS X-Ray`       | ~US$5/mes por 1M segmentos | Dashboards, traces | No                    |
+| `OpenTelemetry`/`Jaeger` | ~US$20/mes (VM pequeña) | Mantenimiento, soporte | Sí                    |
 
-*Precios aproximados, sujetos a variación según región, volumen y configuración. X-Ray escala según uso, OpenTelemetry/Jaeger requieren operación propia.
+*Precios aproximados, sujetos a variación según región, volumen y configuración. `X-Ray` escala según uso, `OpenTelemetry`/`Jaeger` requieren operación propia.
 
 ### Agnosticismo, lock-in y mitigación
 
-- **Lock-in:** AWS X-Ray implica dependencia de AWS, mientras que OpenTelemetry/Jaeger pueden desplegarse en cualquier infraestructura.
-- **Mitigación:** El uso de estándares abiertos (OpenTelemetry) facilita la migración entre soluciones de tracing.
-
-### Comparativa de costos estimados (2025)
-
-| Solución        | Costo mensual base* | Costos adicionales | Infraestructura propia |
-|-----------------|---------------------|--------------------|-----------------------|
-| AWS X-Ray       | Pago por uso        | Dashboards, traces | No                    |
-| OpenTelemetry/Jaeger | ~US$20+ (VM/container pequeña) | Mantenimiento, soporte | Sí                    |
-
-*Precios aproximados, sujetos a variación según región, volumen y configuración. X-Ray escala según uso, OpenTelemetry/Jaeger requieren operación propia.
+- **Lock-in:** `AWS X-Ray` implica dependencia de `AWS`, mientras que `OpenTelemetry`/`Jaeger` pueden desplegarse en cualquier infraestructura.
+- **Mitigación:** El uso de estándares abiertos (`OpenTelemetry`) facilita la migración entre soluciones de tracing.
 
 ---
 
 ## ✔️ DECISIÓN
 
-Se adopta **AWS X-Ray** como solución principal de tracing distribuido para los servicios desplegados en AWS, con posibilidad de extender a OpenTelemetry para escenarios multi-cloud.
+Se adopta **[AWS X-Ray](https://aws.amazon.com/xray/)** como solución principal de tracing distribuido para los servicios desplegados en `AWS`, con posibilidad de extender a [OpenTelemetry](https://opentelemetry.io/) para escenarios `multi-cloud`.
 
 ## Justificación
 

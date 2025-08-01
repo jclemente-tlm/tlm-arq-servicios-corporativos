@@ -8,20 +8,20 @@ Aceptada – Julio 2025
 
 ## 🗺️ CONTEXTO
 
-Se necesita un mecanismo de autenticación seguro, interoperable y centralizado para servicios multi-tenant y multi-país, que permita integración con aplicaciones internas y externas y soporte automatización (machine-to-machine).
+Se necesita un mecanismo de autenticación seguro, interoperable y centralizado para servicios `multi-tenant` y `multi-país`, que permita integración con aplicaciones internas y externas y soporte automatización (`machine-to-machine`).
 
 Las alternativas evaluadas fueron:
 
-- **Keycloak (open source, multi-tenant, multi-país)**
-- **Auth0 (SaaS, multi-tenant)**
-- **Azure AD (cloud, multi-tenant)**
-- **AWS Cognito (cloud, multi-tenant)**
+- **[Keycloak](https://www.keycloak.org/)** (`open source`, `multi-tenant`, `multi-país`)
+- **[Auth0](https://auth0.com/)** (`SaaS`, `multi-tenant`)
+- **[Azure AD](https://azure.microsoft.com/en-us/services/active-directory/)** (`cloud`, `multi-tenant`)
+- **[AWS Cognito](https://aws.amazon.com/cognito/)** (`cloud`, `multi-tenant`)
 
 ### Comparativa de alternativas
 
 | Criterio                | Keycloak | Auth0 | Azure AD | AWS Cognito |
 |------------------------|----------|-------|----------|-------------|
-| Agnosticismo           | Alto (open source) | Medio (SaaS) | Medio (cloud) | Medio (cloud) |
+| Agnosticismo           | Alto (`open source`) | Medio (`SaaS`) | Medio (`cloud`) | Medio (`cloud`) |
 | Multi-tenant           | Sí       | Sí    | Sí       | Sí          |
 | Multi-país             | Sí       | Sí    | Sí       | Sí          |
 | Seguridad              | Alta     | Alta  | Alta     | Alta        |
@@ -37,45 +37,45 @@ Las alternativas evaluadas fueron:
 
 | Solución        | Costo base*         | Costos adicionales                | Infraestructura propia |
 |-----------------|---------------------|-----------------------------------|-----------------------|
-| Keycloak        | Gratis (open source)| ~US$20/mes (VM pequeña) + operación| Sí                    |
-| Auth0           | Gratis hasta 7,000 usuarios/mes | ~US$23/mes por 10,000 usuarios extra | No           |
-| Azure AD        | ~US$0.00325/usuario/mes | ~US$0.00325/usuario extra/mes | No                |
-| AWS Cognito     | Gratis hasta 50,000 MAU/mes | ~US$0.0055/MAU extra/mes | No            |
+| `Keycloak`        | Gratis (`open source`)| ~US$20/mes (VM pequeña) + operación| Sí                    |
+| `Auth0`           | Gratis hasta 7,000 usuarios/mes | ~US$23/mes por 10,000 usuarios extra | No           |
+| `Azure AD`        | ~US$0.00325/usuario/mes | ~US$0.00325/usuario extra/mes | No                |
+| `AWS Cognito`     | Gratis hasta 50,000 MAU/mes | ~US$0.0055/MAU extra/mes | No            |
 
-*Precios aproximados, sujetos a variación según proveedor y volumen. Los IdPs gestionados pueden tener costos por usuario, autenticación o características avanzadas.
+*Precios aproximados, sujetos a variación según proveedor y volumen. Los `IdPs` gestionados pueden tener costos por usuario, autenticación o características avanzadas.
 
 ### Agnosticismo, lock-in y mitigación
 
-- **Lock-in:** Keycloak es open source y ampliamente soportado, minimiza lock-in frente a proveedores propietarios. Permite despliegue on-premises, en cloud o gestionado.
-- **Mitigación:** Usar claims y scopes estándar y evitar dependencias propietarias facilita la migración entre IdPs.
+- **Lock-in:** `Keycloak` es `open source` y ampliamente soportado, minimiza lock-in frente a proveedores propietarios. Permite despliegue `on-premises`, en `cloud` o gestionado.
+- **Mitigación:** Usar `claims` y `scopes` estándar y evitar dependencias propietarias facilita la migración entre `IdPs`.
 
 ---
 
 ## ✔️ DECISIÓN
 
-Se define **Keycloak** como estándar de autenticación OAuth2, usando `client_credentials` y JWT para todos los servicios corporativos.
+Se define **[Keycloak](https://www.keycloak.org/)** como estándar de autenticación `OAuth2`, usando `client_credentials` y `JWT` para todos los servicios corporativos.
 
 ## Justificación
 
 - Amplio soporte y adopción.
 - Autenticación segura entre servicios.
-- Soporte nativo multi-tenant y multi-país, con gestión centralizada por tenant y región.
-- Validación local y escalable de tokens JWT.
-- Integración con IdPs empresariales y externos.
+- Soporte nativo `multi-tenant` y `multi-país`, con gestión centralizada por tenant y región.
+- Validación local y escalable de tokens `JWT`.
+- Integración con `IdPs` empresariales y externos.
 - Soporte de scopes, expiración y claims personalizados.
 - Facilita la rotación y reduce exposición de credenciales.
 
 ## Alternativas descartadas
 
-- **AWS Cognito:** Limitaciones en personalización, dependencia de AWS y costos crecientes multi-país.
-- **Azure AD:** Complejidad de integración, dependencia de Microsoft y costos por usuario/app multi-tenant.
+- **AWS Cognito:** Limitaciones en personalización, dependencia de AWS y costos crecientes `multi-país`.
+- **Azure AD:** Complejidad de integración, dependencia de Microsoft y costos por usuario/app `multi-tenant`.
 - **Auth0:** Lock-in, costos altos en alto volumen y menor control de despliegue.
 
 ---
 
 ## ⚠️ CONSECUENCIAS
 
-- Todos los servicios deben validar tokens JWT y soportar OAuth2.
+- Todos los servicios deben validar tokens `JWT` y soportar `OAuth2`.
 - Se requiere gestión centralizada de clientes y scopes.
 - La documentación debe incluir ejemplos de integración y validación.
 

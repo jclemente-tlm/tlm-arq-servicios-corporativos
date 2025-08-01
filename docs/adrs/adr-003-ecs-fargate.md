@@ -1,4 +1,4 @@
-# ADR-003: Uso de ECS Fargate para despliegue de microservicios
+# ADR-003: Uso de [ECS Fargate](https://aws.amazon.com/ecs/fargate/) para despliegue de microservicios
 
 ## ✅ ESTADO
 
@@ -8,26 +8,26 @@ Aceptada – Julio 2025
 
 ## 🗺️ CONTEXTO
 
-Se requiere una plataforma de orquestación de contenedores serverless, gestionada y compatible con AWS para desplegar microservicios de forma eficiente y escalable.
+Se requiere una plataforma de orquestación de contenedores `serverless`, gestionada y compatible con `AWS` para desplegar `microservicios` de forma eficiente y escalable.
 
 Las alternativas evaluadas fueron:
 
-- **ECS Fargate (serverless containers)**
-- **EC2 (máquinas virtuales gestionadas)**
+- **[ECS Fargate](https://aws.amazon.com/ecs/fargate/) (`serverless containers`)**
+- **[EC2](https://aws.amazon.com/ec2/) (máquinas virtuales gestionadas)**
 
 ### Comparativa de alternativas
 
 | Criterio                | ECS Fargate         | EC2 gestionado         |
 |------------------------|---------------------|------------------------|
-| Agnosticismo           | Bajo (lock-in AWS)  | Medio (cloud lock-in, portable) |
+| Agnosticismo           | Bajo (lock-in `AWS`)  | Medio (cloud lock-in, portable) |
 | Operación              | Gestionada por proveedor | Gestionada por proveedor         |
 | Escalabilidad          | Automática          | Manual                 |
 | Integración AWS        | Nativa              | Nativa                 |
-| Seguridad/Compliance   | IAM, aislamiento    | IAM, requiere configuración |
+| Seguridad/Compliance   | `IAM`, aislamiento    | `IAM`, requiere configuración |
 | Costos                 | Pago por uso        | Pago por instancia     |
 | Mantenimiento          | Nulo                | Medio/Alto             |
 | Alta disponibilidad    | Garantizada         | Requiere configuración |
-| Auditoría/Monitoreo    | CloudWatch/CloudTrail | CloudWatch/CloudTrail |
+| Auditoría/Monitoreo    | [CloudWatch](https://aws.amazon.com/cloudwatch/)/[CloudTrail](https://aws.amazon.com/cloudtrail/) | [CloudWatch](https://aws.amazon.com/cloudwatch/)/[CloudTrail](https://aws.amazon.com/cloudtrail/) |
 | Latencia               | Baja                | Baja                   |
 | Provisionamiento       | Rápido              | Lento                  |
 
@@ -38,28 +38,28 @@ Las alternativas evaluadas fueron:
 | ECS Fargate     | ~US$15 (1 vCPU, 2GB RAM, 30 días) | US$0.04048           | No                    |
 | EC2 t3.medium   | ~US$25 (on-demand, 1 vCPU, 4GB RAM, 30 días) | US$0.0416            | No                    |
 
-*Precios aproximados, sujetos a variación según región, tipo de instancia y uso. EC2 puede requerir costos adicionales por almacenamiento, operación y alta disponibilidad.
+*Precios aproximados, sujetos a variación según región, tipo de instancia y uso. `EC2` puede requerir costos adicionales por almacenamiento, operación y alta disponibilidad.
 
 ### Agnosticismo, lock-in y mitigación
 
-- **Lock-in:** ECS Fargate implica dependencia de AWS, pero se justifica por la operación simplificada, escalabilidad y menor mantenimiento en un entorno 100% AWS.
-- **Mitigación:** El uso de contenedores y estándares como Docker permite migrar a otros orquestadores (Kubernetes, Azure Container Instances) si el contexto cambia, aunque con esfuerzo de integración.
+- **Lock-in:** `ECS Fargate` implica dependencia de `AWS`, pero se justifica por la operación simplificada, escalabilidad y menor mantenimiento en un entorno 100% `AWS`.
+- **Mitigación:** El uso de contenedores y estándares como `Docker` permite migrar a otros orquestadores ([Kubernetes](https://kubernetes.io/), [Azure Container Instances](https://azure.microsoft.com/en-us/services/container-instances/)) si el contexto cambia, aunque con esfuerzo de integración.
 
 ---
 
 ## ✔️ DECISIÓN
 
-Se selecciona **ECS Fargate** para el despliegue de microservicios y sistemas corporativos en contenedores.
+Se selecciona **[ECS Fargate](https://aws.amazon.com/ecs/fargate/)** para el despliegue de `microservicios` y sistemas corporativos en contenedores.
 
 ## Justificación
 
-- Modelo serverless: No requiere gestión de servidores, escalado ni parches de sistema operativo.
-- Despliegue y escalado automático: Fargate ajusta recursos según demanda, sin intervención manual.
-- Integración nativa con AWS IAM, VPC, CloudWatch, Secrets Manager, etc.
+- Modelo `serverless`: No requiere gestión de servidores, escalado ni parches de sistema operativo.
+- Despliegue y escalado automático: `Fargate` ajusta recursos según demanda, sin intervención manual.
+- Integración nativa con `AWS IAM`, `VPC`, `CloudWatch`, `Secrets Manager`, etc.
 - Costos optimizados: Pago por uso de recursos, sin costos fijos de instancias.
 - Seguridad mejorada: Aislamiento de tareas y control granular de permisos.
-- Reducción de complejidad operativa: EC2 requiere gestión de AMIs, actualizaciones, monitoreo y escalado manual.
-- Menor tiempo de provisión y despliegue: Fargate permite despliegues rápidos y consistentes.
+- Reducción de complejidad operativa: `EC2` requiere gestión de AMIs, actualizaciones, monitoreo y escalado manual.
+- Menor tiempo de provisión y despliegue: `Fargate` permite despliegues rápidos y consistentes.
 
 ## Alternativas descartadas
 
@@ -69,7 +69,7 @@ Se selecciona **ECS Fargate** para el despliegue de microservicios y sistemas co
 
 ## ⚠️ CONSECUENCIAS
 
-- Todos los microservicios y sistemas se despliegan como tareas Fargate en ECS.
+- Todos los `microservicios` y sistemas se despliegan como tareas Fargate en ECS.
 - El equipo se enfoca en desarrollo y operación de servicios, no en infraestructura.
 
 ---

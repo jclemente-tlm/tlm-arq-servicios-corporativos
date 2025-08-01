@@ -1,4 +1,4 @@
-# ADR-001: Selección de AWS Secrets Manager para gestión de secretos
+# ADR-001: Selección de [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) para gestión de secretos
 
 ## ✅ ESTADO
 
@@ -8,25 +8,25 @@ Aceptada – Julio 2025
 
 ## 🗺️ CONTEXTO
 
-El sistema de notificaciones requiere gestionar secretos y credenciales (tokens, claves API, contraseñas de servicios externos) de forma segura, centralizada y auditable.
+El sistema de notificaciones requiere gestionar secretos y credenciales (`tokens`, `claves API`, `contraseñas de servicios externos`) de forma segura, centralizada y auditable.
 
 Las alternativas evaluadas fueron:
 
-- **AWS Secrets Manager**
-- **Azure Key Vault**
-- **HashiCorp Vault**
+- **[AWS Secrets Manager](https://aws.amazon.com/secrets-manager/)**
+- **[Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/)**
+- **[HashiCorp Vault](https://www.vaultproject.io/)**
 
 ### Comparativa de alternativas
 
 | Criterio                | AWS Secrets Manager | Azure Key Vault | HashiCorp Vault |
 |------------------------|--------------------|-----------------|-----------------|
-| Agnosticismo           | Bajo (cloud lock-in AWS) | Medio (cloud lock-in Azure) | Alto (multi-cloud, on-premises) |
+| Agnosticismo           | Bajo (cloud lock-in `AWS`) | Medio (cloud lock-in `Azure`) | Alto (`multi-cloud`, `on-premises`) |
 | Operación              | Gestionada por proveedor         | Gestionada por proveedor      | Gestionada por el equipo  |
-| Seguridad/Compliance   | Alto (PCI, ISO, SOC) | Alto           | Alto            |
+| Seguridad/Compliance   | Alto (`PCI`, `ISO`, `SOC`) | Alto           | Alto            |
 | Integración .NET/IaC   | Excelente          | Buena           | Buena           |
 | Latencia en AWS        | Muy baja           | Alta            | Variable        |
 | Costos                 | Pago por uso, sin infra propia | Pago por uso | Infraestructura dedicada + licencias |
-| Auditoría              | Integrada (CloudTrail) | Integrada      | Requiere configuración |
+| Auditoría              | Integrada ([CloudTrail](https://aws.amazon.com/cloudtrail/)) | Integrada      | Requiere configuración |
 | Rotación automática    | Sí                 | Sí              | Requiere scripts |
 | Complejidad operativa  | Muy baja           | Baja            | Alta            |
 | Portabilidad           | Baja               | Baja            | Alta            |
@@ -40,37 +40,37 @@ Las alternativas evaluadas fueron:
 | HashiCorp Vault OSS (mínima)    | US$85/mes           | US$0                       | US$0                     | Sí                    |
 | HashiCorp Vault Enterprise (mínima) | US$2,085/mes     | US$0                       | US$0                     | Sí                    |
 
-*Precios aproximados, sujetos a variación según región y volumen. HashiCorp Vault OSS es gratuito pero requiere infraestructura propia y operación dedicada; la versión Enterprise tiene costos adicionales.
+*Precios aproximados, sujetos a variación según región y volumen. `HashiCorp Vault OSS` es gratuito pero requiere infraestructura propia y operación dedicada; la versión Enterprise tiene costos adicionales.
 
 ### Ejemplos de cálculo de costos mensuales
 
-#### AWS Secrets Manager
+#### [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/)
 
 - 100 secretos activos: 100 × US$0.40 = US$40/mes
 - 100,000 operaciones API: 10 × US$0.05 = US$0.50/mes
 - **Total estimado:** US$40.50/mes
 
-#### Azure Key Vault
+#### [Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/)
 
 - 100 secretos activos: 100 × US$0.03 = US$3/mes
 - 100,000 operaciones API: 10 × US$0.03 = US$0.30/mes
 - **Total estimado:** US$3.30/mes
 
-#### HashiCorp Vault (OSS, instalación mínima)
+#### [HashiCorp Vault](https://www.vaultproject.io/) (OSS, instalación mínima)
 
 - Licencia OSS: US$0
 - Infraestructura mínima: 1 VM t3.medium AWS (~US$30/mes), almacenamiento y backup (~US$5/mes)
 - Operación y mantenimiento: estimado US$50/mes (tiempo técnico)
 - **Total estimado:** US$85/mes (solo infraestructura y operación básica, sin HA ni soporte)
 
-#### HashiCorp Vault (Enterprise, instalación mínima)
+#### [HashiCorp Vault](https://www.vaultproject.io/) (Enterprise, instalación mínima)
 
 - Licencia Enterprise: ~US$2,000/mes (precio base, puede variar)
 - Infraestructura mínima: 1 VM t3.medium AWS (~US$30/mes), almacenamiento y backup (~US$5/mes)
 - Operación y mantenimiento: estimado US$50/mes (tiempo técnico)
 - **Total estimado:** US$2,085/mes (solo infraestructura y operación básica, sin HA ni soporte)
 
-> Nota: HashiCorp Vault OSS no genera gastos por licencias, pero sí por infraestructura, operación y mantenimiento. La versión Enterprise puede superar los US$2,000/mes dependiendo de la escala y soporte.
+> Nota: `HashiCorp Vault OSS` no genera gastos por licencias, pero sí por infraestructura, operación y mantenimiento. La versión Enterprise puede superar los US$2,000/mes dependiendo de la escala y soporte.
 
 ### Límites y consideraciones
 
