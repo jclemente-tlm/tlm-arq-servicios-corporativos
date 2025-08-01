@@ -1,29 +1,20 @@
 # ADR-010: Logging estructurado con Serilog
 
-## Estado
+## ✅ ESTADO
 
 Aceptada – Julio 2025
 
-## Contexto
+---
+
+## 🗺️ CONTEXTO
 
 Se requiere un mecanismo de logging estructurado, flexible y compatible con múltiples sinks para todos los servicios .NET, que permita trazabilidad, auditoría y análisis centralizado.
 
 Las alternativas evaluadas fueron:
+
 - Serilog
 - NLog
 - log4net
-
-## Decisión
-
-Se adopta Serilog como librería estándar de logging estructurado para todos los servicios .NET del ecosistema corporativo.
-
-## Justificación
-- Soporte nativo para sinks como consola, archivos, Seq, Elasticsearch, etc.
-- Permite logging estructurado (JSON) y enriquecimiento de logs.
-- Integración sencilla con ASP.NET Core y otros frameworks .NET.
-- Amplia comunidad y documentación.
-- Facilita la integración con sistemas de monitoreo y observabilidad.
-- Permite incluir información de tenant y país en los logs, facilitando la trazabilidad y auditoría en entornos multi-tenant y multi-país.
 
 ### Comparativa de alternativas
 
@@ -53,14 +44,36 @@ Se adopta Serilog como librería estándar de logging estructurado para todos lo
 
 *Precios aproximados, sujetos a variación según proveedor, volumen y configuración. El costo real depende del destino de los logs y la retención.
 
+---
+
+## ✔️ DECISIÓN
+
+Se adopta Serilog como librería estándar de logging estructurado para todos los servicios .NET del ecosistema corporativo.
+
+## Justificación
+
+- Soporte nativo para sinks como consola, archivos, Seq, Elasticsearch, etc.
+- Permite logging estructurado (JSON) y enriquecimiento de logs.
+- Integración sencilla con ASP.NET Core y otros frameworks .NET.
+- Amplia comunidad y documentación.
+- Facilita la integración con sistemas de monitoreo y observabilidad.
+- Permite incluir información de tenant y país en los logs, facilitando la trazabilidad y auditoría en entornos multi-tenant y multi-país.
+
 ## Alternativas descartadas
+
 - NLog/log4net: Menor soporte para logging estructurado y sinks modernos.
 
-## Implicaciones
+---
+
+## ⚠️ CONSECUENCIAS
+
 - Todos los servicios .NET deben implementar Serilog para logging estructurado.
 - Se debe estandarizar el formato y la gestión de logs.
 
-## Referencias
+---
+
+## 📚 REFERENCIAS
+
 - [Serilog Docs](https://serilog.net/)
 - [Serilog Sinks](https://github.com/serilog/serilog/wiki/Provided-Sinks)
 - [Arc42: Decisiones de arquitectura](https://arc42.org/decision/)

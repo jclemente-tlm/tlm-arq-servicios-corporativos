@@ -1,36 +1,26 @@
 # ADR-003: Uso de ECS Fargate para despliegue de microservicios
 
-## Estado
+## ✅ ESTADO
 
 Aceptada – Julio 2025
 
-## Contexto
+---
 
-Se requiere una plataforma de orquestación de contenedores serverless, gestionada y compatible con AWS para desplegar microservicios de forma eficiente y escalable. Las alternativas evaluadas fueron:
+## 🗺️ CONTEXTO
+
+Se requiere una plataforma de orquestación de contenedores serverless, gestionada y compatible con AWS para desplegar microservicios de forma eficiente y escalable.
+
+Las alternativas evaluadas fueron:
 
 - **ECS Fargate (serverless containers)**
 - **EC2 (máquinas virtuales gestionadas)**
-
-## Decisión
-
-Se selecciona **ECS Fargate** para el despliegue de microservicios y sistemas corporativos en contenedores.
-
-## Justificación
-
-- Modelo serverless: No requiere gestión de servidores, escalado ni parches de sistema operativo.
-- Despliegue y escalado automático: Fargate ajusta recursos según demanda, sin intervención manual.
-- Integración nativa con AWS IAM, VPC, CloudWatch, Secrets Manager, etc.
-- Costos optimizados: Pago por uso de recursos, sin costos fijos de instancias.
-- Seguridad mejorada: Aislamiento de tareas y control granular de permisos.
-- Reducción de complejidad operativa: EC2 requiere gestión de AMIs, actualizaciones, monitoreo y escalado manual.
-- Menor tiempo de provisión y despliegue: Fargate permite despliegues rápidos y consistentes.
 
 ### Comparativa de alternativas
 
 | Criterio                | ECS Fargate         | EC2 gestionado         |
 |------------------------|---------------------|------------------------|
 | Agnosticismo           | Bajo (lock-in AWS)  | Medio (cloud lock-in, portable) |
-| Operación              | Serverless gestionado | VM gestionada         |
+| Operación              | Gestionada por proveedor | Gestionada por proveedor         |
 | Escalabilidad          | Automática          | Manual                 |
 | Integración AWS        | Nativa              | Nativa                 |
 | Seguridad/Compliance   | IAM, aislamiento    | IAM, requiere configuración |
@@ -55,16 +45,36 @@ Se selecciona **ECS Fargate** para el despliegue de microservicios y sistemas co
 - **Lock-in:** ECS Fargate implica dependencia de AWS, pero se justifica por la operación simplificada, escalabilidad y menor mantenimiento en un entorno 100% AWS.
 - **Mitigación:** El uso de contenedores y estándares como Docker permite migrar a otros orquestadores (Kubernetes, Azure Container Instances) si el contexto cambia, aunque con esfuerzo de integración.
 
+---
+
+## ✔️ DECISIÓN
+
+Se selecciona **ECS Fargate** para el despliegue de microservicios y sistemas corporativos en contenedores.
+
+## Justificación
+
+- Modelo serverless: No requiere gestión de servidores, escalado ni parches de sistema operativo.
+- Despliegue y escalado automático: Fargate ajusta recursos según demanda, sin intervención manual.
+- Integración nativa con AWS IAM, VPC, CloudWatch, Secrets Manager, etc.
+- Costos optimizados: Pago por uso de recursos, sin costos fijos de instancias.
+- Seguridad mejorada: Aislamiento de tareas y control granular de permisos.
+- Reducción de complejidad operativa: EC2 requiere gestión de AMIs, actualizaciones, monitoreo y escalado manual.
+- Menor tiempo de provisión y despliegue: Fargate permite despliegues rápidos y consistentes.
+
 ## Alternativas descartadas
 
 - **EC2:** Mayor carga operativa, menor agilidad y escalabilidad, más puntos de falla.
 
-## Implicaciones
+---
+
+## ⚠️ CONSECUENCIAS
 
 - Todos los microservicios y sistemas se despliegan como tareas Fargate en ECS.
 - El equipo se enfoca en desarrollo y operación de servicios, no en infraestructura.
 
-## Referencias
+---
+
+## 📚 REFERENCIAS
 
 - [AWS ECS Fargate](https://aws.amazon.com/fargate/)
 - [Comparación EC2 vs Fargate](https://aws.amazon.com/blogs/containers/should-you-use-amazon-ecs-or-amazon-ec2/)

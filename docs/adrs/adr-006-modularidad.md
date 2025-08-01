@@ -1,17 +1,23 @@
 # ADR-006: Modularidad basada en microservicios vs. arquitectura monolítica
 
-## Estado
+## ✅ ESTADO
 
 Aceptada – Julio 2025
 
-## Contexto
+---
 
-Se busca facilitar la mantenibilidad, escalabilidad y despliegue independiente de los servicios corporativos, separando responsabilidades en microservicios y componentes bien definidos. Las alternativas evaluadas fueron:
+## 🗺️ CONTEXTO
+
+Se busca facilitar la mantenibilidad, escalabilidad y despliegue independiente de los servicios corporativos, separando responsabilidades en microservicios y componentes bien definidos.
+
+Las alternativas evaluadas fueron:
 
 - **Arquitectura modular basada en microservicios**: Separación de dominios y funciones en servicios independientes, con despliegue desacoplado y comunicación vía APIs.
 - **Arquitectura monolítica**: Un único despliegue que agrupa todos los dominios y funciones en una sola aplicación.
 
-## Decisión
+---
+
+## ✔️ DECISIÓN
 
 La arquitectura se diseñará siguiendo principios de modularidad, separando responsabilidades en microservicios y componentes bien definidos.
 
@@ -27,12 +33,16 @@ La arquitectura se diseñará siguiendo principios de modularidad, separando res
 
 - Arquitectura monolítica: Menor flexibilidad, mayor riesgo de cambios globales, escalabilidad limitada y dependencias acopladas.
 
-## Implicaciones
+---
+
+## ⚠️ CONSECUENCIAS
 
 - Los canales y funciones pueden evolucionar y desplegarse de forma independiente.
 - El sistema es más resiliente y adaptable a nuevos requerimientos.
 
-## Referencias
+---
+
+## 📚 REFERENCIAS
 
 - [Microservicios y modularidad](https://martinfowler.com/articles/microservices.html)
 - [Arc42: Decisiones de arquitectura](https://arc42.org/decision/)

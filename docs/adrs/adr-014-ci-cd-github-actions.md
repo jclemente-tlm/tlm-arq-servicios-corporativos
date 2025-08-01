@@ -1,29 +1,21 @@
 # ADR-014: Automatización de despliegues (CI/CD) con GitHub Actions
 
-## Estado
+## ✅ ESTADO
 
 Aceptada – Julio 2025
 
-## Contexto
+---
 
-Se requiere una solución de CI/CD que permita automatizar pruebas, builds y despliegues de forma segura, repetible y auditable para todos los servicios y microservicios. Las alternativas evaluadas fueron:
+## 🗺️ CONTEXTO
+
+Se requiere una solución de CI/CD que permita automatizar pruebas, builds y despliegues de forma segura, repetible y auditable para todos los servicios y microservicios.
+
+Las alternativas evaluadas fueron:
 
 - GitHub Actions
 - GitLab CI
 - AWS CodePipeline
 - Jenkins
-
-## Decisión
-
-Se adopta **GitHub Actions** como plataforma estándar de CI/CD para todos los repositorios y servicios corporativos.
-
-## Justificación
-- Integración nativa con GitHub y repositorios existentes.
-- Workflows reutilizables y plantillas para distintos lenguajes y stacks.
-- Marketplace de acciones y comunidad activa.
-- Facilidad de integración con AWS y otros proveedores cloud.
-- Seguridad, auditoría y control de permisos granular.
-- Costos optimizados y escalabilidad gestionada.
 
 ### Comparativa de alternativas
 
@@ -37,6 +29,7 @@ Se adopta **GitHub Actions** como plataforma estándar de CI/CD para todos los r
 | Costos                 | Bajo/Incluido | Bajo      | Pago por uso | Infra propia |
 | Seguridad              | Alta          | Alta      | Alta         | Media   |
 | Escalabilidad          | Alta          | Alta      | Alta         | Alta    |
+| Operación              | Gestionada por proveedor | Gestionada por proveedor | Gestionada por proveedor | Gestionada por el equipo |
 
 ### Comparativa de costos estimados (2025)
 
@@ -54,26 +47,37 @@ Se adopta **GitHub Actions** como plataforma estándar de CI/CD para todos los r
 - **Lock-in:** GitHub Actions y CodePipeline implican dependencia de sus plataformas, mientras que Jenkins y GitLab CI pueden desplegarse en cualquier infraestructura.
 - **Mitigación:** El uso de pipelines como código y contenedores facilita la migración entre plataformas CI/CD.
 
-### Comparativa de costos estimados (2025)
+---
 
-| Solución        | Costo mensual base* | Costos adicionales | Infraestructura propia |
-|-----------------|---------------------|--------------------|-----------------------|
-| GitHub Actions  | Incluido en GitHub  | Pago por minutos extra | No                |
-| GitLab CI       | Incluido en GitLab  | Pago por runners privados | No              |
-| CodePipeline    | Pago por uso        | -                  | No                    |
-| Jenkins         | ~US$20+ (VM/container pequeña) | Mantenimiento, soporte | Sí            |
+## ✔️ DECISIÓN
 
-*Precios aproximados, sujetos a variación según proveedor, volumen y configuración. Jenkins requiere operación propia, GitHub Actions y GitLab CI pueden tener costos por minutos o runners adicionales.
+Se adopta **GitHub Actions** como plataforma estándar de CI/CD para todos los repositorios y servicios corporativos.
+
+## Justificación
+
+- Integración nativa con GitHub y repositorios existentes.
+- Workflows reutilizables y plantillas para distintos lenguajes y stacks.
+- Marketplace de acciones y comunidad activa.
+- Facilidad de integración con AWS y otros proveedores cloud.
+- Seguridad, auditoría y control de permisos granular.
+- Costos optimizados y escalabilidad gestionada.
 
 ## Alternativas descartadas
+
 - GitLab CI: Menor integración con GitHub y AWS.
 - CodePipeline: Menos flexible y menos comunidad.
 - Jenkins: Mayor complejidad operativa y mantenimiento.
 
-## Implicaciones
+---
+
+## ⚠️ CONSECUENCIAS
+
 - Todos los servicios deben definir pipelines en GitHub Actions.
 - Se recomienda estandarizar workflows y plantillas.
 
-## Referencias
+---
+
+## 📚 REFERENCIAS
+
 - [GitHub Actions](https://github.com/features/actions)
 - [Arc42: Decisiones de arquitectura](https://arc42.org/decision/)

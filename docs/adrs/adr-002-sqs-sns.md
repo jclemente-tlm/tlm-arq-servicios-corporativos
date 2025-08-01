@@ -1,37 +1,26 @@
 # ADR-002: Uso de SNS + SQS en vez de RabbitMQ para mensajería
 
-## Estado
+## ✅ ESTADO
 
 Aceptada – Julio 2025
 
-## Contexto
+---
 
-Se requiere una solución de mensajería desacoplada, escalable y gestionada para fan-out y colas de procesamiento en sistemas distribuidos y microservicios. Las alternativas evaluadas fueron:
+## 🗺️ CONTEXTO
+
+Se requiere una solución de mensajería desacoplada, escalable y gestionada para fan-out y colas de procesamiento en sistemas distribuidos y microservicios.
+
+Las alternativas evaluadas fueron:
 
 - **SNS + SQS (AWS)**
 - **RabbitMQ (auto-gestionado o en cloud)**
-
-## Decisión
-
-Se selecciona **SNS + SQS** como solución de mensajería estándar para los sistemas y microservicios que requieran integración basada en eventos.
-
-## Justificación
-
-- Servicio gestionado y nativo en AWS, sin necesidad de administración de servidores ni mantenimiento.
-- Escalabilidad automática y alta disponibilidad garantizada por AWS.
-- Integración directa con otros servicios AWS (Lambda, IAM, CloudWatch, etc.).
-- Fan-out nativo: SNS permite publicar a múltiples colas SQS y otros endpoints.
-- Seguridad y control de acceso: Integración con IAM y cifrado en tránsito/reposo.
-- Costos operativos reducidos: Pago por uso, sin infraestructura dedicada.
-- Monitoreo y auditoría: Integración con CloudWatch y CloudTrail.
-- Menor complejidad operativa: RabbitMQ requiere gestión de clúster, actualizaciones y monitoreo adicional.
 
 ### Comparativa de alternativas
 
 | Criterio                | SNS + SQS (AWS) | RabbitMQ gestionado | RabbitMQ auto-gestionado |
 |------------------------|-----------------|---------------------|--------------------------|
 | Agnosticismo           | Bajo (lock-in AWS) | Medio (cloud lock-in, portable) | Alto (multi-cloud, on-premises) |
-| Operación              | Gestionado      | Gestionado          | Autogestionado           |
+| Operación              | Gestionada por proveedor      | Gestionada por proveedor          | Gestionada por el equipo           |
 | Escalabilidad          | Automática      | Manual/limitada     | Manual                   |
 | Integración AWS        | Nativa          | Parcial             | Parcial                  |
 | Fan-out                | Nativo          | Requiere configuración | Requiere configuración |
@@ -58,16 +47,37 @@ Se selecciona **SNS + SQS** como solución de mensajería estándar para los sis
 - **Mitigación:** El uso de interfaces desacopladas y patrones de mensajería estándar (pub/sub, colas) permite migrar a otras soluciones si el contexto cambia. RabbitMQ es más agnóstico, pero requiere mayor esfuerzo de integración y operación.
 - **Evidencia:** En escenarios multi-cloud o on-premises, RabbitMQ puede ser preferible por su portabilidad, pero a costa de mayor complejidad y costos operativos.
 
+---
+
+## ✔️ DECISIÓN
+
+Se selecciona **SNS + SQS** como solución de mensajería estándar para los sistemas y microservicios que requieran integración basada en eventos.
+
+## Justificación
+
+- Servicio gestionado y nativo en AWS, sin necesidad de administración de servidores ni mantenimiento.
+- Escalabilidad automática y alta disponibilidad garantizada por AWS.
+- Integración directa con otros servicios AWS (Lambda, IAM, CloudWatch, etc.).
+- Fan-out nativo: SNS permite publicar a múltiples colas SQS y otros endpoints.
+- Seguridad y control de acceso: Integración con IAM y cifrado en tránsito/reposo.
+- Costos operativos reducidos: Pago por uso, sin infraestructura dedicada.
+- Monitoreo y auditoría: Integración con CloudWatch y CloudTrail.
+- Menor complejidad operativa: RabbitMQ requiere gestión de clúster, actualizaciones y monitoreo adicional.
+
 ## Alternativas descartadas
 
 - **RabbitMQ**: Requiere despliegue, gestión y monitoreo propio, mayor complejidad y menor integración nativa con AWS.
 
-## Implicaciones
+---
+
+## ⚠️ CONSECUENCIAS
 
 - Todo el flujo de mensajería y fan-out se implementa con SNS y SQS.
 - El sistema se mantiene alineado con la estrategia cloud-native y serverless.
 
-## Referencias
+---
+
+## 📚 REFERENCIAS
 
 - [AWS SNS Docs](https://docs.aws.amazon.com/sns/latest/dg/welcome.html)
 - [AWS SQS Docs](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html)
