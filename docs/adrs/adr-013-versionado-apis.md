@@ -19,13 +19,18 @@ Las alternativas evaluadas fueron:
 
 ### Comparativa de alternativas
 
-| Criterio                | Path   | Header | Query String | Sin versionado |
-|------------------------|--------|--------|--------------|----------------|
-| Agnosticismo           | Alto (estándar abierto, multi-plataforma) | Medio (algunas herramientas propietarias) | Bajo (poco usado, menor soporte) | N/A |
-| Claridad               | Alta   | Media  | Baja         | Baja           |
-| Compatibilidad         | Alta   | Media  | Baja         | Baja           |
-| Soporte herramientas   | Alta   | Media  | Baja         | Baja           |
-| Facilidad de testing   | Alta   | Media  | Baja         | Alta           |
+| Criterio                                              | Path   | Header | Query String | Sin versionado |
+|-------------------------------------------------------|--------|--------|--------------|----------------|
+| Visibilidad y claridad para consumidores              | Muy alta (explícito en URL) | Baja (oculto en header) | Media (visible pero poco estándar) | N/A |
+| Soporte por herramientas de documentación/gateways    | Muy alto (OpenAPI, gateways) | Medio (requiere configuración extra) | Bajo | N/A |
+| Facilidad de automatización y DevOps                  | Alta (fácil de versionar en rutas) | Media | Baja | N/A |
+| Impacto en caché y SEO                                | Positivo (versiona recursos) | Nulo | Negativo (puede confundir) | N/A |
+| Compatibilidad con API management/version rollback    | Muy alta | Media | Baja | N/A |
+| Riesgo de lock-in y portabilidad                      | Bajo (patrón estándar) | Medio (algunas herramientas propietarias) | Alto (poco soporte) | N/A |
+| Facilidad de migración y coexistencia de versiones    | Muy alta | Media | Baja | N/A |
+| Extensibilidad/Flexibilidad                          | Alta | Media | Baja | N/A |
+| Costos                                               | Bajo | Bajo | Bajo | N/A |
+| Licenciamiento                                       | OSS | OSS | OSS | N/A |
 
 ### Comparativa de costos estimados (2025)
 

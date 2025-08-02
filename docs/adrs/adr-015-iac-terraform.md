@@ -1,4 +1,4 @@
-# ADR-015: Estandarización de Infraestructura como Código (IaC) con [`Terraform`](https://www.terraform.io/)
+# ADR-015: Infraestructura como código (IaC) con [Terraform](https://www.terraform.io/)
 
 ## ✅ ESTADO
 
@@ -8,45 +8,29 @@ Aceptada – Julio 2025
 
 ## 🗺️ CONTEXTO
 
-Se requiere gestionar la infraestructura de manera automatizada, auditable y reproducible para todos los entornos (`desarrollo`, `QA`, `producción`) de los servicios corporativos. Es necesario soportar despliegues `multi-cloud`, reutilización de módulos y control de cambios versionado.
+Se requiere una solución de Infraestructura como Código (IaC) que permita gestionar recursos de forma declarativa, auditable y multi-cloud para los entornos de los servicios corporativos.
 
 Las alternativas evaluadas fueron:
 
-- **[Terraform](https://www.terraform.io/)** (`open source`, `multi-cloud`, módulos reutilizables)
-- **[AWS CloudFormation](https://aws.amazon.com/cloudformation/)** (solo `AWS`, integración nativa)
-- **[Pulumi](https://www.pulumi.com/)** (`open source`, `multi-cloud`, programación en varios lenguajes)
-- **[AWS CDK](https://aws.amazon.com/cdk/)** (Infraestructura como código en C#/TypeScript, solo AWS)
-- Scripts manuales (`CLI`, `SDK`)
+- **[Terraform](https://www.terraform.io/)** (`open source`, multi-cloud)
+- **[AWS CloudFormation](https://aws.amazon.com/cloudformation/)** (gestionado, propietario)
+- **[Pulumi](https://www.pulumi.com/)** (`open source`, multi-cloud)
+- **Scripts manuales**
 
 ### Comparativa de alternativas
 
-| Criterio                | Terraform | CloudFormation | Pulumi | AWS CDK | Scripts manuales |
-|------------------------|-----------|---------------|--------|---------|------------------|
-| Agnosticismo           | Alto (`multi-cloud`, `open source`) | Bajo (`AWS`-only) | Alto (`multi-cloud`, `open source`) | Bajo (`AWS`-only) | Bajo (dependencia de `CLI`/`SDK`) |
-| Soporte multi-cloud     | Sí        | No            | Sí     | No      | Parcial          |
-| Reutilización de módulos| Alta      | Media         | Alta   | Alta    | Baja             |
-| Comunidad              | Muy alta  | Alta          | Media  | Alta    | N/A              |
-| Control de cambios     | Sí        | Sí            | Sí     | Sí      | No               |
-| Integración CI/CD      | Sí        | Sí            | Sí     | Sí      | Parcial          |
-| Curva de aprendizaje   | Media     | Baja          | Media  | Media   | Baja             |
-| Costos                 | Gratis (`open source`) | Gratis   | Gratis (`open source`) | Gratis | Bajo              |
-
-### Comparativa de costos estimados (2025)
-
-| Solución        | Costo mensual base* | Costos adicionales | Infraestructura propia |
-|-----------------|---------------------|--------------------|-----------------------|
-| `Terraform OSS`   | Gratis (`open source`)| ~US$20/mes (VM pequeña para `runners`) | Opcional              |
-| `Terraform Cloud` | Gratis hasta 500 recursos | ~US$7/usuario/mes (plan Team+) | No                    |
-| `CloudFormation`  | Gratis              | Pago por recursos `AWS` | No                    |
-| `Pulumi`          | Gratis (`open source`)| ~US$20/mes (VM `runners`) | Opcional              |
-| Scripts manuales  | Gratis              | Mayor esfuerzo operativo | Opcional              |
-
-*Precios aproximados, sujetos a variación según proveedor, volumen y configuración.
-
-### Agnosticismo, lock-in y mitigación
-
-- **Lock-in:** `Terraform` y `Pulumi` minimizan el lock-in al soportar múltiples proveedores y tener formato `open source`. `CloudFormation` genera lock-in con `AWS`. Los scripts manuales dependen de cada `CLI`/`SDK`.
-- **Mitigación:** Usar módulos y recursos estándar, evitar extensiones propietarias y mantener IaC versionado facilita la migración entre nubes y la portabilidad.
+| Criterio                                              | Terraform | CloudFormation | Pulumi | Scripts manuales |
+|-------------------------------------------------------|-----------|---------------|--------|------------------|
+| Facilidad de integración con CI/CD y cloud            | Muy alta (integración nativa, plugins) | Alta (AWS nativo) | Alta (multi-cloud, SDKs) | Baja |
+| Soporte para módulos reutilizables y comunidad        | Muy alta (ecosistema global) | Media | Alta | Nula |
+| Facilidad de aprendizaje y curva de adopción          | Media (HCL propio) | Alta (YAML/JSON) | Media (requiere lenguaje) | Alta (scripts conocidos) |
+| Automatización, testing y validación de infraestructura| Alta (plan, validate, test) | Media | Alta | Baja |
+| Portabilidad y migración entre nubes/proveedores      | Muy alta | Baja (solo AWS) | Muy alta | Baja |
+| Seguridad, control de acceso y compliance             | Alta (integración IAM, Sentinel) | Alta (IAM AWS) | Alta | Baja |
+| Riesgo de lock-in y portabilidad de definiciones      | Bajo (HCL estándar, OSS) | Alto (propietario) | Bajo (código abierto) | Alto (ad-hoc, no portable) |
+| Performance en despliegues grandes                    | Alta | Alta | Alta | Baja |
+| Costos ocultos (state management, soporte empresarial)| Medio (Terraform Cloud opcional) | Bajo | Medio | Bajo |
+| Licenciamiento                                        | OSS | Propietario | OSS | N/A |
 
 ---
 

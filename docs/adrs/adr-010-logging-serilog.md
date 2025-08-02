@@ -18,18 +18,24 @@ Las alternativas evaluadas fueron:
 
 ### Comparativa de alternativas
 
-| Criterio                | Serilog | NLog | log4net |
-|------------------------|---------|------|---------|
-| Agnosticismo           | Alto (`open source`, multi-plataforma) | Alto (`open source`, multi-plataforma) | Alto (`open source`, multi-plataforma) |
-| Estructurado/JSON      | Sí      | Parcial | Parcial |
-| Sinks soportados       | Muchos  | Muchos | Menos   |
-| Integración .NET Core  | Excelente | Buena | Media   |
-| Comunidad              | Alta    | Alta  | Media   |
-| Enriquecimiento        | Sí      | Parcial | Parcial |
+| Criterio                                              | Serilog | NLog | log4net |
+|-------------------------------------------------------|---------|------|---------|
+| Soporte nativo para logging estructurado (JSON, enrich)| Sí (nativo, flexible) | Limitado (requiere configuración extra) | No (solo texto plano) |
+| Facilidad de integración con ASP.NET Core              | Muy alta (integración directa) | Alta | Media |
+| Soporte y variedad de sinks (consola, archivos, cloud) | Muy alta (gran ecosistema) | Alta | Media |
+| Facilidad de configuración y personalización           | Alta (por código y config) | Alta | Media |
+| Comunidad y soporte activo                            | Muy alta | Alta | Media |
+| Compatibilidad con observabilidad (Elastic, Datadog)   | Muy alta (sinks oficiales y OSS) | Alta | Baja |
+| Performance bajo alta carga                           | Alta | Alta | Media |
+| Automatización y DevOps (configuración por código/IaC) | Alta | Alta | Media |
+| Riesgo de lock-in (por sinks propietarios)             | Bajo (muchos sinks OSS) | Bajo | Bajo |
+| Facilidad de migración entre soluciones                | Alta (formatos estándar) | Alta | Media |
+| Costos                                                | Gratis (`open source`) | Gratis (`open source`) | Gratis (`open source`) |
+| Licenciamiento                                        | OSS | OSS | OSS |
 
 ### Agnosticismo, lock-in y mitigación
 
-- **Lock-in:** `Serilog`, `NLog` y `log4net` son `open source` y portables entre plataformas `.NET`, minimizando lock-in. Sin embargo, el uso de `sinks` propietarios (Seq, Datadog, etc.) puede generar dependencia.
+- **Lock-in:** `Serilog`, `NLog` y `log4net` son `open source` y portables entre plataformas `.NET`, minimizando lock-in. El uso de `sinks` propietarios (Seq, Datadog, etc.) puede generar dependencia.
 - **Mitigación:** Usar formatos estándar (`JSON`, `GELF`) y `sinks` open source facilita la migración entre soluciones de logging y observabilidad.
 
 ### Comparativa de costos estimados (2025)

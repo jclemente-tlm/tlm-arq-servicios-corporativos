@@ -19,15 +19,28 @@ Las alternativas evaluadas fueron:
 
 ### Comparativa de alternativas
 
-| Criterio                | PostgreSQL | MySQL/MariaDB | SQL Server | Oracle |
-|------------------------|------------|--------------|------------|--------|
-| Agnosticismo           | Alto (`open source`, `multi-cloud`) | Alto (`open source`, `multi-cloud`) | Bajo (licencia propietaria) | Bajo (licencia propietaria) |
-| Licenciamiento         | Libre      | Libre        | Pago       | Pago   |
-| Soporte cloud          | Excelente  | Excelente    | Bueno      | Bueno  |
-| JSON/NoSQL             | Avanzado   | Limitado     | Limitado   | Limitado|
-| Extensibilidad         | Alta       | Media        | Baja       | Baja   |
-| Comunidad              | Muy alta   | Alta         | Media      | Media  |
-| HA/Replicación         | Sí         | Sí           | Sí         | Sí     |
+| Criterio                                    | PostgreSQL | MySQL/MariaDB | SQL Server | Oracle |
+|---------------------------------------------|------------|--------------|------------|--------|
+| Agnosticismo/Portabilidad                   | ✅ Totalmente agnóstico (`open source`, multi-cloud) | ✅ Totalmente agnóstico (`open source`, multi-cloud) | ❌ Dependiente de proveedor (licencia propietaria) | ❌ Dependiente de proveedor (licencia propietaria) |
+| Gestión operativa                           | Gestionada por el equipo o proveedor cloud | Gestionada por el equipo o proveedor cloud | Gestionada por proveedor | Gestionada por proveedor |
+| Multi-tenant / Multi-país                   | Sí (esquemas, RLS, particionamiento) | Sí (limitado) | Sí (limitado) | Sí (limitado) |
+| Alta disponibilidad y replicación           | Sí (nativo, streaming, logical, multi-región) | Sí (nativo, menos flexible) | Sí (AlwaysOn, licencias) | Sí (RAC, DataGuard, licencias) |
+| Recuperación ante desastres                 | Avanzada (herramientas OSS y cloud) | Media | Alta (con licencias) | Alta (con licencias) |
+| Escalabilidad (horizontal/vertical)         | Alta (sharding, particionamiento, extensiones) | Media | Media | Media |
+| Performance OLTP/OLAP                       | Alta (índices, JSONB, extensiones) | Media | Alta (OLTP), Media (OLAP) | Alta (OLTP), Media (OLAP) |
+| Latencia                                    | Baja | Baja | Baja | Baja |
+| Seguridad/Compliance                        | Alta (RLS, cifrado, auditoría, certificaciones cloud) | Media | Alta | Alta |
+| Cumplimiento normativo (GDPR, PCI, etc.)    | Depende de despliegue | Depende de despliegue | Certificaciones enterprise | Certificaciones enterprise |
+| Costos totales (licencia, soporte, HA)      | Bajo (`open source`) + operación | Bajo (`open source`) + operación | Alto (licencia, soporte, HA) | Muy alto (licencia, soporte, HA) |
+| Licenciamiento                              | OSS | OSS | Propietario | Propietario |
+| Extensibilidad/Flexibilidad                 | Muy alta (PostGIS, TimescaleDB, extensiones) | Media | Baja | Media |
+| Interoperabilidad y conectores              | Muy alta (drivers, ORMs, cloud, ETL) | Alta | Alta | Alta |
+| Automatización y DevOps (migraciones, IaC)  | Alta (herramientas OSS, CI/CD, IaC) | Media | Media | Media |
+| Comunidad y soporte                         | Muy alta (global, activa) | Alta | Muy alta (enterprise) | Alta |
+| Portabilidad de datos y migración           | Alta (formatos estándar, herramientas) | Media | Baja | Baja |
+| Soporte para extensiones avanzadas          | Muy alto (PostGIS, TimescaleDB, Citus, etc.) | Bajo | Bajo | Bajo |
+| Trazabilidad/Auditoría                      | Alta (nativo y extensiones) | Media | Alta | Alta |
+| Riesgo de lock-in                           | Bajo | Bajo | Alto | Muy alto |
 
 ### Comparativa de costos estimados (2025)
 
@@ -38,7 +51,7 @@ Las alternativas evaluadas fueron:
 | `SQL Server`      | ~US$200/mes         | Sí             | ~US$20/mes (VM pequeña) opcional |
 | `Oracle`          | ~US$350/mes         | Sí             | ~US$20/mes (VM pequeña) opcional |
 
-*Precios aproximados, sujetos a variación según proveedor, región y configuración. `SQL Server` y `Oracle` requieren licencias y pueden tener costos adicionales por soporte y HA.
+*Precios aproximados, sujetos a variación según proveedor, región y configuración. `SQL Server` y `Oracle` requieren licencias y pueden tener costos adicionales por soporte, alta disponibilidad y backup.
 
 ### Agnosticismo, lock-in y mitigación
 

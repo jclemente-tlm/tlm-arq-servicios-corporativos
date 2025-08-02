@@ -20,18 +20,18 @@ Las alternativas evaluadas fueron:
 
 ### Comparativa de alternativas
 
-| Criterio                | GitHub Actions | GitLab CI | CodePipeline | Jenkins | Azure DevOps Pipelines |
-|------------------------|---------------|-----------|--------------|---------|-----------------------|
-| Agnosticismo           | Medio (lock-in `GitHub`, portable vía contenedores) | Alto (`open source`, portable) | Bajo (lock-in `AWS`) | Alto (`open source`, portable) | Medio (lock-in `Azure`, portable vía contenedores) |
-| Integración GitHub     | Nativa        | Parcial   | Parcial      | Parcial | Parcial |
-| Facilidad de uso       | Alta          | Alta      | Media        | Media   | Alta    |
-| Comunidad              | Muy alta      | Alta      | Media        | Muy alta| Alta    |
-| Integración AWS        | Sí            | Sí        | Nativa       | Sí      | Parcial |
-| Integración Azure      | Parcial       | Parcial   | No           | Parcial | Nativa  |
-| Costos                 | Bajo/Incluido | Bajo      | Pago por uso | Infra propia | Bajo/Incluido |
-| Seguridad              | Alta          | Alta      | Alta         | Media   | Alta    |
-| Escalabilidad          | Alta          | Alta      | Alta         | Alta    | Alta    |
-| Operación              | Gestionada por proveedor | Gestionada por proveedor | Gestionada por proveedor | Gestionada por el equipo | Gestionada por proveedor |
+| Criterio                                              | GitHub Actions | GitLab CI | CodePipeline | Jenkins | Azure DevOps Pipelines |
+|-------------------------------------------------------|---------------|-----------|--------------|---------|-----------------------|
+| Facilidad de integración con repositorios y cloud     | Muy alta (GitHub, AWS, Azure) | Alta (GitLab, AWS, Azure) | Alta (AWS) | Alta (cualquier repo) | Muy alta (Azure, GitHub) |
+| Soporte para pipelines como código y reutilización    | Muy alta (YAML, plantillas, composite actions) | Alta (YAML, plantillas) | Media | Alta (Jenkinsfile, shared libs) | Alta (YAML, plantillas) |
+| Automatización y DevOps (APIs, triggers, IaC)         | Alta (APIs, triggers, matrix) | Alta | Media | Alta | Alta |
+| Comunidad, soporte y ecosistema de plugins/acciones   | Muy alta (marketplace, comunidad activa) | Alta | Media | Muy alta (plugins) | Alta |
+| Performance y tiempos de build/deploy                 | Alta | Alta | Media | Media (depende de runners) | Alta |
+| Seguridad y control de permisos                       | Muy alta (granular, OIDC, secrets) | Alta | Alta | Media | Alta |
+| Riesgo de lock-in y portabilidad de pipelines         | Medio (YAML portable, pero dependiente de GitHub) | Bajo (open source, portable) | Alto (AWS) | Bajo (open source) | Alto (Azure) |
+| Facilidad de migración entre plataformas              | Media | Alta | Baja | Alta | Media |
+| Costos                                               | Bajo/incluido | Bajo | Pago por uso | Infra propia | Bajo/incluido |
+| Licenciamiento                                       | SaaS | OSS | Propietario | OSS | SaaS |
 
 ### Comparativa de costos estimados (2025)
 

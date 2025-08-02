@@ -21,19 +21,20 @@ Las alternativas evaluadas fueron:
 
 ### Comparativa de alternativas
 
-| Criterio                | YARP (.NET)        | AWS API Gateway   | NGINX/Traefik    |
-|------------------------|--------------------|-------------------|------------------|
-| Agnosticismo           | Medio (cloud, portable) | Bajo (lock-in `AWS`) | Alto (`multi-cloud`, portable) |
-| Operación              | Gestionada por el equipo     | Gestionada por proveedor        | Gestionada por el equipo   |
-| Integración .NET       | Nativa             | Indirecta         | Indirecta        |
-| Flexibilidad           | Alta               | Media             | Alta             |
-| Seguridad/Compliance   | `OAuth2`/`JWT`, personalizable | `IAM`, `OAuth2`, `JWT` | `SSL`, plugins     |
-| Costos                 | Bajo (infra propia) | Alto (pago por uso) | Bajo (infra propia) |
-| Mantenimiento          | Medio              | Nulo              | Medio            |
-| Extensibilidad         | Alta               | Media             | Alta             |
-| Despliegue en contenedores | Sí              | Parcial           | Sí               |
-| Alta disponibilidad    | Requiere configuración | Garantizada      | Requiere configuración |
-| Auditoría/Monitoreo    | Integrable         | Integrada         | Integrable        |
+| Criterio                | YARP (.NET)        | AWS API Gateway   | NGINX/Traefik    | Ocelot | Kong | KrakenD |
+|------------------------|--------------------|-------------------|------------------|--------|------|---------|
+| Agnosticismo           | ✅ Totalmente agnóstico (`open source`, multi-cloud) | ❌ Dependiente de proveedor (`AWS`) | ✅ Totalmente agnóstico (`open source`, multi-cloud) | ✅ Totalmente agnóstico (`open source`, multi-cloud) | ✅ Totalmente agnóstico (`open source`, multi-cloud) | ✅ Totalmente agnóstico (`open source`, multi-cloud) |
+| Gestión operativa      | Gestionada por el equipo     | Gestionada por proveedor        | Gestionada por el equipo   | Gestionada por el equipo | Gestionada por el equipo | Gestionada por el equipo |
+| Multi-tenant / Multi-país | Sí | Sí | Sí | Sí | Sí | Sí |
+| Alta disponibilidad    | Requiere configuración | Garantizada      | Requiere configuración | Requiere configuración | Requiere configuración | Requiere configuración |
+| Escalabilidad          | Alta               | Alta             | Alta             | Media | Alta | Alta |
+| Latencia               | Baja               | Baja             | Baja             | Media | Baja | Baja |
+| Seguridad/Compliance   | OAuth2/JWT, personalizable | IAM, OAuth2, JWT | SSL, plugins     | Media | Alta | Alta |
+| Costos                 | Bajo (infra propia) | Alto (pago por uso) | Bajo (infra propia) | Bajo (infra propia) | Bajo (infra propia) | Bajo (infra propia) |
+| Licenciamiento         | OSS                | Incluido en AWS   | OSS              | OSS | OSS | OSS |
+| Extensibilidad/Flexibilidad | Alta           | Media             | Alta             | Media | Alta | Alta |
+| Interoperabilidad      | Nativa con .NET    | APIs estándar     | APIs estándar     | Media | Alta | Alta |
+| Trazabilidad/Auditoría | Integrable         | Integrada         | Integrable        | Media | Alta | Alta |
 
 ### Comparativa de costos estimados (2025)
 

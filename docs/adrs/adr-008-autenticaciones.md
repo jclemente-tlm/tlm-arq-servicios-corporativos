@@ -19,19 +19,29 @@ Las alternativas evaluadas fueron:
 
 ### Comparativa de alternativas
 
-| Criterio                | Keycloak | Auth0 | Azure AD | AWS Cognito |
-|------------------------|----------|-------|----------|-------------|
-| Agnosticismo           | Alto (`open source`) | Medio (`SaaS`) | Medio (`cloud`) | Medio (`cloud`) |
-| Multi-tenant           | Sí       | Sí    | Sí       | Sí          |
-| Multi-país             | Sí       | Sí    | Sí       | Sí          |
-| Seguridad              | Alta     | Alta  | Alta     | Alta        |
-| Escalabilidad          | Alta     | Alta  | Alta     | Alta        |
-| Interoperabilidad      | Alta     | Alta  | Alta     | Alta        |
-| Soporte estándar       | Sí       | Sí    | Sí       | Sí          |
-| Rotación credenciales  | Sencilla | Sencilla | Sencilla | Sencilla  |
-| Claims y scopes        | Sí       | Sí    | Sí       | Sí          |
-| Personalización        | Alta     | Media | Baja     | Baja        |
-| Despliegue flexible    | Sí       | No    | No       | No          |
+| Criterio                        | Keycloak | Auth0 | Azure AD | AWS Cognito |
+|---------------------------------|----------|-------|----------|-------------|
+| Agnosticismo/Portabilidad       | ✅ Totalmente agnóstico (`open source`) | ❌ Dependiente de proveedor (`SaaS`) | ❌ Dependiente de proveedor (`Azure`) | ❌ Dependiente de proveedor (`AWS`) |
+| Gestión operativa               | Gestionada por el equipo | Gestionada por proveedor | Gestionada por proveedor | Gestionada por proveedor |
+| Protocolos soportados (OIDC, SAML, LDAP, SCIM) | OIDC, SAML, LDAP, SCIM | OIDC, SAML, LDAP, SCIM | OIDC, SAML, SCIM | OIDC, SAML (limitado) |
+| MFA/2FA                         | Sí (requiere configuración) | Sí (nativo) | Sí (nativo) | Sí (limitado) |
+| Personalización de login/branding| Alta | Alta | Media | Baja |
+| Facilidad de integración (SDKs, conectores, documentación) | Alta | Alta | Alta | Media |
+| Extensibilidad/Flexibilidad     | Alta | Alta | Media | Baja |
+| Gestión de usuarios y grupos    | Alta (delegable, self-service) | Alta | Alta | Media |
+| Auditoría y reporting           | Media (requiere configuración) | Alta | Alta | Media |
+| Seguridad/Compliance            | Alta (depende de despliegue y hardening) | Alta (certificaciones) | Alta (certificaciones) | Media |
+| Cumplimiento normativo (GDPR, PCI, etc.) | Depende de despliegue | Certificaciones globales | Certificaciones globales | Limitado |
+| Costos                          | Gratis (`open source`) + operación | Pago por usuario | Pago por usuario | Pago por usuario |
+| Licenciamiento                  | OSS | SaaS | Propietario | Propietario |
+| Comunidad y soporte             | Muy alta (open source) | Alta (SaaS) | Muy alta (enterprise) | Media |
+| Portabilidad de datos           | Alta (export/import, backup) | Media | Baja | Baja |
+| Automatización (APIs/IaC)       | Alta | Alta | Alta | Media |
+| Soporte para automatización de flujos (hooks, triggers) | Alta | Alta | Media | Baja |
+| Facilidad de migración          | Alta | Media | Baja | Baja |
+| Performance y escalabilidad real| Alta | Alta | Alta | Media |
+| Time-to-market para nuevas integraciones | Medio | Alto | Medio | Bajo |
+| Riesgo de lock-in               | Bajo | Alto | Alto | Alto |
 
 ### Comparativa de costos estimados (2025)
 

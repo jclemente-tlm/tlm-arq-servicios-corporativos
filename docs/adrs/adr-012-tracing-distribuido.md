@@ -18,14 +18,18 @@ Las alternativas evaluadas fueron:
 
 ### Comparativa de alternativas
 
-| Criterio                | AWS X-Ray | OpenTelemetry/Jaeger | Sin tracing |
-|------------------------|-----------|----------------------|-------------|
-| Agnosticismo           | Bajo (lock-in `AWS`) | Alto (`multi-cloud`, `open source`) | N/A         |
-| Integración AWS        | Nativa    | Parcial              | -           |
-| Escalabilidad          | Alta      | Media                | -           |
-| Costos                 | Pago por uso | Infra propia        | -           |
-| Visualización          | Sí        | Sí                   | No          |
-| Operación              | Gestionada por proveedor | Gestionada por el equipo | -           |
+| Criterio                                              | AWS X-Ray | OpenTelemetry/Jaeger | Sin tracing |
+|-------------------------------------------------------|-----------|----------------------|-------------|
+| Facilidad de integración con frameworks/SDKs modernos | Muy alta (nativo AWS, SDKs .NET, Java, etc.) | Alta (SDKs multi-lenguaje, integración manual) | N/A         |
+| Soporte para estándares abiertos (OpenTelemetry, W3C) | Parcial (exporter, integración indirecta) | Total (OpenTelemetry, W3C Trace Context) | N/A         |
+| Visualización y análisis de trazas (UI, dashboards)   | Alta (consola AWS, Service Map) | Alta (Jaeger UI, Grafana Tempo, etc.) | N/A         |
+| Automatización y DevOps (APIs, IaC, exporters)        | Alta (CloudFormation, APIs) | Alta (exporters, Helm, IaC) | N/A         |
+| Comunidad y soporte                                  | Alta (AWS) | Muy alta (OSS global) | N/A         |
+| Performance y overhead en servicios productivos       | Bajo (gestionado) | Medio (depende de despliegue) | N/A         |
+| Costos totales (licencia, operación, retención)       | Pago por uso | Infra propia | N/A         |
+| Riesgo de lock-in y portabilidad de datos de trazas   | Alto (AWS) | Bajo (estándares abiertos) | N/A         |
+| Facilidad de migración entre soluciones               | Media | Alta | N/A         |
+| Licenciamiento                                        | Propietario | OSS | N/A |
 
 ### Comparativa de costos estimados (2025)
 

@@ -19,17 +19,18 @@ Las alternativas evaluadas fueron:
 
 | Criterio                | SNS + SQS (AWS) | RabbitMQ gestionado | RabbitMQ auto-gestionado |
 |------------------------|-----------------|---------------------|--------------------------|
-| Agnosticismo           | Bajo (lock-in AWS) | Medio (cloud lock-in, portable) | Alto (multi-cloud, on-premises) |
-| Operación              | Gestionada por proveedor      | Gestionada por proveedor          | Gestionada por el equipo           |
+| Agnosticismo           | ❌ Dependiente de proveedor (lock-in AWS) | ❌ Dependiente de proveedor (cloud lock-in, portable) | ✅ Totalmente agnóstico (multi-cloud, on-premises) |
+| Gestión operativa      | Gestionada por proveedor      | Gestionada por proveedor          | Gestionada por el equipo           |
+| Multi-tenant / Multi-país | Sí | Sí | Sí |
+| Alta disponibilidad    | Garantizada     | Requiere configuración | Requiere configuración |
 | Escalabilidad          | Automática      | Manual/limitada     | Manual                   |
-| Integración AWS        | Nativa          | Parcial             | Parcial                  |
-| Fan-out                | Nativo          | Requiere configuración | Requiere configuración |
+| Latencia               | Baja            | Variable            | Variable                 |
 | Seguridad/Compliance   | IAM, cifrado    | SSL, plugins        | SSL, plugins             |
 | Costos                 | Pago por uso    | Pago por instancia  | Infraestructura propia    |
-| Mantenimiento          | Nulo            | Medio               | Alto                     |
-| Alta disponibilidad    | Garantizada     | Requiere configuración | Requiere configuración |
-| Auditoría/Monitoreo    | CloudWatch/CloudTrail | Plugins externos | Plugins externos         |
-| Latencia               | Baja            | Variable            | Variable                 |
+| Licenciamiento         | Propietario     | OSS/Propietario     | OSS                      |
+| Extensibilidad/Flexibilidad | Media       | Alta                | Alta                     |
+| Interoperabilidad      | Alta            | Alta                | Alta                     |
+| Trazabilidad/Auditoría | CloudWatch/CloudTrail | Plugins externos | Plugins externos         |
 
 ### Comparativa de costos estimados (2025)
 

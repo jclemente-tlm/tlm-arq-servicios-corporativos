@@ -20,15 +20,19 @@ Las alternativas evaluadas fueron:
 
 ### Comparativa de alternativas
 
-| Criterio                | CloudWatch | Prometheus/Grafana | ELK Stack | Datadog | New Relic |
-|------------------------|------------|--------------------|-----------|---------|-----------|
-| Agnosticismo           | Bajo (lock-in `AWS`) | Alto (`open source`, `multi-cloud`) | Alto (`open source`, `multi-cloud`) | Alto (`SaaS`, multi-cloud) | Alto (`SaaS`, multi-cloud) |
-| Integración AWS        | Nativa     | Parcial            | Parcial   | Parcial | Parcial   |
-| Escalabilidad          | Alta       | Media              | Media     | Alta    | Alta      |
-| Costos                 | Pago por uso | Infra propia      | Infra propia| Pago por uso | Pago por uso |
-| Alertas                | Sí         | Sí                 | Sí        | Sí      | Sí        |
-| Dashboards             | Sí         | Sí                 | Sí        | Sí      | Sí        |
-| Operación              | Gestionada por proveedor | Gestionada por el equipo | Gestionada por el equipo | Gestionada por proveedor | Gestionada por proveedor |
+| Criterio                                              | CloudWatch | Prometheus/Grafana | ELK Stack | Datadog | New Relic |
+|-------------------------------------------------------|------------|--------------------|-----------|---------|-----------|
+| Facilidad de integración con AWS                      | Muy alta (nativo) | Media | Media | Alta | Alta |
+| Facilidad de integración multi-cloud                  | Baja | Alta | Alta | Muy alta | Muy alta |
+| Soporte para métricas custom y logs estructurados     | Alta (logs y métricas nativos) | Muy alta | Alta (logs, métricas limitadas) | Muy alta | Muy alta |
+| Facilidad de configuración de alertas y dashboards    | Alta (consola web) | Alta (requiere configuración) | Media | Muy alta (UI amigable) | Muy alta (UI amigable) |
+| Automatización y DevOps (IaC, APIs)                   | Alta (CloudFormation, APIs) | Alta (Prometheus Operator, APIs) | Media | Muy alta | Muy alta |
+| Comunidad y soporte                                  | Alta (AWS) | Muy alta (OSS global) | Alta (OSS global) | Muy alta | Muy alta |
+| Performance y retención de datos históricos           | Alta (gestionado) | Media (depende de despliegue) | Media (depende de despliegue) | Muy alta | Muy alta |
+| Costos totales (licencia, operación, retención)       | Pago por uso | Infra propia | Infra propia | Pago por uso | Pago por uso |
+| Riesgo de lock-in y portabilidad de datos             | Alto (AWS) | Bajo | Bajo | Medio | Medio |
+| Facilidad de migración entre soluciones               | Media | Alta | Alta | Media | Media |
+| Licenciamiento                                        | Propietario | OSS | OSS | SaaS | SaaS |
 
 ### Comparativa de costos estimados (2025)
 

@@ -18,14 +18,15 @@ Las alternativas evaluadas fueron:
 ### Comparativa de alternativas
 
 | Criterio                | DLQ en AWS SQS     | Reintentos sin DLQ |
-|-------------------------|--------------------|--------------------|
-| Trazabilidad            | Alta               | Baja               |
-| Recuperación            | Manual/Automatizada| Limitada           |
-| Auditoría               | Integrada ([CloudWatch](https://aws.amazon.com/cloudwatch/)) | Limitada      |
-| Riesgo de pérdida       | Bajo               | Alto               |
-| Costo operativo         | Bajo (incluido en `SQS`) | Bajo              |
-| Mantenimiento           | Bajo               | Bajo               |
-| Ejemplos en la industria| `AWS`, Mercado Libre, Nubank | -           |
+|------------------------|--------------------|--------------------|
+| Recuperación           | Manual/Automatizada| Limitada           |
+| Trazabilidad/Auditoría | Alta (integrada con CloudWatch) | Baja/Limitada |
+| Riesgo de pérdida      | Bajo               | Alto               |
+| Facilidad de análisis  | Alta (mensajes aislados) | Baja (difícil de rastrear) |
+| Integración con monitoreo | Nativa (CloudWatch) | Requiere desarrollo |
+| Costos operativos      | Bajo (incluido en SQS) | Bajo |
+| Mantenimiento          | Bajo               | Bajo               |
+| Ejemplos en la industria| AWS, Mercado Libre, Nubank | - |
 
 ---
 

@@ -18,18 +18,21 @@ Las alternativas evaluadas fueron:
 
 ### Comparativa de alternativas
 
-| Criterio                | AWS Secrets Manager | Azure Key Vault | HashiCorp Vault |
-|------------------------|--------------------|-----------------|-----------------|
-| Agnosticismo           | Bajo (cloud lock-in `AWS`) | Medio (cloud lock-in `Azure`) | Alto (`multi-cloud`, `on-premises`) |
-| Operación              | Gestionada por proveedor         | Gestionada por proveedor      | Gestionada por el equipo  |
-| Seguridad/Compliance   | Alto (`PCI`, `ISO`, `SOC`) | Alto           | Alto            |
-| Integración .NET/IaC   | Excelente          | Buena           | Buena           |
-| Latencia en AWS        | Muy baja           | Alta            | Variable        |
-| Costos                 | Pago por uso, sin infra propia | Pago por uso | Infraestructura dedicada + licencias |
-| Auditoría              | Integrada ([CloudTrail](https://aws.amazon.com/cloudtrail/)) | Integrada      | Requiere configuración |
-| Rotación automática    | Sí                 | Sí              | Requiere scripts |
-| Complejidad operativa  | Muy baja           | Baja            | Alta            |
-| Portabilidad           | Baja               | Baja            | Alta            |
+| Criterio                                              | AWS Secrets Manager | Azure Key Vault | HashiCorp Vault |
+|-------------------------------------------------------|--------------------|-----------------|-----------------|
+| Agnosticismo/Portabilidad                             | ❌ Lock-in AWS | ❌ Lock-in Azure | ✅ Multi-cloud, on-premises |
+| Facilidad de integración cloud/CI/CD                  | Muy alta (AWS, IaC, SDKs) | Alta (Azure, IaC, SDKs) | Alta (multi-cloud, IaC, SDKs) |
+| Soporte para rotación automática de secretos           | Nativo, programable | Nativo, programable | Avanzado, muy flexible |
+| Seguridad avanzada (KMS, HSM, políticas)              | Alta (KMS, IAM, políticas) | Alta (HSM, RBAC) | Muy alta (KMS, HSM, políticas, plugins) |
+| Auditoría y reporting                                 | Integrada (CloudTrail) | Integrada (Azure Monitor) | Requiere configuración (audit devices) |
+| Automatización y APIs (SDKs, CLI, Terraform)          | Muy alta | Alta | Muy alta |
+| Comunidad y soporte                                   | Alta (AWS) | Alta (Azure) | Muy alta (OSS global) |
+| Portabilidad y migración de secretos                  | Media (export/import, scripts) | Media | Alta (formatos estándar, migración flexible) |
+| Facilidad de operación y mantenimiento                | Muy alta (SaaS, gestionado) | Muy alta (SaaS, gestionado) | Baja (requiere operación propia) |
+| Soporte para políticas/compliance                     | Alta (IAM, compliance AWS) | Alta (Azure RBAC, compliance) | Muy alta (OPA, Sentinel, plugins) |
+| Escalabilidad y alta disponibilidad                   | Muy alta (gestionado) | Muy alta (gestionado) | Depende de despliegue |
+| Costos totales (licencia, operación, soporte)         | Pago por uso, sin infra propia | Pago por uso | Infraestructura propia + licencias |
+| Licenciamiento                                        | Propietario | Propietario | OSS |
 
 ### Comparativa de costos estimados (2025)
 

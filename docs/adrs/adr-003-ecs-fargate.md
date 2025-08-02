@@ -19,17 +19,18 @@ Las alternativas evaluadas fueron:
 
 | Criterio                | ECS Fargate         | EC2 gestionado         |
 |------------------------|---------------------|------------------------|
-| Agnosticismo           | Bajo (lock-in `AWS`)  | Medio (cloud lock-in, portable) |
-| Operación              | Gestionada por proveedor | Gestionada por proveedor         |
-| Escalabilidad          | Automática          | Manual                 |
-| Integración AWS        | Nativa              | Nativa                 |
-| Seguridad/Compliance   | `IAM`, aislamiento    | `IAM`, requiere configuración |
-| Costos                 | Pago por uso        | Pago por instancia     |
-| Mantenimiento          | Nulo                | Medio/Alto             |
+| Agnosticismo           | ❌ Dependiente de proveedor (lock-in `AWS`)  | ❌ Dependiente de proveedor (cloud lock-in, portable) |
+| Gestión operativa      | Gestionada por proveedor | Gestionada por proveedor         |
+| Multi-tenant / Multi-país | Sí | Sí |
 | Alta disponibilidad    | Garantizada         | Requiere configuración |
-| Auditoría/Monitoreo    | [CloudWatch](https://aws.amazon.com/cloudwatch/)/[CloudTrail](https://aws.amazon.com/cloudtrail/) | [CloudWatch](https://aws.amazon.com/cloudwatch/)/[CloudTrail](https://aws.amazon.com/cloudtrail/) |
+| Escalabilidad          | Automática          | Manual                 |
 | Latencia               | Baja                | Baja                   |
-| Provisionamiento       | Rápido              | Lento                  |
+| Seguridad/Compliance   | IAM, aislamiento    | IAM, requiere configuración |
+| Costos                 | Pago por uso        | Pago por instancia     |
+| Licenciamiento         | Incluido            | Incluido               |
+| Extensibilidad/Flexibilidad | Media           | Baja                   |
+| Interoperabilidad      | Nativa con AWS      | Nativa con AWS         |
+| Trazabilidad/Auditoría | CloudWatch/CloudTrail | CloudWatch/CloudTrail |
 
 ### Comparativa de costos estimados (2025)
 
