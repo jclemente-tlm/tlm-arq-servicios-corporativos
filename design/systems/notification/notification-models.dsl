@@ -50,6 +50,12 @@ notification = softwareSystem "Notification System" {
         tags "File Storage" "AWS S3" "001 - Fase 1"
     }
 
+    configEventQueue = store "Configuration Event Queue" {
+        description "Cola SQS para eventos de cambios de configuración y feature flags de Notification System"
+        technology "AWS SQS"
+        tags "Message Bus" "SQS" "Configuration" "001 - Fase 1"
+    }
+
     api = application "Notification API" {
         technology "ASP.NET Core, C# .NET 8"
         description "API REST para registro de notificaciones y adjuntos."
@@ -110,9 +116,40 @@ notification = softwareSystem "Notification System" {
         }
 
         configManager = component "Configuration Manager" {
-            technology "C# .NET 8, AWS SDK"
-            description "Lee configuraciones y secretos desde repositorios y plataforma de configuración."
+            technology "C# .NET 8, AWS SDK, IMemoryCache"
+            description "Lee configuraciones y secretos desde repositorios y plataforma de configuración. Incluye cache inteligente con TTL diferenciado y feature flags por país/tenant."
             tags "Configuración" "001 - Fase 1"
+        }
+
+        configCache = component "Configuration Cache" {
+            technology "IMemoryCache, Redis"
+            description "Cache distribuido para configuraciones de Notification System con TTL optimizado por tipo de configuración."
+            tags "Cache" "001 - Fase 1"
+        }
+
+        featureFlagService = component "Feature Flag Service" {
+            technology "C#, AWS SDK"
+            description "Gestiona feature flags por país y tenant para Notification System: habilitar/deshabilitar canales por país, límites de rate por tenant, templates personalizadas."
+            tags "Feature Flags" "001 - Fase 1"
+        }
+
+        // Componentes de Observabilidad
+        healthCheck = component "Health Check" {
+            technology "ASP.NET Core Health Checks"
+            description "Expone endpoints /health, /health/ready, /health/live para monitoring."
+            tags "Observability" "001 - Fase 1"
+        }
+
+        metricsCollector = component "Metrics Collector" {
+            technology "prometheus-net"
+            description "Recolecta métricas de rendimiento: requests/sec, latencia, errores, config cache hit ratio, feature flag usage."
+            tags "Observability" "001 - Fase 1"
+        }
+
+        logger = component "Structured Logger" {
+            technology "Serilog"
+            description "Logging estructurado con correlationId para trazabilidad."
+            tags "Observability" "001 - Fase 1"
         }
     }
 
@@ -173,6 +210,19 @@ notification = softwareSystem "Notification System" {
             technology "C# .NET 8, Entity Framework Core"
             description "Provee configuraciones específicas para cada canal de notificación."
             tags "Configuración" "001 - Fase 1"
+        }
+
+        // Componentes de Observabilidad
+        metricsCollector = component "Metrics Collector" {
+            technology "prometheus-net"
+            description "Recolecta métricas: messages processed/sec, processing time, queue depth."
+            tags "Observability" "001 - Fase 1"
+        }
+
+        logger = component "Structured Logger" {
+            technology "Serilog"
+            description "Logging estructurado con correlationId para trazabilidad."
+            tags "Observability" "001 - Fase 1"
         }
     }
 
@@ -429,123 +479,159 @@ notification = softwareSystem "Notification System" {
         }
     }
 
-    // Relaciones principales
+    // ========================================
+    // RELACIONES INTERNAS DEL SISTEMA
+    // ========================================
+
+    // API - Flujo principal
     api.controller -> api.service "Registra solicitud de notificación" "" "001 - Fase 1"
     api.service -> api.validator "Valida datos de la solicitud" "" "001 - Fase 1"
     api.service -> api.queuePublisher "Encola notificación para procesamiento" "" "001 - Fase 1"
     api.queuePublisher -> queue "Publica mensaje en la cola de notificaciones" "" "001 - Fase 1"
+
+    // API - Gestión de adjuntos
     api.attachmentsController -> api.attachmentService "Registra adjunto" "" "001 - Fase 1"
-    api.attachmentRepository -> db "Guarda metadatos de adjuntos" "" "001 - Fase 1"
     api.attachmentService -> api.attachmentRepository "Accede a metadatos de adjuntos" "" "001 - Fase 1"
     api.attachmentService -> api.attachmentManager "Gestiona archivos adjuntos" "" "001 - Fase 1"
     api.attachmentManager -> storage "Almacena archivo adjunto" "" "001 - Fase 1"
-    api.configManager -> configPlatform.configService "Obtiene configuraciones y secretos" "" "001 - Fase 1"
+    api.attachmentRepository -> db "Guarda metadatos de adjuntos" "" "001 - Fase 1"
+
+    // API - Configuración
+    api.configManager -> api.configCache "consulta cache" "" "001 - Fase 1"
+    api.featureFlagService -> api.configCache "usa cache para flags" "" "001 - Fase 1"
     api.configManager -> api.tenantConfigRepository "Obtiene configuraciones por tenant" "" "001 - Fase 1"
     api.tenantConfigRepository -> db "Accede a configuraciones por tenant" "" "001 - Fase 1"
 
+    // API - Observabilidad
+    api.configManager -> api.metricsCollector "envía métricas de config" "" "001 - Fase 1"
+    api.featureFlagService -> api.metricsCollector "envía métricas de feature flags" "" "001 - Fase 1"
+
+    // Notification Processor - Flujo principal
     queue -> notificationProcessor.consumer "Entrega mensaje para procesamiento" "" "001 - Fase 1"
     notificationProcessor.consumer -> notificationProcessor.service "Procesa mensaje de notificación" "" "001 - Fase 1"
     notificationProcessor.service -> notificationProcessor.messageBuilder "Genera mensaje por canal" "" "001 - Fase 1"
     notificationProcessor.service -> notificationProcessor.adapter "Envía mensaje a canal" "" "001 - Fase 1"
     notificationProcessor.service -> notificationProcessor.repository "Registra notificación procesada" "" "001 - Fase 1"
+
+    // Notification Processor - Configuración
     notificationProcessor.service -> notificationProcessor.configManager "Obtiene configuración y plantillas" "" "001 - Fase 1"
     notificationProcessor.configManager -> notificationProcessor.templateRepository "Obtiene plantillas" "" "001 - Fase 1"
     notificationProcessor.configManager -> notificationProcessor.tenantConfigRepository "Obtiene configuración por tenant" "" "001 - Fase 1"
     notificationProcessor.configManager -> notificationProcessor.channelConfigRepository "Obtiene configuración de canales" "" "001 - Fase 1"
-    notificationProcessor.adapter -> queueEmail "Publica mensaje en cola Email" "" "001 - Fase 1"
-    notificationProcessor.adapter -> queueSms "Publica mensaje en cola SMS" "" "001 - Fase 1"
-    notificationProcessor.adapter -> queueWhatsapp "Publica mensaje en cola WhatsApp" "" "001 - Fase 1"
-    notificationProcessor.adapter -> queuePush "Publica mensaje en cola Push" "" "001 - Fase 1"
+
+    // Notification Processor - Bases de datos
     notificationProcessor.repository -> db "Guarda notificación procesada" "" "001 - Fase 1"
     notificationProcessor.templateRepository -> db "Accede a plantillas" "" "001 - Fase 1"
     notificationProcessor.tenantConfigRepository -> db "Accede a configuración por tenant" "" "001 - Fase 1"
     notificationProcessor.channelConfigRepository -> db "Accede a configuración de canales" "" "001 - Fase 1"
-    emailProcessor.repository -> db "Actualiza estado de notificación email" "Entity Framework Core" "001 - Fase 1"
-    smsProcessor.repository -> db "Actualiza estado de notificación SMS" "Entity Framework Core" "001 - Fase 1"
-    whatsappProcessor.repository -> db "Actualiza estado de notificación WhatsApp" "Entity Framework Core" "001 - Fase 1"
-    pushProcessor.repository -> db "Actualiza estado de notificación Push" "Entity Framework Core" "001 - Fase 1"
-    // notificationProcessor.tenantConfigRepository -> db "Lee y actualiza configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
-    emailProcessor.consumer -> queueEmail "Consume mensaje de Email" "AWS SQS" "001 - Fase 1"
-    emailProcessor.consumer -> emailProcessor.service "Procesa mensaje de Email" "" "001 - Fase 1"
-    emailProcessor.service -> emailProcessor.repository "Actualiza estado de Email" "" "001 - Fase 1"
-    // emailProcessor.repository -> db "Registra estado de notificación" "Entity Framework Core" "001 - Fase 1"
-    emailProcessor.service -> emailProcessor.attachmentFetcher "Obtiene adjuntos para envío" "" "001 - Fase 1"
-    emailProcessor.attachmentFetcher -> storage "Obtiene archivos adjuntos" "AWS S3" "001 - Fase 1"
-    emailProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
-    emailProcessor.configManager -> emailProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
-    // emailProcessor.tenantConfigRepository -> db "Lee y actualiza configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
-    emailProcessor.configManager -> emailProcessor.channelConfigRepository "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
-    emailProcessor.channelConfigRepository -> db "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
-    // emailProcessor.service -> emailProcessor.configManager "Obtiene configuraciones de canal" "" "001 - Fase 1"
-    smsProcessor.consumer -> queueSms "Consume mensaje de SMS" "AWS SQS" "001 - Fase 1"
-    smsProcessor.consumer -> smsProcessor.service "Procesa mensaje de SMS" "" "001 - Fase 1"
-    smsProcessor.service -> smsProcessor.repository "Actualiza estado de notificación SMS" "" "001 - Fase 1"
-    // smsProcessor.repository -> db "Registra estado de notificación" "Entity Framework Core" "001 - Fase 1"
-    // smsProcessor.service -> smsProcessor.attachmentFetcher "Obtiene adjuntos para envío" "" "001 - Fase 1"
-    // smsProcessor.attachmentFetcher -> storage "Obtiene archivos adjuntos" "AWS S3" "001 - Fase 1"
-    smsProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
-    smsProcessor.configManager -> smsProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
-    smsProcessor.tenantConfigRepository -> db "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
-    smsProcessor.configManager -> smsProcessor.channelConfigRepository "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
-    smsProcessor.channelConfigRepository -> db "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
-    // smsProcessor.service -> smsProcessor.configManager "Obtiene configuraciones de canal" "" "001 - Fase 1"
-    whatsappProcessor.consumer -> queueWhatsapp "Consume mensaje de WhatsApp" "AWS SQS" "001 - Fase 1"
-    whatsappProcessor.consumer -> whatsappProcessor.service "Procesa mensaje de WhatsApp" "" "001 - Fase 1"
-    whatsappProcessor.service -> whatsappProcessor.repository "Actualiza estado de notificación WhatsApp" "" "001 - Fase 1"
-    // whatsappProcessor.repository -> db "Registra estado de notificación" "Entity Framework Core" "001 - Fase 1"
-    whatsappProcessor.service -> whatsappProcessor.attachmentFetcher "Obtiene adjuntos para envío" "" "001 - Fase 1"
-    whatsappProcessor.attachmentFetcher -> storage "Obtiene archivos adjuntos" "AWS S3" "001 - Fase 1"
-    whatsappProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
-    whatsappProcessor.configManager -> whatsappProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
-    whatsappProcessor.tenantConfigRepository -> db "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
-    whatsappProcessor.configManager -> whatsappProcessor.channelConfigRepository "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
-    whatsappProcessor.channelConfigRepository -> db "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
-    // whatsappProcessor.service -> whatsappProcessor.configManager "Obtiene configuraciones de canal" "" "001 - Fase 1"
-    pushProcessor.consumer -> queuePush "Consume mensaje de Push" "AWS SQS" "001 - Fase 1"
-    pushProcessor.consumer -> pushProcessor.service "Procesa mensaje de Push" "" "001 - Fase 1"
-    pushProcessor.service -> pushProcessor.repository "Actualiza estado de notificación Push" "" "001 - Fase 1"
-    // pushProcessor.repository -> db "Registra estado de notificación" "Entity Framework Core" "001 - Fase 1"
-    pushProcessor.service -> pushProcessor.attachmentFetcher "Obtiene adjuntos para envío" "" "001 - Fase 1"
-    pushProcessor.attachmentFetcher -> storage "Obtiene archivos adjuntos" "AWS S3" "001 - Fase 1"
-    pushProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
-    pushProcessor.configManager -> pushProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
-    pushProcessor.tenantConfigRepository -> db "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
-    pushProcessor.configManager -> pushProcessor.channelConfigRepository "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
-    pushProcessor.channelConfigRepository -> db "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
 
-    appPeru -> api.controller "Solicita envío de notificación" "HTTPS vía API Gateway" "001 - Fase 1"
-    appEcuador -> api.controller "Solicita envío de notificación" "HTTPS vía API Gateway" "001 - Fase 1"
-    appColombia -> api.controller "Solicita envío de notificación" "HTTPS vía API Gateway" "001 - Fase 1"
-    appMexico -> api.controller "Solicita envío de notificación" "HTTPS vía API Gateway" "001 - Fase 1"
+    // Notification Processor - Distribución por canal
+    notificationProcessor.adapter -> queueEmail "Publica mensaje en cola Email" "" "001 - Fase 1"
+    notificationProcessor.adapter -> queueSms "Publica mensaje en cola SMS" "" "001 - Fase 1"
+    notificationProcessor.adapter -> queueWhatsapp "Publica mensaje en cola WhatsApp" "" "001 - Fase 1"
+    notificationProcessor.adapter -> queuePush "Publica mensaje en cola Push" "" "001 - Fase 1"
 
-    appPeru -> api.attachmentsController "Solicita gestión de adjuntos" "HTTPS vía API Gateway" "001 - Fase 1"
-    appEcuador -> api.attachmentsController "Solicita gestión de adjuntos" "HTTPS vía API Gateway" "001 - Fase 1"
-    appColombia -> api.attachmentsController "Solicita gestión de adjuntos" "HTTPS vía API Gateway" "001 - Fase 1"
-    appMexico -> api.attachmentsController "Solicita gestión de adjuntos" "HTTPS vía API Gateway" "001 - Fase 1"
-
-    // admin -> configurationApi.templatesController "Gestiona plantillas" "HTTPS vía API Gateway" "001 - Fase 1"
-    // admin -> configurationApi.channelsController "Gestiona canales" "HTTPS vía API Gateway" "001 - Fase 1"
-
+    // Scheduler - Notificaciones programadas
     scheduler.worker -> scheduler.service "Procesa notificaciones programadas" "" "001 - Fase 1"
     scheduler.service -> scheduler.repository "Accede a notificaciones programadas" "" "001 - Fase 1"
+    scheduler.service -> scheduler.publisher "Publica notificaciones programadas" "" "001 - Fase 1"
     scheduler.repository -> db "Lee notificaciones programadas" "Entity Framework Core" "001 - Fase 1"
     scheduler.publisher -> queue "Envía notificaciones programadas a la cola de notificación" "AWS SQS" "001 - Fase 1"
-    scheduler.service -> scheduler.publisher "Publica notificaciones programadas" "" "001 - Fase 1"
-    scheduler.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
     scheduler.configManager -> scheduler.tenantConfigRepository "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
     scheduler.tenantConfigRepository -> db "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
 
+    // Email Processor - Flujo
+    emailProcessor.consumer -> queueEmail "Consume mensaje de Email" "AWS SQS" "001 - Fase 1"
+    emailProcessor.consumer -> emailProcessor.service "Procesa mensaje de Email" "" "001 - Fase 1"
+    emailProcessor.service -> emailProcessor.repository "Actualiza estado de Email" "" "001 - Fase 1"
+    emailProcessor.service -> emailProcessor.adapter "Envía mensaje a proveedor de Email" "" "001 - Fase 1"
+    emailProcessor.service -> emailProcessor.attachmentFetcher "Obtiene adjuntos para envío" "" "001 - Fase 1"
+    emailProcessor.repository -> db "Actualiza estado de notificación email" "Entity Framework Core" "001 - Fase 1"
+    emailProcessor.attachmentFetcher -> storage "Obtiene archivos adjuntos" "AWS S3" "001 - Fase 1"
+
+    // Email Processor - Configuración
+    emailProcessor.configManager -> emailProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
+    emailProcessor.configManager -> emailProcessor.channelConfigRepository "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
+    emailProcessor.channelConfigRepository -> db "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
+
+    // SMS Processor - Flujo
+    smsProcessor.consumer -> queueSms "Consume mensaje de SMS" "AWS SQS" "001 - Fase 1"
+    smsProcessor.consumer -> smsProcessor.service "Procesa mensaje de SMS" "" "001 - Fase 1"
+    smsProcessor.service -> smsProcessor.repository "Actualiza estado de notificación SMS" "" "001 - Fase 1"
+    smsProcessor.service -> smsProcessor.adapter "Envía mensaje a proveedor de SMS" "" "001 - Fase 1"
+    smsProcessor.repository -> db "Actualiza estado de notificación SMS" "Entity Framework Core" "001 - Fase 1"
+
+    // SMS Processor - Configuración
+    smsProcessor.configManager -> smsProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
+    smsProcessor.configManager -> smsProcessor.channelConfigRepository "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
+    smsProcessor.tenantConfigRepository -> db "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
+    smsProcessor.channelConfigRepository -> db "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
+
+    // WhatsApp Processor - Flujo
+    whatsappProcessor.consumer -> queueWhatsapp "Consume mensaje de WhatsApp" "AWS SQS" "001 - Fase 1"
+    whatsappProcessor.consumer -> whatsappProcessor.service "Procesa mensaje de WhatsApp" "" "001 - Fase 1"
+    whatsappProcessor.service -> whatsappProcessor.repository "Actualiza estado de notificación WhatsApp" "" "001 - Fase 1"
+    whatsappProcessor.service -> whatsappProcessor.adapter "Envía mensaje a proveedor de WhatsApp" "" "001 - Fase 1"
+    whatsappProcessor.service -> whatsappProcessor.attachmentFetcher "Obtiene adjuntos para envío" "" "001 - Fase 1"
+    whatsappProcessor.repository -> db "Actualiza estado de notificación WhatsApp" "Entity Framework Core" "001 - Fase 1"
+    whatsappProcessor.attachmentFetcher -> storage "Obtiene archivos adjuntos" "AWS S3" "001 - Fase 1"
+
+    // WhatsApp Processor - Configuración
+    whatsappProcessor.configManager -> whatsappProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
+    whatsappProcessor.configManager -> whatsappProcessor.channelConfigRepository "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
+    whatsappProcessor.tenantConfigRepository -> db "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
+    whatsappProcessor.channelConfigRepository -> db "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
+
+    // Push Processor - Flujo
+    pushProcessor.consumer -> queuePush "Consume mensaje de Push" "AWS SQS" "001 - Fase 1"
+    pushProcessor.consumer -> pushProcessor.service "Procesa mensaje de Push" "" "001 - Fase 1"
+    pushProcessor.service -> pushProcessor.repository "Actualiza estado de notificación Push" "" "001 - Fase 1"
+    pushProcessor.service -> pushProcessor.adapter "Envía mensaje a proveedor de Push" "" "001 - Fase 1"
+    pushProcessor.service -> pushProcessor.attachmentFetcher "Obtiene adjuntos para envío" "" "001 - Fase 1"
+    pushProcessor.repository -> db "Actualiza estado de notificación Push" "Entity Framework Core" "001 - Fase 1"
+    pushProcessor.attachmentFetcher -> storage "Obtiene archivos adjuntos" "AWS S3" "001 - Fase 1"
+
+    // Push Processor - Configuración
+    pushProcessor.configManager -> pushProcessor.tenantConfigRepository "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
+    pushProcessor.configManager -> pushProcessor.channelConfigRepository "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
+    pushProcessor.tenantConfigRepository -> db "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
+    pushProcessor.channelConfigRepository -> db "Lee configuraciones de canal" "Entity Framework Core" "001 - Fase 1"
+
+    // Dead Letter Queue - Manejo de errores
     emailProcessor.adapter -> dlq "Envía mensaje fallido a DLQ" "AWS SQS" "DLQ 001 - Fase 1"
     smsProcessor.adapter -> dlq "Envía mensaje fallido a DLQ" "AWS SQS" "DLQ 001 - Fase 1"
     whatsappProcessor.adapter -> dlq "Envía mensaje fallido a DLQ" "AWS SQS" "DLQ 001 - Fase 1"
     pushProcessor.adapter -> dlq "Envía mensaje fallido a DLQ" "AWS SQS" "DLQ 001 - Fase 1"
 
-    // Relaciones entre service y adapter de cada canal
-    emailProcessor.service -> emailProcessor.adapter "Envía mensaje a proveedor de Email" "" "001 - Fase 1"
-    smsProcessor.service -> smsProcessor.adapter "Envía mensaje a proveedor de SMS" "" "001 - Fase 1"
-    whatsappProcessor.service -> whatsappProcessor.adapter "Envía mensaje a proveedor de WhatsApp" "" "001 - Fase 1"
-    pushProcessor.service -> pushProcessor.adapter "Envía mensaje a proveedor de Push" "" "001 - Fase 1"
+    // ========================================
+    // RELACIONES EXTERNAS - ACTORES
+    // ========================================
 
+    // Aplicaciones por país - API
+    appPeru -> api.controller "Solicita envío de notificación" "HTTPS vía API Gateway" "001 - Fase 1"
+    appEcuador -> api.controller "Solicita envío de notificación" "HTTPS vía API Gateway" "001 - Fase 1"
+    appColombia -> api.controller "Solicita envío de notificación" "HTTPS vía API Gateway" "001 - Fase 1"
+    appMexico -> api.controller "Solicita envío de notificación" "HTTPS vía API Gateway" "001 - Fase 1"
+
+    // Aplicaciones por país - Adjuntos
+    appPeru -> api.attachmentsController "Solicita gestión de adjuntos" "HTTPS vía API Gateway" "001 - Fase 1"
+    appEcuador -> api.attachmentsController "Solicita gestión de adjuntos" "HTTPS vía API Gateway" "001 - Fase 1"
+    appColombia -> api.attachmentsController "Solicita gestión de adjuntos" "HTTPS vía API Gateway" "001 - Fase 1"
+    appMexico -> api.attachmentsController "Solicita gestión de adjuntos" "HTTPS vía API Gateway" "001 - Fase 1"
+
+    // ========================================
+    // RELACIONES EXTERNAS - SISTEMAS
+    // ========================================
+
+    // Integración con plataforma de configuración
+    api.configManager -> configPlatform.configService "Obtiene configuraciones y secretos" "" "001 - Fase 1"
+    scheduler.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+    emailProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+    smsProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+    whatsappProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+    pushProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+
+    // Integración con proveedores externos
     emailProcessor.adapter -> emailProvider "Envía notificación a proveedor externo de Email" "HTTPS" "Integración 001 - Fase 1"
     smsProcessor.adapter -> smsProvider "Envía notificación a proveedor externo de SMS" "HTTPS" "Integración 001 - Fase 1"
     whatsappProcessor.adapter -> whatsappProvider "Envía notificación a proveedor externo de WhatsApp" "HTTPS" "Integración 001 - Fase 1"

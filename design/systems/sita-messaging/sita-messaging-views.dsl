@@ -1,6 +1,6 @@
 container sitaMessaging "sita_messaging_system" {
     include *
-    exclude apiGateway sitaMessaging.scheduler
+    exclude apiGateway
     exclude "appPeru -> trackAndTrace"
     exclude "appEcuador -> trackAndTrace"
     exclude "appColombia -> trackAndTrace"
@@ -12,11 +12,11 @@ container sitaMessaging "sita_messaging_system" {
     title "[Diagrama de Contenedores] SITA Messaging System"
 }
 
-component sitaMessaging.api "sita_messaging_system_api" {
+component sitaMessaging.eventProcessor "sita_messaging_system_event_processor" {
     include *
     exclude apiGateway
     // exclude "* -> trackAndTrace"
-    title "[Diagrama de Componentes] SITA Messaging System - API"
+    title "[Diagrama de Componentes] SITA Messaging System - Event Processor"
 }
 
 component sitaMessaging.sender "sita_messaging_system_sender" {

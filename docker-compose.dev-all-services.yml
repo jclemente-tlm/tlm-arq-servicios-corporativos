@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # Redis compartido para cache de configuraciones
+  redis-config:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-config-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # LocalStack para AWS services
+  localstack-all:
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=ssm,sqs,sns,s3
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+    volumes:
+      - "/tmp/localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  # Setup de parámetros para todos los servicios
+  setup-all-configs:
+    image: amazon/aws-cli:latest
+    depends_on:
+      - localstack-all
+    environment:
+      - AWS_ACCESS_KEY_ID=localstack
+      - AWS_SECRET_ACCESS_KEY=localstack
+      - AWS_DEFAULT_REGION=us-east-1
+    entrypoint: /bin/sh
+    command: -c "
+      sleep 15 &&
+
+      # Notification System feature flags
+      aws --endpoint-url=http://localstack-all:4566 ssm put-parameter --name '/corporativo/feature-flags/peru/notification-email' --value 'enabled' --type String &&
+      aws --endpoint-url=http://localstack-all:4566 ssm put-parameter --name '/corporativo/feature-flags/peru/notification-sms' --value 'disabled' --type String &&
+      aws --endpoint-url=http://localstack-all:4566 ssm put-parameter --name '/corporativo/feature-flags/peru/notification-whatsapp' --value 'beta' --type String &&
+      aws --endpoint-url=http://localstack-all:4566 ssm put-parameter --name '/corporativo/feature-flags/peru/notification-push' --value 'enabled' --type String &&
+
+      # Track & Trace feature flags
+      aws --endpoint-url=http://localstack-all:4566 ssm put-parameter --name '/corporativo/feature-flags/peru/track-trace-enrichment' --value 'enabled' --type String &&
+      aws --endpoint-url=http://localstack-all:4566 ssm put-parameter --name '/corporativo/feature-flags/peru/track-trace-realtime' --value 'enabled' --type String &&
+
+      # SITA Messaging feature flags
+      aws --endpoint-url=http://localstack-all:4566 ssm put-parameter --name '/corporativo/feature-flags/peru/sita-messaging' --value 'enabled' --type String &&
+
+      # Configuraciones por país
+      aws --endpoint-url=http://localstack-all:4566 ssm put-parameter --name '/corporativo/config/peru/notification-rate-limit' --value '1000' --type String &&
+      aws --endpoint-url=http://localstack-all:4566 ssm put-parameter --name '/corporativo/config/peru/track-trace-batch-size' --value '100' --type String &&
+      aws --endpoint-url=http://localstack-all:4566 ssm put-parameter --name '/corporativo/config/peru/sita-batch-size' --value '100' --type String &&
+
+      # Ecuador
+      aws --endpoint-url=http://localstack-all:4566 ssm put-parameter --name '/corporativo/config/ecuador/notification-rate-limit' --value '800' --type String &&
+      aws --endpoint-url=http://localstack-all:4566 ssm put-parameter --name '/corporativo/config/ecuador/track-trace-batch-size' --value '500' --type String &&
+
+      echo 'All services configuration setup completed'
+    "
+
+volumes:
+  redis-config-data:
+
+networks:
+  default:
+    name: corporativo-network

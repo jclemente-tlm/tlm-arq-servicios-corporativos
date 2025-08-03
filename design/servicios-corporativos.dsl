@@ -147,6 +147,11 @@ workspace {
             !include ./systems/notification/notification-deployment-models.dsl
             // sitaMessaging.eventProcessor.eventConsumer -> trackAndTrace "Consume eventos de tracking" "RabbitMQ"
         }
+
+        // Infraestructura de Observabilidad
+        infrastructureGroup = group "Infraestructura" {
+            !include ./systems/infrastructure/observability-models.dsl
+        }
     }
 
     views {
@@ -171,6 +176,9 @@ workspace {
         !include ./systems/notification/notification-views.dsl
         !include ./systems/sita-messaging/sita-messaging-views.dsl
         !include ./systems/track-and-trace/track-and-trace-views.dsl
+
+        // Vistas de infraestructura
+        !include ./systems/infrastructure/observability-views.dsl
 
         // Vistas de los sistemas externos
         !include ./systems/notification/notification-deployment-views.dsl
