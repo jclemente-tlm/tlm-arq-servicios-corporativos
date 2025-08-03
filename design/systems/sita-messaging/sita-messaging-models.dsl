@@ -17,10 +17,10 @@ sitaMessaging = softwareSystem "SITA Messaging" {
         tags "Message Bus" "SQS" "001 - Fase 1"
     }
 
-    templateStorage = store "Template Storage" {
-        description "Almacena templates de mensajes SITA por tipo de evento y partner"
-        technology "AWS S3"
-        tags "File Storage" "AWS S3" "001 - Fase 1"
+    sitaMessagingDB = store "SITA Messaging Database" {
+        description "Base de datos PostgreSQL para templates SITA, configuraciones, logs de mensajes y auditoría de eventos"
+        technology "PostgreSQL"
+        tags "Database" "PostgreSQL" "001 - Fase 1"
     }
 
     configEventQueue = store "Configuration Event Queue" {
@@ -53,10 +53,10 @@ sitaMessaging = softwareSystem "SITA Messaging" {
             tags "001 - Fase 1"
         }
 
-        templateProvider = component "Template Provider" {
-            technology "C#"
-            description "Obtiene templates SITA desde almacenamiento por tipo de evento y partner"
-            tags "001 - Fase 1"
+        templateProvider = component "SITA Template Repository" {
+            technology "C#, Entity Framework Core"
+            description "Repositorio especializado para templates SITA almacenados en PostgreSQL con versionado, validación de esquemas y cache por tipo de evento y partner."
+            tags "Template" "001 - Fase 1"
         }
 
         configProvider = component "Configuration Manager" {
@@ -248,7 +248,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
 
     // Event Processor - Flujo principal
     eventProcessor.eventConsumer -> sitaQueue "Consume eventos de seguimiento" "RabbitMQ"
-    eventProcessor.templateProvider -> templateStorage "Lee templates SITA" "AWS S3" "001 - Fase 1"
+    eventProcessor.templateProvider -> sitaMessagingDB "Lee templates SITA" "Entity Framework Core" "001 - Fase 1"
 
     // Event Processor - Base de datos
     eventProcessor.repository -> db "Almacena mensajes generados" "" "001 - Fase 1"

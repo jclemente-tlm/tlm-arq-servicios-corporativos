@@ -172,8 +172,8 @@ notification = softwareSystem "Notification System" {
         }
 
         templateEngine = component "Template Engine" {
-            technology "C# .NET 8"
-            description "Genera contenido final para cada canal aplicando plantillas con datos dinámicos y personalización."
+            technology "C# .NET 8, Liquid Templates"
+            description "Motor de plantillas que procesa templates almacenados en PostgreSQL con variables dinámicas, internacionalización y versionado por tenant."
             tags "Builder" "001 - Fase 1"
         }
 
@@ -197,8 +197,14 @@ notification = softwareSystem "Notification System" {
 
         templateRepository = component "Template Repository" {
             technology "C# .NET 8, Entity Framework Core"
-            description "Provee acceso versionado a plantillas de notificación con soporte para A/B testing."
+            description "Repositorio especializado para gestión de plantillas en PostgreSQL con soporte para versionado, cache, filtrado por tenant/canal/idioma y validación de sintaxis."
             tags "Template" "001 - Fase 1"
+        }
+
+        templateCacheService = component "Template Cache Service" {
+            technology "C# .NET 8, IMemoryCache"
+            description "Cache en memoria para plantillas frecuentemente utilizadas con invalidación automática por cambios en BD y TTL configurable por tenant."
+            tags "Cache" "Template" "001 - Fase 1"
         }
 
         processorTenantConfigRepository = component "Processor Tenant Config Repository" {
@@ -519,6 +525,10 @@ notification = softwareSystem "Notification System" {
     notificationProcessor.processorConfigurationManager -> notificationProcessor.templateRepository "Obtiene plantillas" "" "001 - Fase 1"
     notificationProcessor.processorConfigurationManager -> notificationProcessor.processorTenantConfigRepository "Obtiene configuración por tenant" "" "001 - Fase 1"
     notificationProcessor.processorConfigurationManager -> notificationProcessor.channelConfigurationRepository "Obtiene configuración de canales" "" "001 - Fase 1"
+
+    // Notification Processor - Template Engine y Cache
+    notificationProcessor.templateEngine -> notificationProcessor.templateCacheService "Busca plantillas en cache" "" "001 - Fase 1"
+    notificationProcessor.templateCacheService -> notificationProcessor.templateRepository "Cache miss: obtiene de BD" "" "001 - Fase 1"
 
     // Notification Processor - Bases de datos
     notificationProcessor.notificationRepository -> notificationDB "Guarda notificación procesada" "Entity Framework Core" "001 - Fase 1"
