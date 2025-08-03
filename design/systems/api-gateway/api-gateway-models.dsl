@@ -8,64 +8,46 @@ apiGateway = softwareSystem "API Gateway" {
         tags "API Gateway" "001 - Fase 1"
 
         authentication = component "Authentication Middleware" {
-            technology "Middleware"
+            technology "ASP.NET Core Middleware"
             description "Middleware que autentica usuarios y genera tokens JWT."
             tags "Middleware" "001 - Fase 1"
-
-            admin -> this "Gestiona configuraciones de servicios" "HTTPS" "001 - Fase 1"
-            appPeru -> this "Hace llamadas API" "HTTPS" "001 - Fase 1"
-            appEcuador -> this "Hace llamadas API" "HTTPS" "001 - Fase 1"
-            appColombia -> this "Hace llamadas API" "HTTPS"
-            appMexico -> this "Hace llamadas API" "HTTPS"
         }
 
         tenantResolution = component "Tenant Resolution Middleware" {
-            technology "Middleware"
+            technology "ASP.NET Core Middleware"
             description "Middleware que resuelve el inquilino (tenant) de la solicitud."
             tags "Middleware" "001 - Fase 1"
-
-            authentication -> this "Llama a" "" "001 - Fase 1"
         }
 
         rateLimit = component "Rate Limiting Middleware" {
-            technology "Middleware"
+            technology "ASP.NET Core Middleware"
             description "Middleware que limita la cantidad de solicitudes por usuario."
             tags "Middleware" "001 - Fase 1"
-
-            tenantResolution -> this "Llama a" "" "001 - Fase 1"
         }
 
         // Nuevos componentes de resiliencia
         circuitBreaker = component "Circuit Breaker" {
-            technology "Polly, Middleware"
+            technology "Polly"
             description "Implementa patrón Circuit Breaker para prevenir cascadas de fallos."
-            tags "Middleware, Resilience" "001 - Fase 1"
-
-            rateLimit -> this "Llama a" "" "001 - Fase 1"
+            tags "Middleware" "Resilience" "001 - Fase 1"
         }
 
         retryPolicy = component "Retry Policy Handler" {
-            technology "Polly, Middleware"
+            technology "Polly"
             description "Maneja políticas de reintento con backoff exponencial."
-            tags "Middleware, Resilience" "001 - Fase 1"
-
-            circuitBreaker -> this "Llama a" "" "001 - Fase 1"
+            tags "Middleware" "Resilience" "001 - Fase 1"
         }
 
         timeout = component "Timeout Handler" {
-            technology "Middleware"
+            technology "ASP.NET Core Middleware"
             description "Gestiona timeouts para evitar requests colgantes."
-            tags "Middleware, Resilience" "001 - Fase 1"
-
-            retryPolicy -> this "Llama a" "" "001 - Fase 1"
+            tags "Middleware" "Resilience" "001 - Fase 1"
         }
 
         authorization = component "Authorization Middleware" {
-            technology "Middleware"
+            technology "ASP.NET Core Middleware"
             description "Middleware que valida los tokens JWT y verifica permisos."
             tags "Middleware" "001 - Fase 1"
-
-            timeout -> this "Llama a" "" "001 - Fase 1"
         }
 
         // Componente de observabilidad
@@ -75,4 +57,19 @@ apiGateway = softwareSystem "API Gateway" {
             tags "Observability" "001 - Fase 1"
         }
     }
+
+    // Relaciones del pipeline de middleware
+    yarp.authentication -> yarp.tenantResolution "Pipeline flow" "" "001 - Fase 1"
+    yarp.tenantResolution -> yarp.rateLimit "Pipeline flow" "" "001 - Fase 1"
+    yarp.rateLimit -> yarp.circuitBreaker "Pipeline flow" "" "001 - Fase 1"
+    yarp.circuitBreaker -> yarp.retryPolicy "Pipeline flow" "" "001 - Fase 1"
+    yarp.retryPolicy -> yarp.timeout "Pipeline flow" "" "001 - Fase 1"
+    yarp.timeout -> yarp.authorization "Pipeline flow" "" "001 - Fase 1"
+
+    // Relaciones de actores externos
+    admin -> yarp.authentication "Gestiona configuraciones de servicios" "HTTPS" "001 - Fase 1"
+    appPeru -> yarp.authentication "Hace llamadas API" "HTTPS" "001 - Fase 1"
+    appEcuador -> yarp.authentication "Hace llamadas API" "HTTPS" "001 - Fase 1"
+    appColombia -> yarp.authentication "Hace llamadas API" "HTTPS" "001 - Fase 1"
+    appMexico -> yarp.authentication "Hace llamadas API" "HTTPS" "001 - Fase 1"
 }

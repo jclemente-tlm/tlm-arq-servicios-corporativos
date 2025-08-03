@@ -43,12 +43,12 @@ workspace {
 
         userColombia = person "Usuario Colombia" {
             description "Usuario que usa aplicaciones de Colombia"
-            tags "Colombia"
+            tags "Colombia" "001 - Fase 1"
         }
 
         userMexico = person "Usuario México" {
             description "Usuario que usa aplicaciones de México"
-            tags "Mexico"
+            tags "Mexico" "001 - Fase 1"
         }
 
         consumerGroup = group "Consumidores" {
@@ -62,21 +62,21 @@ workspace {
 
             appEcuador = externalSystem "Aplicaciones Ecuador" {
                 description "Aplicaciones, sistemas y dispositivos de captura"
-                tags "Ecuador"  "001 - Fase 1"
+                tags "Ecuador" "001 - Fase 1"
 
                 userEcuador -> this "Usa"
             }
 
             appColombia = externalSystem "Aplicaciones Colombia" {
                 description "Aplicaciones, sistemas y dispositivos de captura"
-                tags "Colombia"
+                tags "Colombia" "001 - Fase 1"
 
                 userColombia -> this "Usa"
             }
 
             appMexico = externalSystem "Aplicaciones México" {
                 description "Aplicaciones, sistemas y dispositivos de captura"
-                tags "Mexico"
+                tags "Mexico" "001 - Fase 1"
 
                 userMexico -> this "Usa"
             }
@@ -91,18 +91,18 @@ workspace {
             }
 
             smsProvider = softwareSystem "SMS Notification Provider" {
-                description "proveedor de notificaciones SMS"
-                tags "External, SMS, AWS SNS"
+                description "Proveedor de notificaciones SMS"
+                tags "External" "SMS" "AWS SNS" "001 - Fase 1"
             }
 
             whatsappProvider = softwareSystem "WhatsApp Notification Provider" {
-                description "Prov. de notificaciones WhatsApp"
-                tags "External, WhatsApp, Twilio"
+                description "Proveedor de notificaciones WhatsApp"
+                tags "External" "WhatsApp" "Twilio" "001 - Fase 1"
             }
 
             pushProvider = softwareSystem "Push Notification Provider" {
-                description "Proveedor de notificaciones push."
-                tags "External, Push, Firebase"
+                description "Proveedor de notificaciones push"
+                tags "External" "Push" "Firebase" "001 - Fase 1"
             }
         }
 

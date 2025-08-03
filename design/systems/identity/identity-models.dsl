@@ -15,31 +15,31 @@ identity = softwareSystem "Identity System" {
         }
 
         metricsCollector = component "Metrics Collector" {
-            technology "prometheus-net"
+            technology "Prometheus Client"
             description "Recolecta métricas: logins/sec, token validation rate, failed authentications, config cache hit ratio, feature flag usage."
             tags "Observability" "001 - Fase 1"
         }
 
         logger = component "Structured Logger" {
-            technology "Keycloak Logging"
+            technology "Serilog"
             description "Logging estructurado de eventos de autenticación y autorización."
             tags "Observability" "001 - Fase 1"
         }
 
         configManager = component "Configuration Manager" {
-            technology "C#, AWS SDK, IMemoryCache"
+            technology "C# .NET 8"
             description "Lee configuraciones y secretos desde repositorios y plataforma de configuración. Incluye cache inteligente con TTL diferenciado y feature flags por país/tenant."
             tags "Configuración" "001 - Fase 1"
         }
 
         configCache = component "Configuration Cache" {
-            technology "IMemoryCache, Redis"
+            technology "Redis"
             description "Cache distribuido para configuraciones de Identity System con TTL optimizado por tipo de configuración."
             tags "Cache" "001 - Fase 1"
         }
 
         featureFlagService = component "Feature Flag Service" {
-            technology "C#, AWS SDK"
+            technology "C# .NET 8"
             description "Gestiona feature flags por país y tenant para Identity System: configurar proveedores OAuth por país, políticas de autenticación por tenant, timeouts personalizados."
             tags "Feature Flags" "001 - Fase 1"
         }

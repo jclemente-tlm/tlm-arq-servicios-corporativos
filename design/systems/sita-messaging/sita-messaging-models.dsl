@@ -102,8 +102,14 @@ sitaMessaging = softwareSystem "SITA Messaging" {
         }
 
         // Componentes de Observabilidad
+        healthCheck = component "Health Check" {
+            technology "ASP.NET Core Health Checks"
+            description "Expone endpoints /health para monitoring del event processor."
+            tags "Observability" "001 - Fase 1"
+        }
+
         metricsCollector = component "Metrics Collector" {
-            technology "prometheus-net"
+            technology "Prometheus Client"
             description "Recolecta métricas: events processed/sec, SITA generation time, queue depth, config cache hit ratio, feature flag usage."
             tags "Observability" "001 - Fase 1"
         }
@@ -205,8 +211,14 @@ sitaMessaging = softwareSystem "SITA Messaging" {
         }
 
         // Componentes de Observabilidad
+        healthCheck = component "Health Check" {
+            technology "ASP.NET Core Health Checks"
+            description "Expone endpoints /health para monitoring del message sender."
+            tags "Observability" "001 - Fase 1"
+        }
+
         metricsCollector = component "Metrics Collector" {
-            technology "prometheus-net"
+            technology "Prometheus Client"
             description "Recolecta métricas: delivery success rate, send times, partner response times, config cache performance."
             tags "Observability" "001 - Fase 1"
         }
