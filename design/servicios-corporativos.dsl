@@ -186,7 +186,9 @@ workspace {
         // Estilos
         !include ./common/styles/branding.dsl
         !include ./common/styles/default.dsl
-        themes https://static.structurizr.com/themes/amazon-web-services-2020.04.30/theme.json
+
+        // themes https://static.structurizr.com/themes/amazon-web-services-2020.04.30/theme.json
         themes https://static.structurizr.com/themes/amazon-web-services-2023.01.31/theme.json
+
     }
 }

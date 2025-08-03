@@ -122,35 +122,17 @@ notificationSystem = deploymentEnvironment "Notification System" {
             // ====================
             // AWS Messaging
             // ====================
-            sqsNotificationQueue = deploymentNode "SQS - Notification Queue" {
-                tags "Amazon Web Services - Simple Queue Service"
-                description "Cola principal para recepción de solicitudes de notificación desde sistemas externos."
-                containerInstance notification.notificationQueue "DEV,STG,PROD"
+            // ====================
+            // Reliable Messaging Infrastructure
+            // ====================
+            reliableMessageStoreNode = deploymentNode "Reliable Message Store" {
+                tags "PostgreSQL"
+                description "Store de mensajes fiables implementado en PostgreSQL para garantizar cero pérdida de mensajes."
+                // Reliable messaging components están contenidos en notificationDatabase
             }
 
-            sqsEmailQueue = deploymentNode "SQS - Email Queue" {
-                tags "Amazon Web Services - Simple Queue Service"
-                description "Cola específica para procesamiento de notificaciones por correo electrónico."
-                containerInstance notification.emailQueue "DEV,STG,PROD"
-            }
-
-            sqsSmsQueue = deploymentNode "SQS - SMS Queue" {
-                tags "Amazon Web Services - Simple Queue Service"
-                description "Cola específica para procesamiento de notificaciones SMS con integración a proveedores."
-                containerInstance notification.smsQueue "DEV,STG,PROD"
-            }
-
-            sqsWhatsappQueue = deploymentNode "SQS - WhatsApp Queue" {
-                tags "Amazon Web Services - Simple Queue Service"
-                description "Cola específica para procesamiento de notificaciones WhatsApp Business API."
-                containerInstance notification.whatsappQueue "DEV,STG,PROD"
-            }
-
-            sqsPushQueue = deploymentNode "SQS - Push Queue" {
-                tags "Amazon Web Services - Simple Queue Service"
-                description "Cola específica para procesamiento de notificaciones push móviles (FCM/APNS)."
-                containerInstance notification.pushQueue "DEV,STG,PROD"
-            }
+            // Nota: Los componentes de messaging (reliableMessagesTable, deadLetterTable)
+            // están implementados como tablas dentro de notificationDatabase con schema messaging
 
             // ====================
             // AWS Storage & DB
@@ -172,17 +154,18 @@ notificationSystem = deploymentEnvironment "Notification System" {
                     "Instance Type" "DEV: db.t3.micro, STG: db.t3.medium, PROD: db.m5.large"
                     "Storage" "DEV: 20 GB, STG: 50 GB, PROD: 200 GB"
                 }
-                containerInstance notification.notificationDB "DEV,STG,PROD"
+                containerInstance notification.notificationDatabase "DEV,STG,PROD"
             }
 
             // ====================
-            // AWS SNS
+            // Reliable Message Publisher Node
             // ====================
-            snsInfraNode = infrastructureNode "AWS SNS" {
-                tags "Amazon Web Services - Simple Notification Service"
-                description "SNS Topic que distribuye eventos de notificación a las colas SQS por canal."
+            reliablePublisherNode = infrastructureNode "Reliable Message Publisher" {
+                tags "PostgreSQL"
+                description "Infraestructura de publicación de mensajes fiables con garantías ACID."
                 properties {
-                    "Tipo" "SNS Topic"
+                    "Pattern" "Outbox Pattern"
+                    "Garantías" "Exactly-Once Delivery"
                 }
             }
 
@@ -205,9 +188,6 @@ notificationSystem = deploymentEnvironment "Notification System" {
     // ====================
     // Relaciones
     // ====================
-    notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.snsInfraNode "Publica eventos de notificación"
-    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsEmailQueue "Entrega a SQS Email"
-    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsSmsQueue "Entrega a SQS SMS"
-    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsWhatsappQueue "Entrega a SQS Whatsapp"
-    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsPushQueue "Entrega a SQS Push"
+    notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.rdsNode "Accede a base de datos unificada"
+    notificationSystem.aws.region.reliablePublisherNode -> notificationSystem.aws.region.rdsNode "Implementa outbox pattern en PostgreSQL"
 }

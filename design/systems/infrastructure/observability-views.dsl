@@ -57,22 +57,13 @@ systemLandscape "health_monitoring" {
 //     description "Vista detallada de los componentes de observabilidad del procesador de notificaciones."
 // }
 
-// // Vista de métricas de Track & Trace - Ingest API
-// component trackAndTrace.trackingIngestAPI "track_trace_ingest_observability" {
-//     include trackAndTrace.trackingIngestAPI.healthCheck
-//     include trackAndTrace.trackingIngestAPI.metricsCollector
-//     include trackAndTrace.trackingIngestAPI.logger
-//     title "[Track & Trace Ingest] Componentes de Observabilidad"
-//     description "Vista detallada de los componentes de observabilidad del API de ingesta."
-// }
-
-// // Vista de métricas de Track & Trace - Query API
-// component trackAndTrace.trackingQueryAPI "track_trace_query_observability" {
-//     include trackAndTrace.trackingQueryAPI.healthCheck
-//     include trackAndTrace.trackingQueryAPI.metricsCollector
-//     include trackAndTrace.trackingQueryAPI.logger
-//     title "[Track & Trace Query] Componentes de Observabilidad"
-//     description "Vista detallada de los componentes de observabilidad del API de consultas."
+// // Vista de métricas de Track & Trace - API Unificada
+// component trackAndTrace.trackingAPI "track_trace_api_observability" {
+//     include trackAndTrace.trackingAPI.healthCheck
+//     include trackAndTrace.trackingAPI.metricsCollector
+//     include trackAndTrace.trackingAPI.logger
+//     title "[Track & Trace API] Componentes de Observabilidad Unificada"
+//     description "Vista detallada de los componentes de observabilidad del API unificado (ingest + query) con métricas CQRS."
 // }
 
 // // Vista de métricas de Track & Trace - Event Processor

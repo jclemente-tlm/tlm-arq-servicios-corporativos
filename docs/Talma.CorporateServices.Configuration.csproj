@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Package Information -->
+    <PackageId>Talma.CorporateServices.Configuration</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Talma Corporate Services Team</Authors>
+    <Company>Talma Corporation</Company>
+    <Product>Corporate Services Configuration</Product>
+    <Description>Librería agnóstica para gestión de configuración multi-proveedor (AWS, Azure, GCP, Consul, Database) con cache inteligente, observabilidad y resiliencia.</Description>
+    <PackageTags>configuration;aws;azure;gcp;consul;cache;multi-tenant;corporate</PackageTags>
+    <PackageProjectUrl>https://github.com/talma/corporate-services-configuration</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/talma/corporate-services-configuration</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>
+      v1.0.0:
+      - Initial release
+      - Multi-provider support (AWS, Azure, GCP, Consul, Database)
+      - Intelligent caching with TTL and jitter
+      - Country-specific provider configuration
+      - Health checks and observability
+      - Audit trail support
+    </PackageReleaseNotes>
+
+    <!-- Documentation -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+
+    <!-- Source Link for debugging -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <!-- ========================================== -->
+  <!-- CORE DEPENDENCIES - ALWAYS INCLUDED -->
+  <!-- ========================================== -->
+  <ItemGroup>
+    <!-- Microsoft Extensions -->
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
+
+    <!-- Health Checks -->
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="8.0.0" />
+
+    <!-- Observability -->
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.0" />
+    <PackageReference Include="OpenTelemetry" Version="1.6.0" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.6.0" />
+
+    <!-- JSON Serialization -->
+    <PackageReference Include="System.Text.Json" Version="8.0.0" />
+
+    <!-- Source Link -->
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+  </ItemGroup>
+
+  <!-- ========================================== -->
+  <!-- CLOUD PROVIDER SDKS - OPTIONAL BUT INCLUDED -->
+  <!-- ========================================== -->
+  <ItemGroup>
+    <!-- AWS SDK -->
+    <PackageReference Include="AWSSDK.SystemsManagement" Version="3.7.300.0" />
+    <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.300.0" />
+    <PackageReference Include="AWSSDK.Core" Version="3.7.300.0" />
+
+    <!-- Azure SDK -->
+    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.5.0" />
+    <PackageReference Include="Azure.Identity" Version="1.10.4" />
+    <PackageReference Include="Azure.Core" Version="1.35.0" />
+
+    <!-- Google Cloud SDK -->
+    <PackageReference Include="Google.Cloud.SecretManager.V1" Version="2.4.0" />
+    <PackageReference Include="Google.Api.Gax" Version="4.5.0" />
+    <PackageReference Include="Grpc.Core" Version="2.46.6" />
+
+    <!-- HashiCorp Consul -->
+    <PackageReference Include="Consul" Version="1.6.10.9" />
+
+    <!-- Database Support -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+
+    <!-- Polly for Resilience -->
+    <PackageReference Include="Polly" Version="7.2.3" />
+    <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
+  </ItemGroup>
+
+  <!-- ========================================== -->
+  <!-- CONDITIONAL REFERENCES FOR OPTIMIZATION -->
+  <!-- ========================================== -->
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <!-- Development-only packages -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+  </ItemGroup>
+
+  <!-- ========================================== -->
+  <!-- CONTENT FILES FOR PACKAGE -->
+  <!-- ========================================== -->
+  <ItemGroup>
+    <Content Include="README.md" Pack="true" PackagePath="\" />
+    <Content Include="CHANGELOG.md" Pack="true" PackagePath="\" />
+    <Content Include="docs\**\*.md" Pack="true" PackagePath="docs\" />
+  </ItemGroup>
+
+  <!-- ========================================== -->
+  <!-- ASSEMBLY ATTRIBUTES -->
+  <!-- ========================================== -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Talma.CorporateServices.Configuration.Tests</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- ========================================== -->
+  <!-- BUILD TARGETS FOR PACKAGE OPTIMIZATION -->
+  <!-- ========================================== -->
+  <Target Name="PreparePackageReleaseNotesFromFile" BeforeTargets="GenerateNuspec">
+    <ReadLinesFromFile File="CHANGELOG.md" MaxLineCount="50">
+      <Output TaskParameter="Lines" ItemName="ReleaseNoteLines"/>
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <PackageReleaseNotes>@(ReleaseNoteLines, '%0a')</PackageReleaseNotes>
+    </PropertyGroup>
+  </Target>
+
+  <!-- ========================================== -->
+  <!-- PACKAGE VALIDATION -->
+  <!-- ========================================== -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DotNet.PackageValidation" Version="1.0.0-preview.7.21379.12">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion>
+  </PropertyGroup>
+
+  <!-- ========================================== -->
+  <!-- MULTI-TARGETING FOR COMPATIBILITY -->
+  <!-- ========================================== -->
+  <PropertyGroup Condition="'$(BuildForPackage)' == 'true'">
+    <!-- For NuGet package, target multiple frameworks -->
+    <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <!-- ========================================== -->
+  <!-- PACKAGE OPTIMIZATION -->
+  <!-- ========================================== -->
+  <PropertyGroup>
+    <!-- Trim unused assemblies in package -->
+    <TrimUnusedDependencies>true</TrimUnusedDependencies>
+
+    <!-- Enable nullable reference types -->
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <WarningsNotAsErrors>NU1603;NU1605</WarningsNotAsErrors>
+
+    <!-- Code analysis -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+  </PropertyGroup>
+
+  <!-- ========================================== -->
+  <!-- PACKAGE METADATA FOR DISCOVERABILITY -->
+  <!-- ========================================== -->
+  <PropertyGroup>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

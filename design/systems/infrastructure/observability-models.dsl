@@ -132,8 +132,7 @@ observabilitySystem = softwareSystem "Observability Platform" {
 
     // Relaciones con servicios monitoreados - Metrics
     prometheus.metricsServer -> notification.api.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
-    prometheus.metricsServer -> trackAndTrace.trackingIngestAPI.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
-    prometheus.metricsServer -> trackAndTrace.trackingQueryAPI.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> trackAndTrace.trackingAPI.metricsCollector "Scrape métricas unificadas (ingest + query)" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> trackAndTrace.trackingEventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> sitaMessaging.eventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> sitaMessaging.sender.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
@@ -142,8 +141,7 @@ observabilitySystem = softwareSystem "Observability Platform" {
 
     loki.logsCollector -> notification.api.logger "Recolecta logs" "File System" "001 - Fase 1"
     loki.logsCollector -> notification.notificationProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
-    loki.logsCollector -> trackAndTrace.trackingIngestAPI.logger "Recolecta logs" "File System" "001 - Fase 1"
-    loki.logsCollector -> trackAndTrace.trackingQueryAPI.logger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> trackAndTrace.trackingAPI.logger "Recolecta logs unificados (ingest + query)" "File System" "001 - Fase 1"
     loki.logsCollector -> trackAndTrace.trackingEventProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
     loki.logsCollector -> sitaMessaging.eventProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
     loki.logsCollector -> sitaMessaging.sender.logger "Recolecta logs" "File System" "001 - Fase 1"
@@ -151,8 +149,7 @@ observabilitySystem = softwareSystem "Observability Platform" {
 
     // Health Checks monitoring
     prometheus.metricsServer -> notification.api.healthCheck "Health check" "HTTP" "001 - Fase 1"
-    prometheus.metricsServer -> trackAndTrace.trackingIngestAPI.healthCheck "Health check" "HTTP" "001 - Fase 1"
-    prometheus.metricsServer -> trackAndTrace.trackingQueryAPI.healthCheck "Health check" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> trackAndTrace.trackingAPI.healthCheck "Health check unificado (ingest + query)" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> sitaMessaging.eventProcessor.healthCheck "Health check" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> sitaMessaging.sender.healthCheck "Health check" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> identity.identityService.healthCheck "Health check" "HTTP" "001 - Fase 1"

@@ -26,21 +26,21 @@ identity = softwareSystem "Identity & Authentication System" {
             tags "Observability" "001 - Fase 1"
         }
 
-        identityConfigurationManager = component "Identity Configuration Manager" {
-            technology "C# .NET 8"
-            description "Gestiona configuraciones dinámicas de seguridad, proveedores OAuth y políticas por tenant."
+        identityConfigurationManager = component "Identity Configuration Provider" {
+            technology "C# .NET 8, IConfigurationProvider"
+            description "Proveedor agnóstico para configuraciones de seguridad con cache local: proveedores OAuth, políticas y timeouts por tenant."
             tags "Configuración" "001 - Fase 1"
         }
 
-        identityConfigurationCache = component "Identity Configuration Cache" {
-            technology "Redis"
-            description "Cache distribuido para configuraciones de seguridad con invalidación selectiva y TTL por tipo de política."
+        identityConfigurationCache = component "Local Security Configuration Cache" {
+            technology "IMemoryCache"
+            description "Cache local para configuraciones de seguridad con polling inteligente (TTL: 30min) e invalidación por políticas críticas."
             tags "Cache" "001 - Fase 1"
         }
 
         securityFeatureFlagService = component "Security Feature Flag Service" {
-            technology "C# .NET 8"
-            description "Gestiona feature flags de seguridad: proveedores OAuth por país, políticas MFA por tenant, timeouts personalizados."
+            technology "C# .NET 8, IConfigurationProvider"
+            description "Servicio agnóstico para feature flags de seguridad: proveedores OAuth por país, políticas MFA por tenant, con cache local."
             tags "Feature Flags" "001 - Fase 1"
         }
     }
@@ -51,12 +51,6 @@ identity = softwareSystem "Identity & Authentication System" {
         tags "Database" "PostgreSQL" "001 - Fase 1"
     }
 
-    identityConfigurationEventQueue = store "Identity Configuration Event Queue" {
-        description "Cola para eventos de cambios de configuración de seguridad y actualizaciones de feature flags."
-        technology "AWS SQS"
-        tags "Message Bus" "SQS" "Configuration" "001 - Fase 1"
-    }
-
     // ========================================
     // RELACIONES INTERNAS DEL SISTEMA
     // ========================================
@@ -64,9 +58,11 @@ identity = softwareSystem "Identity & Authentication System" {
     // Relaciones básicas del servicio
     identityService -> identityDatabase "Gestiona datos de usuarios, roles y configuración de seguridad" "PostgreSQL" "001 - Fase 1"
 
-    // Relaciones de componentes de configuración
-    identityService.identityConfigurationManager -> identityService.identityConfigurationCache "Consulta cache de configuraciones" "" "001 - Fase 1"
-    identityService.securityFeatureFlagService -> identityService.identityConfigurationCache "Consulta feature flags desde cache" "" "001 - Fase 1"
+    // Relaciones de componentes de configuración (Cache-first pattern)
+    identityService.identityConfigurationManager -> identityService.identityConfigurationCache "Cache-first: busca configuración" "" "001 - Fase 1"
+    identityService.identityConfigurationCache -> configPlatform.configService "Cache miss: polling inteligente (TTL: 30min)" "HTTPS" "001 - Fase 1"
+    identityService.identityConfigurationCache -> configPlatform.secretsService "Cache miss: obtiene secretos" "HTTPS" "001 - Fase 1"
+    identityService.securityFeatureFlagService -> identityService.identityConfigurationCache "Evalúa feature flags desde cache" "" "001 - Fase 1"
 
     // Relaciones de observabilidad
     identityService.identityConfigurationManager -> identityService.metricsCollector "Envía métricas de configuración" "" "001 - Fase 1"
@@ -92,7 +88,5 @@ identity = softwareSystem "Identity & Authentication System" {
     // Integración con API Gateway
     apiGateway.reverseProxyGateway.authorizationMiddleware -> identityService "Redirige solicitudes de autorización" "HTTPS" "001 - Fase 1"
 
-    // Integración con plataforma de configuración
-    identityService.identityConfigurationManager -> configPlatform.configService "Lee configuraciones y secretos" "HTTPS" "001 - Fase 1"
-    identityService.identityConfigurationManager -> configPlatform.secretsService "Lee secretos y credenciales" "HTTPS" "001 - Fase 1"
+    // Configuración agnóstica ya configurada arriba
 }

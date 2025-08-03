@@ -2,31 +2,31 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     description "Gestiona la mensajería SITA para los diferentes países basado en eventos de Track & Trace"
     tags "SITA Messaging" "001 - Fase 1"
 
-    sitaQueue = store "SITA Message Queue" {
-        description "Cola SQS que recibe eventos de Track & Trace para procesar mensajería SITA"
-        technology "AWS SQS"
-        tags "Message Bus" "SQS" "001 - Fase 1"
+    // ========================================
+    // DATA STORES - ARQUITECTURA DE ESQUEMAS SEPARADOS
+    // ========================================
+    // DECISIÓN ARQUITECTÓNICA: Fase 1 usa esquemas separados en misma PostgreSQL
+    // - Schema 'business': Templates SITA, configuraciones, logs y auditoría
+    // - Schema 'messaging': Reliable messaging para eventos de Track & Trace
+    // INTEGRACIÓN: Consume eventos cross-system desde trackAndTrace.reliableMessageStore
+    // DELIVERY: Genera y envía archivos SITA a partners externos
+
+    reliableMessageStore = store "SITA Reliable Message Store" {
+        description "Almacén confiable para eventos SITA implementado como esquema 'messaging' en la misma PostgreSQL con outbox pattern, garantías ACID y soporte agnóstico para múltiples proveedores"
+        technology "PostgreSQL (Schema: messaging) + Messaging Abstraction"
+        tags "Message Store" "PostgreSQL" "Reliability" "Shared Database" "001 - Fase 1"
     }
 
-    // Integración con Track & Trace - el proceso inicia aquí
-    // trackAndTrace.eventBroadcaster -> sitaQueue "Fan-out de eventos enriquecidos" "AWS SNS -> SQS" "001 - Fase 1"
-
-    sitaDeadLetterQueue = store "SITA Dead Letter Queue" {
-        description "Cola para eventos SITA que fallaron después de reintentos"
-        technology "AWS SQS"
-        tags "Message Bus" "SQS" "001 - Fase 1"
+    sitaDeadLetterStore = store "SITA Dead Letter Store" {
+        description "Almacén durável para eventos SITA fallidos implementado en esquema 'messaging' con análisis de fallos y retry automático"
+        technology "PostgreSQL (Schema: messaging)"
+        tags "Message Store" "PostgreSQL" "DLQ" "Shared Database" "001 - Fase 1"
     }
 
     sitaMessagingDB = store "SITA Messaging Database" {
-        description "Base de datos PostgreSQL para templates SITA, configuraciones, logs de mensajes y auditoría de eventos"
-        technology "PostgreSQL"
-        tags "Database" "PostgreSQL" "001 - Fase 1"
-    }
-
-    configEventQueue = store "Configuration Event Queue" {
-        description "Cola SQS para eventos de cambios de configuración y feature flags"
-        technology "AWS SQS"
-        tags "Message Bus" "SQS" "Configuration" "001 - Fase 1"
+        description "Base de datos PostgreSQL con esquemas separados: 'business' para templates SITA/configuraciones/logs/auditoría, 'messaging' para reliable messaging"
+        technology "PostgreSQL (Schemas: business, messaging)"
+        tags "Database" "PostgreSQL" "Multi-Schema" "001 - Fase 1"
     }
 
     // Nuevo worker para procesar eventos SITA
@@ -35,10 +35,10 @@ sitaMessaging = softwareSystem "SITA Messaging" {
         description "Procesa eventos de generación de mensajes SITA"
         tags "CSharp" "001 - Fase 1"
 
-        eventConsumer = component "Event Consumer" {
-            technology "C#, RabbitMQ Client"
-            description "Consume eventos de la cola de mensajes de Track & Trace"
-            tags "001 - Fase 1"
+        reliableEventConsumer = component "Reliable Event Consumer" {
+            technology "C#, IReliableMessageConsumer"
+            description "Consumer agnóstico con acknowledgments, retry patterns y procesamiento confiable para eventos SITA"
+            tags "Messaging" "Reliability" "001 - Fase 1"
         }
 
         eventHandler = component "Event Handler" {
@@ -59,15 +59,15 @@ sitaMessaging = softwareSystem "SITA Messaging" {
             tags "Template" "001 - Fase 1"
         }
 
-        configProvider = component "Configuration Manager" {
-            technology "C#, AWS SDK, IMemoryCache"
-            description "Lee configuraciones y secretos desde repositorios y plataforma de configuración con cache inteligente (TTL: 5min). Usado por otros componentes vía inyección de dependencias."
-            tags "001 - Fase 1"
+        configProvider = component "Configuration Provider" {
+            technology "C# .NET 8, IConfigurationProvider"
+            description "Proveedor agnóstico de configuraciones SITA con implementaciones intercambiables para diferentes backends de configuración."
+            tags "Configuración" "001 - Fase 1"
         }
 
-        configCache = component "Configuration Cache" {
-            technology "IMemoryCache, Redis"
-            description "Cache distribuido para configuraciones con invalidación automática y fallback a Parameter Store."
+        configCache = component "Local Configuration Cache" {
+            technology "IMemoryCache"
+            description "Cache local para configuraciones SITA con polling inteligente (TTL: 30min, jitter: ±25%) y fallback al proveedor."
             tags "Cache" "001 - Fase 1"
         }
 
@@ -247,7 +247,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     // ========================================
 
     // Event Processor - Flujo principal
-    eventProcessor.eventConsumer -> sitaQueue "Consume eventos de seguimiento" "RabbitMQ"
+    reliableMessageStore -> eventProcessor.reliableEventConsumer "Consume eventos de seguimiento confiablemente" "PostgreSQL/AMQP"
     eventProcessor.templateProvider -> sitaMessagingDB "Lee templates SITA" "Entity Framework Core" "001 - Fase 1"
 
     // Event Processor - Base de datos
@@ -257,10 +257,10 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     eventProcessor.fileManager -> fileStorage "Sube archivos generados" "" "001 - Fase 1"
 
     // Event Processor - Resiliencia
-    eventProcessor.deadLetterProcessor -> sitaDeadLetterQueue "Envía eventos fallidos" "AWS SQS" "001 - Fase 1"
+    eventProcessor.deadLetterProcessor -> sitaDeadLetterStore "Envía eventos fallidos a DLQ durável" "PostgreSQL" "001 - Fase 1"
 
     // Event Processor - Configuración dinámica
-    eventProcessor.configEventProcessor -> configEventQueue "Consume eventos de config" "AWS SQS" "001 - Fase 1"
+    // Configuración agnóstica eliminada - se usa cache local con polling
 
     // Sender - Archivos y datos
     sender.fileFetcher -> fileStorage "Obtiene archivos SITA generados" "HTTPS" "001 - Fase 1"
@@ -268,17 +268,17 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     sender.deliveryTracker -> db "Almacena estado de entregas" "" "001 - Fase 1"
 
     // ========================================
+    // ========================================
     // RELACIONES EXTERNAS - SISTEMAS
     // ========================================
 
-    // Integración con plataforma de configuración
-    eventProcessor.configProvider -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
-    eventProcessor.configProvider -> configPlatform.secretsService "Lee configuraciones y secretos" "" "001 - Fase 1"
-    sender.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
-    sender.configManager -> configPlatform.secretsService "Lee configuraciones y secretos" "" "001 - Fase 1"
+    // Configuración agnóstica con cache local (Cache-first pattern)
+    eventProcessor.configProvider -> eventProcessor.configCache "Cache-first: busca configuración" "" "001 - Fase 1"
+    eventProcessor.configCache -> configPlatform.configService "Cache miss: polling inteligente (TTL: 30min)" "HTTPS" "001 - Fase 1"
+    eventProcessor.configCache -> configPlatform.secretsService "Cache miss: obtiene secretos" "HTTPS" "001 - Fase 1"
 
-    // Feature flags y configuración dinámica
-    eventProcessor.featureFlagService -> configPlatform.configService "Lee feature flags por país/tenant" "HTTPS" "001 - Fase 1"
+    // Feature flags desde cache local
+    eventProcessor.featureFlagService -> eventProcessor.configCache "Evalúa feature flags desde cache" "" "001 - Fase 1"
 
     // Integración con Notification System para envío de emails
     sender.messageSender -> notification.api.notificationController "Solicita envío de emails SITA" "HTTPS via API Gateway" "001 - Fase 1"
@@ -292,19 +292,17 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     // ========================================
 
     // Event Processor - Flujo principal
-    eventProcessor.eventConsumer -> eventProcessor.eventHandler "Envía eventos para procesar" "" "001 - Fase 1"
+    eventProcessor.reliableEventConsumer -> eventProcessor.eventHandler "Envía eventos para procesar" "" "001 - Fase 1"
     eventProcessor.eventHandler -> eventProcessor.service "Solicita generación" "" "001 - Fase 1"
     eventProcessor.service -> eventProcessor.templateProvider "Obtiene template" "" "001 - Fase 1"
 
-    // Event Processor - Configuración
-    eventProcessor.service -> eventProcessor.configProvider "obtiene configuración" "" "001 - Fase 1"
-    eventProcessor.configProvider -> eventProcessor.configCache "consulta cache" "" "001 - Fase 1"
-    eventProcessor.configProvider -> eventProcessor.tenantConfigRepository "Lee configuración por tenant" "EF Core" "001 - Fase 1"
+    // Event Processor - Configuración (Cache-first pattern)
+    eventProcessor.service -> eventProcessor.configProvider "Obtiene configuración" "" "001 - Fase 1"
+    eventProcessor.configProvider -> eventProcessor.tenantConfigRepository "Configuraciones específicas por tenant" "EF Core" "001 - Fase 1"
 
     // Event Processor - Servicios auxiliares
     eventProcessor.service -> eventProcessor.auditService "registra operaciones" "" "001 - Fase 1"
     eventProcessor.service -> eventProcessor.featureFlagService "consulta feature flags" "" "001 - Fase 1"
-    eventProcessor.featureFlagService -> eventProcessor.configCache "usa cache para flags" "" "001 - Fase 1"
 
     // Event Processor - Resiliencia
     eventProcessor.eventHandler -> eventProcessor.retryHandler "usa" "" "001 - Fase 1"
