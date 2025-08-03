@@ -9,7 +9,7 @@ container notification "notification_system" {
 //     include *
 //     exclude apiGateway
 //     // exclude "* -> trackAndTrace"
-//     exclude notification.scheduler notification.smsProcessor notification.whatsappProcessor notification.pushProcessor
+//     exclude notification.notificationScheduler notification.smsProcessor notification.whatsappProcessor notification.pushProcessor
 //     exclude smsProvider whatsappProvider pushProvider
 //     title "[Diagrama de Contenedores] Notification System - Fase 1"
 // }
@@ -28,7 +28,7 @@ component notification.notificationProcessor "notification_system_processor" {
     title "[Diagrama de Componentes] Notification System - Processor"
 }
 
-component notification.scheduler "notification_system_scheduler" {
+component notification.notificationScheduler "notification_system_scheduler" {
     include *
     exclude apiGateway
     title "[Diagrama de Componentes] Notification System - Scheduler"

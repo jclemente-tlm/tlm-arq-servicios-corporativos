@@ -8,21 +8,21 @@ observabilitySystem = softwareSystem "Observability Platform" {
         description "Sistema de monitoreo y base de datos de series temporales para métricas."
         tags "Prometheus" "Metrics" "001 - Fase 1"
 
-        server = component "Prometheus Server" {
+        metricsServer = component "Metrics Server" {
             technology "Prometheus"
-            description "Servidor principal que scrapes métricas de todos los servicios."
+            description "Recolecta y almacena métricas de todos los microservicios mediante scraping HTTP."
             tags "001 - Fase 1"
         }
 
         alertManager = component "Alert Manager" {
             technology "Prometheus AlertManager"
-            description "Gestiona alertas basadas en métricas y las envía a canales configurados."
+            description "Procesa reglas de alertas y envía notificaciones a canales configurados (email, Slack, webhooks)."
             tags "001 - Fase 1"
         }
 
         pushGateway = component "Push Gateway" {
             technology "Prometheus Push Gateway"
-            description "Gateway para recibir métricas de jobs batch o servicios sin scraping."
+            description "Recibe métricas de jobs batch y servicios efímeros que no pueden ser scrapeados."
             tags "001 - Fase 1"
         }
     }
@@ -33,21 +33,21 @@ observabilitySystem = softwareSystem "Observability Platform" {
         description "Plataforma de dashboards y visualización de métricas y logs."
         tags "Grafana" "Visualization" "001 - Fase 1"
 
-        dashboards = component "Dashboards" {
+        visualizationDashboards = component "Visualization Dashboards" {
             technology "Grafana Dashboards"
-            description "Dashboards predefinidos para cada microservicio y métricas de negocio."
+            description "Paneles de control personalizados para visualización de métricas de negocio y operacionales."
             tags "001 - Fase 1"
         }
 
-        alerting = component "Grafana Alerting" {
+        alertingEngine = component "Alerting Engine" {
             technology "Grafana Alerts"
-            description "Sistema de alertas unificado con múltiples canales de notificación."
+            description "Motor de alertas unificado con reglas configurables y múltiples canales de notificación."
             tags "001 - Fase 1"
         }
 
-        userManagement = component "User Management" {
-            technology "Grafana Auth"
-            description "Gestión de usuarios y permisos para acceso a dashboards."
+        accessControl = component "Access Control" {
+            technology "Grafana RBAC"
+            description "Control de acceso basado en roles para dashboards y funcionalidades por usuario."
             tags "001 - Fase 1"
         }
     }
@@ -58,15 +58,15 @@ observabilitySystem = softwareSystem "Observability Platform" {
         description "Sistema de agregación y consulta de logs distribuidos."
         tags "Loki" "Logging" "001 - Fase 1"
 
-        logAggregator = component "Log Aggregator" {
+        logsAggregator = component "Logs Aggregator" {
             technology "Loki"
-            description "Agrega logs de todos los servicios con labels para filtrado."
+            description "Centraliza y indexa logs de todos los microservicios con etiquetas para consultas eficientes."
             tags "001 - Fase 1"
         }
 
-        promtail = component "Promtail" {
+        logsCollector = component "Logs Collector" {
             technology "Promtail"
-            description "Agente que recolecta logs de cada servicio y los envía a Loki."
+            description "Agente distribuido que recolecta logs de archivos y containers, enviándolos a Loki."
             tags "001 - Fase 1"
         }
     }
@@ -77,87 +77,87 @@ observabilitySystem = softwareSystem "Observability Platform" {
         description "Sistema de tracing distribuido para seguimiento de requests entre servicios."
         tags "Jaeger" "Tracing" "002 - Fase 2"
 
-        collector = component "Jaeger Collector" {
+        tracingCollector = component "Tracing Collector" {
             technology "Jaeger"
-            description "Recolecta spans de tracing de todos los servicios."
+            description "Recolecta spans de trazabilidad distribuida de todos los microservicios."
             tags "002 - Fase 2"
         }
 
-        query = component "Jaeger Query" {
+        tracingUI = component "Tracing UI" {
             technology "Jaeger UI"
-            description "Interface web para consultar y visualizar trazas distribuidas."
+            description "Interfaz web para consultar, filtrar y visualizar trazas distribuidas de requests."
             tags "002 - Fase 2"
         }
 
-        agent = component "Jaeger Agent" {
+        tracingAgent = component "Tracing Agent" {
             technology "Jaeger Agent"
-            description "Agente local que recolecta spans y los envía al collector."
+            description "Agente local que bufferiza spans y los reenvía al collector de manera optimizada."
             tags "002 - Fase 2"
         }
     }
 
     // Almacenamiento
-    metricsStorage = store "Metrics Storage" {
+    shortTermMetrics = store "Short Term Metrics" {
         technology "Prometheus TSDB"
-        description "Base de datos de series temporales para métricas de corto plazo (15 días)."
+        description "Base de datos de series temporales para métricas de alta frecuencia con retención de 15 días."
         tags "Storage" "TSDB" "001 - Fase 1"
     }
 
-    longTermStorage = store "Long Term Storage" {
+    longTermMetrics = store "Long Term Metrics" {
         technology "AWS S3 + Thanos"
-        description "Almacenamiento de largo plazo para métricas históricas (2+ años)."
+        description "Almacenamiento de largo plazo para métricas históricas con compresión y retención de 2+ años."
         tags "Storage" "S3" "002 - Fase 2"
     }
 
-    logsStorage = store "Logs Storage" {
+    distributedLogs = store "Distributed Logs" {
         technology "AWS S3"
-        description "Almacenamiento de logs con compresión y lifecycle policies."
+        description "Almacenamiento escalable de logs con compresión, particionado y políticas de lifecycle."
         tags "Storage" "S3" "001 - Fase 1"
     }
 
-    tracingStorage = store "Tracing Storage" {
+    distributedTraces = store "Distributed Traces" {
         technology "Elasticsearch/Cassandra"
-        description "Almacenamiento de traces distribuidos con indexado eficiente."
+        description "Almacenamiento de trazas distribuidas con indexado por correlationId y filtrado eficiente."
         tags "Storage" "Elasticsearch" "002 - Fase 2"
     }
 
     // Relaciones internas
-    prometheus.server -> metricsStorage "Almacena métricas" "Prometheus TSDB" "001 - Fase 1"
-    prometheus.alertManager -> notification.api.controller "Envía alertas" "HTTPS" "001 - Fase 1"
-    grafana.dashboards -> prometheus.server "Query métricas" "PromQL" "001 - Fase 1"
-    grafana.dashboards -> loki.logAggregator "Query logs" "LogQL" "001 - Fase 1"
-    grafana.alerting -> notification.api.controller "Envía alertas" "HTTPS" "001 - Fase 1"
-    loki.logAggregator -> logsStorage "Almacena logs" "AWS S3" "001 - Fase 1"
-    jaeger.collector -> tracingStorage "Almacena traces" "" "002 - Fase 2"
+    prometheus.metricsServer -> shortTermMetrics "Almacena métricas" "Prometheus TSDB" "001 - Fase 1"
+    prometheus.alertManager -> notification.api.notificationController "Envía alertas" "HTTPS" "001 - Fase 1"
+    grafana.visualizationDashboards -> prometheus.metricsServer "Query métricas" "PromQL" "001 - Fase 1"
+    grafana.visualizationDashboards -> loki.logsAggregator "Query logs" "LogQL" "001 - Fase 1"
+    grafana.alertingEngine -> notification.api.notificationController "Envía alertas" "HTTPS" "001 - Fase 1"
+    loki.logsAggregator -> distributedLogs "Almacena logs" "AWS S3" "001 - Fase 1"
+    jaeger.tracingCollector -> distributedTraces "Almacena traces" "" "002 - Fase 2"
 
     // Relaciones con servicios monitoreados - Metrics
-    prometheus.server -> notification.api.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
-    prometheus.server -> trackAndTrace.ingestApi.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
-    prometheus.server -> trackAndTrace.queryApi.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
-    prometheus.server -> trackAndTrace.eventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
-    prometheus.server -> sitaMessaging.eventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
-    prometheus.server -> sitaMessaging.sender.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
-    prometheus.server -> identity.service.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
-    prometheus.server -> apiGateway.yarp.healthCheck "Scrape métricas y health" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> notification.api.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> trackAndTrace.trackingIngestAPI.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> trackAndTrace.trackingQueryAPI.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> trackAndTrace.trackingEventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> sitaMessaging.eventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> sitaMessaging.sender.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> identity.identityService.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> apiGateway.reverseProxyGateway.gatewayHealthAggregator "Scrape métricas y health" "HTTP" "001 - Fase 1"
 
-    loki.promtail -> notification.api.logger "Recolecta logs" "File System" "001 - Fase 1"
-    loki.promtail -> notification.notificationProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
-    loki.promtail -> trackAndTrace.ingestApi.logger "Recolecta logs" "File System" "001 - Fase 1"
-    loki.promtail -> trackAndTrace.queryApi.logger "Recolecta logs" "File System" "001 - Fase 1"
-    loki.promtail -> trackAndTrace.eventProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
-    loki.promtail -> sitaMessaging.eventProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
-    loki.promtail -> sitaMessaging.sender.logger "Recolecta logs" "File System" "001 - Fase 1"
-    loki.promtail -> identity.service.logger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> notification.api.logger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> notification.notificationProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> trackAndTrace.trackingIngestAPI.logger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> trackAndTrace.trackingQueryAPI.logger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> trackAndTrace.trackingEventProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> sitaMessaging.eventProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> sitaMessaging.sender.logger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> identity.identityService.logger "Recolecta logs" "File System" "001 - Fase 1"
 
     // Health Checks monitoring
-    prometheus.server -> notification.api.healthCheck "Health check" "HTTP" "001 - Fase 1"
-    prometheus.server -> trackAndTrace.ingestApi.healthCheck "Health check" "HTTP" "001 - Fase 1"
-    prometheus.server -> trackAndTrace.queryApi.healthCheck "Health check" "HTTP" "001 - Fase 1"
-    prometheus.server -> sitaMessaging.eventProcessor.healthCheck "Health check" "HTTP" "001 - Fase 1"
-    prometheus.server -> sitaMessaging.sender.healthCheck "Health check" "HTTP" "001 - Fase 1"
-    prometheus.server -> identity.service.healthCheck "Health check" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> notification.api.healthCheck "Health check" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> trackAndTrace.trackingIngestAPI.healthCheck "Health check" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> trackAndTrace.trackingQueryAPI.healthCheck "Health check" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> sitaMessaging.eventProcessor.healthCheck "Health check" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> sitaMessaging.sender.healthCheck "Health check" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> identity.identityService.healthCheck "Health check" "HTTP" "001 - Fase 1"
 
     // Usuarios y acceso
-    admin -> grafana.dashboards "Monitorea servicios" "HTTPS" "001 - Fase 1"
-    operationalUser -> grafana.dashboards "Monitorea operaciones" "HTTPS" "001 - Fase 1"
+    admin -> grafana.visualizationDashboards "Monitorea servicios" "HTTPS" "001 - Fase 1"
+    operationalUser -> grafana.visualizationDashboards "Monitorea operaciones" "HTTPS" "001 - Fase 1"
 }

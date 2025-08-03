@@ -35,26 +35,26 @@ container trackAndTrace "track_and_trace_system" {
 //     exclude apiGateway
 //     exclude appColombia
 //     exclude appMexico
-//     exclude trackAndTrace.queryApi
-//     exclude trackAndTrace.dashboard
+//     exclude trackAndTrace.trackingQueryAPI
+//     exclude trackAndTrace.trackingDashboard
 //     exclude operationalUser
 
 //     title "[Diagrama de Contenedores] Track and Trace - Fase 1"
 // }
 
-component trackAndTrace.ingestApi "track_and_trace_ingest_api" {
+component trackAndTrace.trackingIngestAPI "track_and_trace_ingest_api" {
     include *
     exclude apiGateway
     title "[Diagrama de Contenedores] Track & Trace - Ingest API"
 }
 
-component trackAndTrace.queryApi "track_and_trace_query_api" {
+component trackAndTrace.trackingQueryAPI "track_and_trace_query_api" {
     include *
     exclude apiGateway
     title "[Diagrama de Contenedores] Track & Trace - Query API"
 }
 
-component trackAndTrace.eventProcessor "track_and_trace_event_processor" {
+component trackAndTrace.trackingEventProcessor "track_and_trace_event_processor" {
     include *
     exclude apiGateway
     title "[Diagrama de Contenedores] Track & Trace - Event Processor"

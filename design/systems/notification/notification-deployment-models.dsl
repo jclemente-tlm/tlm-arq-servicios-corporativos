@@ -47,16 +47,19 @@ notificationSystem = deploymentEnvironment "Notification System" {
             }
 
             ecsNotificationScheduler = deploymentNode "ECS - Notification Scheduler (via Fargate)" {
-                tags "Amazon Web Services - Lambda"
-                description "Servicio que programa y dispara eventos de notificación en base a reglas y cron."
+                tags "Amazon Web Services - Elastic Container Service"
+                description "Servicio Worker que programa y dispara eventos de notificación en base a reglas y cron."
                 properties {
-                    "Runtime" "Node.js 18.x"
-                    "Memory" "512 MB"
-                    "Triggers" "Cron jobs"
+                    "Runtime" ".NET 8"
+                    "Instance Type" "DEV: t3.nano, STG: t3.small, PROD: t3.medium"
+                    "CPU" "DEV: 0.5 vCPU, STG: 1 vCPU, PROD: 2 vCPUs"
+                    "Memory" "DEV: 1 GB, STG: 2 GB, PROD: 4 GB"
+                    "Replicas" "DEV: 1, STG: 1, PROD: 2"
+                    "Launch Type" "Fargate"
                 }
                 docker = deploymentNode "Docker" {
                     tags "Docker"
-                    containerInstance notification.scheduler "DEV,STG,PROD"
+                    containerInstance notification.notificationScheduler "DEV,STG,PROD"
                 }
             }
 
@@ -119,53 +122,34 @@ notificationSystem = deploymentEnvironment "Notification System" {
             // ====================
             // AWS Messaging
             // ====================
-            sqsNode = deploymentNode "AWS SQS" {
+            sqsNotificationQueue = deploymentNode "SQS - Notification Queue" {
                 tags "Amazon Web Services - Simple Queue Service"
-                description "SQS principal para orquestar el flujo de eventos de notificación."
-                properties {
-                    "Max Message Size" "256 KB"
-                    "Retention Period" "4 days"
-                }
-                containerInstance notification.queue "DEV,STG,PROD"
+                description "Cola principal para recepción de solicitudes de notificación desde sistemas externos."
+                containerInstance notification.notificationQueue "DEV,STG,PROD"
             }
 
-            sqsEmailNode = deploymentNode "AWS SQS - Email" {
+            sqsEmailQueue = deploymentNode "SQS - Email Queue" {
                 tags "Amazon Web Services - Simple Queue Service"
-                description "SQS dedicada para eventos de notificación de correo electrónico."
-                properties {
-                    "Max Message Size" "256 KB"
-                }
-                containerInstance notification.queueEmail "DEV,STG,PROD"
+                description "Cola específica para procesamiento de notificaciones por correo electrónico."
+                containerInstance notification.emailQueue "DEV,STG,PROD"
             }
 
-            sqsSmsNode = deploymentNode "AWS SQS - SMS" {
+            sqsSmsQueue = deploymentNode "SQS - SMS Queue" {
                 tags "Amazon Web Services - Simple Queue Service"
-                description "SQS dedicada para eventos de notificación SMS."
-                properties {
-                    "Max Message Size" "256 KB"
-                    "Retention Period" "4 days"
-                }
-                containerInstance notification.queueSms "DEV,STG,PROD"
+                description "Cola específica para procesamiento de notificaciones SMS con integración a proveedores."
+                containerInstance notification.smsQueue "DEV,STG,PROD"
             }
 
-            sqsWhatsappNode = deploymentNode "AWS SQS - WhatsApp" {
+            sqsWhatsappQueue = deploymentNode "SQS - WhatsApp Queue" {
                 tags "Amazon Web Services - Simple Queue Service"
-                description "SQS dedicada para eventos de notificación WhatsApp."
-                properties {
-                    "Max Message Size" "256 KB"
-                    "Retention Period" "4 days"
-                }
-                containerInstance notification.queueWhatsapp "DEV,STG,PROD"
+                description "Cola específica para procesamiento de notificaciones WhatsApp Business API."
+                containerInstance notification.whatsappQueue "DEV,STG,PROD"
             }
 
-            sqsPushNode = deploymentNode "AWS SQS - Push" {
+            sqsPushQueue = deploymentNode "SQS - Push Queue" {
                 tags "Amazon Web Services - Simple Queue Service"
-                description "SQS dedicada para eventos de notificación Push."
-                properties {
-                    "Max Message Size" "256 KB"
-                    "Retention Period" "4 days"
-                }
-                containerInstance notification.queuePush "DEV,STG,PROD"
+                description "Cola específica para procesamiento de notificaciones push móviles (FCM/APNS)."
+                containerInstance notification.pushQueue "DEV,STG,PROD"
             }
 
             // ====================
@@ -177,7 +161,7 @@ notificationSystem = deploymentEnvironment "Notification System" {
                 properties {
                     "Bucket" "notification-files"
                 }
-                containerInstance notification.storage "DEV,STG,PROD"
+                containerInstance notification.attachmentStorage "DEV,STG,PROD"
             }
 
             rdsNode = deploymentNode "AWS RDS" {
@@ -188,7 +172,7 @@ notificationSystem = deploymentEnvironment "Notification System" {
                     "Instance Type" "DEV: db.t3.micro, STG: db.t3.medium, PROD: db.m5.large"
                     "Storage" "DEV: 20 GB, STG: 50 GB, PROD: 200 GB"
                 }
-                containerInstance notification.db "DEV,STG,PROD"
+                containerInstance notification.notificationDB "DEV,STG,PROD"
             }
 
             // ====================
@@ -222,8 +206,8 @@ notificationSystem = deploymentEnvironment "Notification System" {
     // Relaciones
     // ====================
     notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.snsInfraNode "Publica eventos de notificación"
-    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsEmailNode "Entrega a SQS Email"
-    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsSmsNode "Entrega a SQS SMS"
-    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsWhatsappNode "Entrega a SQS Whatsapp"
-    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsPushNode "Entrega a SQS Push"
+    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsEmailQueue "Entrega a SQS Email"
+    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsSmsQueue "Entrega a SQS SMS"
+    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsWhatsappQueue "Entrega a SQS Whatsapp"
+    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsPushQueue "Entrega a SQS Push"
 }

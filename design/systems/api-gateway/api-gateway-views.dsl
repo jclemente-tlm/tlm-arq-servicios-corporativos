@@ -4,16 +4,16 @@ container apiGateway "api_gateway" {
     exclude "* -> notification"
     exclude "* -> sitaMessaging"
     exclude "* -> trackAndTrace"
-    include "apiGateway.yarp -> *"
+    include "apiGateway.reverseProxyGateway -> *"
     title "[Diagrama de Contenedores] API Gateway"
 }
 
-component apiGateway.yarp "api_gateway_yarp" {
+component apiGateway.reverseProxyGateway "api_gateway_yarp" {
     include *
     exclude "* -> identity"
     exclude "* -> notification"
     exclude "* -> sitaMessaging"
     exclude "* -> trackAndTrace"
-    include "apiGateway.yarp.authorization -> *"
-    title "[Diagrama de Contenedores] API Gateway - YARP API Gateway"
+    include "apiGateway.reverseProxyGateway.authorizationMiddleware -> *"
+    title "[Diagrama de Componentes] API Gateway - YARP Reverse Proxy"
 }

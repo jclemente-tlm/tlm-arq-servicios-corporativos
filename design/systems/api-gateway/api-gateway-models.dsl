@@ -1,75 +1,87 @@
-apiGateway = softwareSystem "API Gateway" {
-    description "Punto de entrada para todas las solicitudes a los microservicios."
+apiGateway = softwareSystem "Enterprise API Gateway" {
+    description "Gateway corporativo de alta disponibilidad con autenticación, autorización y políticas de resiliencia para microservicios."
     tags "API Gateway" "001 - Fase 1"
 
-    yarp = application "YARP API Gateway" {
+    reverseProxyGateway = application "Reverse Proxy Gateway" {
         technology "YARP"
-        description "Proxy inverso que enruta solicitudes a los microservicios corporativos."
+        description "Proxy inverso inteligente con balanceeo de carga y enrutamiento dinámico a microservicios corporativos."
         tags "API Gateway" "001 - Fase 1"
 
-        authentication = component "Authentication Middleware" {
+        authenticationMiddleware = component "Authentication Middleware" {
             technology "ASP.NET Core Middleware"
-            description "Middleware que autentica usuarios y genera tokens JWT."
+            description "Middleware de autenticación con soporte para JWT, OAuth2 y validación de certificados digitales."
             tags "Middleware" "001 - Fase 1"
         }
 
-        tenantResolution = component "Tenant Resolution Middleware" {
+        tenantResolutionMiddleware = component "Tenant Resolution Middleware" {
             technology "ASP.NET Core Middleware"
-            description "Middleware que resuelve el inquilino (tenant) de la solicitud."
+            description "Middleware que identifica y resuelve contexto de tenant desde headers, subdominios o tokens."
             tags "Middleware" "001 - Fase 1"
         }
 
-        rateLimit = component "Rate Limiting Middleware" {
+        rateLimitingMiddleware = component "Rate Limiting Middleware" {
             technology "ASP.NET Core Middleware"
-            description "Middleware que limita la cantidad de solicitudes por usuario."
+            description "Middleware de limitación de velocidad con políticas personalizables por tenant y endpoint."
             tags "Middleware" "001 - Fase 1"
         }
 
-        // Nuevos componentes de resiliencia
-        circuitBreaker = component "Circuit Breaker" {
+        // Componentes de resiliencia
+        circuitBreakerHandler = component "Circuit Breaker Handler" {
             technology "Polly"
-            description "Implementa patrón Circuit Breaker para prevenir cascadas de fallos."
+            description "Implementa patrón Circuit Breaker con métricas en tiempo real para prevenir cascadas de fallos."
             tags "Middleware" "Resilience" "001 - Fase 1"
         }
 
-        retryPolicy = component "Retry Policy Handler" {
+        retryPolicyHandler = component "Retry Policy Handler" {
             technology "Polly"
-            description "Maneja políticas de reintento con backoff exponencial."
+            description "Gestiona políticas de reintento inteligente con backoff exponencial y jitter configurable."
             tags "Middleware" "Resilience" "001 - Fase 1"
         }
 
-        timeout = component "Timeout Handler" {
+        timeoutHandler = component "Timeout Handler" {
             technology "ASP.NET Core Middleware"
-            description "Gestiona timeouts para evitar requests colgantes."
+            description "Gestiona timeouts configurables por endpoint para evitar requests colgantes y optimizar recursos."
             tags "Middleware" "Resilience" "001 - Fase 1"
         }
 
-        authorization = component "Authorization Middleware" {
+        authorizationMiddleware = component "Authorization Middleware" {
             technology "ASP.NET Core Middleware"
-            description "Middleware que valida los tokens JWT y verifica permisos."
+            description "Middleware de autorización con RBAC y validación de permisos granulares por recurso."
             tags "Middleware" "001 - Fase 1"
         }
 
         // Componente de observabilidad
-        healthCheck = component "Health Check Aggregator" {
+        gatewayHealthAggregator = component "Gateway Health Aggregator" {
             technology "ASP.NET Core Health Checks"
-            description "Agrega y expone el estado de salud de todos los servicios downstream."
+            description "Agrega y expone estado de salud de todos los servicios downstream con dashboard centralizado."
+            tags "Observability" "001 - Fase 1"
+        }
+
+        gatewayMetricsCollector = component "Gateway Metrics Collector" {
+            technology "Prometheus Client"
+            description "Recolecta métricas del gateway: throughput, latencia, tasa de errores por endpoint y tenant."
+            tags "Observability" "001 - Fase 1"
+        }
+
+        gatewayLogger = component "Gateway Logger" {
+            technology "Serilog"
+            description "Logging estructurado de requests con correlationId, tenant context y métricas de performance."
             tags "Observability" "001 - Fase 1"
         }
     }
 
     // Relaciones del pipeline de middleware
-    yarp.authentication -> yarp.tenantResolution "Pipeline flow" "" "001 - Fase 1"
-    yarp.tenantResolution -> yarp.rateLimit "Pipeline flow" "" "001 - Fase 1"
-    yarp.rateLimit -> yarp.circuitBreaker "Pipeline flow" "" "001 - Fase 1"
-    yarp.circuitBreaker -> yarp.retryPolicy "Pipeline flow" "" "001 - Fase 1"
-    yarp.retryPolicy -> yarp.timeout "Pipeline flow" "" "001 - Fase 1"
-    yarp.timeout -> yarp.authorization "Pipeline flow" "" "001 - Fase 1"
+    reverseProxyGateway.authenticationMiddleware -> reverseProxyGateway.tenantResolutionMiddleware "Pipeline flow" "" "001 - Fase 1"
+    reverseProxyGateway.tenantResolutionMiddleware -> reverseProxyGateway.rateLimitingMiddleware "Pipeline flow" "" "001 - Fase 1"
+    reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.circuitBreakerHandler "Pipeline flow" "" "001 - Fase 1"
+    reverseProxyGateway.circuitBreakerHandler -> reverseProxyGateway.retryPolicyHandler "Pipeline flow" "" "001 - Fase 1"
+    reverseProxyGateway.retryPolicyHandler -> reverseProxyGateway.timeoutHandler "Pipeline flow" "" "001 - Fase 1"
+    reverseProxyGateway.timeoutHandler -> reverseProxyGateway.authorizationMiddleware "Pipeline flow" "" "001 - Fase 1"
 
     // Relaciones de actores externos
-    admin -> yarp.authentication "Gestiona configuraciones de servicios" "HTTPS" "001 - Fase 1"
-    appPeru -> yarp.authentication "Hace llamadas API" "HTTPS" "001 - Fase 1"
-    appEcuador -> yarp.authentication "Hace llamadas API" "HTTPS" "001 - Fase 1"
-    appColombia -> yarp.authentication "Hace llamadas API" "HTTPS" "001 - Fase 1"
-    appMexico -> yarp.authentication "Hace llamadas API" "HTTPS" "001 - Fase 1"
+    admin -> reverseProxyGateway.authenticationMiddleware "Gestiona configuraciones de servicios" "HTTPS" "001 - Fase 1"
+    appPeru -> reverseProxyGateway.authenticationMiddleware "Realiza llamadas API" "HTTPS" "001 - Fase 1"
+    appEcuador -> reverseProxyGateway.authenticationMiddleware "Realiza llamadas API" "HTTPS" "001 - Fase 1"
+    appColombia -> reverseProxyGateway.authenticationMiddleware "Realiza llamadas API" "HTTPS" "001 - Fase 1"
+    appMexico -> reverseProxyGateway.authenticationMiddleware "Realiza llamadas API" "HTTPS" "001 - Fase 1"
 }

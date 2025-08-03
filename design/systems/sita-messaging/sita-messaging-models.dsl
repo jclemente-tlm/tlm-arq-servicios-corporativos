@@ -281,7 +281,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     eventProcessor.featureFlagService -> configPlatform.configService "Lee feature flags por país/tenant" "HTTPS" "001 - Fase 1"
 
     // Integración con Notification System para envío de emails
-    sender.messageSender -> notification.api.controller "Solicita envío de emails SITA" "HTTPS via API Gateway" "001 - Fase 1"
+    sender.messageSender -> notification.api.notificationController "Solicita envío de emails SITA" "HTTPS via API Gateway" "001 - Fase 1"
 
     // Envío a partners externos
     sender.messageSender -> airlines "Envía archivos SITA" "Via Email por\nNotification System" "001 - Fase 1"

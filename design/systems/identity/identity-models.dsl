@@ -1,58 +1,58 @@
-identity = softwareSystem "Identity System" {
-    description "Servicio centralizado de autenticación y autorización mediante tokens JWT."
+identity = softwareSystem "Identity & Authentication System" {
+    description "Servicio centralizado de autenticación y autorización empresarial con soporte para JWT y múltiples proveedores OAuth."
     tags "Identity" "001 - Fase 1"
 
-    service = application "Identity Service" {
+    identityService = application "Identity Service" {
         technology "Keycloak"
-        description "Gestiona autenticación, autorización y emisión de tokens JWT"
+        description "Plataforma de gestión de identidad y acceso con autenticación multifactor y federación de identidades."
         tags "Keycloak" "001 - Fase 1"
 
         // Componentes de Observabilidad para Keycloak
         healthCheck = component "Health Check" {
             technology "Keycloak Health Check"
-            description "Expone endpoints /health para monitoring de Keycloak."
+            description "Expone endpoints de salud con verificación de conectividad a base de datos y proveedores externos."
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
             technology "Prometheus Client"
-            description "Recolecta métricas: logins/sec, token validation rate, failed authentications, config cache hit ratio, feature flag usage."
+            description "Recolecta métricas de identidad: logins/sec, tasa de validación de tokens, autenticaciones fallidas por tenant."
             tags "Observability" "001 - Fase 1"
         }
 
         logger = component "Structured Logger" {
             technology "Serilog"
-            description "Logging estructurado de eventos de autenticación y autorización."
+            description "Logging estructurado de eventos de seguridad, autenticación y autorización con correlationId."
             tags "Observability" "001 - Fase 1"
         }
 
-        configManager = component "Configuration Manager" {
+        identityConfigurationManager = component "Identity Configuration Manager" {
             technology "C# .NET 8"
-            description "Lee configuraciones y secretos desde repositorios y plataforma de configuración. Incluye cache inteligente con TTL diferenciado y feature flags por país/tenant."
+            description "Gestiona configuraciones dinámicas de seguridad, proveedores OAuth y políticas por tenant."
             tags "Configuración" "001 - Fase 1"
         }
 
-        configCache = component "Configuration Cache" {
+        identityConfigurationCache = component "Identity Configuration Cache" {
             technology "Redis"
-            description "Cache distribuido para configuraciones de Identity System con TTL optimizado por tipo de configuración."
+            description "Cache distribuido para configuraciones de seguridad con invalidación selectiva y TTL por tipo de política."
             tags "Cache" "001 - Fase 1"
         }
 
-        featureFlagService = component "Feature Flag Service" {
+        securityFeatureFlagService = component "Security Feature Flag Service" {
             technology "C# .NET 8"
-            description "Gestiona feature flags por país y tenant para Identity System: configurar proveedores OAuth por país, políticas de autenticación por tenant, timeouts personalizados."
+            description "Gestiona feature flags de seguridad: proveedores OAuth por país, políticas MFA por tenant, timeouts personalizados."
             tags "Feature Flags" "001 - Fase 1"
         }
     }
 
-    db = store "Identity DB" {
+    identityDatabase = store "Identity Database" {
         technology "PostgreSQL"
-        description "Almacena configuraciones, credenciales, y roles"
+        description "Base de datos segura para usuarios, roles, permisos y configuraciones de autenticación por tenant."
         tags "Database" "PostgreSQL" "001 - Fase 1"
     }
 
-    configEventQueue = store "Configuration Event Queue" {
-        description "Cola SQS para eventos de cambios de configuración y feature flags de Identity System"
+    identityConfigurationEventQueue = store "Identity Configuration Event Queue" {
+        description "Cola para eventos de cambios de configuración de seguridad y actualizaciones de feature flags."
         technology "AWS SQS"
         tags "Message Bus" "SQS" "Configuration" "001 - Fase 1"
     }
@@ -62,37 +62,37 @@ identity = softwareSystem "Identity System" {
     // ========================================
 
     // Relaciones básicas del servicio
-    service -> db "Lee y escribe datos de usuarios y configuración" "PostgreSQL" "001 - Fase 1"
+    identityService -> identityDatabase "Gestiona datos de usuarios, roles y configuración de seguridad" "PostgreSQL" "001 - Fase 1"
 
     // Relaciones de componentes de configuración
-    service.configManager -> service.configCache "consulta cache" "" "001 - Fase 1"
-    service.featureFlagService -> service.configCache "usa cache para flags" "" "001 - Fase 1"
+    identityService.identityConfigurationManager -> identityService.identityConfigurationCache "Consulta cache de configuraciones" "" "001 - Fase 1"
+    identityService.securityFeatureFlagService -> identityService.identityConfigurationCache "Consulta feature flags desde cache" "" "001 - Fase 1"
 
     // Relaciones de observabilidad
-    service.configManager -> service.metricsCollector "envía métricas de config" "" "001 - Fase 1"
-    service.featureFlagService -> service.metricsCollector "envía métricas de feature flags" "" "001 - Fase 1"
+    identityService.identityConfigurationManager -> identityService.metricsCollector "Envía métricas de configuración" "" "001 - Fase 1"
+    identityService.securityFeatureFlagService -> identityService.metricsCollector "Envía métricas de feature flags de seguridad" "" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - ACTORES
     // ========================================
 
     // Administrador
-    admin -> service "Administra clientes y configuración" "HTTPS vía API Gateway" "001 - Fase 1"
+    admin -> identityService "Administra usuarios, roles y configuraciones de seguridad" "HTTPS vía API Gateway" "001 - Fase 1"
 
     // Aplicaciones por país
-    appPeru -> service "Solicita autenticación" "HTTPS vía API Gateway" "001 - Fase 1"
-    appEcuador -> service "Solicita autenticación" "HTTPS vía API Gateway" "001 - Fase 1"
-    appColombia -> service "Solicita autenticación" "HTTPS vía API Gateway" "001 - Fase 1"
-    appMexico -> service "Solicita autenticación" "HTTPS vía API Gateway" "001 - Fase 1"
+    appPeru -> identityService "Solicita autenticación" "HTTPS vía API Gateway" "001 - Fase 1"
+    appEcuador -> identityService "Solicita autenticación" "HTTPS vía API Gateway" "001 - Fase 1"
+    appColombia -> identityService "Solicita autenticación" "HTTPS vía API Gateway" "001 - Fase 1"
+    appMexico -> identityService "Solicita autenticación" "HTTPS vía API Gateway" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - SISTEMAS
     // ========================================
 
     // Integración con API Gateway
-    apiGateway.yarp.authorization -> service "Redirige solicitudes de autorización" "HTTPS" "001 - Fase 1"
+    apiGateway.reverseProxyGateway.authorizationMiddleware -> identityService "Redirige solicitudes de autorización" "HTTPS" "001 - Fase 1"
 
     // Integración con plataforma de configuración
-    service.configManager -> configPlatform.configService "Lee configuraciones y secretos" "HTTPS" "001 - Fase 1"
-    service.configManager -> configPlatform.secretsService "Lee secretos y credenciales" "HTTPS" "001 - Fase 1"
+    identityService.identityConfigurationManager -> configPlatform.configService "Lee configuraciones y secretos" "HTTPS" "001 - Fase 1"
+    identityService.identityConfigurationManager -> configPlatform.secretsService "Lee secretos y credenciales" "HTTPS" "001 - Fase 1"
 }

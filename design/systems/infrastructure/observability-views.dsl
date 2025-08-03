@@ -11,7 +11,8 @@ systemContext observabilitySystem "observability_overview" {
 container observabilitySystem "observability_metrics" {
     include observabilitySystem.prometheus
     include observabilitySystem.grafana
-    include observabilitySystem.metricsStorage
+    include observabilitySystem.shortTermMetrics
+    include observabilitySystem.longTermMetrics
     title "[Métricas] Stack de Prometheus y Grafana"
     description "Vista detallada del sistema de métricas, dashboards y alertas."
 }
@@ -19,7 +20,7 @@ container observabilitySystem "observability_metrics" {
 // Vista de logging centralizado
 container observabilitySystem "observability_logging" {
     include observabilitySystem.loki
-    include observabilitySystem.logsStorage
+    include observabilitySystem.distributedLogs
     title "[Logging] Sistema de Logs Centralizados"
     description "Vista del sistema de agregación y consulta de logs distribuidos."
 }
@@ -57,27 +58,27 @@ systemLandscape "health_monitoring" {
 // }
 
 // // Vista de métricas de Track & Trace - Ingest API
-// component trackAndTrace.ingestApi "track_trace_ingest_observability" {
-//     include trackAndTrace.ingestApi.healthCheck
-//     include trackAndTrace.ingestApi.metricsCollector
-//     include trackAndTrace.ingestApi.logger
+// component trackAndTrace.trackingIngestAPI "track_trace_ingest_observability" {
+//     include trackAndTrace.trackingIngestAPI.healthCheck
+//     include trackAndTrace.trackingIngestAPI.metricsCollector
+//     include trackAndTrace.trackingIngestAPI.logger
 //     title "[Track & Trace Ingest] Componentes de Observabilidad"
 //     description "Vista detallada de los componentes de observabilidad del API de ingesta."
 // }
 
 // // Vista de métricas de Track & Trace - Query API
-// component trackAndTrace.queryApi "track_trace_query_observability" {
-//     include trackAndTrace.queryApi.healthCheck
-//     include trackAndTrace.queryApi.metricsCollector
-//     include trackAndTrace.queryApi.logger
+// component trackAndTrace.trackingQueryAPI "track_trace_query_observability" {
+//     include trackAndTrace.trackingQueryAPI.healthCheck
+//     include trackAndTrace.trackingQueryAPI.metricsCollector
+//     include trackAndTrace.trackingQueryAPI.logger
 //     title "[Track & Trace Query] Componentes de Observabilidad"
 //     description "Vista detallada de los componentes de observabilidad del API de consultas."
 // }
 
 // // Vista de métricas de Track & Trace - Event Processor
-// component trackAndTrace.eventProcessor "track_trace_processor_observability" {
-//     include trackAndTrace.eventProcessor.metricsCollector
-//     include trackAndTrace.eventProcessor.logger
+// component trackAndTrace.trackingEventProcessor "track_trace_processor_observability" {
+//     include trackAndTrace.trackingEventProcessor.metricsCollector
+//     include trackAndTrace.trackingEventProcessor.logger
 //     title "[Track & Trace Processor] Componentes de Observabilidad"
 //     description "Vista detallada de los componentes de observabilidad del procesador de eventos."
 // }
@@ -85,7 +86,7 @@ systemLandscape "health_monitoring" {
 // // Vista de tracing distribuido (Fase 2)
 // container observabilitySystem "distributed_tracing" {
 //     include observabilitySystem.jaeger
-//     include observabilitySystem.tracingStorage
+//     include observabilitySystem.distributedTraces
 //     title "[Tracing] Sistema de Trazas Distribuidas"
 //     description "Vista del sistema de tracing distribuido para seguimiento de requests entre servicios."
 // }
