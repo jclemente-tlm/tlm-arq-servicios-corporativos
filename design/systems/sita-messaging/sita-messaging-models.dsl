@@ -63,93 +63,93 @@ sitaMessaging = softwareSystem "SITA Messaging" {
 
     // Nuevo worker para procesar eventos SITA
     eventProcessor = container "SITA Event Processor" {
-        technology "C#, .NET Worker Service"
+        technology "C#, .NET 8, Worker Service"
         description "Procesa eventos de generación de mensajes SITA"
         tags "CSharp" "001 - Fase 1"
 
         reliableEventConsumer = component "Reliable Event Consumer" {
-            technology "C#, IReliableMessageConsumer"
+            technology "C#, .NET 8, IReliableMessageConsumer"
             description "Consumer agnóstico con acknowledgments, retry patterns y procesamiento confiable para eventos SITA"
             tags "Messaging" "Reliability" "001 - Fase 1"
         }
 
         eventHandler = component "Event Handler" {
-            technology "C#"
-            description "Procesa eventos de Track & Trace y genera mensajes SITA correspondientes"
+            technology "C#, .NET 8, Mapster"
+            description "Procesa eventos de Track & Trace y genera mensajes SITA correspondientes con mapeo automático de DTOs."
             tags "001 - Fase 1"
         }
 
         service = component "SITA Generation Service" {
-            technology "C#"
-            description "Orquesta la validación, generación de archivos SITA y persistencia desde eventos. Incluye validación integrada."
+            technology "C#, .NET 8, FluentValidation"
+            description "Orquesta la validación, generación de archivos SITA y persistencia desde eventos procesados."
             tags "001 - Fase 1"
         }
 
         templateProvider = component "SITA Template Repository" {
-            technology "C#, Entity Framework Core"
-            description "Repositorio especializado para templates SITA almacenados en PostgreSQL con versionado, validación de esquemas y cache por tipo de evento y partner."
+            technology "C#, .NET 8, EF Core"
+            description "Repositorio especializado para templates SITA con versionado, validación de esquemas y cache por tipo de evento y partner."
             tags "Template" "001 - Fase 1"
         }
 
         configurationManager = component "Configuration Manager" {
-            technology "C# .NET 8, IConfigurationProvider, IMemoryCache"
-            description "Gestión unificada de configuraciones: cache local, acceso a BD, feature flags y configuración dinámica con polling inteligente (TTL: 30min)."
+            technology "C#, .NET 8, IMemoryCache"
+            description "Gestión unificada de configuraciones con cache local, acceso a BD y configuración dinámica (TTL: 30min)."
             tags "Configuración" "Cache" "001 - Fase 1"
         }
 
         fileRepository = component "File & Data Repository" {
-            technology "C#, EF Core"
-            description "Repositorio unificado que gestiona almacenamiento de archivos SITA generados, metadata de mensajes y persistencia en BD."
+            technology "C#, .NET 8, EF Core"
+            description "Repositorio unificado que gestiona almacenamiento de archivos SITA generados en S3 y metadata en PostgreSQL."
             tags "Repository" "Files" "001 - Fase 1"
         }
 
         generator = component "File Generator" {
-            technology "C#"
-            description "Generador especializado de mensajes SITA con formatos específicos por partner y tipo de evento."
+            technology "C#, .NET 8, System.Text.Json"
+            description "Generador especializado de mensajes SITA con formatos específicos por partner (JSON, CSV, XML)."
             tags "001 - Fase 1"
         }
 
         // Componentes de Observabilidad
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
-            description "Expone endpoints /health para monitoring del event processor."
+            description "Expone endpoints /health y verifica estado de dependencias críticas: PostgreSQL, S3, AWS Parameter Store."
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
             technology "Prometheus Client"
-            description "Recolecta métricas: events processed/sec, SITA generation time, queue depth, config cache hit ratio, feature flag usage."
+            description "Recolecta métricas de negocio y técnicas: events/sec, generation time, cache hit ratio, error rates."
             tags "Observability" "001 - Fase 1"
         }
 
         logger = component "Structured Logger" {
             technology "Serilog"
-            description "Logging estructurado con correlationId para trazabilidad."
+            description "Logging estructurado con correlationId, tenant context para trazabilidad completa de eventos SITA."
             tags "Observability" "001 - Fase 1"
         }
 
         // Componentes de Resiliencia
         retryHandler = component "Retry Handler" {
-            technology "C#, Polly"
-            description "Maneja reintentos de eventos fallidos con backoff exponencial."
+            technology "C#, .NET 8, Polly"
+            description "Maneja reintentos de eventos fallidos con backoff exponencial y circuit breaker."
             tags "001 - Fase 1"
         }
 
         deadLetterProcessor = component "Dead Letter Processor" {
-            technology "C#"
-            description "Procesa eventos que fallaron después de todos los reintentos."
+            technology "C#, .NET 8"
+            description "Procesa eventos que fallaron después de todos los reintentos, analiza causa raíz y permite reprocessing manual."
             tags "001 - Fase 1"
         }
 
         auditService = component "Audit Service" {
-            technology "C#"
-            description "Registra auditoría de eventos procesados, generaciones exitosas y fallos."
+            technology "C#, .NET 8, EF Core"
+            description "Registra auditoría inmutable de eventos procesados, generaciones exitosas y fallos."
             tags "001 - Fase 1"
         }
 
         dynamicConfigProcessor = component "Dynamic Configuration Processor" {
-            technology "C#, FluentValidation"
-            description "Procesador unificado para cambios de configuración: validación, invalidación de cache, feature flags y actualizaciones dinámicas sin restart mediante polling inteligente."
+            technology "C#, .NET 8, FluentValidation"
+            description "Procesador unificado para cambios de configuración con polling inteligente (5min) y actualizaciones dinámicas."
             tags "Configuration Events" "Feature Flags" "001 - Fase 1"
         }
     }
@@ -161,74 +161,74 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     }
 
     sender = container "SITA Messaging Sender" {
-        technology "C#"
-        description "Envía archivos generados a los partners"
-        tags "CSharp"
+        technology "C#, .NET 8, Background Service"
+        description "Envía archivos generados a partners SITA usando protocolos aeronáuticos estándar con garantías de entrega."
+        tags "CSharp" "Background Service" "001 - Fase 1"
 
         worker = component "Worker" {
-            technology "C#"
-            description "Ejecuta tareas periódicas para el envío de mensajes SITA"
-            tags "001 - Fase 1"
+            technology "C#, .NET 8, BackgroundService"
+            description "Background service que ejecuta tareas periódicas de envío con scheduling inteligente y rate limiting por partner."
+            tags "Background Service" "001 - Fase 1"
         }
 
         messageService = component "Message Service" {
-            technology "C#"
-            description "Gestiona el envío de mensajes SITA"
-            tags "001 - Fase 1"
+            technology "C#, .NET 8, FluentValidation"
+            description "Orquesta el envío de mensajes SITA con validación de esquemas aeronáuticos y coordinación de delivery workflows."
+            tags "Business Logic" "001 - Fase 1"
         }
 
         messageRepository = component "Message Repository" {
-            technology "C#"
-            description "Obtiene los mensajes SITA generados"
-            tags "001 - Fase 1"
+            technology "C#, .NET 8, EF Core"
+            description "Repositorio especializado para mensajes SITA con queries optimizadas y cache de metadata."
+            tags "Data Access" "001 - Fase 1"
         }
 
         fileFetcher = component "File Fetcher" {
-            technology "C#"
-            description "Gestiona la descarga de archivos SITA generados"
-            tags "001 - Fase 1"
+            technology "C#, .NET 8, AWS SDK"
+            description "Gestiona descarga optimizada de archivos SITA desde S3 con retry automático y verificación de integridad."
+            tags "File Management" "001 - Fase 1"
         }
 
         messageSender = component "Message Sender" {
-            technology "C#"
-            description "Envía archivos generados a los partners"
-            tags "001 - Fase 1"
+            technology "C#, .NET 8, HttpClient"
+            description "Cliente especializado para envío a partners SITA con autenticación por certificados y retry policies."
+            tags "External Communication" "001 - Fase 1"
         }
 
         deliveryTracker = component "Delivery Tracker" {
-            technology "C#"
-            description "Rastrea el estado de entrega y confirmaciones de partners."
-            tags "001 - Fase 1"
+            technology "C#, .NET 8, EF Core"
+            description "Rastrea estados de entrega con polling de confirmaciones y escalamiento automático de fallos."
+            tags "Tracking" "001 - Fase 1"
         }
 
         // Componentes de Observabilidad
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
-            description "Expone endpoints /health para monitoring del message sender."
+            description "Health checks específicos para conectividad SITA: validación de endpoints de partners y verificación de certificados."
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
-            technology "Prometheus Client"
-            description "Recolecta métricas: delivery success rate, send times, partner response times, config cache performance."
+            technology "Prometheus.NET"
+            description "Métricas específicas SITA: delivery success rate por partner, send times y response times."
             tags "Observability" "001 - Fase 1"
         }
 
         logger = component "Structured Logger" {
             technology "Serilog"
-            description "Logging estructurado con correlationId para trazabilidad de envíos."
+            description "Logging estructurado con enrichment de correlationId, partner context y message metadata."
             tags "Observability" "001 - Fase 1"
         }
 
         configManager = component "Configuration Manager" {
-            technology "C#, AWS SDK, IMemoryCache"
-            description "Lee configuraciones y secretos desde repositorios y plataforma de configuración con cache inteligente y fallback automático."
-            tags "001 - Fase 1"
+            technology "C#, .NET 8, IMemoryCache"
+            description "Gestiona configuraciones de delivery con cache inteligente (TTL 30min) y fallback automático."
+            tags "Configuration" "001 - Fase 1"
         }
 
         configCache = component "Configuration Cache" {
-            technology "IMemoryCache, Redis"
-            description "Cache distribuido para configuraciones de delivery con TTL optimizado por tipo de configuración."
+            technology "IMemoryCache"
+            description "Cache en memoria para configuraciones de delivery con TTL optimizado por tipo."
             tags "Cache" "001 - Fase 1"
         }
     }
