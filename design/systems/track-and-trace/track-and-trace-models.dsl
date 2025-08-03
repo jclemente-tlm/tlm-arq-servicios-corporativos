@@ -223,7 +223,7 @@ trackAndTrace = softwareSystem "Track & Trace System" {
 
     // Event Processor - Flujo principal (Con reliable messaging en mismo BD)
     trackingDatabase.reliableMessagesTable -> trackingEventProcessor.reliableEventConsumer "Consume eventos con garantías ACID (polling)" "PostgreSQL Polling" "001 - Fase 1"
-    trackingEventProcessor.reliableDownstreamPublisher -> sitaMessaging.reliableMessageStore "Publica eventos downstream confiablemente (cross-system messaging)" "PostgreSQL Outbox" "001 - Fase 1"
+    trackingEventProcessor.reliableDownstreamPublisher -> sitaMessaging.sitaMessagingDatabase "Publica eventos downstream confiablemente al sistema SITA (cross-system messaging)" "PostgreSQL Outbox" "001 - Fase 1"
 
     // Event Processor - Configuración y datos
     trackingEventProcessor.trackingEventRepository -> trackingDatabase.businessSchema "Lee y escribe datos de eventos" "EF Core" "001 - Fase 1"
