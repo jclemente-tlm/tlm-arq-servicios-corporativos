@@ -123,10 +123,8 @@ observabilitySystem = softwareSystem "Observability Platform" {
 
     // Relaciones internas
     prometheus.metricsServer -> shortTermMetrics "Almacena métricas" "Prometheus TSDB" "001 - Fase 1"
-    prometheus.alertManager -> notification.api.notificationController "Envía alertas" "HTTPS" "001 - Fase 1"
     grafana.visualizationDashboards -> prometheus.metricsServer "Query métricas" "PromQL" "001 - Fase 1"
     grafana.visualizationDashboards -> loki.logsAggregator "Query logs" "LogQL" "001 - Fase 1"
-    grafana.alertingEngine -> notification.api.notificationController "Envía alertas" "HTTPS" "001 - Fase 1"
     loki.logsAggregator -> distributedLogs "Almacena logs" "AWS S3" "001 - Fase 1"
     jaeger.tracingCollector -> distributedTraces "Almacena traces" "" "002 - Fase 2"
 

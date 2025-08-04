@@ -203,6 +203,12 @@ notification = softwareSystem "Notification System" {
     // RELACIONES INTERNAS - OPTIMIZADAS
     // ========================================
 
+    // Aplicaciones por país - Operaciones de consulta (Queries)
+    appPeru -> api.notificationController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
+    appEcuador -> api.notificationController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
+    appColombia -> api.notificationController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
+    appMexico -> api.notificationController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
+
     // API Internal Relations
     api.notificationController -> api.requestValidator "Valida requests" "C#" "001 - Fase 1"
     api.notificationController -> api.messagePublisher "Publica mensaje" "Reliable Messaging" "001 - Fase 1"

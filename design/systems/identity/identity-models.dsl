@@ -47,12 +47,6 @@ identity = softwareSystem "Identity & Access Management System" {
     // RELACIONES EXTERNAS - SISTEMAS
     // ========================================
 
-    // Federación con proveedores externos (Identity Brokering nativo)
-    keycloakServer -> microsoftAD "Federación con Active Directory via LDAP/SAML" "LDAP/SAML" "001 - Fase 1"
-    keycloakServer -> googleWorkspace "Federación con Google Workspace via OIDC" "OIDC/OAuth2" "001 - Fase 1"
-    keycloakServer -> peruNationalIdP "Federación con RENIEC via SAML" "SAML/REST API" "001 - Fase 1"
-    keycloakServer -> mexicoNationalIdP "Federación con CURP/RFC via SAML" "SAML/REST API" "001 - Fase 1"
-
     // Configuración externa (para automatización de setup)
-    configPlatform.configService -> keycloakServer "Configuración inicial de tenants via Admin API" "Keycloak Admin REST API" "001 - Fase 1"
+    // keycloakServer -> configPlatform.configService "Configuración inicial de tenants via Admin API" "Keycloak Admin REST API" "001 - Fase 1"
 }

@@ -111,29 +111,29 @@ workspace {
             }
         }
 
-        // Proveedores de identidad externos
-        externalIdentityGroup = group "Proveedores de Identidad Externos" {
+        // // Proveedores de identidad externos
+        // externalIdentityGroup = group "Proveedores de Identidad Externos" {
 
-            peruNationalIdP = softwareSystem "Reniec - Perú" {
-                description "Proveedor de identidad nacional de Perú - RENIEC para validación de documentos y datos de ciudadanos"
-                tags "External, Identity, Government, Peru, 001 - Fase 1"
-            }
+        //     peruNationalIdP = softwareSystem "Reniec - Perú" {
+        //         description "Proveedor de identidad nacional de Perú - RENIEC para validación de documentos y datos de ciudadanos"
+        //         tags "External, Identity, Government, Peru, 001 - Fase 1"
+        //     }
 
-            mexicoNationalIdP = softwareSystem "CURP/RFC - México" {
-                description "Proveedor de identidad nacional de México - CURP/RFC para validación de documentos y datos de ciudadanos"
-                tags "External, Identity, Government, Mexico, 001 - Fase 1"
-            }
+        //     mexicoNationalIdP = softwareSystem "CURP/RFC - México" {
+        //         description "Proveedor de identidad nacional de México - CURP/RFC para validación de documentos y datos de ciudadanos"
+        //         tags "External, Identity, Government, Mexico, 001 - Fase 1"
+        //     }
 
-            microsoftAD = softwareSystem "Microsoft Active Directory" {
-                description "Active Directory corporativo para federación con cuentas empresariales existentes"
-                tags "External, Identity, Microsoft, LDAP, 001 - Fase 1"
-            }
+        //     microsoftAD = softwareSystem "Microsoft Active Directory" {
+        //         description "Active Directory corporativo para federación con cuentas empresariales existentes"
+        //         tags "External, Identity, Microsoft, LDAP, 001 - Fase 1"
+        //     }
 
-            googleWorkspace = softwareSystem "Google Workspace" {
-                description "Google Workspace para federación con cuentas de Google empresariales"
-                tags "External, Identity, Google, OAuth2, 001 - Fase 1"
-            }
-        }
+        //     googleWorkspace = softwareSystem "Google Workspace" {
+        //         description "Google Workspace para federación con cuentas de Google empresariales"
+        //         tags "External, Identity, Google, OAuth2, 001 - Fase 1"
+        //     }
+        // }
 
         // Aerolíneas asociadas
         sitaClientsGroup = group "Receptores de mensajería SITA" {
@@ -185,18 +185,12 @@ workspace {
             // Integración API Gateway -> Identity System (Autenticación y Autorización)
             apiGateway.reverseProxyGateway.securityMiddleware -> identity.keycloakServer "Valida tokens JWT via token introspection" "HTTPS" "001 - Fase 1"
 
-            // Integración API Gateway -> Track & Trace (Routing de operaciones)
-            apiGateway.reverseProxyGateway.securityMiddleware -> trackAndTrace.trackingAPI.trackingIngestController "Redirige operaciones de escritura" "HTTPS" "001 - Fase 1"
-            apiGateway.reverseProxyGateway.securityMiddleware -> trackAndTrace.trackingAPI.trackingQueryController "Redirige operaciones de lectura" "HTTPS" "001 - Fase 1"
-
-            // Integración Track & Trace -> SITA Messaging
-            trackAndTrace.trackingAPI.reliableEventPublisher -> sitaMessaging.eventProcessor.reliableEventConsumer "Publica eventos Track & Trace para procesamiento SITA" "PostgreSQL Cross-Schema" "001 - Fase 1"
         }
 
         // Infraestructura de Observabilidad
-        infrastructureGroup = group "Infraestructura" {
+        // infrastructureGroup = group "Infraestructura" {
             !include ./systems/infrastructure/observability-models.dsl
-        }
+        // }
     }
 
     views {
@@ -210,8 +204,10 @@ workspace {
             exclude "* -> notification"
             exclude "* -> sitaMessaging"
             exclude "* -> trackAndTrace"
+
+            exclude countryAdmin
             include "apiGateway -> *"
-            include "sitaMessaging -> trackAndTrace"
+            include "trackAndTrace -> sitaMessaging"
             title "[Diagrama de Contexto] Servicios Corporativos"
         }
 

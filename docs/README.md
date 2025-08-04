@@ -1,13 +1,103 @@
-# Arquitectura de Soluciones Corporativas
+# Índice de Documentación - Servicios Corporativos
 
-Documentación técnica y decisiones arquitectónicas de los servicios corporativos.
+## 📖 Documentación Principal
 
-## Documentación principal
+| Documento | Descripción | Audiencia | Estado |
+|-----------|-------------|-----------|--------|
+| **[Resumen Ejecutivo](executive-summary.md)** | Visión estratégica, beneficios empresariales y roadmap | Ejecutivos, Product Owners | ✅ Completo |
+| **[Documentación Arc42](architecture-documentation-arc42.md)** | Arquitectura completa según metodología Arc42 | Arquitectos, Desarrolladores | ✅ Completo |
+| **[Decisiones Arquitectónicas](adrs/)** | ADRs con contexto y consecuencias detalladas | Equipo técnico | 🔄 En progreso |
 
-| Documento        | Descripción breve                                                                 | Estado     | Aprobación requerida |
-|------------------|----------------------------------------------------------------------------------|------------|----------------------|
-| [API Gateway](./api-gateway/01-introduccion-y-objetivos.md)         | Centraliza tráfico, seguridad, balanceo, integración con microservicios y soporte multi-tenant/multipaís. | Borrador   | Arquitecto           |
-| [Identidad](./servicio-identidad/01-introduccion-y-objetivos.md)    | Gestión de autenticación, autorización y perfiles de usuario multi-tenant/multipaís.                      | Borrador   | Arquitecto           |
+## 🏗️ Arquitectura por Sistema
+
+### Servicios Core
+| Sistema | Documentación | API Reference | Estado |
+|---------|---------------|---------------|--------|
+| **[API Gateway](api-gateway/)** | Arquitectura YARP, middleware, resiliencia | [API Docs](api/api-gateway.md) | ✅ Documentado |
+| **[Sistema de Identidad](servicio-identidad/)** | Keycloak, OAuth2, multi-tenancy | [API Docs](api/identity-api.md) | ✅ Documentado |
+| **[Notificaciones](notification-system/)** | Multicanal, templates, programación | [API Docs](api/notification-api.md) | 📋 Pendiente |
+| **[Track & Trace](track-and-trace/)** | CQRS, eventos, trazabilidad | [API Docs](api/track-trace-api.md) | 📋 Pendiente |
+| **[SITA Messaging](sita-messaging/)** | Generación archivos, partners | [Integration Docs](sita-messaging/partners.md) | 📋 Pendiente |
+
+## 📊 Diagramas de Arquitectura
+
+### Modelo C4 - Vistas Principales
+- **[Contexto General](../diagrams/corporate_services.png)** - Visión de alto nivel del sistema
+- **[API Gateway](../diagrams/api_gateway_yarp.png)** - Componentes y flujos del gateway
+- **[Sistema de Notificaciones](../diagrams/notification_system.png)** - Arquitectura completa de notificaciones
+- **[Observabilidad](../diagrams/observability_overview.png)** - Logging, métricas y tracing
+
+### Vistas de Despliegue
+- **[Infraestructura AWS](../diagrams/notification_system_deployment.png)** - Despliegue en contenedores
+- **[Health Monitoring](../diagrams/health_monitoring.png)** - Health checks y circuit breakers
+- **[Distributed Tracing](../diagrams/distributed_tracing.png)** - Trazabilidad entre servicios
+
+## 🔒 Seguridad y Compliance
+
+### Documentación de Seguridad
+- **[Estrategia de Seguridad](security/)** - OAuth2, JWT, cifrado, RBAC
+- **[Compliance](compliance/)** - Auditoría, GDPR, regulaciones aeroportuarias
+- **[Incident Response](incident-response/)** - Procedimientos de respuesta a incidentes
+
+## 🛠️ Guías Operacionales
+
+### Desarrollo
+- **[Setup de Desarrollo](development/)** - Configuración local, coding standards
+- **[Testing Guidelines](testing/)** - Unit, integration, E2E testing
+- **[API Guidelines](api/)** - Estándares para APIs REST
+
+### DevOps
+- **[Deployment](deployment/)** - CI/CD, blue-green deployments, environments
+- **[Monitoring](monitoring/)** - Prometheus, Grafana, Serilog, alertas
+- **[Performance](performance/)** - Load testing, optimization, scaling
+
+## 📋 Procesos y Metodologías
+
+### Arquitectura
+- **[Proceso ADR](processes/adr-process.md)** - Gestión de decisiones arquitectónicas
+- **[C4 Model Guidelines](processes/c4-guidelines.md)** - Estándares de diagramación
+- **[Architecture Reviews](processes/architecture-review.md)** - Proceso de revisión
+
+### Desarrollo
+- **[Development Workflow](processes/development-workflow.md)** - GitFlow, PR, code review
+- **[Change Management](processes/change-management.md)** - Gestión de cambios
+- **[Configuration Management](configuration/)** - Configuración dinámica
+
+---
+
+## 📈 Estado del Proyecto
+
+### Documentación Completada ✅
+- Arquitectura C4 completa en Structurizr DSL
+- Documentación Arc42 con 12 secciones
+- Resumen ejecutivo para stakeholders
+- Decisiones arquitectónicas principales (ADRs)
+
+### En Progreso 🔄
+- Documentación detallada por sistema
+- API specifications (OpenAPI)
+- Runbooks operacionales
+- Testing guidelines
+
+### Próximos Pasos 📋
+- Distributed tracing implementation (Q4 2025)
+- Performance optimization documentation
+- Disaster recovery procedures
+- Multi-cloud strategy evaluation
+
+## 🏷️ Metadatos
+
+**Versión:** 1.0
+**Metodología:** Arc42
+**Estándar de diagramas:** C4 Model
+**Última actualización:** Agosto 2025
+**Responsable:** Arquitectura de Software - jclemente-tlm
+
+## 📞 Contacto y Soporte
+
+- **Arquitectura:** jclemente-tlm
+- **Slack:** #arquitectura-servicios-corporativos
+- **Email:** arquitectura@talma.com.pe
 | [Mensajería SITA](./servicio-mensajeria-sita/01-introduccion-y-objetivos.md) | Envío y recepción de mensajes SITA para aerolíneas y sistemas asociados.                                 | Borrador   | Arquitecto           |
 | [Track & Trace](./servicio-track-trace/01-introduccion-y-objetivos.md) | Seguimiento y trazabilidad de eventos corporativos.                                                      | Borrador   | Arquitecto           |
 | [Notificación](./servicio-notificacion/01-introduccion-y-objetivos.md) | Plataforma multicanal para envío de notificaciones (email, SMS, WhatsApp, push, in-app).                 | Borrador   | Arquitecto           |

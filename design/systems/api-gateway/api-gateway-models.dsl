@@ -111,7 +111,7 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     // ========================================
 
     // Administradores y aplicaciones entran por seguridad unificada
-    admin -> reverseProxyGateway.securityMiddleware "Gestiona configuraciones de servicios" "HTTPS" "001 - Fase 1"
+    // admin -> reverseProxyGateway.securityMiddleware "Gestiona configuraciones de servicios" "HTTPS" "001 - Fase 1"
     appPeru -> reverseProxyGateway.securityMiddleware "Realiza llamadas API tenant Peru" "HTTPS" "001 - Fase 1"
     appEcuador -> reverseProxyGateway.securityMiddleware "Realiza llamadas API tenant Ecuador" "HTTPS" "001 - Fase 1"
     appColombia -> reverseProxyGateway.securityMiddleware "Realiza llamadas API tenant Colombia" "HTTPS" "001 - Fase 1"

@@ -276,9 +276,6 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     // RELACIONES EXTERNAS - INTEGRACIONES
     // ========================================
 
-    // Integración con Notification System para envío
-    sender.messageSender -> notification.api.notificationController "Solicita envío de emails SITA con archivos adjuntos" "HTTPS/REST" "001 - Fase 1"
-
     // Envío a partners aeronáuticos externos
     sender.messageSender -> airlines "Entrega archivos SITA por email" "SMTP via Notification System" "001 - Fase 1"
     sender.messageSender -> descartes "Entrega archivos SITA por protocolo específico" "HTTPS/FTP" "001 - Fase 1"
