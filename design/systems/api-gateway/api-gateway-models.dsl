@@ -79,14 +79,14 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     // ========================================
 
     // Seguridad y contexto
-    reverseProxyGateway.securityMiddleware -> reverseProxyGateway.tenantResolutionMiddleware "Pipeline: Security → Tenant" "" "001 - Fase 1"
+    reverseProxyGateway.securityMiddleware -> reverseProxyGateway.tenantResolutionMiddleware "Pasa a resolución tenant" "Pipeline" "001 - Fase 1"
 
     // Rate limiting y procesamiento
-    reverseProxyGateway.tenantResolutionMiddleware -> reverseProxyGateway.rateLimitingMiddleware "Pipeline: Tenant → Rate Limit" "" "001 - Fase 1"
-    reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.dataProcessingMiddleware "Pipeline: Rate Limit → Data Processing" "" "001 - Fase 1"
+    reverseProxyGateway.tenantResolutionMiddleware -> reverseProxyGateway.rateLimitingMiddleware "Pasa a rate limiting" "Pipeline" "001 - Fase 1"
+    reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.dataProcessingMiddleware "Pasa a procesamiento" "Pipeline" "001 - Fase 1"
 
     // Resiliencia y downstream
-    reverseProxyGateway.dataProcessingMiddleware -> reverseProxyGateway.resilienceHandler "Pipeline: Data Processing → Resilience" "" "001 - Fase 1"
+    reverseProxyGateway.dataProcessingMiddleware -> reverseProxyGateway.resilienceHandler "Pasa a resiliencia" "Pipeline" "001 - Fase 1"
 
     // Cache opcional (Fase 2) - se insertaría entre rate limiting y data processing
     // reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.cacheMiddleware "Pipeline: Rate Limit → Cache" "" "002 - Fase 2"
@@ -97,14 +97,14 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     // ========================================
 
     // Observabilidad cross-cutting
-    reverseProxyGateway.structuredLogger -> reverseProxyGateway.metricsCollector "Correlaciona logs con métricas" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.healthCheck -> reverseProxyGateway.resilienceHandler "Evalúa estado de resiliencia" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.structuredLogger -> reverseProxyGateway.metricsCollector "Correlaciona logs y métricas" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.healthCheck -> reverseProxyGateway.resilienceHandler "Evalúa estado resiliencia" "In-Memory" "001 - Fase 1"
 
     // Observabilidad de middleware crítico
-    reverseProxyGateway.securityMiddleware -> reverseProxyGateway.structuredLogger "Registra eventos de autenticación" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.tenantResolutionMiddleware -> reverseProxyGateway.structuredLogger "Registra resolución de tenant" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.metricsCollector "Reporta métricas de rate limiting" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.resilienceHandler -> reverseProxyGateway.metricsCollector "Reporta estado de circuit breakers" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.securityMiddleware -> reverseProxyGateway.structuredLogger "Registra eventos auth" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.tenantResolutionMiddleware -> reverseProxyGateway.structuredLogger "Registra resolución tenant" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.metricsCollector "Reporta métricas rate limit" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.resilienceHandler -> reverseProxyGateway.metricsCollector "Reporta estado breakers" "In-Memory" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - ACTORES
@@ -126,20 +126,20 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     reverseProxyGateway.resilienceHandler -> trackAndTrace.trackingAPI "Enruta a tracking" "HTTPS" "001 - Fase 1"
 
     // Health checks de servicios downstream
-    reverseProxyGateway.healthCheck -> notification.api "Verifica disponibilidad de notificaciones" "HTTPS" "001 - Fase 1"
-    reverseProxyGateway.healthCheck -> trackAndTrace.trackingAPI "Verifica disponibilidad de tracking" "HTTPS" "001 - Fase 1"
+    reverseProxyGateway.healthCheck -> notification.api "Verifica disponibilidad" "HTTPS" "001 - Fase 1"
+    reverseProxyGateway.healthCheck -> trackAndTrace.trackingAPI "Verifica disponibilidad" "HTTPS" "001 - Fase 1"
 
     // ========================================
     // RELACIONES DE CONFIGURACIÓN DINÁMICA
     // ========================================
 
     // Configuración dinámica vía polling (patrón correcto)
-    reverseProxyGateway.dynamicConfigProcessor -> configPlatform.configService "Polling de configuración" "HTTPS/REST" "001 - Fase 1"
+    reverseProxyGateway.dynamicConfigProcessor -> configPlatform.configService "Consulta configuración" "HTTPS/REST" "001 - Fase 1"
 
     // Invalidación selectiva de cache tras cambios de configuración
-    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.securityMiddleware "Invalida cache de seguridad" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.rateLimitingMiddleware "Invalida cache de rate limits" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.dataProcessingMiddleware "Invalida cache de esquemas" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.securityMiddleware "Invalida cache seguridad" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.rateLimitingMiddleware "Invalida cache rate limits" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.dataProcessingMiddleware "Invalida cache esquemas" "In-Memory" "001 - Fase 1"
 
     // Configuración opcional para Fase 2
     // reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.cacheMiddleware "Invalida políticas de TTL de cache al detectar cambios" "In-Memory" "002 - Fase 2"

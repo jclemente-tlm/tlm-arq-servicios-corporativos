@@ -257,88 +257,88 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     // ========================================
 
     // Event Processor - Acceso a esquemas de base de datos
-    eventProcessor.templateProvider -> sitaMessagingDatabase.businessSchema "Lee templates SITA con versionado y cache" "EF Core" "001 - Fase 1"
-    eventProcessor.fileRepository -> sitaMessagingDatabase.businessSchema "Almacena metadata de archivos generados" "EF Core" "001 - Fase 1"
-    eventProcessor.auditService -> sitaMessagingDatabase.businessSchema "Registra auditoría inmutable de procesamiento" "EF Core" "001 - Fase 1"
-    eventProcessor.reliableEventConsumer -> sitaMessagingDatabase.messagingSchema "Consume y actualiza eventos desde reliable messages table" "EF Core" "001 - Fase 1"
-    eventProcessor.deadLetterProcessor -> sitaMessagingDatabase.messagingSchema "Almacena eventos fallidos en dead letter table" "EF Core" "001 - Fase 1"
-    eventProcessor.configurationManager -> sitaMessagingDatabase.businessSchema "Lee configuraciones por tenant desde configuration table" "EF Core" "001 - Fase 1"
+    eventProcessor.templateProvider -> sitaMessagingDatabase.businessSchema "Lee templates SITA" "EF Core" "001 - Fase 1"
+    eventProcessor.fileRepository -> sitaMessagingDatabase.businessSchema "Almacena metadata" "EF Core" "001 - Fase 1"
+    eventProcessor.auditService -> sitaMessagingDatabase.businessSchema "Registra auditoría" "EF Core" "001 - Fase 1"
+    eventProcessor.reliableEventConsumer -> sitaMessagingDatabase.messagingSchema "Consume eventos" "EF Core" "001 - Fase 1"
+    eventProcessor.deadLetterProcessor -> sitaMessagingDatabase.messagingSchema "Almacena eventos fallidos" "EF Core" "001 - Fase 1"
+    eventProcessor.configurationManager -> sitaMessagingDatabase.businessSchema "Lee config por tenant" "EF Core" "001 - Fase 1"
 
     // Sender - Acceso a esquemas de base de datos
-    sender.messageRepository -> sitaMessagingDatabase.businessSchema "Consulta templates y configuraciones SITA" "EF Core" "001 - Fase 1"
-    sender.deliveryTracker -> sitaMessagingDatabase.messagingSchema "Actualiza estado de entregas en reliable messages table" "EF Core" "001 - Fase 1"
-    sender.auditService -> sitaMessagingDatabase.businessSchema "Almacena auditoría de entregas y confirmaciones" "EF Core" "001 - Fase 1"
+    sender.messageRepository -> sitaMessagingDatabase.businessSchema "Consulta templates SITA" "EF Core" "001 - Fase 1"
+    sender.deliveryTracker -> sitaMessagingDatabase.messagingSchema "Actualiza estado entregas" "EF Core" "001 - Fase 1"
+    sender.auditService -> sitaMessagingDatabase.businessSchema "Almacena auditoría" "EF Core" "001 - Fase 1"
 
     // Sender - Acceso a archivos
-    sender.fileFetcher -> fileStorage "Descarga archivos SITA generados con verificación de integridad" "S3-Compatible API" "001 - Fase 1"
+    sender.fileFetcher -> fileStorage "Descarga archivos SITA" "S3-Compatible API" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - INTEGRACIONES
     // ========================================
 
     // Envío a partners aeronáuticos externos
-    sender.messageSender -> airlines "Entrega archivos SITA por email" "SMTP via Notification System" "001 - Fase 1"
-    sender.messageSender -> descartes "Entrega archivos SITA por protocolo específico" "HTTPS/FTP" "001 - Fase 1"
+    sender.messageSender -> airlines "Entrega archivos por email" "SMTP via Notification System" "001 - Fase 1"
+    sender.messageSender -> descartes "Entrega archivos por protocolo" "HTTPS/FTP" "001 - Fase 1"
 
     // Integración con Configuration Platform
-    eventProcessor.configurationManager -> configPlatform.configService "Obtiene configuraciones por tenant en cache miss" "HTTPS/REST" "001 - Fase 1"
-    eventProcessor.configurationManager -> configPlatform.secretsService "Obtiene secretos de partners en cache miss" "HTTPS/REST" "001 - Fase 1"
-    eventProcessor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling inteligente" "HTTPS/REST" "001 - Fase 1"
-    sender.configManager -> configPlatform.configService "Obtiene configuraciones de delivery en cache miss" "HTTPS/REST" "001 - Fase 1"
-    sender.configManager -> configPlatform.secretsService "Obtiene credenciales de partners cuando se requiere" "HTTPS/REST" "001 - Fase 1"
+    eventProcessor.configurationManager -> configPlatform.configService "Obtiene config por tenant" "HTTPS/REST" "001 - Fase 1"
+    eventProcessor.configurationManager -> configPlatform.secretsService "Obtiene secretos partners" "HTTPS/REST" "001 - Fase 1"
+    eventProcessor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios config" "HTTPS/REST" "001 - Fase 1"
+    sender.configManager -> configPlatform.configService "Obtiene config delivery" "HTTPS/REST" "001 - Fase 1"
+    sender.configManager -> configPlatform.secretsService "Obtiene credenciales" "HTTPS/REST" "001 - Fase 1"
 
     // ========================================
     // FLUJO DE PROCESAMIENTO DE EVENTOS
     // ========================================
 
     // Event Processor - Pipeline principal
-    eventProcessor.reliableEventConsumer -> eventProcessor.eventHandler "Delega eventos consumidos para procesamiento de negocio" "In-Memory" "001 - Fase 1"
-    eventProcessor.eventHandler -> eventProcessor.service "Solicita generación de mensajes SITA validados" "In-Memory" "001 - Fase 1"
-    eventProcessor.service -> eventProcessor.templateProvider "Consulta template específico por tipo de evento" "In-Memory" "001 - Fase 1"
-    eventProcessor.service -> eventProcessor.configurationManager "Consulta configuración por tenant con cache-first" "In-Memory" "001 - Fase 1"
-    eventProcessor.service -> eventProcessor.generator "Delega generación de archivo SITA con template" "In-Memory" "001 - Fase 1"
-    eventProcessor.service -> eventProcessor.fileRepository "Solicita almacenamiento de archivo y metadata" "In-Memory" "001 - Fase 1"
-    eventProcessor.fileRepository -> fileStorage "Almacena archivo SITA generado en bucket específico" "S3-Compatible API" "001 - Fase 1"
-    eventProcessor.service -> eventProcessor.auditService "Registra evento de generación exitosa" "In-Memory" "001 - Fase 1"
+    eventProcessor.reliableEventConsumer -> eventProcessor.eventHandler "Delega eventos" "In-Memory" "001 - Fase 1"
+    eventProcessor.eventHandler -> eventProcessor.service "Solicita generación SITA" "In-Memory" "001 - Fase 1"
+    eventProcessor.service -> eventProcessor.templateProvider "Consulta template" "In-Memory" "001 - Fase 1"
+    eventProcessor.service -> eventProcessor.configurationManager "Consulta config tenant" "In-Memory" "001 - Fase 1"
+    eventProcessor.service -> eventProcessor.generator "Delega generación archivo" "In-Memory" "001 - Fase 1"
+    eventProcessor.service -> eventProcessor.fileRepository "Solicita almacenamiento" "In-Memory" "001 - Fase 1"
+    eventProcessor.fileRepository -> fileStorage "Almacena archivo SITA" "S3-Compatible API" "001 - Fase 1"
+    eventProcessor.service -> eventProcessor.auditService "Registra generación exitosa" "In-Memory" "001 - Fase 1"
 
     // Event Processor - Manejo de errores
-    eventProcessor.eventHandler -> eventProcessor.retryHandler "Delega manejo de fallos con políticas específicas" "In-Memory" "001 - Fase 1"
-    eventProcessor.retryHandler -> eventProcessor.deadLetterProcessor "Envía a DLQ tras agotar reintentos configurados" "In-Memory" "001 - Fase 1"
-    eventProcessor.deadLetterProcessor -> eventProcessor.auditService "Registra fallo definitivo con análisis de causa" "In-Memory" "001 - Fase 1"
+    eventProcessor.eventHandler -> eventProcessor.retryHandler "Delega manejo fallos" "In-Memory" "001 - Fase 1"
+    eventProcessor.retryHandler -> eventProcessor.deadLetterProcessor "Envía a DLQ" "In-Memory" "001 - Fase 1"
+    eventProcessor.deadLetterProcessor -> eventProcessor.auditService "Registra fallo definitivo" "In-Memory" "001 - Fase 1"
 
     // Event Processor - Configuración dinámica
-    eventProcessor.dynamicConfigProcessor -> eventProcessor.configurationManager "Invalida cache específico de configuraciones al detectar cambios" "In-Memory" "001 - Fase 1"
+    eventProcessor.dynamicConfigProcessor -> eventProcessor.configurationManager "Invalida cache config" "In-Memory" "001 - Fase 1"
 
     // ========================================
     // OBSERVABILIDAD - EVENT PROCESSOR
     // ========================================
 
     // Health Checks
-    eventProcessor.healthCheck -> sitaMessagingDatabase "Ejecuta health check con query de conectividad" "PostgreSQL" "001 - Fase 1"
-    eventProcessor.healthCheck -> fileStorage "Verifica conectividad storage y permisos de escritura" "S3-Compatible API" "001 - Fase 1"
-    eventProcessor.healthCheck -> configPlatform.configService "Verifica disponibilidad de configuraciones críticas" "HTTPS/REST" "001 - Fase 1"
+    eventProcessor.healthCheck -> sitaMessagingDatabase "Ejecuta health check" "PostgreSQL" "001 - Fase 1"
+    eventProcessor.healthCheck -> fileStorage "Verifica conectividad storage" "S3-Compatible API" "001 - Fase 1"
+    eventProcessor.healthCheck -> configPlatform.configService "Verifica config críticas" "HTTPS/REST" "001 - Fase 1"
 
     // Logging estructurado
-    eventProcessor.service -> eventProcessor.structuredLogger "Registra eventos de generación y validaciones" "Serilog" "001 - Fase 1"
-    eventProcessor.eventHandler -> eventProcessor.structuredLogger "Registra eventos procesados con contexto" "Serilog" "001 - Fase 1"
-    eventProcessor.retryHandler -> eventProcessor.structuredLogger "Registra reintentos y políticas aplicadas" "Serilog" "001 - Fase 1"
-    eventProcessor.configurationManager -> eventProcessor.structuredLogger "Registra cache hit/miss y actualizaciones" "Serilog" "001 - Fase 1"
-    eventProcessor.templateProvider -> eventProcessor.structuredLogger "Registra cache de templates y versionado" "Serilog" "001 - Fase 1"
-    eventProcessor.fileRepository -> eventProcessor.structuredLogger "Registra persistencia de archivos y metadata" "Serilog" "001 - Fase 1"
-    eventProcessor.generator -> eventProcessor.structuredLogger "Registra generación de archivos SITA" "Serilog" "001 - Fase 1"
-    eventProcessor.deadLetterProcessor -> eventProcessor.structuredLogger "Registra eventos DLQ y análisis de causa" "Serilog" "001 - Fase 1"
-    eventProcessor.dynamicConfigProcessor -> eventProcessor.structuredLogger "Registra cambios de configuración detectados" "Serilog" "001 - Fase 1"
-    eventProcessor.healthCheck -> eventProcessor.structuredLogger "Registra resultados de health checks" "Serilog" "001 - Fase 1"
+    eventProcessor.service -> eventProcessor.structuredLogger "Registra generación" "Serilog" "001 - Fase 1"
+    eventProcessor.eventHandler -> eventProcessor.structuredLogger "Registra eventos procesados" "Serilog" "001 - Fase 1"
+    eventProcessor.retryHandler -> eventProcessor.structuredLogger "Registra reintentos" "Serilog" "001 - Fase 1"
+    eventProcessor.configurationManager -> eventProcessor.structuredLogger "Registra cache hit/miss" "Serilog" "001 - Fase 1"
+    eventProcessor.templateProvider -> eventProcessor.structuredLogger "Registra cache templates" "Serilog" "001 - Fase 1"
+    eventProcessor.fileRepository -> eventProcessor.structuredLogger "Registra persistencia" "Serilog" "001 - Fase 1"
+    eventProcessor.generator -> eventProcessor.structuredLogger "Registra generación SITA" "Serilog" "001 - Fase 1"
+    eventProcessor.deadLetterProcessor -> eventProcessor.structuredLogger "Registra eventos DLQ" "Serilog" "001 - Fase 1"
+    eventProcessor.dynamicConfigProcessor -> eventProcessor.structuredLogger "Registra cambios config" "Serilog" "001 - Fase 1"
+    eventProcessor.healthCheck -> eventProcessor.structuredLogger "Registra health checks" "Serilog" "001 - Fase 1"
 
     // Métricas de negocio y técnicas
-    eventProcessor.service -> eventProcessor.metricsCollector "Publica métricas de tiempo generación y throughput" "Prometheus" "001 - Fase 1"
-    eventProcessor.eventHandler -> eventProcessor.metricsCollector "Publica métricas de eventos procesados por tipo" "Prometheus" "001 - Fase 1"
-    eventProcessor.configurationManager -> eventProcessor.metricsCollector "Publica métricas de cache hit ratio" "Prometheus" "001 - Fase 1"
-    eventProcessor.reliableEventConsumer -> eventProcessor.metricsCollector "Publica métricas de consumo y lag" "Prometheus" "001 - Fase 1"
-    eventProcessor.templateProvider -> eventProcessor.metricsCollector "Publica métricas de cache de templates" "Prometheus" "001 - Fase 1"
-    eventProcessor.generator -> eventProcessor.metricsCollector "Publica métricas de generación por partner" "Prometheus" "001 - Fase 1"
-    eventProcessor.fileRepository -> eventProcessor.metricsCollector "Publica métricas de I/O y tamaño archivos" "Prometheus" "001 - Fase 1"
-    eventProcessor.deadLetterProcessor -> eventProcessor.metricsCollector "Publica métricas de mensajes DLQ" "Prometheus" "001 - Fase 1"
+    eventProcessor.service -> eventProcessor.metricsCollector "Publica métricas generación" "Prometheus" "001 - Fase 1"
+    eventProcessor.eventHandler -> eventProcessor.metricsCollector "Publica métricas eventos" "Prometheus" "001 - Fase 1"
+    eventProcessor.configurationManager -> eventProcessor.metricsCollector "Publica métricas cache" "Prometheus" "001 - Fase 1"
+    eventProcessor.reliableEventConsumer -> eventProcessor.metricsCollector "Publica métricas consumo" "Prometheus" "001 - Fase 1"
+    eventProcessor.templateProvider -> eventProcessor.metricsCollector "Publica métricas templates" "Prometheus" "001 - Fase 1"
+    eventProcessor.generator -> eventProcessor.metricsCollector "Publica métricas por partner" "Prometheus" "001 - Fase 1"
+    eventProcessor.fileRepository -> eventProcessor.metricsCollector "Publica métricas I/O" "Prometheus" "001 - Fase 1"
+    eventProcessor.deadLetterProcessor -> eventProcessor.metricsCollector "Publica métricas DLQ" "Prometheus" "001 - Fase 1"
     eventProcessor.dynamicConfigProcessor -> eventProcessor.metricsCollector "Publica métricas de configuración dinámica" "Prometheus" "001 - Fase 1"
     eventProcessor.healthCheck -> eventProcessor.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
 

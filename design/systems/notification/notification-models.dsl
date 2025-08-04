@@ -98,7 +98,7 @@ notification = softwareSystem "Notification System" {
 
         structuredLogger = component "Structured Logger" {
             technology "Serilog"
-            description "Registra logging estructurado con correlationId único, captura tenant context y almacena metadata de requests para trazabilidad completa"
+            description "Logging estructurado con correlationId, tenant context y metadata de requests"
             tags "Observability" "001 - Fase 1"
         }
     }
@@ -114,50 +114,50 @@ notification = softwareSystem "Notification System" {
 
         messageConsumer = component "Message Consumer" {
             technology "Reliable Messaging"
-            description "Consumer principal con acknowledgments y retry."
+            description "Consumer principal con acknowledgments, retry policies y dead letter handling"
             tags "Messaging" "001 - Fase 1"
         }
 
         orchestratorService = component "Orchestrator Service" {
             technology "C# Service"
-            description "Orquesta el procesamiento y routing por canal."
+            description "Orquesta el procesamiento, routing por canal y manejo de prioridades"
             tags "Orchestration" "001 - Fase 1"
         }
 
         templateEngine = component "Template Engine" {
             technology "Liquid Templates"
-            description "Motor de plantillas con cache inteligente."
+            description "Motor de plantillas con cache, i18n y personalización por tenant"
             tags "Templates" "001 - Fase 1"
         }
 
         // Channel Handlers - Componentes livianos en lugar de contenedores
         emailHandler = component "Email Handler" {
             technology "Email Provider Client"
-            description "Handler especializado para procesamiento de emails."
+            description "Handler especializado para emails con retry, templates y attachments"
             tags "Email" "Handler" "001 - Fase 1"
         }
 
         smsHandler = component "SMS Handler" {
             technology "SMS Provider Client"
-            description "Handler especializado para procesamiento de SMS."
+            description "Handler especializado para SMS con límites de caracteres y routing"
             tags "SMS" "Handler" "001 - Fase 1"
         }
 
         whatsappHandler = component "WhatsApp Handler" {
             technology "WhatsApp Provider Client"
-            description "Handler especializado para procesamiento de WhatsApp."
+            description "Handler especializado para WhatsApp con templates y media support"
             tags "WhatsApp" "Handler" "001 - Fase 1"
         }
 
         pushHandler = component "Push Handler" {
             technology "Push Provider Client"
-            description "Handler especializado para notificaciones push."
+            description "Handler especializado para push notifications con targeting"
             tags "Push" "Handler" "001 - Fase 1"
         }
 
         schedulerService = component "Scheduler Service" {
             technology "Background Service"
-            description "Gestión de notificaciones programadas"
+            description "Gestión de notificaciones programadas con cron jobs y time zones"
             tags "Scheduling" "001 - Fase 1"
         }
 
@@ -175,7 +175,7 @@ notification = softwareSystem "Notification System" {
 
         notificationRepository = component "Notification Repository" {
             technology "Entity Framework Core"
-            description "Operaciones de datos con alta concurrencia"
+            description "Operaciones de datos con alta concurrencia, audit trail y soft deletes"
             tags "Repository" "001 - Fase 1"
         }
 
@@ -204,10 +204,10 @@ notification = softwareSystem "Notification System" {
     // ========================================
 
     // Aplicaciones por país - Operaciones de consulta (Queries)
-    appPeru -> api.notificationController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
-    appEcuador -> api.notificationController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
-    appColombia -> api.notificationController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
-    appMexico -> api.notificationController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
+    appPeru -> api.notificationController "Solicita envió de notificación" "HTTPS via API Gateway" "001 - Fase 1"
+    appEcuador -> api.notificationController "Solicita envió de notificación" "HTTPS via API Gateway" "001 - Fase 1"
+    appColombia -> api.notificationController "Solicita envió de notificación" "HTTPS via API Gateway" "001 - Fase 1"
+    appMexico -> api.notificationController "Solicita envió de notificación" "HTTPS via API Gateway" "001 - Fase 1"
 
     // API Internal Relations
     api.notificationController -> api.requestValidator "Valida requests" "C#" "001 - Fase 1"
@@ -238,10 +238,10 @@ notification = softwareSystem "Notification System" {
     processor.notificationRepository -> notificationDatabase "Operaciones CRUD" "PostgreSQL" "001 - Fase 1"
 
     // Dynamic Configuration Relations
-    api.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling" "HTTPS/REST" "001 - Fase 1"
-    api.dynamicConfigProcessor -> api.configurationService "Invalida cache específico al detectar cambios" "In-Memory" "001 - Fase 1"
-    processor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling" "HTTPS/REST" "001 - Fase 1"
-    processor.dynamicConfigProcessor -> processor.configurationService "Invalida cache específico al detectar cambios" "In-Memory" "001 - Fase 1"
+    api.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios config" "HTTPS/REST" "001 - Fase 1"
+    api.dynamicConfigProcessor -> api.configurationService "Invalida cache" "In-Memory" "001 - Fase 1"
+    processor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios config" "HTTPS/REST" "001 - Fase 1"
+    processor.dynamicConfigProcessor -> processor.configurationService "Invalida cache" "In-Memory" "001 - Fase 1"
 
     // External Provider Relations
     processor.emailHandler -> emailProvider "Envía email" "HTTPS/SMTP" "001 - Fase 1"

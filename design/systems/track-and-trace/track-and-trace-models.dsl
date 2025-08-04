@@ -243,22 +243,22 @@ trackAndTrace = softwareSystem "Track & Trace System" {
     // ========================================
 
     // API Unificada - Flujo de ingesta (Command side)
-    trackingAPI.reliableEventPublisher -> trackingDatabase.outboxTable "Publica eventos con garantías ACID (outbox pattern)" "PostgreSQL Outbox" "001 - Fase 1"
-    trackingDatabase.outboxTable -> trackingDatabase.reliableMessagesTable "Background service procesa outbox → message store" "PostgreSQL" "001 - Fase 1"
+    trackingAPI.reliableEventPublisher -> trackingDatabase.outboxTable "Publica eventos ACID" "PostgreSQL Outbox" "001 - Fase 1"
+    trackingDatabase.outboxTable -> trackingDatabase.reliableMessagesTable "Procesa outbox a mensajes" "PostgreSQL" "001 - Fase 1"
 
     // API Unificada - Flujo de consulta (Query side)
-    trackingAPI.trackingDataRepository -> trackingDatabase.businessSchema "Lee datos de trazabilidad con patrones optimizados" "EF Core" "001 - Fase 1"
+    trackingAPI.trackingDataRepository -> trackingDatabase.businessSchema "Lee datos trazabilidad" "EF Core" "001 - Fase 1"
 
     // API Unificada - Configuración compartida
-    trackingAPI.tenantConfigRepository -> trackingDatabase.businessSchema "Gestiona configuración por tenant (ingest + query)" "EF Core" "001 - Fase 1"
+    trackingAPI.tenantConfigRepository -> trackingDatabase.businessSchema "Gestiona config por tenant" "EF Core" "001 - Fase 1"
 
     // Event Processor - Flujo principal (Con reliable messaging en mismo BD)
-    trackingDatabase.reliableMessagesTable -> trackingEventProcessor.reliableEventConsumer "Consume eventos con garantías ACID (polling)" "PostgreSQL Polling" "001 - Fase 1"
-    trackingEventProcessor.reliableDownstreamPublisher -> sitaMessaging.sitaMessagingDatabase "Publica eventos downstream confiablemente al sistema SITA (cross-system messaging)" "PostgreSQL Outbox" "001 - Fase 1"
+    trackingDatabase.reliableMessagesTable -> trackingEventProcessor.reliableEventConsumer "Consume eventos ACID" "PostgreSQL Polling" "001 - Fase 1"
+    trackingEventProcessor.reliableDownstreamPublisher -> sitaMessaging.sitaMessagingDatabase "Publica eventos a SITA" "PostgreSQL Outbox" "001 - Fase 1"
 
     // Event Processor - Configuración y datos
-    trackingEventProcessor.trackingEventRepository -> trackingDatabase.businessSchema "Lee y escribe datos de eventos" "EF Core" "001 - Fase 1"
-    trackingEventProcessor.processorTenantConfigRepository -> trackingDatabase.businessSchema "Lee configuración por tenant" "EF Core" "001 - Fase 1"
+    trackingEventProcessor.trackingEventRepository -> trackingDatabase.businessSchema "Lee y escribe eventos" "EF Core" "001 - Fase 1"
+    trackingEventProcessor.processorTenantConfigRepository -> trackingDatabase.businessSchema "Lee config por tenant" "EF Core" "001 - Fase 1"
 
     // Relaciones internas de la base de datos
     trackingDatabase.messagingSchema -> trackingDatabase.reliableMessagesTable "Contiene tabla de mensajes" "" "001 - Fase 1"
@@ -276,28 +276,28 @@ trackAndTrace = softwareSystem "Track & Trace System" {
     appMexico -> trackingAPI.trackingIngestController "Registra eventos de tracking" "HTTPS via API Gateway" "001 - Fase 1"
 
     // Aplicaciones por país - Operaciones de consulta (Queries)
-    appPeru -> trackingAPI.trackingQueryController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
-    appEcuador -> trackingAPI.trackingQueryController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
-    appColombia -> trackingAPI.trackingQueryController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
-    appMexico -> trackingAPI.trackingQueryController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
+    appPeru -> trackingAPI.trackingQueryController "Consulta estado" "HTTPS via API Gateway" "001 - Fase 1"
+    appEcuador -> trackingAPI.trackingQueryController "Consulta estado" "HTTPS via API Gateway" "001 - Fase 1"
+    appColombia -> trackingAPI.trackingQueryController "Consulta estado" "HTTPS via API Gateway" "001 - Fase 1"
+    appMexico -> trackingAPI.trackingQueryController "Consulta estado" "HTTPS via API Gateway" "001 - Fase 1"
 
     // Usuario operacional - Dashboard con datos en tiempo real
-    operationalUser -> trackingDashboard "Consulta trazabilidad y métricas" "" "001 - Fase 1"
-    trackingDashboard -> trackingAPI.trackingQueryController "Consulta datos de trazabilidad" "HTTPS" "001 - Fase 1"
+    operationalUser -> trackingDashboard "Consulta trazabilidad" "" "001 - Fase 1"
+    trackingDashboard -> trackingAPI.trackingQueryController "Consulta datos tracking" "HTTPS" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - SISTEMAS
     // ========================================
 
     // Integración con plataforma de configuración
-    trackingAPI.configurationProvider -> configPlatform.configService "Lee configuraciones unificadas y secretos desde Configuration Platform agnóstica" "HTTPS/REST" "001 - Fase 1"
-    trackingEventProcessor.processorConfigurationProvider -> configPlatform.configService "Lee configuraciones y secretos desde Configuration Platform agnóstica" "HTTPS/REST" "001 - Fase 1"
+    trackingAPI.configurationProvider -> configPlatform.configService "Lee configuraciones" "HTTPS/REST" "001 - Fase 1"
+    trackingEventProcessor.processorConfigurationProvider -> configPlatform.configService "Lee configuraciones" "HTTPS/REST" "001 - Fase 1"
 
     // Dynamic Configuration Relations - Patrón polling correcto
-    trackingAPI.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling inteligente" "HTTPS/REST" "001 - Fase 1"
-    trackingAPI.dynamicConfigProcessor -> trackingAPI.configurationProvider "Invalida cache específico de configuraciones al detectar cambios" "In-Memory" "001 - Fase 1"
-    trackingEventProcessor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling inteligente" "HTTPS/REST" "001 - Fase 1"
-    trackingEventProcessor.dynamicConfigProcessor -> trackingEventProcessor.processorConfigurationProvider "Invalida cache específico de procesamiento al detectar cambios" "In-Memory" "001 - Fase 1"
+    trackingAPI.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios config" "HTTPS/REST" "001 - Fase 1"
+    trackingAPI.dynamicConfigProcessor -> trackingAPI.configurationProvider "Invalida cache config" "In-Memory" "001 - Fase 1"
+    trackingEventProcessor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios config" "HTTPS/REST" "001 - Fase 1"
+    trackingEventProcessor.dynamicConfigProcessor -> trackingEventProcessor.processorConfigurationProvider "Invalida cache processor" "In-Memory" "001 - Fase 1"
 
     // ========================================
     // RELACIONES ENTRE COMPONENTES INTERNOS

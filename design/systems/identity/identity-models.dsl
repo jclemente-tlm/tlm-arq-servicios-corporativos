@@ -35,13 +35,13 @@ identity = softwareSystem "Identity & Access Management System" {
     admin -> keycloakServer "Gestiona tenants y usuarios" "HTTPS" "001 - Fase 1"
 
     // Administradores delegados por país (usando roles delegados de Keycloak)
-    countryAdmin -> keycloakServer "Administra usuarios de su tenant" "HTTPS via API Gateway" "001 - Fase 1"
+    countryAdmin -> keycloakServer "Administra usuarios por tenant" "HTTPS via API Gateway" "001 - Fase 1"
 
     // Aplicaciones por país - Autenticación OAuth2/OIDC
-    appPeru -> keycloakServer "Autenticación OAuth2/OIDC tenant Peru" "HTTPS via API Gateway" "001 - Fase 1"
-    appEcuador -> keycloakServer "Autenticación OAuth2/OIDC tenant Ecuador" "HTTPS via API Gateway" "001 - Fase 1"
-    appColombia -> keycloakServer "Autenticación OAuth2/OIDC tenant Colombia" "HTTPS via API Gateway" "001 - Fase 1"
-    appMexico -> keycloakServer "Autenticación OAuth2/OIDC tenant Mexico" "HTTPS via API Gateway" "001 - Fase 1"
+    appPeru -> keycloakServer "Autentica con OAuth2/OIDC" "HTTPS via API Gateway" "001 - Fase 1"
+    appEcuador -> keycloakServer "Autentica con OAuth2/OIDC" "HTTPS via API Gateway" "001 - Fase 1"
+    appColombia -> keycloakServer "Autentica con OAuth2/OIDC" "HTTPS via API Gateway" "001 - Fase 1"
+    appMexico -> keycloakServer "Autentica con OAuth2/OIDC" "HTTPS via API Gateway" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - SISTEMAS
