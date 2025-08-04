@@ -99,7 +99,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
 
         fileRepository = component "File & Data Repository" {
             technology "C#, .NET 8, EF Core"
-            description "Repositorio híbrido que gestiona almacenamiento de archivos SITA en S3 y persiste metadata asociada en PostgreSQL business schema."
+            description "Repositorio híbrido que gestiona almacenamiento de archivos SITA via IStorageService interface y persiste metadata asociada en PostgreSQL business schema."
             tags "Repository" "Files" "001 - Fase 1"
         }
 
@@ -112,7 +112,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
         // Componentes de Observabilidad
         healthCheck = component "Health Check" {
             technology "C#, .NET 8, ASP.NET Core Health Checks"
-            description "Monitorea salud del Event Processor: conectividad PostgreSQL, disponibilidad S3, estado Configuration Platform y latencias de dependencias."
+            description "Monitorea salud del Event Processor: conectividad PostgreSQL, disponibilidad storage, estado Configuration Platform y latencias de dependencias."
             tags "Observability" "001 - Fase 1"
         }
 
@@ -155,9 +155,9 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     }
 
     fileStorage = store "SITA File Storage" {
-        technology "AWS S3"
-        description "Storage distribuido para archivos SITA generados organizados por tenant, partner y fecha, con versionado automático y políticas de retención."
-        tags "File Storage" "AWS S3" "001 - Fase 1"
+        technology "S3-Compatible Storage (AWS S3, MinIO, etc.)"
+        description "Storage agnóstico via IStorageService interface. Proveedor configurable: S3, Azure Blob, MinIO, etc."
+        tags "File Storage" "S3-Compatible" "Multi-Provider" "001 - Fase 1"
     }
 
     sender = container "SITA Messaging Sender" {
@@ -185,7 +185,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
 
         fileFetcher = component "File Fetcher" {
             technology "C#, .NET 8, AWS SDK"
-            description "Cliente optimizado para descarga de archivos SITA desde S3 con streaming, verificación de integridad (hash) y retry automático por fallos de red."
+            description "Cliente optimizado para descarga de archivos SITA desde Storage Platform con streaming, verificación de integridad (hash) y retry automático por fallos de red."
             tags "File Management" "001 - Fase 1"
         }
 
@@ -210,7 +210,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
         // Componentes de Observabilidad
         healthCheck = component "Health Check" {
             technology "C#, .NET 8, ASP.NET Core Health Checks"
-            description "Monitorea salud del Sender: conectividad con partners SITA, validación de certificados, disponibilidad S3 y latencias de Configuration Platform."
+            description "Monitorea salud del Sender: conectividad con partners SITA, validación de certificados, disponibilidad storage y latencias de Configuration Platform."
             tags "Observability" "001 - Fase 1"
         }
 
@@ -270,7 +270,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     sender.auditService -> sitaMessagingDatabase.businessSchema "Almacena auditoría de entregas y confirmaciones" "EF Core" "001 - Fase 1"
 
     // Sender - Acceso a archivos
-    sender.fileFetcher -> fileStorage "Descarga archivos SITA generados con verificación de integridad" "AWS S3 SDK" "001 - Fase 1"
+    sender.fileFetcher -> fileStorage "Descarga archivos SITA generados con verificación de integridad" "S3-Compatible API" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - INTEGRACIONES
@@ -301,7 +301,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     eventProcessor.service -> eventProcessor.configurationManager "Consulta configuración por tenant con cache-first" "In-Memory" "001 - Fase 1"
     eventProcessor.service -> eventProcessor.generator "Delega generación de archivo SITA con template" "In-Memory" "001 - Fase 1"
     eventProcessor.service -> eventProcessor.fileRepository "Solicita almacenamiento de archivo y metadata" "In-Memory" "001 - Fase 1"
-    eventProcessor.fileRepository -> fileStorage "Almacena archivo SITA generado en bucket específico" "AWS S3 SDK" "001 - Fase 1"
+    eventProcessor.fileRepository -> fileStorage "Almacena archivo SITA generado en bucket específico" "S3-Compatible API" "001 - Fase 1"
     eventProcessor.service -> eventProcessor.auditService "Registra evento de generación exitosa" "In-Memory" "001 - Fase 1"
 
     // Event Processor - Manejo de errores
@@ -318,7 +318,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
 
     // Health Checks
     eventProcessor.healthCheck -> sitaMessagingDatabase "Ejecuta health check con query de conectividad" "PostgreSQL" "001 - Fase 1"
-    eventProcessor.healthCheck -> fileStorage "Verifica conectividad S3 y permisos de escritura" "AWS S3 SDK" "001 - Fase 1"
+    eventProcessor.healthCheck -> fileStorage "Verifica conectividad storage y permisos de escritura" "S3-Compatible API" "001 - Fase 1"
     eventProcessor.healthCheck -> configPlatform.configService "Verifica disponibilidad de configuraciones críticas" "HTTPS/REST" "001 - Fase 1"
 
     // Logging estructurado
@@ -375,7 +375,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
 
     // Health Checks
     sender.healthCheck -> sitaMessagingDatabase "Ejecuta health check con query de conectividad" "PostgreSQL" "001 - Fase 1"
-    sender.healthCheck -> fileStorage "Verifica conectividad S3 y permisos de lectura" "AWS S3 SDK" "001 - Fase 1"
+    sender.healthCheck -> fileStorage "Verifica conectividad storage y permisos de lectura" "S3-Compatible API" "001 - Fase 1"
     sender.healthCheck -> configPlatform.configService "Verifica disponibilidad de configuraciones de delivery" "HTTPS/REST" "001 - Fase 1"
 
     // Logging estructurado
@@ -384,7 +384,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     sender.deliveryTracker -> sender.logger "Registra confirmaciones y fallos de entrega" "Serilog" "001 - Fase 1"
     sender.worker -> sender.logger "Registra ejecución de tareas programadas" "Serilog" "001 - Fase 1"
     sender.messageRepository -> sender.logger "Registra queries y acceso a datos" "Serilog" "001 - Fase 1"
-    sender.fileFetcher -> sender.logger "Registra descarga de archivos S3" "Serilog" "001 - Fase 1"
+    sender.fileFetcher -> sender.logger "Registra descarga de archivos Storage Platform" "Serilog" "001 - Fase 1"
     sender.configManager -> sender.logger "Registra cache hit/miss de configuraciones" "Serilog" "001 - Fase 1"
     sender.partnerManager -> sender.logger "Registra rate limiting y circuit breaker" "Serilog" "001 - Fase 1"
     sender.retryHandler -> sender.logger "Registra reintentos y políticas aplicadas" "Serilog" "001 - Fase 1"

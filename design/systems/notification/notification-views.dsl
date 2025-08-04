@@ -1,7 +1,7 @@
 container notification "notification_system" {
     include *
 
-    // Incluir proveedores de notificación
+    // Incluir proveedores de notificación y storage
     include emailProvider smsProvider whatsappProvider pushProvider
     include configPlatform
 
@@ -24,7 +24,7 @@ component notification.api "notification_system_api" {
     exclude notification.emailProcessor notification.smsProcessor notification.whatsappProcessor notification.pushProcessor
 
     title "[Diagrama de Componentes] Notification System - API"
-    description "Vista del API de notificaciones sin procesadores específicos"
+    description "Vista del API de notificaciones con abstracción de storage a nivel de código"
 }
 
 component notification.notificationProcessor "notification_system_processor" {

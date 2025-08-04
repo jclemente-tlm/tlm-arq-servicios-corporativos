@@ -62,9 +62,9 @@ notification = softwareSystem "Notification System" {
     }
 
     attachmentStorage = store "Attachment Storage" {
-        technology "AWS S3"
-        description "Almacenamiento escalable para archivos adjuntos con versionado y políticas de lifecycle."
-        tags "File Storage" "AWS S3" "001 - Fase 1"
+        technology "S3-Compatible Storage (AWS S3, MinIO, etc.)"
+        description "Almacenamiento agnóstico via IStorageService interface. Proveedor configurable por tenant."
+        tags "File Storage" "S3-Compatible" "Multi-Provider" "001 - Fase 1"
     }
 
     api = application "Notification API" {
@@ -127,8 +127,8 @@ notification = softwareSystem "Notification System" {
         }
 
         attachmentManager = component "Attachment Manager" {
-            technology "C# .NET 8, AWS SDK"
-            description "Gestiona la carga, descarga y eliminación de archivos en almacenamiento S3."
+            technology "C# .NET 8, IStorageService Interface"
+            description "Gestiona archivos via abstracción IStorageService. Implementaciones: S3Provider, AzureBlobProvider, MinIOProvider."
             tags "001 - Fase 1"
         }
 
@@ -524,13 +524,13 @@ notification = softwareSystem "Notification System" {
     api.attachmentController -> api.attachmentService "Registra adjunto" "" "001 - Fase 1"
     api.attachmentService -> api.attachmentRepository "Accede a metadatos de adjuntos" "" "001 - Fase 1"
     api.attachmentService -> api.attachmentManager "Gestiona archivos adjuntos" "" "001 - Fase 1"
-    api.attachmentManager -> attachmentStorage "Almacena archivo adjunto" "AWS S3" "001 - Fase 1"
+    api.attachmentManager -> attachmentStorage "Almacena archivo adjunto" "S3-Compatible API" "001 - Fase 1"
     // API - Configuración y attachments
     api.attachmentRepository -> notificationDatabase.businessSchema "Guarda metadatos de adjuntos" "Entity Framework Core" "001 - Fase 1"
 
     // API - Configuración (Cache-first pattern)
     api.notificationConfigurationProvider -> api.configurationCache "Cache-first: busca configuración" "" "001 - Fase 1"
-    api.configurationCache -> configPlatform.configService "Cache miss: polling inteligente (TTL: 30min)" "HTTPS" "001 - Fase 1"
+    api.configurationCache -> configPlatform.configService "Cache miss: polling inteligente a Configuration Platform agnóstica (TTL: 30min)" "HTTPS/REST" "001 - Fase 1"
     api.featureFlagService -> api.configurationCache "Evalúa feature flags desde cache" "" "001 - Fase 1"
     api.notificationConfigurationProvider -> api.tenantConfigurationRepository "Configuraciones específicas por tenant" "" "001 - Fase 1"
     api.tenantConfigurationRepository -> notificationDatabase.businessSchema "Accede a configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
@@ -582,7 +582,7 @@ notification = softwareSystem "Notification System" {
     emailProcessor.emailDeliveryService -> emailProcessor.emailProviderAdapter "Envía mensaje a proveedor de Email" "" "001 - Fase 1"
     emailProcessor.emailDeliveryService -> emailProcessor.emailAttachmentFetcher "Obtiene adjuntos para envío" "" "001 - Fase 1"
     emailProcessor.emailRepository -> notificationDatabase.businessSchema "Actualiza estado de notificación email" "Entity Framework Core" "001 - Fase 1"
-    emailProcessor.emailAttachmentFetcher -> attachmentStorage "Obtiene archivos adjuntos" "AWS S3" "001 - Fase 1"
+    emailProcessor.emailAttachmentFetcher -> attachmentStorage "Obtiene archivos adjuntos" "S3-Compatible API" "001 - Fase 1"
 
     // Email Processor - Configuración
     emailProcessor.emailConfigurationManager -> emailProcessor.emailTenantConfigRepository "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
@@ -609,7 +609,7 @@ notification = softwareSystem "Notification System" {
     whatsappProcessor.whatsappDeliveryService -> whatsappProcessor.whatsappProviderAdapter "Envía mensaje a proveedor de WhatsApp" "" "001 - Fase 1"
     whatsappProcessor.whatsappDeliveryService -> whatsappProcessor.whatsappAttachmentFetcher "Obtiene adjuntos para envío" "" "001 - Fase 1"
     whatsappProcessor.whatsappRepository -> notificationDatabase.businessSchema "Actualiza estado de notificación WhatsApp" "Entity Framework Core" "001 - Fase 1"
-    whatsappProcessor.whatsappAttachmentFetcher -> attachmentStorage "Obtiene archivos adjuntos" "AWS S3" "001 - Fase 1"
+    whatsappProcessor.whatsappAttachmentFetcher -> attachmentStorage "Obtiene archivos adjuntos" "S3-Compatible API" "001 - Fase 1"
 
     // WhatsApp Processor - Configuración
     whatsappProcessor.whatsappConfigurationManager -> whatsappProcessor.whatsappTenantConfigRepository "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"
@@ -624,7 +624,7 @@ notification = softwareSystem "Notification System" {
     pushProcessor.pushDeliveryService -> pushProcessor.pushProviderAdapter "Envía mensaje a proveedor de Push" "" "001 - Fase 1"
     pushProcessor.pushDeliveryService -> pushProcessor.pushAttachmentFetcher "Obtiene adjuntos para envío" "" "001 - Fase 1"
     pushProcessor.pushRepository -> notificationDatabase.businessSchema "Actualiza estado de notificación Push" "Entity Framework Core" "001 - Fase 1"
-    pushProcessor.pushAttachmentFetcher -> attachmentStorage "Obtiene archivos adjuntos" "AWS S3" "001 - Fase 1"
+    pushProcessor.pushAttachmentFetcher -> attachmentStorage "Obtiene archivos adjuntos" "S3-Compatible API" "001 - Fase 1"
 
     // Push Processor - Configuración
     pushProcessor.pushConfigurationManager -> pushProcessor.pushTenantConfigRepository "Lee configuraciones por tenant" "Entity Framework Core" "001 - Fase 1"

@@ -137,10 +137,11 @@ notificationSystem = deploymentEnvironment "Notification System" {
             // ====================
             // AWS Storage & DB
             // ====================
-            s3Node = deploymentNode "AWS S3" {
+            s3Node = deploymentNode "S3-Compatible Storage" {
                 tags "Amazon Web Services - Simple Storage Service"
-                description "Bucket S3 para almacenar archivos adjuntos y contenido relacionado a notificaciones."
+                description "Storage agnóstico: S3, Azure Blob, MinIO, etc. Proveedor configurable por tenant."
                 properties {
+                    "Provider" "configurable"
                     "Bucket" "notification-files"
                 }
                 containerInstance notification.attachmentStorage "DEV,STG,PROD"

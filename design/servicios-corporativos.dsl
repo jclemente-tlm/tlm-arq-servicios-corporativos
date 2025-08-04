@@ -149,21 +149,24 @@ workspace {
         }
 
         configPlatform = externalSystem  "Configuration Platform" {
-            description "Plataforma centralizada de configuración y secretos"
-            tags "External, AWS, 001 - Fase 1"
+            description "Plataforma agnóstica de configuración y secretos multi-proveedor"
+            tags "External, Multi-Cloud, Configuration, 001 - Fase 1"
 
-            configService = application "Parameter Store" {
-                // technology = "AWS SSM"
-                description "Servicio de configuración dinámica por tenant y entorno."
-                tags "AWS SSM, Configuration, 001 - Fase 1"
+            configService = application "Configuration Service" {
+                technology "Multi-Provider: AWS SSM, Azure App Config, HashiCorp Consul, Kubernetes ConfigMaps"
+                description "Servicio agnóstico de configuración dinámica por tenant y entorno. Proveedor configurable."
+                tags "Configuration, Multi-Provider, 001 - Fase 1"
             }
 
-            secretsService = application "Secrets Manager" {
-                // technology = "AWS Secrets Manager"
-                description "Almacén seguro de claves, tokens y secretos por servicio."
-                tags "AWS Secrets Manager, Secrets, 001 - Fase 1"
+            secretsService = application "Secrets Service" {
+                technology "Multi-Provider: AWS Secrets Manager, Azure Key Vault, HashiCorp Vault, Kubernetes Secrets"
+                description "Almacén agnóstico de claves, tokens y secretos por servicio. Proveedor configurable."
+                tags "Secrets, Multi-Provider, 001 - Fase 1"
             }
         }
+
+        // NOTA: Storage Platform eliminada - abstracción se maneja a nivel de código
+        // !include ./systems/infrastructure/storage-platform-models.dsl
 
         // Microservicios Corporativos
         corporateServicesGroup = group "Servicios Corporativos" {

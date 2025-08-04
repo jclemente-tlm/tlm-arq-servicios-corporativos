@@ -259,8 +259,8 @@ trackAndTrace = softwareSystem "Track & Trace System" {
     // ========================================
 
     // Integración con plataforma de configuración
-    trackingAPI.configurationProvider -> configPlatform.configService "Lee configuraciones unificadas y secretos" "" "001 - Fase 1"
-    trackingEventProcessor.processorConfigurationProvider -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+    trackingAPI.configurationProvider -> configPlatform.configService "Lee configuraciones unificadas y secretos desde Configuration Platform agnóstica" "HTTPS/REST" "001 - Fase 1"
+    trackingEventProcessor.processorConfigurationProvider -> configPlatform.configService "Lee configuraciones y secretos desde Configuration Platform agnóstica" "HTTPS/REST" "001 - Fase 1"
 
     // ========================================
     // RELACIONES ENTRE COMPONENTES INTERNOS
