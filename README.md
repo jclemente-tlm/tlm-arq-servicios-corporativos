@@ -1,52 +1,192 @@
 # Servicios Corporativos - Arquitectura Multi-Tenant
 
-Sistema distribuido de microservicios para operaciones corporativas en múltiples países de Latinoamérica.
+Sistema distribuido de microservicios para operaciones corporativas en Perú, Ecuador, Colombia y México.
 
-## 📋 Documentación Principal
+## 🎯 ¿Qué es?
 
-| Documento | Propósito | Audiencia |
-|-----------|-----------|-----------|
-| **[Resumen Ejecutivo](docs/executive-summary.md)** | Visión estratégica y beneficios empresariales | Ejecutivos, Product Owners |
-| **[Documentación Arc42](docs/architecture-documentation-arc42.md)** | Arquitectura completa según metodología Arc42 | Arquitectos, Desarrolladores |
-| **[Decisiones Arquitectónicas](docs/adrs/)** | ADRs detalladas con contexto y consecuencias | Equipo técnico |
+Plataforma de servicios corporativos diseñada con:
 
-## 🏗️ Arquitectura
+- **Multi-tenancy** para 4 países
+- **Arquitectura agnóstica** de cloud provider
+- **Stack .NET 8** moderno y escalable
+- **Deployment en AWS ECS** con contenedores
+- **Observabilidad completa** desde el día 1
 
-### Servicios Principales
-- **API Gateway (YARP):** Punto de entrada único con autenticación y resiliencia
-- **Sistema de Notificaciones:** Envío multicanal (Email, SMS, WhatsApp, Push)
-- **Track & Trace:** Seguimiento de eventos con CQRS y trazabilidad completa
-- **SITA Messaging:** Generación y envío de archivos SITA para aerolíneas
-- **Sistema de Identidad:** Autenticación multi-tenant con OAuth2/JWT
+## 🏗️ Servicios
 
-### Stack Tecnológico
-- **Runtime:** .NET 8 LTS (soporte hasta 2026)
-- **Base de Datos:** PostgreSQL con schemas multi-tenant
-- **Cache:** Redis para sesiones y performance
-- **Cloud:** AWS (ECS Fargate, RDS, ElastiCache, S3)
-- **Observabilidad:** Prometheus, Grafana, Serilog
+### 🚪 API Gateway (YARP)
+Punto de entrada único con autenticación, rate limiting y resiliencia.
 
-## 🚀 Inicio Rápido
+**Stack**: .NET 8 + YARP + Polly + Serilog + Prometheus
+
+### 🔐 Identity Service (Keycloak)
+Autenticación y autorización multi-tenant con OAuth2/JWT.
+
+**Stack**: Keycloak + PostgreSQL + Docker
+
+### 📧 Notification System
+Notificaciones multicanal (Email, SMS, WhatsApp, Push).
+
+**Stack**: .NET 8 + PostgreSQL + Redis + AWS SES/SNS
+
+### 📦 Track & Trace
+Seguimiento de eventos con CQRS y trazabilidad completa.
+
+**Stack**: .NET 8 + PostgreSQL + Event Sourcing
+
+### ✈️ SITA Messaging
+Generación y envío de archivos SITA para aerolíneas.
+
+**Stack**: .NET 8 + PostgreSQL + SITA Format + SFTP
+
+## 🔧 Stack Tecnológico
+
+| Componente | Tecnología | Justificación |
+|------------|------------|---------------|
+| **Runtime** | .NET 8 LTS | Standard corporativo, soporte hasta 2026 |
+| **Base de Datos** | PostgreSQL | ACID, escalabilidad, multi-tenancy |
+| **Cache** | Redis | Performance, sesiones distribuidas |
+| **Proxy** | YARP | Integración nativa .NET, alto rendimiento |
+| **Auth** | Keycloak | Standard enterprise, multi-tenant |
+| **Containers** | Docker + ECS | Portabilidad, escalabilidad |
+| **Observability** | Prometheus + Grafana + Serilog | Monitoreo completo |
+
+## 🌍 Multi-Tenancy
+
+Cada país opera como tenant independiente:
+
+- **Peru**: Aplicaciones peruanas
+- **Ecuador**: Aplicaciones ecuatorianas
+- **Colombia**: Aplicaciones colombianas
+- **Mexico**: Aplicaciones mexicanas
+
+### Aislamiento por Tenant
+
+- **Datos**: Schemas separados en PostgreSQL
+- **Configuración**: Por tenant en Configuration Platform
+- **Rate Limiting**: Políticas específicas por país
+- **Logging**: Segregado por tenant
+- **Métricas**: Dashboards por país
+
+## 🚀 Quick Start
 
 ### Prerequisitos
+
 - .NET 8 SDK
 - Docker & Docker Compose
 - Node.js (para scripts de diagramas)
 
-### Ejecutar Localmente
-```bash
-# Iniciar servicios de desarrollo
-./start.sh
+### Desarrollo Local
 
-# Ver diagramas de arquitectura
-./start.sh servicios-corporativos.dsl
-# Luego abrir http://localhost:8090
+```bash
+# Iniciar todos los servicios
+docker-compose up -d
+
+# Ver logs de un servicio específico
+docker-compose logs -f api-gateway
+
+# Parar servicios
+docker-compose down
 ```
 
-### Generar Diagramas
+### Ver Arquitectura
+
 ```bash
-# Exportar todos los diagramas
+# Generar diagramas C4
 ./export-diagrams.sh
+
+# Iniciar Structurizr local
+./start.sh
+
+# Abrir http://localhost:8090
+```
+
+## 📊 Monitoreo
+
+### URLs Importantes
+
+- **API Gateway**: http://localhost:8080
+- **Grafana**: http://localhost:3000
+- **Prometheus**: http://localhost:9090
+- **Keycloak**: http://localhost:8180
+
+### Métricas Clave
+
+- **Latencia P95**: < 100ms
+- **Throughput**: > 5,000 RPS
+- **Disponibilidad**: 99.9% SLA
+- **Error Rate**: < 0.1%
+
+## 📚 Documentación
+
+### Por Servicio
+
+- [API Gateway](docs/api-gateway/README.md) - Proxy reverso y routing
+- [Identity Service](docs/servicio-identidad/) - Autenticación OAuth2
+- [Notification System](docs/servicio-notificacion/) - Notificaciones multicanal
+- [Track & Trace](docs/servicio-track-trace/) - Seguimiento de eventos
+- [SITA Messaging](docs/servicio-mensajeria-sita/) - Mensajería aeroportuaria
+
+### Documentación Arc42
+
+Documentación completa siguiendo metodología Arc42:
+
+- [Introducción y Objetivos](docs/)
+- [Restricciones](docs/)
+- [Decisiones Arquitectónicas](docs/adrs/)
+
+## 🔄 CI/CD
+
+### AWS ECS Deployment
+
+```bash
+# Build y push de imágenes
+docker build -t api-gateway .
+docker tag api-gateway:latest <ecr-repo>/api-gateway:latest
+docker push <ecr-repo>/api-gateway:latest
+
+# Deploy via ECS Task Definition
+aws ecs update-service --cluster corporate-services --service api-gateway
+```
+
+### Infrastructure as Code
+
+- **Terraform**: Infrastructure provisioning
+- **Docker Compose**: Local development
+- **ECS Task Definitions**: Production deployment
+
+## 🔐 Seguridad
+
+- **OAuth2 + OIDC** para autenticación
+- **JWT (RS256)** para tokens
+- **TLS 1.3** mínimo para transporte
+- **Multi-factor auth** para admins
+- **Audit logging** completo
+- **Rate limiting** por tenant
+
+## 🎯 Roadmap
+
+### ✅ Fase 1 (6 meses)
+- Servicios core funcionales
+- Multi-tenancy básico
+- Deployment en ECS
+- Observabilidad básica
+
+### 🔄 Fase 2 (3 meses)
+- Cache distribuido
+- Advanced monitoring
+- Performance optimization
+- Advanced security features
+
+### 🚀 Fase 3 (3 meses)
+- Multi-cloud support
+- Advanced automation
+- ML-based monitoring
+- Advanced analytics
+
+---
+
+**Principios**: Simplicidad, Portabilidad, Observabilidad, Multi-tenancy
 
 # Ver diagramas generados
 ls diagrams/

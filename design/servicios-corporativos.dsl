@@ -183,7 +183,7 @@ workspace {
             // ========================================
 
             // Integración API Gateway -> Identity System (Autenticación y Autorización)
-            apiGateway.reverseProxyGateway.securityMiddleware -> identity.keycloakServer "Valida tokens JWT via token introspection" "HTTPS" "001 - Fase 1"
+            apiGateway.reverseProxyGateway.securityMiddleware -> identity.keycloakServer "Valida tokens JWT" "HTTPS" "001 - Fase 1"
 
         }
 

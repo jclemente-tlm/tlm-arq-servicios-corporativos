@@ -1,53 +1,199 @@
-# 5. Vista de bloques de construcción
+# 5. Vista de Bloques de Construcción
 
-## 5.1 Visión general del sistema
+Esta sección describe la estructura interna del API Gateway basada en los componentes definidos en nuestro modelo DSL.
 
-El API Gateway actúa como punto de entrada unificado para todos los servicios corporativos, implementando un patrón de fachada que oculta la complejidad de la arquitectura de microservicios a los clientes externos.
+## Arquitectura General
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    API Gateway (YARP)                       │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────────┐ │
-│  │   Routing   │ │    Auth     │ │     Load Balancing      │ │
-│  │   Engine    │ │  Middleware │ │     & Health Checks     │ │
-│  └─────────────┘ └─────────────┘ └─────────────────────────┘ │
-│                                                             │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────────┐ │
-│  │ Rate Limit  │ │   Logging   │ │      Monitoring         │ │
-│  │ & Throttle  │ │ & Tracing   │ │     & Metrics           │ │
-│  └─────────────┘ └─────────────┘ └─────────────────────────┘ │
-├─────────────────────────────────────────────────────────────┤
-│                 Downstream Services                         │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────────┐ │
-│  │   Identity  │ │Notification │ │     Track & Trace       │ │
-│  │   Service   │ │   Service   │ │       Service           │ │
-│  └─────────────┘ └─────────────┘ └─────────────────────────┘ │
-│                                                             │
-│  ┌─────────────────────────────┐ ┌─────────────────────────┐ │
-│  │      SITA Messaging         │ │    External Services    │ │
-│  │        Service              │ │     & Legacy Systems    │ │
-│  └─────────────────────────────┘ └─────────────────────────┘ │
-└─────────────────────────────────────────────────────────────┘
+                    ┌─────────────────────────────────────┐
+                    │        API Gateway (YARP)          │
+                    │                                     │
+┌─────────────┐     │ ┌─────────────────────────────────┐ │     ┌─────────────┐
+│ Aplicaciones │────▶│ │     Security Middleware         │ │────▶│  Identity   │
+│   Cliente    │     │ └─────────────────────────────────┘ │     │  Service    │
+└─────────────┘     │ ┌─────────────────────────────────┐ │     └─────────────┘
+                    │ │   Tenant Resolution Middleware  │ │
+                    │ └─────────────────────────────────┘ │
+                    │ ┌─────────────────────────────────┐ │     ┌─────────────┐
+                    │ │   Rate Limiting Middleware      │ │────▶│Notification │
+                    │ └─────────────────────────────────┘ │     │  Service    │
+                    │ ┌─────────────────────────────────┐ │     └─────────────┘
+                    │ │  Data Processing Middleware     │ │
+                    │ └─────────────────────────────────┘ │     ┌─────────────┐
+                    │ ┌─────────────────────────────────┐ │────▶│ Track &     │
+                    │ │      Resilience Handler         │ │     │ Trace       │
+                    │ └─────────────────────────────────┘ │     └─────────────┘
+                    └─────────────────────────────────────┘
 ```
 
-## 5.2 Nivel 1: Contexto del API Gateway
+## Componentes Principales
 
-### 5.2.1 Responsabilidades principales
+### 🛡️ Security Middleware
 
-| Responsabilidad | Descripción | Componente |
-|-----------------|-------------|------------|
-| **Request Routing** | Enrutamiento inteligente basado en URL, headers y tenant | YARP Routing Engine |
-| **Authentication** | Validación de tokens JWT y gestión de autorización | Auth Middleware |
-| **Load Balancing** | Distribución de carga entre instancias de servicios | YARP Load Balancer |
-| **Rate Limiting** | Control de tráfico y prevención de abuse | Rate Limiting Middleware |
-| **Observability** | Logging, métricas y distributed tracing | Telemetry Pipeline |
+**Tecnología**: ASP.NET Core Middleware
 
-### 5.2.2 Interfaces externas
+**Responsabilidades**:
+- Validación de tokens JWT
+- Autenticación OAuth2/OIDC
+- Autorización RBAC
+- Integración con Keycloak
 
 ```csharp
-// Interface principal del API Gateway
-public interface IApiGateway
+public class SecurityMiddleware
+{
+    public async Task InvokeAsync(HttpContext context)
+    {
+        // 1. Extract JWT token
+        // 2. Validate with Keycloak
+        // 3. Set user claims
+        // 4. Continue pipeline
+    }
+}
+```
+
+### 🏢 Tenant Resolution Middleware
+
+**Tecnología**: ASP.NET Core Middleware
+
+**Responsabilidades**:
+- Identificar tenant desde headers/subdomain
+- Resolver configuración específica del tenant
+- Establecer contexto para downstream services
+
+### ⚡ Rate Limiting Middleware
+
+**Tecnología**: ASP.NET Core Middleware
+
+**Responsabilidades**:
+- Aplicar límites por tenant
+- Control de throttling
+- Prevención de abuse
+
+### 🔄 Resilience Handler
+
+**Tecnología**: Polly
+
+**Responsabilidades**:
+- Circuit breaker patterns
+- Retry con backoff exponencial
+- Timeout handling
+- Bulkhead isolation
+
+```csharp
+var retryPolicy = Policy
+    .Handle<HttpRequestException>()
+    .WaitAndRetryAsync(
+        retryCount: 3,
+        sleepDurationProvider: retryAttempt =>
+            TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+```
+
+## Componentes de Observabilidad
+
+### 📊 Metrics Collector
+
+**Tecnología**: Prometheus.NET
+
+**Métricas recolectadas**:
+- Request throughput por tenant
+- Latencia por endpoint
+- Rate de errores
+- Circuit breaker status
+
+### 📝 Structured Logger
+
+**Tecnología**: Serilog
+
+**Logs estructurados**:
+- Request/Response logging
+- Tenant context
+- Correlation IDs
+- Performance metrics
+
+### 🏥 Health Check
+
+**Tecnología**: ASP.NET Core Health Checks
+
+**Verificaciones**:
+- Conectividad a servicios downstream
+- Estado de circuit breakers
+- Performance de endpoints críticos
+
+## Pipeline de Middleware
+
+El pipeline de middleware sigue este orden optimizado:
+
+```
+Request  ──▶ Security      ──▶ Tenant        ──▶ Rate Limiting ──▶
+         ──▶ Processing    ──▶ Resilience   ──▶ Downstream    ──▶ Response
+```
+
+### Flujo de Procesamiento
+
+1. **Security Middleware**: Valida autenticación
+2. **Tenant Resolution**: Identifica contexto del tenant
+3. **Rate Limiting**: Aplica límites específicos
+4. **Data Processing**: Valida y transforma request
+5. **Resilience Handler**: Aplica políticas de resiliencia
+6. **Downstream Service**: Enruta al servicio final
+
+## Servicios Downstream
+
+### 🔐 Identity Service (Keycloak)
+- **URL**: `/auth/*`
+- **Propósito**: Autenticación y gestión de usuarios
+
+### 📧 Notification System
+- **URL**: `/notifications/*`
+- **Propósito**: Gestión de notificaciones multicanal
+
+### 📦 Track & Trace
+- **URL**: `/tracking/*`
+- **Propósito**: Seguimiento de envíos
+
+### ✈️ SITA Messaging
+- **URL**: `/sita/*`
+- **Propósito**: Mensajería aeroportuaria
+
+## Configuración Dinámica
+
+### Dynamic Configuration Processor
+
+**Tecnología**: C# + FluentValidation
+
+**Funcionalidades**:
+- Polling de configuración externa
+- Validación de schemas
+- Invalidación de cache selectiva
+- Hot reload sin downtime
+
+```csharp
+public class DynamicConfigProcessor : BackgroundService
+{
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            await PollConfigurationChanges();
+            await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+        }
+    }
+}
+```
+
+## Integración Externa
+
+### Configuration Platform
+- **Protocolo**: HTTPS/REST
+- **Pattern**: Polling (cada 30s)
+- **Propósito**: Configuración dinámica
+
+### Redis Cache (Fase 2)
+- **Propósito**: Cache distribuido
+- **TTL**: Configurable por tenant
+- **Invalidación**: Inteligente
+
+Este diseño modular permite escalabilidad horizontal y maintainability del sistema.
 {
     Task<HttpResponseMessage> RouteAsync(HttpContext context);
     Task<bool> AuthenticateAsync(HttpContext context);

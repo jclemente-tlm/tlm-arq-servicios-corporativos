@@ -1,63 +1,79 @@
-# 1. Introducción y objetivos
+# 1. Introducción y Objetivos
 
-## 1.1 Descripción general de los requisitos
+## ¿Qué es el API Gateway?
 
-El **API Gateway** es el punto de entrada único para todos los servicios corporativos, implementado con **YARP (Yet Another Reverse Proxy)** de Microsoft. Centraliza el tráfico, proporciona seguridad, balanceo de carga y resiliencia para una arquitectura multi-tenant que opera en múltiples países (Perú, Ecuador, Colombia, México).
+El **Enterprise API Gateway** es el punto de entrada único para todos los servicios corporativos. Funciona como un proxy reverso inteligente que gestiona el tráfico hacia nuestros microservicios usando **YARP** (Yet Another Reverse Proxy) de Microsoft.
 
-### Requisitos Funcionales
-- **RF-GW-01:** Enrutamiento inteligente a microservicios basado en URL patterns
-- **RF-GW-02:** Autenticación y autorización multi-tenant con OAuth2/JWT
-- **RF-GW-03:** Rate limiting diferenciado por tenant y tipo de usuario
-- **RF-GW-04:** Circuit breaker para prevenir cascadas de fallos
-- **RF-GW-05:** Transformación de requests/responses (headers, payload)
-- **RF-GW-06:** Health checks de servicios downstream
-- **RF-GW-07:** Logging estructurado con correlation IDs
-- **RF-GW-08:** Métricas de performance y uso por endpoint
+## Funcionalidades Principales
 
-### Requisitos No Funcionales
-- **RNF-GW-01:** Latencia adicional < 10ms percentil 95
-- **RNF-GW-02:** Throughput mínimo 10,000 requests/segundo
-- **RNF-GW-03:** Disponibilidad 99.9% (43 minutos downtime/mes)
-- **RNF-GW-04:** Auto-scaling horizontal basado en CPU y latencia
-- **RNF-GW-05:** Configuración dinámica sin reinicio
+- 🛡️ **Seguridad centralizada** - Autenticación OAuth2/JWT con Keycloak
+- 🔀 **Routing inteligente** - Enruta requests a servicios backend
+- ⚡ **Rate limiting** - Control de tráfico por tenant
+- 🔄 **Resiliencia** - Circuit breakers y retry policies
+- 📊 **Observabilidad** - Métricas, logs y tracing distribuido
 
-## 1.2 Objetivos de calidad
+## Stack Tecnológico
 
-Los tres objetivos de calidad principales para el API Gateway:
+| Componente | Tecnología | Propósito |
+|------------|------------|-----------|
+| **Runtime** | .NET 8 + ASP.NET Core | Plataforma base |
+| **Proxy** | YARP | Reverse proxy y load balancing |
+| **Resiliencia** | Polly | Circuit breakers y retry policies |
+| **Logging** | Serilog | Logging estructurado |
+| **Métricas** | Prometheus.NET | Recolección de métricas |
+| **Cache** | Redis | Cache distribuido (Fase 2) |
+| **Deployment** | AWS ECS | Contenedores Docker |
 
-| Prioridad | Objetivo | Descripción | Métrica Objetivo |
-|-----------|----------|-------------|------------------|
-| **1** | **Performance** | Respuesta rápida con mínima latencia adicional | p95 < 10ms overhead, 10K req/s |
-| **2** | **Disponibilidad** | Gateway operativo 24/7 sin interrupciones | 99.9% uptime, failover < 30s |
-| **3** | **Seguridad** | Protección robusta contra accesos no autorizados | 100% requests autenticados, zero breaches |
+## Objetivos del Sistema
 
-### Objetivos Secundarios
+### 🎯 Objetivos de Negocio
+1. **Punto único de acceso** a todos los servicios corporativos
+2. **Seguridad consistente** across all microservices
+3. **Multi-tenancy** para Peru, Ecuador, Colombia y México
+4. **Alta disponibilidad** 99.9% SLA
+5. **Escalabilidad horizontal** para crecimiento futuro
 
-| Objetivo | Descripción | Métrica |
-|----------|-------------|---------|
-| **Observabilidad** | Visibilidad completa de tráfico y performance | 100% requests trazados, dashboards en tiempo real |
-| **Escalabilidad** | Crecimiento automático con la demanda | Auto-scaling en 2 minutos, soporte 10x carga |
-| **Mantenibilidad** | Despliegues y cambios sin downtime | Zero-downtime deployments, config dinámica |
+### 🔧 Objetivos Técnicos
+- **Performance**: < 100ms latencia P95
+- **Throughput**: > 5,000 RPS por instancia
+- **Configuración dinámica** sin downtime
+- **Portabilidad cloud** - agnóstico de proveedor
 
-## 1.3 Partes interesadas
+## Stakeholders
 
-| Rol | Contacto | Expectativas Principales |
-|-----|----------|-------------------------|
-| **Arquitecto de Software** | jclemente-tlm | Diseño técnico robusto, decisiones fundamentadas, patrones escalables |
-| **Equipo DevOps/SRE** | SRE Team | Deployment automatizado, monitoreo efectivo, incident response |
-| **Desarrolladores Backend** | Dev Teams | APIs claras, debugging fácil, documentación actualizada |
-| **Equipo de Seguridad** | Security Team | Cumplimiento normativo, protección de datos, auditoría |
-| **Product Owners** | Business Team | Disponibilidad del servicio, nuevas funcionalidades, roadmap |
-| **Administradores por País** | Country Admins | Configuración por tenant, usuarios, rate limits |
-| **Usuarios Finales** | Operations | Performance consistente, respuestas rápidas, disponibilidad |
-| **Auditores/Compliance** | Audit Team | Trazabilidad completa, logs de acceso, cumplimiento GDPR |
+| Stakeholder | Responsabilidad |
+|-------------|-----------------|
+| **Desarrollo** | APIs consistentes y documentación |
+| **Operaciones** | Monitoreo y alertas |
+| **Seguridad** | Autenticación y autorización |
+| **Aplicaciones Cliente** | Acceso unificado a servicios |
 
-### Matriz de Comunicación
+## Scope y Limitaciones
 
-| Stakeholder | Frecuencia | Canal | Contenido |
-|-------------|------------|-------|-----------|
-| **Arquitecto** | Semanal | Slack, ADRs | Decisiones técnicas, roadmap |
-| **DevOps** | Diario | Dashboards, Alerts | Métricas operacionales, incidentes |
-| **Desarrolladores** | On-demand | Documentation, APIs | Integración, troubleshooting |
-| **Seguridad** | Mensual | Reports, Reviews | Security posture, vulnerabilities |
-| **Business** | Quincenal | Status Reports | Uptime, performance, roadmap |
+### ✅ En Scope
+- Proxy reverso con YARP
+- Autenticación/Autorización
+- Rate limiting por tenant
+- Health checks y métricas
+- Logging estructurado
+
+### ❌ Fuera de Scope
+- Transformación compleja de datos
+- Business logic
+- Persistencia de datos de negocio
+- Direct database access
+
+## Fases de Implementación
+
+### 📋 Fase 1 (Actual)
+- Security middleware
+- Tenant resolution
+- Rate limiting básico
+- Health checks
+- Métricas básicas
+
+### 📋 Fase 2 (Futuro)
+- Cache distribuido con Redis
+- Advanced routing rules
+- WebSocket support
+- API versioning avanzado

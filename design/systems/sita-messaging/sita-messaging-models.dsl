@@ -1,5 +1,5 @@
 sitaMessaging = softwareSystem "SITA Messaging" {
-    description "Sistema corporativo que gestiona la generación y entrega automatizada de mensajes SITA a partners aeronáuticos, procesando eventos de Track & Trace con garantías de confiabilidad y observabilidad completa."
+    description "Sistema de generación y entrega de mensajes SITA"
     tags "SITA Messaging" "001 - Fase 1"
 
     // ========================================
@@ -12,19 +12,19 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     // DELIVERY: Genera y envía archivos SITA a partners externos
 
     sitaMessagingDatabase = store "SITA Messaging Database" {
-        description "Base de datos PostgreSQL con arquitectura de esquemas separados: 'business' para datos de dominio SITA y 'messaging' para reliable messaging con garantías ACID transaccionales."
+        description "PostgreSQL con esquemas separados para SITA y messaging"
         technology "PostgreSQL"
         tags "Database" "PostgreSQL" "Multi-Schema" "001 - Fase 1"
 
         businessSchema = component "Business Schema" {
             technology "PostgreSQL Schema"
-            description "Esquema 'business' optimizado para datos de dominio SITA: templates versionados, configuraciones por tenant/partner, logs de generación y auditoría completa."
+            description "Esquema para datos de dominio SITA"
             tags "Database Schema" "Business Data" "001 - Fase 1"
         }
 
         messagingSchema = component "Messaging Schema" {
             technology "PostgreSQL Schema"
-            description "Esquema 'messaging' que implementa reliable messaging pattern: outbox transaccional, dead letter queue y acknowledgments con garantías ACID."
+            description "Esquema para reliable messaging pattern"
             tags "Database Schema" "Reliable Messaging" "001 - Fase 1"
         }
 
@@ -50,13 +50,13 @@ sitaMessaging = softwareSystem "SITA Messaging" {
         // Tablas específicas del business schema
         templatesTable = component "Templates Table" {
             technology "PostgreSQL Table"
-            description "Catálogo de templates SITA con versionado semántico, validación de esquemas JSON y metadata de compatibilidad por partner aeronáutico."
+            description "Catálogo de templates SITA con versionado"
             tags "Database Table" "Templates" "001 - Fase 1"
         }
 
         configurationTable = component "Configuration Table" {
             technology "PostgreSQL Table"
-            description "Configuraciones específicas por tenant y partner con parámetros de generación, reglas de negocio y settings de delivery personalizados."
+            description "Configuraciones por tenant y partner"
             tags "Database Table" "Configuration" "001 - Fase 1"
         }
     }
@@ -64,7 +64,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     // Nuevo worker para procesar eventos SITA
     eventProcessor = container "SITA Event Processor" {
         technology "C#, .NET 8, Worker Service"
-        description "Worker service que consume eventos de Track & Trace y genera archivos SITA correspondientes con garantías de procesamiento confiable y observabilidad completa."
+        description "Worker que consume eventos y genera archivos SITA"
         tags "CSharp" "001 - Fase 1"
 
         reliableEventConsumer = component "Reliable Event Consumer" {

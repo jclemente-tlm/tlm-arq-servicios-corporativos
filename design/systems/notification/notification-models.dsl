@@ -1,5 +1,5 @@
 notification = softwareSystem "Notification System" {
-    description "Sistema optimizado de notificaciones multicanal siguiendo mejores prácticas de la industria."
+    description "Sistema de notificaciones multicanal"
     tags "Notification" "001 - Fase 1"
 
     // ========================================
@@ -7,26 +7,26 @@ notification = softwareSystem "Notification System" {
     // ========================================
 
     notificationDatabase = store "Notification Database" {
-        description "PostgreSQL con esquemas optimizados para notificaciones y reliable messaging."
+        description "PostgreSQL con esquemas para notificaciones"
         technology "PostgreSQL"
         tags "Database" "PostgreSQL" "001 - Fase 1"
 
         // Componentes esenciales del esquema
         messagesTable = component "Messages Table" {
             technology "PostgreSQL Table"
-            description "Tabla principal para mensajes con routing por channel_type y status tracking."
+            description "Tabla principal para mensajes con routing"
             tags "Database Table" "Messages" "001 - Fase 1"
         }
 
         templatesTable = component "Templates Table" {
             technology "PostgreSQL Table"
-            description "Plantillas de notificación con versionado e internacionalización."
+            description "Plantillas con versionado e i18n"
             tags "Database Table" "Templates" "001 - Fase 1"
         }
 
         configTable = component "Configuration Table" {
             technology "PostgreSQL Table"
-            description "Configuraciones por tenant y canal en una tabla unificada."
+            description "Configuraciones por tenant y canal"
             tags "Database Table" "Configuration" "001 - Fase 1"
         }
     }
@@ -43,7 +43,7 @@ notification = softwareSystem "Notification System" {
 
     api = application "Notification API" {
         technology "ASP.NET Core"
-        description "API REST optimizada para recepción de notificaciones."
+        description "API REST para recepción de notificaciones"
         tags "API" "001 - Fase 1"
 
         // Componentes esenciales
@@ -55,44 +55,44 @@ notification = softwareSystem "Notification System" {
 
         requestValidator = component "Request Validator" {
             technology "FluentValidation"
-            description "Validación de estructura y reglas de negocio."
+            description "Validación de estructura y reglas de negocio"
             tags "Validation" "001 - Fase 1"
         }
 
         messagePublisher = component "Message Publisher" {
             technology "Reliable Messaging"
-            description "Publisher unificado con outbox pattern."
+            description "Publisher con outbox pattern"
             tags "Messaging" "001 - Fase 1"
         }
 
         configurationService = component "Configuration Service" {
             technology "IConfigurationProvider"
-            description "Servicio unificado de configuración con cache local."
+            description "Servicio de configuración con cache local"
             tags "Configuration" "001 - Fase 1"
         }
 
         dynamicConfigProcessor = component "Dynamic Configuration Processor" {
             technology "C#, FluentValidation, HttpClient"
-            description "Consulta cambios de configuración con polling inteligente, valida nuevas configuraciones contra esquemas y actualiza cache dinámicamente sin reinicio del API."
+            description "Polling de configuración con hot reload"
             tags "Configuration Events" "Feature Flags" "001 - Fase 1"
         }
 
         attachmentService = component "Attachment Service" {
             technology "S3-Compatible Client"
-            description "Gestiona archivos adjuntos con validación de integridad y limpieza automática."
+            description "Gestión de archivos adjuntos"
             tags "Storage" "001 - Fase 1"
         }
 
         // Observabilidad esencial
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
-            description "Valida salud del API: verifica conectividad PostgreSQL, disponibilidad storage y estado de colas de mensajes"
+            description "Monitoreo de salud del API"
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
             technology "Prometheus.NET"
-            description "Recolecta métricas del API: registra request/sec por tenant, mide latencia de endpoints, cuenta tasa de éxito/error y monitorea throughput de notificaciones"
+            description "Recolección de métricas del API"
             tags "Observability" "001 - Fase 1"
         }
 
@@ -157,44 +157,44 @@ notification = softwareSystem "Notification System" {
 
         schedulerService = component "Scheduler Service" {
             technology "Background Service"
-            description "Gestión de notificaciones programadas integrada."
+            description "Gestión de notificaciones programadas"
             tags "Scheduling" "001 - Fase 1"
         }
 
         configurationService = component "Configuration Service" {
             technology "IConfigurationProvider"
-            description "Servicio de configuración con cache distribuido."
+            description "Servicio de configuración con cache distribuido"
             tags "Configuration" "001 - Fase 1"
         }
 
         dynamicConfigProcessor = component "Dynamic Configuration Processor" {
             technology "C#, FluentValidation, HttpClient"
-            description "Consulta cambios de configuración con polling inteligente, valida nuevas configuraciones contra esquemas y actualiza cache dinámicamente sin reinicio del Processor."
+            description "Polling de configuración con hot reload"
             tags "Configuration Events" "Feature Flags" "001 - Fase 1"
         }
 
         notificationRepository = component "Notification Repository" {
             technology "Entity Framework Core"
-            description "Ejecuta operaciones de datos unificadas con optimizaciones para alta concurrencia y transacciones distribuidas."
+            description "Operaciones de datos con alta concurrencia"
             tags "Repository" "001 - Fase 1"
         }
 
         // Componentes de Observabilidad
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
-            description "Valida salud del Processor: verifica conectividad PostgreSQL, disponibilidad storage y estado de colas de procesamiento"
+            description "Monitoreo de salud del Processor"
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
             technology "Prometheus.NET"
-            description "Recolecta métricas de procesamiento: registra messages/sec por canal, mide latencia de envío y cuenta tasa de éxito por proveedor"
+            description "Métricas de procesamiento y canales"
             tags "Observability" "001 - Fase 1"
         }
 
         structuredLogger = component "Structured Logger" {
             technology "Serilog"
-            description "Registra logging estructurado con correlationId único, captura tenant context y almacena metadata de procesamiento para auditoría completa"
+            description "Logging estructurado con correlación"
             tags "Observability" "001 - Fase 1"
         }
     }

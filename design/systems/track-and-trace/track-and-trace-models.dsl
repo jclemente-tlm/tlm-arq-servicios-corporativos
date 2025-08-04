@@ -1,5 +1,5 @@
 trackAndTrace = softwareSystem "Track & Trace System" {
-    description "Sistema corporativo de trazabilidad multitenant para equipaje, carga y pasajeros con procesamiento de eventos en tiempo real."
+    description "Sistema de trazabilidad multitenant con eventos en tiempo real"
     tags "Track & Trace" "001 - Fase 1"
 
     // ========================================
@@ -12,38 +12,38 @@ trackAndTrace = softwareSystem "Track & Trace System" {
     // MIGRACIÓN FUTURA: Fase 2 puede separar BD messaging para escalamiento independiente
 
     trackingDatabase = store "Tracking Database" {
-        description "Base de datos PostgreSQL con esquemas separados para datos de negocio y reliable messaging con garantías ACID transaccionales."
+        description "PostgreSQL con esquemas separados para negocio y messaging"
         technology "PostgreSQL"
         tags "Database" "PostgreSQL" "Multi-Schema" "001 - Fase 1"
 
         businessSchema = component "Business Schema" {
             technology "PostgreSQL Schema"
-            description "Esquema 'business' que contiene eventos de tracking, configuraciones por tenant, estados de trazabilidad e índices optimizados para consultas."
+            description "Esquema para eventos de tracking y configuraciones"
             tags "Database Schema" "Business Data" "001 - Fase 1"
         }
 
         messagingSchema = component "Messaging Schema" {
             technology "PostgreSQL Schema"
-            description "Esquema 'messaging' que implementa reliable messaging con outbox pattern, dead letter store y acknowledgments para garantías ACID."
+            description "Esquema para reliable messaging con outbox pattern"
             tags "Database Schema" "Reliable Messaging" "001 - Fase 1"
         }
 
         // Tablas específicas como componentes del messaging schema
         reliableMessagesTable = component "Reliable Messages Table" {
             technology "PostgreSQL Table"
-            description "Tabla principal para mensajes confiables con columnas: id, topic, payload, tenant_id, status, created_at, processed_at."
+            description "Tabla principal para mensajes confiables"
             tags "Database Table" "Message Store" "001 - Fase 1"
         }
 
         outboxTable = component "Outbox Table" {
             technology "PostgreSQL Table"
-            description "Tabla de outbox pattern para publicación transaccional de eventos con garantías ACID."
+            description "Tabla de outbox pattern para publicación transaccional"
             tags "Database Table" "Outbox Pattern" "001 - Fase 1"
         }
 
         deadLetterTable = component "Dead Letter Table" {
             technology "PostgreSQL Table"
-            description "Tabla para mensajes fallidos con análisis de errores, retry automático y auditoría completa."
+            description "Tabla para mensajes fallidos con retry automático"
             tags "Database Table" "Dead Letter Queue" "001 - Fase 1"
         }
     }
@@ -59,20 +59,20 @@ trackAndTrace = softwareSystem "Track & Trace System" {
     // PATTERN: CQRS lógico sin separación física innecesaria
 
     trackingAPI = container "Tracking API" {
-        description "API REST unificada para ingesta y consulta de eventos de tracking con arquitectura CQRS interna, alta concurrencia y procesamiento optimizado."
+        description "API REST unificada para ingesta y consulta con CQRS interno"
         technology "C#, ASP.NET Core, REST API"
         tags "CSharp" "Unified API" "001 - Fase 1"
 
         // ============ CONTROLADORES - SEPARACIÓN LÓGICA CQRS ============
         trackingIngestController = component "Tracking Ingest Controller" {
             technology "ASP.NET Core"
-            description "Expone endpoints REST para operaciones de escritura: POST /events para recepción masiva de eventos con validación de esquemas."
+            description "Endpoints REST para operaciones de escritura"
             tags "Controller" "Command" "001 - Fase 1"
         }
 
         trackingQueryController = component "Tracking Query Controller" {
             technology "ASP.NET Core"
-            description "Expone endpoints REST para operaciones de lectura: GET /events, /status con filtrado avanzado, paginación y agregaciones."
+            description "Endpoints REST para operaciones de lectura"
             tags "Controller" "Query" "001 - Fase 1"
         }
 

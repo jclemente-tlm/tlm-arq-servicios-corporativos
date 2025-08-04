@@ -1,53 +1,114 @@
-# 2. Restricciones de la arquitectura
+# 2. Restricciones de la Arquitectura
 
-El **API Gateway corporativo** debe operar bajo restricciones técnicas, organizacionales y operacionales específicas que garantizan seguridad, performance y compliance en el ecosistema de servicios corporativos multi-tenant.
+Esta sección define las restricciones técnicas, organizacionales y operacionales que guían el diseño del API Gateway.
 
-## 2.1 Restricciones técnicas
+## Restricciones Técnicas
 
-### Plataforma y Runtime
+### 🔧 Stack Tecnológico Obligatorio
 
-| Restricción | Descripción | Justificación | Impacto Arquitectónico |
-|-------------|-------------|---------------|------------------------|
-| **YARP como Gateway** | Uso obligatorio de Microsoft YARP | Integración nativa .NET, extensibilidad, performance | Arquitectura middleware pipeline, configuración declarativa |
-| **.NET 8 LTS** | Runtime .NET 8 como standard | Estabilidad empresarial, soporte hasta 2026 | Stack unificado, bibliotecas compartidas |
-| **AWS ECS Fargate** | Contenedores serverless obligatorios | Escalabilidad automática, no gestión de servidores | Stateless design, health checks requeridos |
-| **Application Load Balancer** | AWS ALB para distribución de tráfico | Health checks, SSL termination, path routing | Multi-AZ deployment, certificate management |
+| Componente | Tecnología | Justificación |
+|------------|------------|---------------|
+| **Runtime** | .NET 8 LTS | Standard corporativo |
+| **Proxy** | YARP | Integración nativa .NET |
+| **Contenedores** | Docker + ECS | Estándar de deployment |
+| **Base de datos** | PostgreSQL | Standard corporativo |
+| **Cache** | Redis | Performance y escalabilidad |
 
-### Protocolos y Seguridad
+### 🌐 Protocolos y Estándares
 
-| Protocolo | Versión Requerida | Uso | Implementación |
-|-----------|-------------------|-----|----------------|
-| **OAuth2** | RFC 6749 compliant | Authorization framework | Client credentials, authorization code flows |
-| **JWT** | RFC 7519, RS256 signing | Token format validation | Claims extraction, signature verification |
-| **OpenID Connect** | OIDC 1.0 Core | Authentication integration | Keycloak integration, token introspection |
-| **TLS** | 1.3 minimum | Transport security | Certificate management, cipher suites |
-| **HTTP/2** | HTTP/2 support | Performance optimization | Multiplexing, server push capabilities |
+- **OAuth2 + OIDC** para autenticación
+- **JWT (RS256)** para tokens
+- **TLS 1.3** mínimo para transporte
+- **HTTP/2** para performance
+- **OpenAPI 3.0** para documentación
 
-### Performance y Capacidad
+### 📊 Requisitos de Performance
 
-| Métrica | Restricción | Justificación | Arquitectura Requerida |
-|---------|-------------|---------------|------------------------|
-| **Request Throughput** | 50,000 requests/minute | Peak operational loads | Horizontal scaling, connection pooling |
-| **Response Latency** | p95 < 200ms | User experience crítica | Optimized routing, caching strategies |
-| **Concurrent Connections** | 10,000 simultaneous | Multi-tenant operations | Efficient connection handling |
-| **CPU Utilization** | < 70% average | Cost optimization, burst capacity | Resource allocation, auto-scaling |
+| Métrica | Requisito | Justificación |
+|---------|-----------|---------------|
+| **Latencia P95** | < 100ms | User experience |
+| **Throughput** | > 5,000 RPS | Carga esperada |
+| **CPU utilización** | < 70% promedio | Capacity planning |
+| **Disponibilidad** | 99.9% | SLA empresarial |
 
-### Base de Datos y Persistencia
+## Restricciones Organizacionales
 
-| Componente | Tecnología | Restricción | Propósito |
-|------------|------------|-------------|-----------|
-| **Configuration Store** | PostgreSQL 15+ | ACID compliance | Route configuration, tenant settings |
-| **Caching Layer** | Redis 7.0+ | In-memory performance | Route cache, rate limiting data |
-| **Metrics Storage** | CloudWatch + Prometheus | Observability requirement | Performance metrics, alerting |
-| **Audit Logs** | CloudWatch Logs | Compliance mandatorio | Request logging, security events |
+### 🏢 Multi-tenancy Obligatorio
 
-## 2.2 Restricciones organizacionales
+- **Aislamiento por país**: Peru, Ecuador, Colombia, México
+- **Configuración independiente** por tenant
+- **Rate limiting** específico por tenant
+- **Datos segregados** por regulaciones locales
 
-### Multi-tenant Architecture
+### 🔐 Seguridad Corporativa
 
-| Aspecto | Restricción | Justificación | Implementación |
-|---------|-------------|---------------|----------------|
-| **Tenant Isolation** | Complete separation by country | Regulatory compliance, data sovereignty | Tenant-aware routing, separate downstream services |
+- **Zero trust architecture** - Todo request debe ser autenticado
+- **RBAC implementation** - Roles definidos por tenant
+- **Audit logging** completo para compliance
+- **Data encryption** en tránsito y reposo
+
+## Restricciones Operacionales
+
+### 🚀 Deployment y DevOps
+
+| Aspecto | Restricción | Impacto |
+|---------|-------------|---------|
+| **Deployment** | Blue-green solo | Zero downtime |
+| **Configuration** | External config store | No hardcoding |
+| **Secrets** | AWS Secrets Manager | Security compliance |
+| **Monitoring** | Prometheus + Grafana | Standard observability |
+
+### ☁️ Cloud Provider
+
+- **Primary**: AWS (ECS, ALB, RDS)
+- **Portabilidad**: Diseño agnóstico de proveedor
+- **Backup plan**: Multi-cloud ready architecture
+
+### 🔍 Observabilidad Mandatoria
+
+- **Structured logging** con Serilog
+- **Distributed tracing** con OpenTelemetry
+- **Metrics collection** con Prometheus
+- **Alerting** automático en incidentes
+
+## Restricciones de Integración
+
+### 🔗 Servicios Downstream
+
+El API Gateway **SOLO** puede enrutar a estos servicios:
+
+- **Identity Service** (Keycloak)
+- **Notification System**
+- **Track & Trace**
+- **SITA Messaging**
+
+### 📡 External Dependencies
+
+| Servicio | Propósito | Restricción |
+|----------|-----------|-------------|
+| **Keycloak** | Authentication | Única fuente de verdad |
+| **Configuration Platform** | Dynamic config | Polling, no push |
+| **AWS Services** | Infrastructure | Regiones específicas |
+
+## Limitaciones Conocidas
+
+### ⚠️ Técnicas
+
+- **Configuration updates**: Máximo cada 30 segundos (polling)
+- **Circuit breaker**: Estado compartido entre instancias
+- **Rate limiting**: Eventual consistency en cluster
+
+### 💰 Presupuestarias
+
+- **Infrastructure cost**: Optimización requerida
+- **Scaling limits**: Auto-scaling con límites definidos
+- **Data transfer**: Minimizar entre regiones
+
+### 📅 Tiempo
+
+- **Fase 1**: Features básicos (6 meses)
+- **Fase 2**: Cache distribuido y features avanzados
+- **Migration window**: Máximo 4 horas downtime
 | **Cross-tenant Access** | Prohibited except admin functions | Security, compliance | Tenant context validation, access controls |
 | **Tenant Configuration** | Country-specific routing rules | Operational requirements | Configuration per tenant, feature flags |
 | **Shared Infrastructure** | Common gateway instance | Cost optimization | Multi-tenant aware middleware |
