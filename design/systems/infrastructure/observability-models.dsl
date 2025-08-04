@@ -131,7 +131,7 @@ observabilitySystem = softwareSystem "Observability Platform" {
     jaeger.tracingCollector -> distributedTraces "Almacena traces" "" "002 - Fase 2"
 
     // Relaciones con servicios monitoreados - Metrics
-    prometheus.metricsServer -> notification.api.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> notification.api.healthCheck "Scrape métricas y health" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> trackAndTrace.trackingAPI.metricsCollector "Scrape métricas unificadas (ingest + query)" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> trackAndTrace.trackingEventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> sitaMessaging.eventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
@@ -139,8 +139,8 @@ observabilitySystem = softwareSystem "Observability Platform" {
     prometheus.metricsServer -> identity.keycloakServer "Scrape métricas nativas de Keycloak" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> apiGateway.reverseProxyGateway.gatewayHealthAggregator "Scrape métricas y health" "HTTP" "001 - Fase 1"
 
-    loki.logsCollector -> notification.api.logger "Recolecta logs" "File System" "001 - Fase 1"
-    loki.logsCollector -> notification.notificationProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> notification.api.healthCheck "Recolecta logs del API" "File System" "001 - Fase 1"
+    loki.logsCollector -> notification.processor.messageConsumer "Recolecta logs del processor" "File System" "001 - Fase 1"
     loki.logsCollector -> trackAndTrace.trackingAPI.logger "Recolecta logs unificados (ingest + query)" "File System" "001 - Fase 1"
     loki.logsCollector -> trackAndTrace.trackingEventProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
     loki.logsCollector -> sitaMessaging.eventProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"

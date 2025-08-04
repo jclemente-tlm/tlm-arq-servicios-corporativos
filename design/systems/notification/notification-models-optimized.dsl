@@ -5,7 +5,7 @@ notification = softwareSystem "Notification System" {
     // ========================================
     // DATA STORE - OPTIMIZADO
     // ========================================
-    
+
     notificationDatabase = store "Notification Database" {
         description "PostgreSQL con esquemas optimizados para notificaciones y reliable messaging."
         technology "PostgreSQL"
@@ -40,7 +40,7 @@ notification = softwareSystem "Notification System" {
     // ========================================
     // NOTIFICATION API - SIMPLIFICADO
     // ========================================
-    
+
     api = application "Notification API" {
         technology "ASP.NET Core"
         description "API REST optimizada para recepción de notificaciones."
@@ -88,7 +88,7 @@ notification = softwareSystem "Notification System" {
     // ========================================
     // NOTIFICATION PROCESSOR - UNIFICADO
     // ========================================
-    
+
     processor = application "Notification Processor" {
         technology "Worker Service"
         description "Procesador unificado con channel handlers especializados."
@@ -173,7 +173,7 @@ notification = softwareSystem "Notification System" {
     processor.messageConsumer -> processor.orchestratorService "Procesa mensaje" "C#" "001 - Fase 1"
     processor.orchestratorService -> processor.templateEngine "Procesa plantilla" "C#" "001 - Fase 1"
     processor.templateEngine -> notificationDatabase.templatesTable "Lee plantillas" "PostgreSQL" "001 - Fase 1"
-    
+
     // Channel Handler Relations
     processor.orchestratorService -> processor.emailHandler "Envía email" "C#" "001 - Fase 1"
     processor.orchestratorService -> processor.smsHandler "Envía SMS" "C#" "001 - Fase 1"
