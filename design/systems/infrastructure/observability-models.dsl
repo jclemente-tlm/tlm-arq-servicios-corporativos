@@ -162,10 +162,7 @@ observabilitySystem = softwareSystem "Observability Platform" {
     prometheus.metricsServer -> notification.api.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> notification.processor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> trackAndTrace.trackingAPI.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
-    // prometheus.metricsServer -> trackAndTrace.trackingEventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> trackAndTrace.trackingDashboard.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
-    // prometheus.metricsServer -> sitaMessaging.eventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
-    // prometheus.metricsServer -> sitaMessaging.sender.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> apiGateway.reverseProxyGateway.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
 
     // Logs collection

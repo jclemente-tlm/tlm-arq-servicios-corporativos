@@ -51,12 +51,6 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
         }
 
         // Componentes de transformación y validación
-        cacheMiddleware = component "Cache Middleware" {
-            technology "Redis, ASP.NET Core Response Caching"
-            description "Cache distribuido para respuestas API con invalidación inteligente por tenant y TTL configurable."
-            tags "Performance" "001 - Fase 1"
-        }
-
         transformationMiddleware = component "Transformation Middleware" {
             technology "ASP.NET Core Middleware"
             description "Transformación de requests/responses, mapeo de headers, versionado API y conversión de formatos."
@@ -69,52 +63,54 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
             tags "Validation" "001 - Fase 1"
         }
 
-        // Componentes de seguridad
-        webApplicationFirewall = component "Web Application Firewall" {
-            technology "ModSecurity Core, OWASP CRS"
-            description "Protección contra ataques comunes: SQL injection, XSS, DDoS con reglas actualizadas."
-            tags "Security" "001 - Fase 1"
+        // Cache opcional para fase 2
+        cacheMiddleware = component "Cache Middleware" {
+            technology "Redis, ASP.NET Core Response Caching"
+            description "Cache distribuido para respuestas API con invalidación inteligente por tenant y TTL configurable."
+            tags "Performance" "002 - Fase 2"
         }
 
-        // Componente de observabilidad
+        // Componentes de observabilidad
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
-            description "Monitorea salud del Processor: conectividad PostgreSQL, disponibilidad storage y estado de colas"
+            description "Monitorea salud del gateway: conectividad a servicios downstream, estado de circuit breakers y performance de endpoints"
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
             technology "Prometheus.NET"
-            description "Recolecta métricas de procesamiento: messages/sec, latencia de envío, tasa de éxito por canal"
+            description "Recolecta métricas del gateway: throughput, latencia por endpoint, tasa de errores, circuit breaker status y rate limiting"
             tags "Observability" "001 - Fase 1"
         }
 
         structuredLogger = component "Structured Logger" {
             technology "Serilog"
-            description "Logging estructurado con correlationId, tenant context y metadata de procesamiento para auditoría"
+            description "Logging estructurado de requests con correlationId, tenant context, métricas de performance y trazabilidad completa"
             tags "Observability" "001 - Fase 1"
         }
     }
 
     // ========================================
-    // PIPELINE DE MIDDLEWARE CORREGIDO
+    // PIPELINE DE MIDDLEWARE SIMPLIFICADO
     // ========================================
 
-    // Entrada: Seguridad y validación
-    reverseProxyGateway.webApplicationFirewall -> reverseProxyGateway.authenticationMiddleware "Pipeline: WAF → Auth" "" "001 - Fase 1"
+    // Entrada: Autenticación y autorización
     reverseProxyGateway.authenticationMiddleware -> reverseProxyGateway.authorizationMiddleware "Pipeline: Auth → Authz" "" "001 - Fase 1"
     reverseProxyGateway.authorizationMiddleware -> reverseProxyGateway.tenantResolutionMiddleware "Pipeline: Authz → Tenant" "" "001 - Fase 1"
 
     // Procesamiento: Rate limiting y validación
     reverseProxyGateway.tenantResolutionMiddleware -> reverseProxyGateway.rateLimitingMiddleware "Pipeline: Tenant → Rate Limit" "" "001 - Fase 1"
     reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.schemaValidator "Pipeline: Rate Limit → Validation" "" "001 - Fase 1"
-    reverseProxyGateway.schemaValidator -> reverseProxyGateway.cacheMiddleware "Pipeline: Validation → Cache" "" "001 - Fase 1"
 
     // Transformación y resiliencia
-    reverseProxyGateway.cacheMiddleware -> reverseProxyGateway.transformationMiddleware "Pipeline: Cache → Transform" "" "001 - Fase 1"
+    reverseProxyGateway.schemaValidator -> reverseProxyGateway.transformationMiddleware "Pipeline: Validation → Transform" "" "001 - Fase 1"
     reverseProxyGateway.transformationMiddleware -> reverseProxyGateway.circuitBreakerHandler "Pipeline: Transform → Circuit Breaker" "" "001 - Fase 1"
     reverseProxyGateway.circuitBreakerHandler -> reverseProxyGateway.retryPolicyHandler "Pipeline: Circuit Breaker → Retry" "" "001 - Fase 1"
     reverseProxyGateway.retryPolicyHandler -> reverseProxyGateway.timeoutHandler "Pipeline: Retry → Timeout" "" "001 - Fase 1"
+
+    // Cache opcional (Fase 2) - se insertaría entre validation y transform
+    // reverseProxyGateway.schemaValidator -> reverseProxyGateway.cacheMiddleware "Pipeline: Validation → Cache" "" "002 - Fase 2"
+    // reverseProxyGateway.cacheMiddleware -> reverseProxyGateway.transformationMiddleware "Pipeline: Cache → Transform" "" "002 - Fase 2"
 
     // ========================================
     // RELACIONES INTERNAS - OBSERVABILIDAD
@@ -128,12 +124,12 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     // RELACIONES EXTERNAS - ACTORES
     // ========================================
 
-    // Administradores y aplicaciones entran por WAF
-    admin -> reverseProxyGateway.webApplicationFirewall "Gestiona configuraciones de servicios" "HTTPS" "001 - Fase 1"
-    appPeru -> reverseProxyGateway.webApplicationFirewall "Realiza llamadas API tenant Peru" "HTTPS" "001 - Fase 1"
-    appEcuador -> reverseProxyGateway.webApplicationFirewall "Realiza llamadas API tenant Ecuador" "HTTPS" "001 - Fase 1"
-    appColombia -> reverseProxyGateway.webApplicationFirewall "Realiza llamadas API tenant Colombia" "HTTPS" "001 - Fase 1"
-    appMexico -> reverseProxyGateway.webApplicationFirewall "Realiza llamadas API tenant Mexico" "HTTPS" "001 - Fase 1"
+    // Administradores y aplicaciones entran por autenticación (WAF manejado por infraestructura)
+    admin -> reverseProxyGateway.authenticationMiddleware "Gestiona configuraciones de servicios" "HTTPS" "001 - Fase 1"
+    appPeru -> reverseProxyGateway.authenticationMiddleware "Realiza llamadas API tenant Peru" "HTTPS" "001 - Fase 1"
+    appEcuador -> reverseProxyGateway.authenticationMiddleware "Realiza llamadas API tenant Ecuador" "HTTPS" "001 - Fase 1"
+    appColombia -> reverseProxyGateway.authenticationMiddleware "Realiza llamadas API tenant Colombia" "HTTPS" "001 - Fase 1"
+    appMexico -> reverseProxyGateway.authenticationMiddleware "Realiza llamadas API tenant Mexico" "HTTPS" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - SISTEMAS DOWNSTREAM
@@ -146,6 +142,6 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
 
     // Configuración dinámica
     configPlatform.configService -> reverseProxyGateway "Configuración dinámica de rutas y políticas" "HTTPS" "001 - Fase 1"
-    configPlatform.configService -> reverseProxyGateway.cacheMiddleware "Configuración de TTL y políticas de cache" "HTTPS" "001 - Fase 1"
     configPlatform.configService -> reverseProxyGateway.rateLimitingMiddleware "Configuración de límites por tenant" "HTTPS" "001 - Fase 1"
+    // configPlatform.configService -> reverseProxyGateway.cacheMiddleware "Configuración de TTL y políticas de cache" "HTTPS" "002 - Fase 2"
 }
