@@ -262,10 +262,6 @@ trackAndTrace = softwareSystem "Track & Trace System" {
     trackingAPI.configurationProvider -> configPlatform.configService "Lee configuraciones unificadas y secretos" "" "001 - Fase 1"
     trackingEventProcessor.processorConfigurationProvider -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
 
-    // Integración con API Gateway - Endpoints unificados
-    apiGateway.reverseProxyGateway.authorizationMiddleware -> trackingAPI.trackingIngestController "Redirige operaciones de escritura" "HTTPS" "001 - Fase 1"
-    apiGateway.reverseProxyGateway.authorizationMiddleware -> trackingAPI.trackingQueryController "Redirige operaciones de lectura" "HTTPS" "001 - Fase 1"
-
     // ========================================
     // RELACIONES ENTRE COMPONENTES INTERNOS
     // ========================================

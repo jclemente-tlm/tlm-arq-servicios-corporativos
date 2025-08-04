@@ -167,17 +167,26 @@ workspace {
 
         // Microservicios Corporativos
         corporateServicesGroup = group "Servicios Corporativos" {
-            !include ./systems/api-gateway/api-gateway-models.dsl
             !include ./systems/identity/identity-models.dsl
             !include ./systems/notification/notification-models.dsl
             !include ./systems/sita-messaging/sita-messaging-models.dsl
             !include ./systems/track-and-trace/track-and-trace-models.dsl
+            !include ./systems/api-gateway/api-gateway-models.dsl
 
             !include ./systems/notification/notification-deployment-models.dsl
 
             // ========================================
             // RELACIONES CROSS-SYSTEM
             // ========================================
+
+            // Integración API Gateway -> Identity System (Autenticación y Autorización)
+            apiGateway.reverseProxyGateway.authorizationMiddleware -> identity.keycloakServer "Valida tokens JWT via token introspection" "HTTPS" "001 - Fase 1"
+            apiGateway.reverseProxyGateway.authenticationMiddleware -> identity.keycloakServer "Redirige autenticación OAuth2" "HTTPS" "001 - Fase 1"
+
+            // Integración API Gateway -> Track & Trace (Routing de operaciones)
+            apiGateway.reverseProxyGateway.authorizationMiddleware -> trackAndTrace.trackingAPI.trackingIngestController "Redirige operaciones de escritura" "HTTPS" "001 - Fase 1"
+            apiGateway.reverseProxyGateway.authorizationMiddleware -> trackAndTrace.trackingAPI.trackingQueryController "Redirige operaciones de lectura" "HTTPS" "001 - Fase 1"
+
             // Integración Track & Trace -> SITA Messaging
             trackAndTrace.trackingAPI.reliableEventPublisher -> sitaMessaging.eventProcessor.reliableEventConsumer "Publica eventos Track & Trace para procesamiento SITA" "PostgreSQL Cross-Schema" "001 - Fase 1"
         }

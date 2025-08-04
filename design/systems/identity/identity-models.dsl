@@ -47,10 +47,6 @@ identity = softwareSystem "Identity & Access Management System" {
     // RELACIONES EXTERNAS - SISTEMAS
     // ========================================
 
-    // Integración con API Gateway
-    apiGateway.reverseProxyGateway.authorizationMiddleware -> keycloakServer "Valida tokens JWT via token introspection" "HTTPS" "001 - Fase 1"
-    apiGateway.reverseProxyGateway.authenticationMiddleware -> keycloakServer "Redirige autenticación OAuth2" "HTTPS" "001 - Fase 1"
-
     // Federación con proveedores externos (Identity Brokering nativo)
     keycloakServer -> microsoftAD "Federación con Active Directory via LDAP/SAML" "LDAP/SAML" "001 - Fase 1"
     keycloakServer -> googleWorkspace "Federación con Google Workspace via OIDC" "OIDC/OAuth2" "001 - Fase 1"
