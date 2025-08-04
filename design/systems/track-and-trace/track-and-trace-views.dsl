@@ -41,15 +41,34 @@ container trackAndTrace "track_and_trace_system" {
 //     title "[Diagrama de Contenedores] Track and Trace - Fase 1"
 // }
 
-component trackAndTrace.trackingAPI "track_and_trace_unified_api" {
+component trackAndTrace.trackingAPI "track_and_trace_tracking_api" {
     include *
+
+    // Incluir solo sistemas que interactúan directamente con este API
+    include configPlatform
+    include sitaMessaging.eventProcessor
+
+    // Excluir sistemas que no tienen relación directa con este componente
     exclude apiGateway
+    exclude identity
+    exclude notification
+
     title "[Diagrama de Componentes] Track & Trace - API Unificada con CQRS"
-    description "Vista detallada del API unificado con separación lógica de comandos (ingest) y consultas (query)"
+    description "Vista detallada del API unificado con separación lógica de comandos (ingest) y consultas (query). Solo muestra relaciones directas del API."
 }
 
 component trackAndTrace.trackingEventProcessor "track_and_trace_event_processor" {
     include *
+
+    // Incluir solo sistemas que interactúan directamente con este processor
+    include configPlatform
+    include sitaMessaging.eventProcessor
+
+    // Excluir sistemas que no tienen relación directa con este componente
     exclude apiGateway
+    exclude identity
+    exclude notification
+
     title "[Diagrama de Componentes] Track & Trace - Event Processor"
+    description "Vista enfocada en el procesador de eventos y sus interacciones directas únicamente"
 }
