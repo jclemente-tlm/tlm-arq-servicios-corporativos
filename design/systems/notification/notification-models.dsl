@@ -71,6 +71,12 @@ notification = softwareSystem "Notification System" {
             tags "Configuration" "001 - Fase 1"
         }
 
+        dynamicConfigProcessor = component "Dynamic Configuration Processor" {
+            technology "C#, .NET 8, FluentValidation"
+            description "Detecta cambios de configuración con polling inteligente, valida nuevas configuraciones y actualiza cache dinámicamente sin reinicio del API."
+            tags "Configuration Events" "Feature Flags" "001 - Fase 1"
+        }
+
         attachmentService = component "Attachment Service" {
             technology "IStorageService"
             description "Gestión simplificada de archivos adjuntos."
@@ -161,6 +167,12 @@ notification = softwareSystem "Notification System" {
             tags "Configuration" "001 - Fase 1"
         }
 
+        dynamicConfigProcessor = component "Dynamic Configuration Processor" {
+            technology "C#, .NET 8, FluentValidation"
+            description "Detecta cambios de configuración con polling inteligente, valida nuevas configuraciones y actualiza cache dinámicamente sin reinicio del Processor."
+            tags "Configuration Events" "Feature Flags" "001 - Fase 1"
+        }
+
         notificationRepository = component "Notification Repository" {
             technology "Entity Framework Core"
             description "Repositorio unificado para todas las operaciones de datos."
@@ -218,6 +230,12 @@ notification = softwareSystem "Notification System" {
     // Configuration Relations
     processor.configurationService -> configPlatform.configService "Lee configuración" "HTTPS" "001 - Fase 1"
     processor.notificationRepository -> notificationDatabase "Operaciones CRUD" "PostgreSQL" "001 - Fase 1"
+
+    // Dynamic Configuration Relations
+    api.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling" "HTTPS/REST" "001 - Fase 1"
+    api.dynamicConfigProcessor -> api.configurationService "Invalida cache específico al detectar cambios" "In-Memory" "001 - Fase 1"
+    processor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling" "HTTPS/REST" "001 - Fase 1"
+    processor.dynamicConfigProcessor -> processor.configurationService "Invalida cache específico al detectar cambios" "In-Memory" "001 - Fase 1"
 
     // External Provider Relations
     processor.emailHandler -> emailProvider "Envía email" "HTTPS/SMTP" "001 - Fase 1"

@@ -183,12 +183,11 @@ workspace {
             // ========================================
 
             // Integración API Gateway -> Identity System (Autenticación y Autorización)
-            apiGateway.reverseProxyGateway.authorizationMiddleware -> identity.keycloakServer "Valida tokens JWT via token introspection" "HTTPS" "001 - Fase 1"
-            apiGateway.reverseProxyGateway.authenticationMiddleware -> identity.keycloakServer "Redirige autenticación OAuth2" "HTTPS" "001 - Fase 1"
+            apiGateway.reverseProxyGateway.securityMiddleware -> identity.keycloakServer "Valida tokens JWT via token introspection" "HTTPS" "001 - Fase 1"
 
             // Integración API Gateway -> Track & Trace (Routing de operaciones)
-            apiGateway.reverseProxyGateway.authorizationMiddleware -> trackAndTrace.trackingAPI.trackingIngestController "Redirige operaciones de escritura" "HTTPS" "001 - Fase 1"
-            apiGateway.reverseProxyGateway.authorizationMiddleware -> trackAndTrace.trackingAPI.trackingQueryController "Redirige operaciones de lectura" "HTTPS" "001 - Fase 1"
+            apiGateway.reverseProxyGateway.securityMiddleware -> trackAndTrace.trackingAPI.trackingIngestController "Redirige operaciones de escritura" "HTTPS" "001 - Fase 1"
+            apiGateway.reverseProxyGateway.securityMiddleware -> trackAndTrace.trackingAPI.trackingQueryController "Redirige operaciones de lectura" "HTTPS" "001 - Fase 1"
 
             // Integración Track & Trace -> SITA Messaging
             trackAndTrace.trackingAPI.reliableEventPublisher -> sitaMessaging.eventProcessor.reliableEventConsumer "Publica eventos Track & Trace para procesamiento SITA" "PostgreSQL Cross-Schema" "001 - Fase 1"

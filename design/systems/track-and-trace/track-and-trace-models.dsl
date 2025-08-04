@@ -108,6 +108,12 @@ trackAndTrace = softwareSystem "Track & Trace System" {
             tags "Configuration" "001 - Fase 1"
         }
 
+        dynamicConfigProcessor = component "Dynamic Configuration Processor" {
+            technology "C#, .NET 8, FluentValidation"
+            description "Detecta cambios de configuración con polling inteligente, valida nuevas configuraciones y actualiza cache dinámicamente sin reinicio del API."
+            tags "Configuration Events" "Feature Flags" "001 - Fase 1"
+        }
+
         tenantConfigRepository = component "Tenant Config Repository" {
             technology "C#, EF Core"
             description "Gestiona configuraciones específicas por tenant para validación, autorización, límites de consulta y enriquecimiento."
@@ -173,6 +179,12 @@ trackAndTrace = softwareSystem "Track & Trace System" {
             technology "C#, IConfigurationProvider"
             description "Proporciona configuraciones dinámicas de procesamiento y parámetros de enriquecimiento con interfaz agnóstica y cache local."
             tags "001 - Fase 1"
+        }
+
+        dynamicConfigProcessor = component "Dynamic Configuration Processor" {
+            technology "C#, .NET 8, FluentValidation"
+            description "Detecta cambios de configuración con polling inteligente, valida nuevas configuraciones y actualiza cache dinámicamente sin reinicio del Event Processor."
+            tags "Configuration Events" "Feature Flags" "001 - Fase 1"
         }
 
         processorTenantConfigRepository = component "Processor Tenant Config Repository" {
@@ -280,6 +292,12 @@ trackAndTrace = softwareSystem "Track & Trace System" {
     // Integración con plataforma de configuración
     trackingAPI.configurationProvider -> configPlatform.configService "Lee configuraciones unificadas y secretos desde Configuration Platform agnóstica" "HTTPS/REST" "001 - Fase 1"
     trackingEventProcessor.processorConfigurationProvider -> configPlatform.configService "Lee configuraciones y secretos desde Configuration Platform agnóstica" "HTTPS/REST" "001 - Fase 1"
+
+    // Dynamic Configuration Relations
+    trackingAPI.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling" "HTTPS/REST" "001 - Fase 1"
+    trackingAPI.dynamicConfigProcessor -> trackingAPI.configurationProvider "Invalida cache específico al detectar cambios" "In-Memory" "001 - Fase 1"
+    trackingEventProcessor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling" "HTTPS/REST" "001 - Fase 1"
+    trackingEventProcessor.dynamicConfigProcessor -> trackingEventProcessor.processorConfigurationProvider "Invalida cache específico al detectar cambios" "In-Memory" "001 - Fase 1"
 
     // ========================================
     // RELACIONES ENTRE COMPONENTES INTERNOS
