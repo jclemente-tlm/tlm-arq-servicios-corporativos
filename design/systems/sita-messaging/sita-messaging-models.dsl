@@ -111,26 +111,26 @@ sitaMessaging = softwareSystem "SITA Messaging" {
 
         // Componentes de Observabilidad
         healthCheck = component "Health Check" {
-            technology "C#, .NET 8, ASP.NET Core Health Checks"
-            description "Monitorea salud del Event Processor: conectividad PostgreSQL, disponibilidad storage, estado Configuration Platform y latencias de dependencias."
+            technology "ASP.NET Core Health Checks"
+            description "Valida salud del Event Processor: verifica conectividad PostgreSQL, disponibilidad storage, estado Configuration Platform y latencias de dependencias."
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
-            technology "C#, .NET 8, Prometheus.NET"
-            description "Recolecta métricas de procesamiento SITA: eventos/sec, tiempo generación, cache hit ratio, throughput de archivos y rates de éxito/fallo."
+            technology "Prometheus.NET"
+            description "Recolecta métricas de procesamiento SITA: registra eventos/sec procesados, mide tiempo generación de archivos, cuenta cache hit ratio y monitorea rates de éxito/fallo."
             tags "Observability" "001 - Fase 1"
         }
 
         structuredLogger = component "Structured Logger" {
-            technology "C#, .NET 8, Serilog"
-            description "Logging estructurado con correlationId para trazabilidad, tenant context y metadata de eventos para debugging y auditoría."
+            technology "Serilog"
+            description "Registra logging estructurado con correlationId único para trazabilidad, captura tenant context y almacena metadata de eventos para debugging y auditoría."
             tags "Observability" "001 - Fase 1"
         }
 
         // Componentes de Resiliencia
         retryHandler = component "Retry Handler" {
-            technology "C#, .NET 8, Polly"
+            technology "Polly"
             description "Gestiona políticas de reintentos para fallos transitorios con backoff exponencial, circuit breaker y límites configurables por tipo de error."
             tags "001 - Fase 1"
         }
@@ -142,14 +142,14 @@ sitaMessaging = softwareSystem "SITA Messaging" {
         }
 
         auditService = component "Audit Service" {
-            technology "C#, .NET 8, EF Core"
+            technology "EF Core"
             description "Registra auditoría inmutable de todo el ciclo de vida: eventos recibidos, archivos generados, fallos ocurridos y acciones administrativas."
             tags "001 - Fase 1"
         }
 
         dynamicConfigProcessor = component "Dynamic Configuration Processor" {
-            technology "C#, .NET 8, FluentValidation"
-            description "Detecta cambios de configuración con polling inteligente (5min), valida nuevas configuraciones y actualiza cache dinámicamente sin reinicio."
+            technology "C#, FluentValidation, HttpClient"
+            description "Consulta cambios de configuración con polling inteligente (5min), valida nuevas configuraciones contra esquemas y actualiza cache dinámicamente sin reinicio."
             tags "Configuration Events" "Feature Flags" "001 - Fase 1"
         }
     }
@@ -209,32 +209,32 @@ sitaMessaging = softwareSystem "SITA Messaging" {
 
         // Componentes de Observabilidad
         healthCheck = component "Health Check" {
-            technology "C#, .NET 8, ASP.NET Core Health Checks"
-            description "Monitorea salud del Sender: conectividad con partners SITA, validación de certificados, disponibilidad storage y latencias de Configuration Platform."
+            technology "ASP.NET Core Health Checks"
+            description "Valida salud del Sender: verifica conectividad con partners SITA, valida certificados digitales, confirma disponibilidad storage y mide latencias de Configuration Platform."
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
-            technology "C#, .NET 8, Prometheus.NET"
-            description "Recolecta métricas de delivery específicas: success rate por partner, tiempos de envío, throughput de archivos y SLA compliance."
+            technology "Prometheus.NET"
+            description "Recolecta métricas de delivery específicas: registra success rate por partner, mide tiempos de envío, cuenta throughput de archivos y evalúa SLA compliance."
             tags "Observability" "001 - Fase 1"
         }
 
         structuredLogger = component "Structured Logger" {
-            technology "C#, .NET 8, Serilog"
-            description "Logging estructurado para operaciones de envío con enrichment de partner context, correlationId y metadata de archivos para trazabilidad completa."
+            technology "Serilog"
+            description "Registra logging estructurado para operaciones de envío con enrichment de partner context, correlationId único y metadata de archivos para trazabilidad completa."
             tags "Observability" "001 - Fase 1"
         }
 
         configManager = component "Configuration Manager" {
-            technology "C#, .NET 8, IMemoryCache"
+            technology "IMemoryCache"
             description "Gestiona configuraciones de delivery por partner con cache inteligente (TTL 30min), polling a Configuration Platform y fallback automático."
             tags "Configuration" "001 - Fase 1"
         }
 
         // Componentes de Resiliencia
         retryHandler = component "Retry Handler" {
-            technology "C#, .NET 8, Polly"
+            technology "Polly"
             description "Gestiona políticas de reintentos para fallos de envío con backoff exponencial específico por partner y circuit breaker adaptativo."
             tags "Resilience" "001 - Fase 1"
         }
@@ -286,7 +286,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     // Integración con Configuration Platform
     eventProcessor.configurationManager -> configPlatform.configService "Obtiene configuraciones por tenant en cache miss" "HTTPS/REST" "001 - Fase 1"
     eventProcessor.configurationManager -> configPlatform.secretsService "Obtiene secretos de partners en cache miss" "HTTPS/REST" "001 - Fase 1"
-    eventProcessor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling" "HTTPS/REST" "001 - Fase 1"
+    eventProcessor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling inteligente" "HTTPS/REST" "001 - Fase 1"
     sender.configManager -> configPlatform.configService "Obtiene configuraciones de delivery en cache miss" "HTTPS/REST" "001 - Fase 1"
     sender.configManager -> configPlatform.secretsService "Obtiene credenciales de partners cuando se requiere" "HTTPS/REST" "001 - Fase 1"
 
@@ -310,7 +310,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     eventProcessor.deadLetterProcessor -> eventProcessor.auditService "Registra fallo definitivo con análisis de causa" "In-Memory" "001 - Fase 1"
 
     // Event Processor - Configuración dinámica
-    eventProcessor.dynamicConfigProcessor -> eventProcessor.configurationManager "Invalida cache específico al detectar cambios" "In-Memory" "001 - Fase 1"
+    eventProcessor.dynamicConfigProcessor -> eventProcessor.configurationManager "Invalida cache específico de configuraciones al detectar cambios" "In-Memory" "001 - Fase 1"
 
     // ========================================
     // OBSERVABILIDAD - EVENT PROCESSOR

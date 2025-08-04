@@ -109,33 +109,33 @@ trackAndTrace = softwareSystem "Track & Trace System" {
         }
 
         dynamicConfigProcessor = component "Dynamic Configuration Processor" {
-            technology "C#, .NET 8, FluentValidation"
-            description "Detecta cambios de configuración con polling inteligente, valida nuevas configuraciones y actualiza cache dinámicamente sin reinicio del API."
+            technology "C#, FluentValidation, HttpClient"
+            description "Consulta cambios de configuración con polling inteligente, valida nuevas configuraciones contra esquemas y actualiza cache dinámicamente sin reinicio del API."
             tags "Configuration Events" "Feature Flags" "001 - Fase 1"
         }
 
         tenantConfigRepository = component "Tenant Config Repository" {
-            technology "C#, EF Core"
-            description "Gestiona configuraciones específicas por tenant para validación, autorización, límites de consulta y enriquecimiento."
+            technology "EF Core"
+            description "Ejecuta configuraciones específicas por tenant para validación, autorización, límites de consulta y enriquecimiento de datos."
             tags "Repository" "EF Core" "Multi-Tenant" "001 - Fase 1"
         }
 
         // ============ OBSERVABILIDAD UNIFICADA ============
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
-            description "Endpoints de salud unificados con verificación de dependencias, conectividad a BD, performance y estado de colas."
+            description "Valida salud del API: verifica dependencias críticas, conectividad PostgreSQL, performance y estado de colas de eventos"
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
-            technology "Prometheus Client"
-            description "Métricas unificadas: ingest (events/sec, latencia), query (queries/sec, cache hits), errores por tenant y performance general."
+            technology "Prometheus.NET"
+            description "Recolecta métricas unificadas: registra ingest (events/sec, latencia), mide query (queries/sec, cache hits) y cuenta errores por tenant"
             tags "Observability" "001 - Fase 1"
         }
 
         structuredLogger = component "Structured Logger" {
             technology "Serilog"
-            description "Logging estructurado unificado con correlationId, metadatos de tenant y separación lógica por operación (ingest/query)."
+            description "Registra logging estructurado unificado con correlationId único, captura metadatos de tenant y separa operaciones (ingest/query)"
             tags "Observability" "001 - Fase 1"
         }
     }
@@ -182,33 +182,33 @@ trackAndTrace = softwareSystem "Track & Trace System" {
         }
 
         dynamicConfigProcessor = component "Dynamic Configuration Processor" {
-            technology "C#, .NET 8, FluentValidation"
-            description "Detecta cambios de configuración con polling inteligente, valida nuevas configuraciones y actualiza cache dinámicamente sin reinicio del Event Processor."
+            technology "C#, FluentValidation, HttpClient"
+            description "Consulta cambios de configuración con polling inteligente, valida nuevas configuraciones contra esquemas y actualiza cache dinámicamente sin reinicio del Event Processor."
             tags "Configuration Events" "Feature Flags" "001 - Fase 1"
         }
 
         processorTenantConfigRepository = component "Processor Tenant Config Repository" {
-            technology "C#, EF Core"
-            description "Gestiona configuraciones específicas por tenant para reglas de procesamiento y enriquecimiento."
+            technology "EF Core"
+            description "Ejecuta configuraciones específicas por tenant para reglas de procesamiento y enriquecimiento de eventos."
             tags "EF Core" "001 - Fase 1"
         }
 
         // Componentes de Observabilidad
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
-            description "Expone endpoints de salud con verificación de conectividad a colas y base de datos."
+            description "Valida salud del procesador: verifica conectividad a colas de eventos y disponibilidad de base de datos"
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
-            technology "Prometheus Client"
-            description "Recolecta métricas de procesamiento: events processed/sec, tiempo de enriquecimiento, tasa de éxito de publicación."
+            technology "Prometheus.NET"
+            description "Recolecta métricas de procesamiento: registra events processed/sec, mide tiempo de enriquecimiento y cuenta tasa de éxito de publicación"
             tags "Observability" "001 - Fase 1"
         }
 
         structuredLogger = component "Structured Logger" {
             technology "Serilog"
-            description "Logging estructurado con correlationId y metadatos de tenant para trazabilidad completa."
+            description "Registra logging estructurado con correlationId único, captura metadatos de tenant para trazabilidad completa de eventos"
             tags "Observability" "001 - Fase 1"
         }
     }
@@ -221,19 +221,19 @@ trackAndTrace = softwareSystem "Track & Trace System" {
         // Componentes de Observabilidad
         healthCheck = component "Health Check" {
             technology "React Health Check"
-            description "Monitorea salud del dashboard: conectividad a APIs, performance del frontend y estado de dependencias"
+            description "Valida salud del dashboard: verifica conectividad a APIs, evalúa performance del frontend y estado de dependencias"
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
             technology "Browser Metrics"
-            description "Recolecta métricas del frontend: tiempo de carga, interacciones de usuario, errores de UI"
+            description "Recolecta métricas del frontend: registra tiempo de carga de páginas, mide interacciones de usuario y cuenta errores de UI"
             tags "Observability" "001 - Fase 1"
         }
 
         structuredLogger = component "Structured Logger" {
             technology "Frontend Logger"
-            description "Logging estructurado para el frontend con sessionId, user context y tracking de acciones"
+            description "Registra logging estructurado para frontend con sessionId único, captura user context y almacena tracking de acciones"
             tags "Observability" "001 - Fase 1"
         }
     }
@@ -293,11 +293,11 @@ trackAndTrace = softwareSystem "Track & Trace System" {
     trackingAPI.configurationProvider -> configPlatform.configService "Lee configuraciones unificadas y secretos desde Configuration Platform agnóstica" "HTTPS/REST" "001 - Fase 1"
     trackingEventProcessor.processorConfigurationProvider -> configPlatform.configService "Lee configuraciones y secretos desde Configuration Platform agnóstica" "HTTPS/REST" "001 - Fase 1"
 
-    // Dynamic Configuration Relations
-    trackingAPI.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling" "HTTPS/REST" "001 - Fase 1"
-    trackingAPI.dynamicConfigProcessor -> trackingAPI.configurationProvider "Invalida cache específico al detectar cambios" "In-Memory" "001 - Fase 1"
-    trackingEventProcessor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling" "HTTPS/REST" "001 - Fase 1"
-    trackingEventProcessor.dynamicConfigProcessor -> trackingEventProcessor.processorConfigurationProvider "Invalida cache específico al detectar cambios" "In-Memory" "001 - Fase 1"
+    // Dynamic Configuration Relations - Patrón polling correcto
+    trackingAPI.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling inteligente" "HTTPS/REST" "001 - Fase 1"
+    trackingAPI.dynamicConfigProcessor -> trackingAPI.configurationProvider "Invalida cache específico de configuraciones al detectar cambios" "In-Memory" "001 - Fase 1"
+    trackingEventProcessor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling inteligente" "HTTPS/REST" "001 - Fase 1"
+    trackingEventProcessor.dynamicConfigProcessor -> trackingEventProcessor.processorConfigurationProvider "Invalida cache específico de procesamiento al detectar cambios" "In-Memory" "001 - Fase 1"
 
     // ========================================
     // RELACIONES ENTRE COMPONENTES INTERNOS

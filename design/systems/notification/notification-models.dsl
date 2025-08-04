@@ -72,33 +72,33 @@ notification = softwareSystem "Notification System" {
         }
 
         dynamicConfigProcessor = component "Dynamic Configuration Processor" {
-            technology "C#, .NET 8, FluentValidation"
-            description "Detecta cambios de configuración con polling inteligente, valida nuevas configuraciones y actualiza cache dinámicamente sin reinicio del API."
+            technology "C#, FluentValidation, HttpClient"
+            description "Consulta cambios de configuración con polling inteligente, valida nuevas configuraciones contra esquemas y actualiza cache dinámicamente sin reinicio del API."
             tags "Configuration Events" "Feature Flags" "001 - Fase 1"
         }
 
         attachmentService = component "Attachment Service" {
-            technology "IStorageService"
-            description "Gestión simplificada de archivos adjuntos."
+            technology "S3-Compatible Client"
+            description "Gestiona archivos adjuntos con validación de integridad y limpieza automática."
             tags "Storage" "001 - Fase 1"
         }
 
         // Observabilidad esencial
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
-            description "Health checks unificados: /health, /health/ready"
+            description "Valida salud del API: verifica conectividad PostgreSQL, disponibilidad storage y estado de colas de mensajes"
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
             technology "Prometheus.NET"
-            description "Recolecta métricas del API: request/sec, latencia, tasa de éxito/error, throughput de notificaciones"
+            description "Recolecta métricas del API: registra request/sec por tenant, mide latencia de endpoints, cuenta tasa de éxito/error y monitorea throughput de notificaciones"
             tags "Observability" "001 - Fase 1"
         }
 
         structuredLogger = component "Structured Logger" {
             technology "Serilog"
-            description "Logging estructurado con correlationId, tenant context y metadata de requests para trazabilidad completa"
+            description "Registra logging estructurado con correlationId único, captura tenant context y almacena metadata de requests para trazabilidad completa"
             tags "Observability" "001 - Fase 1"
         }
     }
@@ -168,33 +168,33 @@ notification = softwareSystem "Notification System" {
         }
 
         dynamicConfigProcessor = component "Dynamic Configuration Processor" {
-            technology "C#, .NET 8, FluentValidation"
-            description "Detecta cambios de configuración con polling inteligente, valida nuevas configuraciones y actualiza cache dinámicamente sin reinicio del Processor."
+            technology "C#, FluentValidation, HttpClient"
+            description "Consulta cambios de configuración con polling inteligente, valida nuevas configuraciones contra esquemas y actualiza cache dinámicamente sin reinicio del Processor."
             tags "Configuration Events" "Feature Flags" "001 - Fase 1"
         }
 
         notificationRepository = component "Notification Repository" {
             technology "Entity Framework Core"
-            description "Repositorio unificado para todas las operaciones de datos."
+            description "Ejecuta operaciones de datos unificadas con optimizaciones para alta concurrencia y transacciones distribuidas."
             tags "Repository" "001 - Fase 1"
         }
 
         // Componentes de Observabilidad
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
-            description "Monitorea salud del Processor: conectividad PostgreSQL, disponibilidad storage y estado de colas"
+            description "Valida salud del Processor: verifica conectividad PostgreSQL, disponibilidad storage y estado de colas de procesamiento"
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
             technology "Prometheus.NET"
-            description "Recolecta métricas de procesamiento: messages/sec, latencia de envío, tasa de éxito por canal"
+            description "Recolecta métricas de procesamiento: registra messages/sec por canal, mide latencia de envío y cuenta tasa de éxito por proveedor"
             tags "Observability" "001 - Fase 1"
         }
 
         structuredLogger = component "Structured Logger" {
             technology "Serilog"
-            description "Logging estructurado con correlationId, tenant context y metadata de procesamiento para auditoría"
+            description "Registra logging estructurado con correlationId único, captura tenant context y almacena metadata de procesamiento para auditoría completa"
             tags "Observability" "001 - Fase 1"
         }
     }

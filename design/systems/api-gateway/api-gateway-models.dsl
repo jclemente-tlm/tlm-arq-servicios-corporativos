@@ -50,26 +50,26 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
         // Componentes de observabilidad
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
-            description "Monitorea salud del gateway: conectividad a servicios downstream, estado de circuit breakers y performance de endpoints"
+            description "Valida salud del gateway: verifica conectividad a servicios downstream, monitorea estado de circuit breakers y evalúa performance de endpoints críticos"
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
             technology "Prometheus.NET"
-            description "Recolecta métricas del gateway: throughput, latencia por endpoint, tasa de errores, circuit breaker status y rate limiting"
+            description "Recolecta métricas del gateway: registra throughput por tenant, mide latencia por endpoint, cuenta tasa de errores, reporta circuit breaker status y monitorea rate limiting"
             tags "Observability" "001 - Fase 1"
         }
 
         structuredLogger = component "Structured Logger" {
             technology "Serilog"
-            description "Logging estructurado de requests con correlationId, tenant context, métricas de performance y trazabilidad completa"
+            description "Registra logging estructurado de requests con correlationId único, captura tenant context, almacena métricas de performance y mantiene trazabilidad completa end-to-end"
             tags "Observability" "001 - Fase 1"
         }
 
         // Configuración dinámica
         dynamicConfigProcessor = component "Dynamic Configuration Processor" {
-            technology "C#, .NET 8, FluentValidation"
-            description "Detecta cambios de configuración con polling inteligente, valida nuevas configuraciones y actualiza cache dinámicamente sin reinicio del Gateway."
+            technology "C#, FluentValidation, HttpClient"
+            description "Consulta cambios de configuración con polling inteligente, valida nuevas configuraciones contra esquemas, actualiza cache dinámicamente e invalida configuraciones específicas sin reinicio del Gateway."
             tags "Configuration Events" "Feature Flags" "001 - Fase 1"
         }
     }
@@ -97,8 +97,14 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     // ========================================
 
     // Observabilidad cross-cutting
-    reverseProxyGateway.structuredLogger -> reverseProxyGateway.metricsCollector "Correlaciona logs con métricas" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.healthCheck -> reverseProxyGateway.resilienceHandler "Monitorea estado de patrones de resiliencia" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.structuredLogger -> reverseProxyGateway.metricsCollector "Correlaciona logs con métricas para análisis unificado" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.healthCheck -> reverseProxyGateway.resilienceHandler "Evalúa estado de patrones de resiliencia para health checks" "In-Memory" "001 - Fase 1"
+
+    // Observabilidad de middleware crítico
+    reverseProxyGateway.securityMiddleware -> reverseProxyGateway.structuredLogger "Registra eventos de autenticación y autorización" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.tenantResolutionMiddleware -> reverseProxyGateway.structuredLogger "Registra resolución de tenant context" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.metricsCollector "Reporta métricas de rate limiting por tenant" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.resilienceHandler -> reverseProxyGateway.metricsCollector "Reporta estado de circuit breakers y retries" "In-Memory" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - ACTORES
@@ -116,16 +122,28 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     // ========================================
 
     // Enrutamiento a servicios corporativos
-    reverseProxyGateway.resilienceHandler -> notification.api "Enruta requests de notificaciones" "HTTPS" "001 - Fase 1"
-    reverseProxyGateway.resilienceHandler -> trackAndTrace.trackingAPI "Enruta requests de tracking" "HTTPS" "001 - Fase 1"
-    reverseProxyGateway.resilienceHandler -> sitaMessaging.eventProcessor "Enruta requests de mensajería SITA" "HTTPS" "001 - Fase 1"
+    reverseProxyGateway.resilienceHandler -> notification.api "Enruta requests hacia API de notificaciones con resiliencia" "HTTPS" "001 - Fase 1"
+    reverseProxyGateway.resilienceHandler -> trackAndTrace.trackingAPI "Enruta requests hacia API de tracking con circuit breaker" "HTTPS" "001 - Fase 1"
 
-    // Configuración dinámica
-    configPlatform.configService -> reverseProxyGateway "Configuración dinámica de rutas y políticas" "HTTPS" "001 - Fase 1"
-    configPlatform.configService -> reverseProxyGateway.rateLimitingMiddleware "Configuración de límites por tenant" "HTTPS" "001 - Fase 1"
+    // Health checks de servicios downstream
+    reverseProxyGateway.healthCheck -> notification.api "Verifica disponibilidad del servicio de notificaciones" "HTTPS" "001 - Fase 1"
+    reverseProxyGateway.healthCheck -> trackAndTrace.trackingAPI "Verifica disponibilidad del servicio de tracking" "HTTPS" "001 - Fase 1"
 
-    // Dynamic Configuration Relations
-    reverseProxyGateway.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling" "HTTPS/REST" "001 - Fase 1"
-    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.securityMiddleware "Invalida cache específico al detectar cambios" "In-Memory" "001 - Fase 1"
-    // configPlatform.configService -> reverseProxyGateway.cacheMiddleware "Configuración de TTL y políticas de cache" "HTTPS" "002 - Fase 2"
+    // Autenticación con Identity System
+    reverseProxyGateway.securityMiddleware -> identity.keycloakServer "Valida tokens JWT mediante token introspection" "HTTPS" "001 - Fase 1"
+
+    // ========================================
+    // RELACIONES DE CONFIGURACIÓN DINÁMICA
+    // ========================================
+
+    // Configuración dinámica vía polling (patrón correcto)
+    reverseProxyGateway.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling inteligente" "HTTPS/REST" "001 - Fase 1"
+
+    // Invalidación selectiva de cache tras cambios de configuración
+    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.securityMiddleware "Invalida cache de políticas de seguridad al detectar cambios" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.rateLimitingMiddleware "Invalida cache de límites por tenant al detectar cambios" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.dataProcessingMiddleware "Invalida cache de esquemas de validación al detectar cambios" "In-Memory" "001 - Fase 1"
+
+    // Configuración opcional para Fase 2
+    // reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.cacheMiddleware "Invalida políticas de TTL de cache al detectar cambios" "In-Memory" "002 - Fase 2"
 }
