@@ -122,7 +122,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
             tags "Observability" "001 - Fase 1"
         }
 
-        logger = component "Structured Logger" {
+        structuredLogger = component "Structured Logger" {
             technology "C#, .NET 8, Serilog"
             description "Logging estructurado con correlationId para trazabilidad, tenant context y metadata de eventos para debugging y auditoría."
             tags "Observability" "001 - Fase 1"
@@ -220,7 +220,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
             tags "Observability" "001 - Fase 1"
         }
 
-        logger = component "Structured Logger" {
+        structuredLogger = component "Structured Logger" {
             technology "C#, .NET 8, Serilog"
             description "Logging estructurado para operaciones de envío con enrichment de partner context, correlationId y metadata de archivos para trazabilidad completa."
             tags "Observability" "001 - Fase 1"
@@ -322,16 +322,16 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     eventProcessor.healthCheck -> configPlatform.configService "Verifica disponibilidad de configuraciones críticas" "HTTPS/REST" "001 - Fase 1"
 
     // Logging estructurado
-    eventProcessor.service -> eventProcessor.logger "Registra eventos de generación y validaciones" "Serilog" "001 - Fase 1"
-    eventProcessor.eventHandler -> eventProcessor.logger "Registra eventos procesados con contexto" "Serilog" "001 - Fase 1"
-    eventProcessor.retryHandler -> eventProcessor.logger "Registra reintentos y políticas aplicadas" "Serilog" "001 - Fase 1"
-    eventProcessor.configurationManager -> eventProcessor.logger "Registra cache hit/miss y actualizaciones" "Serilog" "001 - Fase 1"
-    eventProcessor.templateProvider -> eventProcessor.logger "Registra cache de templates y versionado" "Serilog" "001 - Fase 1"
-    eventProcessor.fileRepository -> eventProcessor.logger "Registra persistencia de archivos y metadata" "Serilog" "001 - Fase 1"
-    eventProcessor.generator -> eventProcessor.logger "Registra generación de archivos SITA" "Serilog" "001 - Fase 1"
-    eventProcessor.deadLetterProcessor -> eventProcessor.logger "Registra eventos DLQ y análisis de causa" "Serilog" "001 - Fase 1"
-    eventProcessor.dynamicConfigProcessor -> eventProcessor.logger "Registra cambios de configuración detectados" "Serilog" "001 - Fase 1"
-    eventProcessor.healthCheck -> eventProcessor.logger "Registra resultados de health checks" "Serilog" "001 - Fase 1"
+    eventProcessor.service -> eventProcessor.structuredLogger "Registra eventos de generación y validaciones" "Serilog" "001 - Fase 1"
+    eventProcessor.eventHandler -> eventProcessor.structuredLogger "Registra eventos procesados con contexto" "Serilog" "001 - Fase 1"
+    eventProcessor.retryHandler -> eventProcessor.structuredLogger "Registra reintentos y políticas aplicadas" "Serilog" "001 - Fase 1"
+    eventProcessor.configurationManager -> eventProcessor.structuredLogger "Registra cache hit/miss y actualizaciones" "Serilog" "001 - Fase 1"
+    eventProcessor.templateProvider -> eventProcessor.structuredLogger "Registra cache de templates y versionado" "Serilog" "001 - Fase 1"
+    eventProcessor.fileRepository -> eventProcessor.structuredLogger "Registra persistencia de archivos y metadata" "Serilog" "001 - Fase 1"
+    eventProcessor.generator -> eventProcessor.structuredLogger "Registra generación de archivos SITA" "Serilog" "001 - Fase 1"
+    eventProcessor.deadLetterProcessor -> eventProcessor.structuredLogger "Registra eventos DLQ y análisis de causa" "Serilog" "001 - Fase 1"
+    eventProcessor.dynamicConfigProcessor -> eventProcessor.structuredLogger "Registra cambios de configuración detectados" "Serilog" "001 - Fase 1"
+    eventProcessor.healthCheck -> eventProcessor.structuredLogger "Registra resultados de health checks" "Serilog" "001 - Fase 1"
 
     // Métricas de negocio y técnicas
     eventProcessor.service -> eventProcessor.metricsCollector "Publica métricas de tiempo generación y throughput" "Prometheus" "001 - Fase 1"
@@ -379,17 +379,17 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     sender.healthCheck -> configPlatform.configService "Verifica disponibilidad de configuraciones de delivery" "HTTPS/REST" "001 - Fase 1"
 
     // Logging estructurado
-    sender.messageService -> sender.logger "Registra operaciones de envío y estado" "Serilog" "001 - Fase 1"
-    sender.messageSender -> sender.logger "Registra envíos a partners con detalles" "Serilog" "001 - Fase 1"
-    sender.deliveryTracker -> sender.logger "Registra confirmaciones y fallos de entrega" "Serilog" "001 - Fase 1"
-    sender.worker -> sender.logger "Registra ejecución de tareas programadas" "Serilog" "001 - Fase 1"
-    sender.messageRepository -> sender.logger "Registra queries y acceso a datos" "Serilog" "001 - Fase 1"
-    sender.fileFetcher -> sender.logger "Registra descarga de archivos Storage Platform" "Serilog" "001 - Fase 1"
-    sender.configManager -> sender.logger "Registra cache hit/miss de configuraciones" "Serilog" "001 - Fase 1"
-    sender.partnerManager -> sender.logger "Registra rate limiting y circuit breaker" "Serilog" "001 - Fase 1"
-    sender.retryHandler -> sender.logger "Registra reintentos y políticas aplicadas" "Serilog" "001 - Fase 1"
-    sender.auditService -> sender.logger "Registra eventos de auditoría" "Serilog" "001 - Fase 1"
-    sender.healthCheck -> sender.logger "Registra resultados de health checks" "Serilog" "001 - Fase 1"
+    sender.messageService -> sender.structuredLogger "Registra operaciones de envío y estado" "Serilog" "001 - Fase 1"
+    sender.messageSender -> sender.structuredLogger "Registra envíos a partners con detalles" "Serilog" "001 - Fase 1"
+    sender.deliveryTracker -> sender.structuredLogger "Registra confirmaciones y fallos de entrega" "Serilog" "001 - Fase 1"
+    sender.worker -> sender.structuredLogger "Registra ejecución de tareas programadas" "Serilog" "001 - Fase 1"
+    sender.messageRepository -> sender.structuredLogger "Registra queries y acceso a datos" "Serilog" "001 - Fase 1"
+    sender.fileFetcher -> sender.structuredLogger "Registra descarga de archivos Storage Platform" "Serilog" "001 - Fase 1"
+    sender.configManager -> sender.structuredLogger "Registra cache hit/miss de configuraciones" "Serilog" "001 - Fase 1"
+    sender.partnerManager -> sender.structuredLogger "Registra rate limiting y circuit breaker" "Serilog" "001 - Fase 1"
+    sender.retryHandler -> sender.structuredLogger "Registra reintentos y políticas aplicadas" "Serilog" "001 - Fase 1"
+    sender.auditService -> sender.structuredLogger "Registra eventos de auditoría" "Serilog" "001 - Fase 1"
+    sender.healthCheck -> sender.structuredLogger "Registra resultados de health checks" "Serilog" "001 - Fase 1"
 
     // Métricas de negocio y técnicas
     sender.messageService -> sender.metricsCollector "Publica métricas de procesamiento y throughput" "Prometheus" "001 - Fase 1"

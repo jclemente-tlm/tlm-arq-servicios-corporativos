@@ -5,7 +5,7 @@ notification = softwareSystem "Notification System" {
     // ========================================
     // DATA STORE - OPTIMIZADO
     // ========================================
-    
+
     notificationDatabase = store "Notification Database" {
         description "PostgreSQL con esquemas optimizados para notificaciones y reliable messaging."
         technology "PostgreSQL"
@@ -40,7 +40,7 @@ notification = softwareSystem "Notification System" {
     // ========================================
     // NOTIFICATION API - SIMPLIFICADO
     // ========================================
-    
+
     api = application "Notification API" {
         technology "ASP.NET Core"
         description "API REST optimizada para recepción de notificaciones."
@@ -81,14 +81,26 @@ notification = softwareSystem "Notification System" {
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
             description "Health checks unificados: /health, /health/ready"
-            tags "Health" "001 - Fase 1"
+            tags "Observability" "001 - Fase 1"
+        }
+
+        metricsCollector = component "Metrics Collector" {
+            technology "Prometheus.NET"
+            description "Recolecta métricas del API: request/sec, latencia, tasa de éxito/error, throughput de notificaciones"
+            tags "Observability" "001 - Fase 1"
+        }
+
+        structuredLogger = component "Structured Logger" {
+            technology "Serilog"
+            description "Logging estructurado con correlationId, tenant context y metadata de requests para trazabilidad completa"
+            tags "Observability" "001 - Fase 1"
         }
     }
 
     // ========================================
     // NOTIFICATION PROCESSOR - UNIFICADO
     // ========================================
-    
+
     processor = application "Notification Processor" {
         technology "Worker Service"
         description "Procesador unificado con channel handlers especializados."
@@ -154,6 +166,25 @@ notification = softwareSystem "Notification System" {
             description "Repositorio unificado para todas las operaciones de datos."
             tags "Repository" "001 - Fase 1"
         }
+
+        // Componentes de Observabilidad
+        healthCheck = component "Health Check" {
+            technology "ASP.NET Core Health Checks"
+            description "Monitorea salud del Processor: conectividad PostgreSQL, disponibilidad storage y estado de colas"
+            tags "Observability" "001 - Fase 1"
+        }
+
+        metricsCollector = component "Metrics Collector" {
+            technology "Prometheus.NET"
+            description "Recolecta métricas de procesamiento: messages/sec, latencia de envío, tasa de éxito por canal"
+            tags "Observability" "001 - Fase 1"
+        }
+
+        structuredLogger = component "Structured Logger" {
+            technology "Serilog"
+            description "Logging estructurado con correlationId, tenant context y metadata de procesamiento para auditoría"
+            tags "Observability" "001 - Fase 1"
+        }
     }
 
     // ========================================
@@ -173,7 +204,7 @@ notification = softwareSystem "Notification System" {
     processor.messageConsumer -> processor.orchestratorService "Procesa mensaje" "C#" "001 - Fase 1"
     processor.orchestratorService -> processor.templateEngine "Procesa plantilla" "C#" "001 - Fase 1"
     processor.templateEngine -> notificationDatabase.templatesTable "Lee plantillas" "PostgreSQL" "001 - Fase 1"
-    
+
     // Channel Handler Relations
     processor.orchestratorService -> processor.emailHandler "Envía email" "C#" "001 - Fase 1"
     processor.orchestratorService -> processor.smsHandler "Envía SMS" "C#" "001 - Fase 1"

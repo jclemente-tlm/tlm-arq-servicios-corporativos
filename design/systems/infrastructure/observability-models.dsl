@@ -137,22 +137,40 @@ observabilitySystem = softwareSystem "Observability Platform" {
     prometheus.metricsServer -> sitaMessaging.eventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> sitaMessaging.sender.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> identity.keycloakServer "Scrape métricas nativas de Keycloak" "HTTP" "001 - Fase 1"
-    prometheus.metricsServer -> apiGateway.reverseProxyGateway.gatewayHealthAggregator "Scrape métricas y health" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> apiGateway.reverseProxyGateway.healthCheck "Scrape métricas y health" "HTTP" "001 - Fase 1"
 
-    loki.logsCollector -> notification.api.healthCheck "Recolecta logs del API" "File System" "001 - Fase 1"
-    loki.logsCollector -> notification.processor.messageConsumer "Recolecta logs del processor" "File System" "001 - Fase 1"
-    loki.logsCollector -> trackAndTrace.trackingAPI.logger "Recolecta logs unificados (ingest + query)" "File System" "001 - Fase 1"
-    loki.logsCollector -> trackAndTrace.trackingEventProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
-    loki.logsCollector -> sitaMessaging.eventProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
-    loki.logsCollector -> sitaMessaging.sender.logger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> notification.api.structuredLogger "Recolecta logs del API" "File System" "001 - Fase 1"
+    loki.logsCollector -> notification.processor.structuredLogger "Recolecta logs del processor" "File System" "001 - Fase 1"
+    loki.logsCollector -> trackAndTrace.trackingAPI.structuredLogger "Recolecta logs unificados (ingest + query)" "File System" "001 - Fase 1"
+    loki.logsCollector -> trackAndTrace.trackingEventProcessor.structuredLogger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> sitaMessaging.eventProcessor.structuredLogger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> sitaMessaging.sender.structuredLogger "Recolecta logs" "File System" "001 - Fase 1"
     loki.logsCollector -> identity.keycloakServer "Recolecta logs nativos de Keycloak" "File System" "001 - Fase 1"
 
     // Health Checks monitoring
     prometheus.metricsServer -> notification.api.healthCheck "Health check" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> notification.processor.healthCheck "Health check" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> trackAndTrace.trackingAPI.healthCheck "Health check unificado (ingest + query)" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> trackAndTrace.trackingEventProcessor.healthCheck "Health check" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> trackAndTrace.trackingDashboard.healthCheck "Health check" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> sitaMessaging.eventProcessor.healthCheck "Health check" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> sitaMessaging.sender.healthCheck "Health check" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> apiGateway.reverseProxyGateway.healthCheck "Health check" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> identity.keycloakServer "Health check nativo de Keycloak" "HTTP" "001 - Fase 1"
+
+    // Metrics collection
+    prometheus.metricsServer -> notification.api.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> notification.processor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> trackAndTrace.trackingAPI.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    // prometheus.metricsServer -> trackAndTrace.trackingEventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> trackAndTrace.trackingDashboard.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    // prometheus.metricsServer -> sitaMessaging.eventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    // prometheus.metricsServer -> sitaMessaging.sender.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> apiGateway.reverseProxyGateway.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+
+    // Logs collection
+    loki.logsCollector -> apiGateway.reverseProxyGateway.structuredLogger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> trackAndTrace.trackingDashboard.structuredLogger "Recolecta logs" "File System" "001 - Fase 1"
 
     // Usuarios y acceso
     admin -> grafana.visualizationDashboards "Monitorea servicios" "HTTPS" "001 - Fase 1"

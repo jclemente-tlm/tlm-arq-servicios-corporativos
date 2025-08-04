@@ -1,0 +1,140 @@
+{
+  "version": 2,
+  "dgSpecHash": "6rJ8/+6yH5syDuxbkaM80tmw8OQKDi7jk2+zGb3HyLzYIMX/VbMAuLswrcZRGKfj95zHkSVv65GFzHZlBONhwQ==",
+  "success": false,
+  "projectFilePath": "/mnt/d/dev/work/talma/tlm-arq-servicios-corporativos/docs/configuration-providers.csproj",
+  "expectedPackageFiles": [
+    "/home/jclemente/.nuget/packages/aspnetcore.healthchecks.ui.client/7.1.0/aspnetcore.healthchecks.ui.client.7.1.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/aspnetcore.healthchecks.ui.core/7.0.0/aspnetcore.healthchecks.ui.core.7.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/awssdk.core/3.7.300/awssdk.core.3.7.300.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/awssdk.secretsmanager/3.7.300/awssdk.secretsmanager.3.7.300.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/azure.core/1.36.0/azure.core.1.36.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/azure.identity/1.10.4/azure.identity.1.10.4.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/azure.security.keyvault.secrets/4.5.0/azure.security.keyvault.secrets.4.5.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/consul/1.6.10.9/consul.1.6.10.9.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/google.api.commonprotos/2.15.0/google.api.commonprotos.2.15.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/google.api.gax/4.8.0/google.api.gax.4.8.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/google.api.gax.grpc/4.8.0/google.api.gax.grpc.4.8.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/google.apis/1.67.0/google.apis.1.67.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/google.apis.auth/1.67.0/google.apis.auth.1.67.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/google.apis.core/1.67.0/google.apis.core.1.67.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/google.cloud.iam.v1/3.2.0/google.cloud.iam.v1.3.2.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/google.cloud.location/2.2.0/google.cloud.location.2.2.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/google.cloud.secretmanager.v1/2.4.0/google.cloud.secretmanager.v1.2.4.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/google.protobuf/3.25.0/google.protobuf.3.25.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/grpc.auth/2.60.0/grpc.auth.2.60.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/grpc.core.api/2.60.0/grpc.core.api.2.60.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/grpc.net.client/2.60.0/grpc.net.client.2.60.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/grpc.net.common/2.60.0/grpc.net.common.2.60.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.bcl.asyncinterfaces/6.0.0/microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.csharp/4.7.0/microsoft.csharp.4.7.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.entityframeworkcore/8.0.0/microsoft.entityframeworkcore.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.entityframeworkcore.abstractions/8.0.0/microsoft.entityframeworkcore.abstractions.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.entityframeworkcore.analyzers/8.0.0/microsoft.entityframeworkcore.analyzers.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.entityframeworkcore.relational/8.0.0/microsoft.entityframeworkcore.relational.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.caching.abstractions/8.0.0/microsoft.extensions.caching.abstractions.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.caching.memory/8.0.0/microsoft.extensions.caching.memory.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.configuration/8.0.0/microsoft.extensions.configuration.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.configuration.abstractions/8.0.0/microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.configuration.binder/8.0.0/microsoft.extensions.configuration.binder.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.dependencyinjection/8.0.0/microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.dependencymodel/8.0.0/microsoft.extensions.dependencymodel.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.diagnostics/8.0.0/microsoft.extensions.diagnostics.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.diagnostics.abstractions/8.0.0/microsoft.extensions.diagnostics.abstractions.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.diagnostics.healthchecks/7.0.9/microsoft.extensions.diagnostics.healthchecks.7.0.9.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.diagnostics.healthchecks.abstractions/7.0.9/microsoft.extensions.diagnostics.healthchecks.abstractions.7.0.9.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.fileproviders.abstractions/8.0.0/microsoft.extensions.fileproviders.abstractions.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.hosting.abstractions/8.0.0/microsoft.extensions.hosting.abstractions.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.http/8.0.0/microsoft.extensions.http.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.logging/8.0.0/microsoft.extensions.logging.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.0/microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.logging.configuration/3.1.0/microsoft.extensions.logging.configuration.3.1.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.options/8.0.0/microsoft.extensions.options.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.options.configurationextensions/8.0.0/microsoft.extensions.options.configurationextensions.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.extensions.primitives/8.0.0/microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.identity.client/4.56.0/microsoft.identity.client.4.56.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.identity.client.extensions.msal/4.56.0/microsoft.identity.client.extensions.msal.4.56.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.identitymodel.abstractions/6.22.0/microsoft.identitymodel.abstractions.6.22.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/microsoft.netcore.platforms/5.0.0/microsoft.netcore.platforms.5.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/npgsql/8.0.0/npgsql.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/npgsql.entityframeworkcore.postgresql/8.0.0/npgsql.entityframeworkcore.postgresql.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/opentelemetry/1.6.0/opentelemetry.1.6.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/opentelemetry.api/1.6.0/opentelemetry.api.1.6.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/opentelemetry.api.providerbuilderextensions/1.6.0/opentelemetry.api.providerbuilderextensions.1.6.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/opentelemetry.extensions.hosting/1.6.0/opentelemetry.extensions.hosting.1.6.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/serilog/3.1.1/serilog.3.1.1.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/serilog.aspnetcore/8.0.0/serilog.aspnetcore.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/serilog.extensions.hosting/8.0.0/serilog.extensions.hosting.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/serilog.extensions.logging/8.0.0/serilog.extensions.logging.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/serilog.formatting.compact/2.0.0/serilog.formatting.compact.2.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/serilog.settings.configuration/8.0.0/serilog.settings.configuration.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/serilog.sinks.console/5.0.0/serilog.sinks.console.5.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/serilog.sinks.debug/2.0.0/serilog.sinks.debug.2.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/serilog.sinks.file/5.0.0/serilog.sinks.file.5.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/system.codedom/7.0.0/system.codedom.7.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/system.diagnostics.diagnosticsource/8.0.0/system.diagnostics.diagnosticsource.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/system.io.filesystem.accesscontrol/5.0.0/system.io.filesystem.accesscontrol.5.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/system.management/7.0.2/system.management.7.0.2.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/system.memory/4.5.4/system.memory.4.5.4.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/system.memory.data/1.0.2/system.memory.data.1.0.2.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/system.numerics.vectors/4.5.0/system.numerics.vectors.4.5.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/system.security.accesscontrol/5.0.0/system.security.accesscontrol.5.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/system.security.cryptography.protecteddata/4.7.0/system.security.cryptography.protecteddata.4.7.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/system.security.principal.windows/5.0.0/system.security.principal.windows.5.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/system.text.encodings.web/8.0.0/system.text.encodings.web.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/system.text.json/8.0.0/system.text.json.8.0.0.nupkg.sha512",
+    "/home/jclemente/.nuget/packages/system.threading.tasks.extensions/4.5.4/system.threading.tasks.extensions.4.5.4.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package AWSSDK.SystemsManagement. No packages exist with this id in source(s): nuget.org",
+      "libraryId": "AWSSDK.SystemsManagement",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package Google.Cloud.Configuration.V1. No packages exist with this id in source(s): nuget.org",
+      "libraryId": "Google.Cloud.Configuration.V1",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Azure.Identity' 1.10.4 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-m5vv-6r4h-3vj9",
+      "libraryId": "Azure.Identity",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Azure.Identity' 1.10.4 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-wvxc-855f-jvrv",
+      "libraryId": "Azure.Identity",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Microsoft.Extensions.Caching.Memory' 8.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-qj66-m88j-hmgj",
+      "libraryId": "Microsoft.Extensions.Caching.Memory",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}

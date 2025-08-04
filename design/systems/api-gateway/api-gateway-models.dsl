@@ -77,21 +77,21 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
         }
 
         // Componente de observabilidad
-        gatewayHealthAggregator = component "Gateway Health Aggregator" {
+        healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
-            description "Agrega y expone estado de salud de todos los servicios downstream con dashboard centralizado."
+            description "Monitorea salud del Processor: conectividad PostgreSQL, disponibilidad storage y estado de colas"
             tags "Observability" "001 - Fase 1"
         }
 
-        gatewayMetricsCollector = component "Gateway Metrics Collector" {
-            technology "Prometheus Client"
-            description "Recolecta métricas del gateway: throughput, latencia, tasa de errores por endpoint y tenant."
+        metricsCollector = component "Metrics Collector" {
+            technology "Prometheus.NET"
+            description "Recolecta métricas de procesamiento: messages/sec, latencia de envío, tasa de éxito por canal"
             tags "Observability" "001 - Fase 1"
         }
 
-        gatewayLogger = component "Gateway Logger" {
+        structuredLogger = component "Structured Logger" {
             technology "Serilog"
-            description "Logging estructurado de requests con correlationId, tenant context y métricas de performance."
+            description "Logging estructurado con correlationId, tenant context y metadata de procesamiento para auditoría"
             tags "Observability" "001 - Fase 1"
         }
     }
@@ -121,8 +121,8 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     // ========================================
 
     // Observabilidad cross-cutting
-    reverseProxyGateway.gatewayLogger -> reverseProxyGateway.gatewayMetricsCollector "Correlaciona logs con métricas" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.gatewayHealthAggregator -> reverseProxyGateway.circuitBreakerHandler "Monitorea estado de circuit breakers" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.structuredLogger -> reverseProxyGateway.metricsCollector "Correlaciona logs con métricas" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.healthCheck -> reverseProxyGateway.circuitBreakerHandler "Monitorea estado de circuit breakers" "In-Memory" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - ACTORES

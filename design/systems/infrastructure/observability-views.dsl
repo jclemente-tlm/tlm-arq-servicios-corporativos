@@ -44,7 +44,9 @@ systemLandscape "health_monitoring" {
 // component notification.api "notification_api_observability" {
 //     include notification.api.healthCheck
 //     include notification.api.metricsCollector
-//     include notification.api.logger
+//     include notification.api.structuredLogger
+//     include notification.api.metricsCollector
+//     include notification.api.healthCheck
 //     title "[Notification API] Componentes de Observabilidad"
 //     description "Vista detallada de los componentes de observabilidad del API de notificaciones."
 // }
@@ -52,7 +54,9 @@ systemLandscape "health_monitoring" {
 // // Vista de métricas por servicio - Processor
 // component notification.notificationProcessor "notification_processor_observability" {
 //     include notification.notificationProcessor.metricsCollector
-//     include notification.notificationProcessor.logger
+//     include notification.processor.structuredLogger
+//     include notification.processor.metricsCollector
+//     include notification.processor.healthCheck
 //     title "[Notification Processor] Componentes de Observabilidad"
 //     description "Vista detallada de los componentes de observabilidad del procesador de notificaciones."
 // }
@@ -61,7 +65,9 @@ systemLandscape "health_monitoring" {
 // component trackAndTrace.trackingAPI "track_trace_api_observability" {
 //     include trackAndTrace.trackingAPI.healthCheck
 //     include trackAndTrace.trackingAPI.metricsCollector
-//     include trackAndTrace.trackingAPI.logger
+//     include trackAndTrace.trackingAPI.structuredLogger
+//     include trackAndTrace.trackingAPI.metricsCollector
+//     include trackAndTrace.trackingAPI.healthCheck
 //     title "[Track & Trace API] Componentes de Observabilidad Unificada"
 //     description "Vista detallada de los componentes de observabilidad del API unificado (ingest + query) con métricas CQRS."
 // }
@@ -69,7 +75,9 @@ systemLandscape "health_monitoring" {
 // // Vista de métricas de Track & Trace - Event Processor
 // component trackAndTrace.trackingEventProcessor "track_trace_processor_observability" {
 //     include trackAndTrace.trackingEventProcessor.metricsCollector
-//     include trackAndTrace.trackingEventProcessor.logger
+//     include trackAndTrace.trackingEventProcessor.structuredLogger
+//     include trackAndTrace.trackingEventProcessor.metricsCollector
+//     include trackAndTrace.trackingEventProcessor.healthCheck
 //     title "[Track & Trace Processor] Componentes de Observabilidad"
 //     description "Vista detallada de los componentes de observabilidad del procesador de eventos."
 // }
@@ -93,7 +101,9 @@ systemLandscape "health_monitoring" {
 // // Vista de métricas SITA Messaging - Event Processor
 // component sitaMessaging.eventProcessor "sita_messaging_processor_observability" {
 //     include sitaMessaging.eventProcessor.metricsCollector
-//     include sitaMessaging.eventProcessor.logger
+//     include sitaMessaging.eventProcessor.structuredLogger
+//     include sitaMessaging.eventProcessor.metricsCollector
+//     include sitaMessaging.eventProcessor.healthCheck
 //     title "[SITA Messaging Processor] Componentes de Observabilidad"
 //     description "Vista detallada de los componentes de observabilidad del procesador de eventos SITA."
 // }

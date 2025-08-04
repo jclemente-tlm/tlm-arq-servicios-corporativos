@@ -127,7 +127,7 @@ trackAndTrace = softwareSystem "Track & Trace System" {
             tags "Observability" "001 - Fase 1"
         }
 
-        logger = component "Structured Logger" {
+        structuredLogger = component "Structured Logger" {
             technology "Serilog"
             description "Logging estructurado unificado con correlationId, metadatos de tenant y separación lógica por operación (ingest/query)."
             tags "Observability" "001 - Fase 1"
@@ -194,7 +194,7 @@ trackAndTrace = softwareSystem "Track & Trace System" {
             tags "Observability" "001 - Fase 1"
         }
 
-        logger = component "Structured Logger" {
+        structuredLogger = component "Structured Logger" {
             technology "Serilog"
             description "Logging estructurado con correlationId y metadatos de tenant para trazabilidad completa."
             tags "Observability" "001 - Fase 1"
@@ -205,6 +205,25 @@ trackAndTrace = softwareSystem "Track & Trace System" {
         description "Interfaz web reactiva para visualización en tiempo real del estado de tracking y análisis de eventos."
         technology "React, TypeScript"
         tags "Web App" "001 - Fase 1"
+
+        // Componentes de Observabilidad
+        healthCheck = component "Health Check" {
+            technology "React Health Check"
+            description "Monitorea salud del dashboard: conectividad a APIs, performance del frontend y estado de dependencias"
+            tags "Observability" "001 - Fase 1"
+        }
+
+        metricsCollector = component "Metrics Collector" {
+            technology "Browser Metrics"
+            description "Recolecta métricas del frontend: tiempo de carga, interacciones de usuario, errores de UI"
+            tags "Observability" "001 - Fase 1"
+        }
+
+        structuredLogger = component "Structured Logger" {
+            technology "Frontend Logger"
+            description "Logging estructurado para el frontend con sessionId, user context y tracking de acciones"
+            tags "Observability" "001 - Fase 1"
+        }
     }
 
     // ========================================
