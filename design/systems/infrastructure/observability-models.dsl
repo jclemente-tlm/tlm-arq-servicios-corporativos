@@ -136,7 +136,7 @@ observabilitySystem = softwareSystem "Observability Platform" {
     prometheus.metricsServer -> trackAndTrace.trackingEventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> sitaMessaging.eventProcessor.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> sitaMessaging.sender.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
-    prometheus.metricsServer -> identity.identityService.metricsCollector "Scrape métricas" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> identity.keycloakServer "Scrape métricas nativas de Keycloak" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> apiGateway.reverseProxyGateway.gatewayHealthAggregator "Scrape métricas y health" "HTTP" "001 - Fase 1"
 
     loki.logsCollector -> notification.api.logger "Recolecta logs" "File System" "001 - Fase 1"
@@ -145,14 +145,14 @@ observabilitySystem = softwareSystem "Observability Platform" {
     loki.logsCollector -> trackAndTrace.trackingEventProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
     loki.logsCollector -> sitaMessaging.eventProcessor.logger "Recolecta logs" "File System" "001 - Fase 1"
     loki.logsCollector -> sitaMessaging.sender.logger "Recolecta logs" "File System" "001 - Fase 1"
-    loki.logsCollector -> identity.identityService.logger "Recolecta logs" "File System" "001 - Fase 1"
+    loki.logsCollector -> identity.keycloakServer "Recolecta logs nativos de Keycloak" "File System" "001 - Fase 1"
 
     // Health Checks monitoring
     prometheus.metricsServer -> notification.api.healthCheck "Health check" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> trackAndTrace.trackingAPI.healthCheck "Health check unificado (ingest + query)" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> sitaMessaging.eventProcessor.healthCheck "Health check" "HTTP" "001 - Fase 1"
     prometheus.metricsServer -> sitaMessaging.sender.healthCheck "Health check" "HTTP" "001 - Fase 1"
-    prometheus.metricsServer -> identity.identityService.healthCheck "Health check" "HTTP" "001 - Fase 1"
+    prometheus.metricsServer -> identity.keycloakServer "Health check nativo de Keycloak" "HTTP" "001 - Fase 1"
 
     // Usuarios y acceso
     admin -> grafana.visualizationDashboards "Monitorea servicios" "HTTPS" "001 - Fase 1"

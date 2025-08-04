@@ -1,5 +1,5 @@
 sitaMessaging = softwareSystem "SITA Messaging" {
-    description "Gestiona la mensajería SITA para los diferentes países basado en eventos de Track & Trace"
+    description "Sistema corporativo que gestiona la generación y entrega automatizada de mensajes SITA a partners aeronáuticos, procesando eventos de Track & Trace con garantías de confiabilidad y observabilidad completa."
     tags "SITA Messaging" "001 - Fase 1"
 
     // ========================================
@@ -12,51 +12,51 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     // DELIVERY: Genera y envía archivos SITA a partners externos
 
     sitaMessagingDatabase = store "SITA Messaging Database" {
-        description "Base de datos PostgreSQL con esquemas separados para datos de negocio SITA y reliable messaging con garantías ACID transaccionales."
+        description "Base de datos PostgreSQL con arquitectura de esquemas separados: 'business' para datos de dominio SITA y 'messaging' para reliable messaging con garantías ACID transaccionales."
         technology "PostgreSQL"
         tags "Database" "PostgreSQL" "Multi-Schema" "001 - Fase 1"
 
         businessSchema = component "Business Schema" {
             technology "PostgreSQL Schema"
-            description "Esquema 'business' que contiene templates SITA, configuraciones por tenant, logs de generación y auditoría de entregas."
+            description "Esquema 'business' optimizado para datos de dominio SITA: templates versionados, configuraciones por tenant/partner, logs de generación y auditoría completa."
             tags "Database Schema" "Business Data" "001 - Fase 1"
         }
 
         messagingSchema = component "Messaging Schema" {
             technology "PostgreSQL Schema"
-            description "Esquema 'messaging' que implementa reliable messaging con outbox pattern, dead letter store y acknowledgments para garantías ACID."
+            description "Esquema 'messaging' que implementa reliable messaging pattern: outbox transaccional, dead letter queue y acknowledgments con garantías ACID."
             tags "Database Schema" "Reliable Messaging" "001 - Fase 1"
         }
 
         // Tablas específicas como componentes del messaging schema
         reliableMessagesTable = component "Reliable Messages Table" {
             technology "PostgreSQL Table"
-            description "Tabla principal para mensajes confiables SITA con columnas: id, topic, payload, tenant_id, status, created_at, processed_at."
+            description "Tabla principal para eventos confiables con columnas optimizadas: id, topic, payload, tenant_id, status, created_at, processed_at, retry_count."
             tags "Database Table" "Message Store" "001 - Fase 1"
         }
 
         outboxTable = component "Outbox Table" {
             technology "PostgreSQL Table"
-            description "Tabla de outbox pattern para publicación transaccional de eventos SITA con garantías ACID."
+            description "Implementa outbox pattern para publicación transaccional de eventos SITA con garantías ACID y procesamiento idempotente."
             tags "Database Table" "Outbox Pattern" "001 - Fase 1"
         }
 
         deadLetterTable = component "Dead Letter Table" {
             technology "PostgreSQL Table"
-            description "Tabla para mensajes SITA fallidos con análisis de errores, retry automático y auditoría completa."
+            description "Almacena eventos SITA fallidos con metadata enriquecida: análisis de errores, stack traces, retry history y flags de reprocessing manual."
             tags "Database Table" "Dead Letter Queue" "001 - Fase 1"
         }
 
         // Tablas específicas del business schema
         templatesTable = component "Templates Table" {
             technology "PostgreSQL Table"
-            description "Tabla para templates SITA con versionado, validación de esquemas y metadata por tipo de evento y partner."
+            description "Catálogo de templates SITA con versionado semántico, validación de esquemas JSON y metadata de compatibilidad por partner aeronáutico."
             tags "Database Table" "Templates" "001 - Fase 1"
         }
 
         configurationTable = component "Configuration Table" {
             technology "PostgreSQL Table"
-            description "Tabla para configuraciones SITA por tenant con parámetros específicos de generación y entrega."
+            description "Configuraciones específicas por tenant y partner con parámetros de generación, reglas de negocio y settings de delivery personalizados."
             tags "Database Table" "Configuration" "001 - Fase 1"
         }
     }
@@ -64,312 +64,343 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     // Nuevo worker para procesar eventos SITA
     eventProcessor = container "SITA Event Processor" {
         technology "C#, .NET 8, Worker Service"
-        description "Procesa eventos de generación de mensajes SITA"
+        description "Worker service que consume eventos de Track & Trace y genera archivos SITA correspondientes con garantías de procesamiento confiable y observabilidad completa."
         tags "CSharp" "001 - Fase 1"
 
         reliableEventConsumer = component "Reliable Event Consumer" {
             technology "C#, .NET 8, IReliableMessageConsumer"
-            description "Consumer agnóstico con acknowledgments, retry patterns y procesamiento confiable para eventos SITA"
+            description "Consume eventos de Track & Trace desde messaging schema con acknowledgments, polling optimizado y garantías de entrega única."
             tags "Messaging" "Reliability" "001 - Fase 1"
         }
 
         eventHandler = component "Event Handler" {
             technology "C#, .NET 8, Mapster"
-            description "Procesa eventos de Track & Trace y genera mensajes SITA correspondientes con mapeo automático de DTOs."
+            description "Procesa y transforma eventos de Track & Trace aplicando reglas de negocio específicas para generación SITA, con mapeo automático de DTOs."
             tags "001 - Fase 1"
         }
 
         service = component "SITA Generation Service" {
             technology "C#, .NET 8, FluentValidation"
-            description "Orquesta la validación, generación de archivos SITA y persistencia desde eventos procesados."
+            description "Servicio principal que orquesta la generación completa de archivos SITA: validación de datos, aplicación de templates, generación de archivos y persistencia."
             tags "001 - Fase 1"
         }
 
         templateProvider = component "SITA Template Repository" {
             technology "C#, .NET 8, EF Core"
-            description "Repositorio especializado para templates SITA con versionado, validación de esquemas y cache por tipo de evento y partner."
+            description "Repositorio especializado para templates SITA con cache inteligente, versionado automático y validación de esquemas por tipo de evento y partner."
             tags "Template" "001 - Fase 1"
         }
 
         configurationManager = component "Configuration Manager" {
             technology "C#, .NET 8, IMemoryCache"
-            description "Gestión unificada de configuraciones con cache local, acceso a BD y configuración dinámica (TTL: 30min)."
+            description "Gestiona configuraciones por tenant con cache local (TTL: 30min), polling inteligente a Configuration Platform y fallback automático."
             tags "Configuración" "Cache" "001 - Fase 1"
         }
 
         fileRepository = component "File & Data Repository" {
             technology "C#, .NET 8, EF Core"
-            description "Repositorio unificado que gestiona almacenamiento de archivos SITA generados en S3 y metadata en PostgreSQL."
+            description "Repositorio híbrido que gestiona almacenamiento de archivos SITA en S3 y persiste metadata asociada en PostgreSQL business schema."
             tags "Repository" "Files" "001 - Fase 1"
         }
 
         generator = component "File Generator" {
             technology "C#, .NET 8, System.Text.Json"
-            description "Generador especializado de mensajes SITA con formatos específicos por partner (JSON, CSV, XML)."
+            description "Motor de generación de archivos SITA que aplica templates específicos por partner y produce formatos aeronáuticos estándar (JSON, CSV, XML)."
             tags "001 - Fase 1"
         }
 
         // Componentes de Observabilidad
         healthCheck = component "Health Check" {
-            technology "ASP.NET Core Health Checks"
-            description "Expone endpoints /health y verifica estado de dependencias críticas: PostgreSQL, S3, AWS Parameter Store."
+            technology "C#, .NET 8, ASP.NET Core Health Checks"
+            description "Monitorea salud del Event Processor: conectividad PostgreSQL, disponibilidad S3, estado Configuration Platform y latencias de dependencias."
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
-            technology "Prometheus Client"
-            description "Recolecta métricas de negocio y técnicas: events/sec, generation time, cache hit ratio, error rates."
+            technology "C#, .NET 8, Prometheus.NET"
+            description "Recolecta métricas de procesamiento SITA: eventos/sec, tiempo generación, cache hit ratio, throughput de archivos y rates de éxito/fallo."
             tags "Observability" "001 - Fase 1"
         }
 
         logger = component "Structured Logger" {
-            technology "Serilog"
-            description "Logging estructurado con correlationId, tenant context para trazabilidad completa de eventos SITA."
+            technology "C#, .NET 8, Serilog"
+            description "Logging estructurado con correlationId para trazabilidad, tenant context y metadata de eventos para debugging y auditoría."
             tags "Observability" "001 - Fase 1"
         }
 
         // Componentes de Resiliencia
         retryHandler = component "Retry Handler" {
             technology "C#, .NET 8, Polly"
-            description "Maneja reintentos de eventos fallidos con backoff exponencial y circuit breaker."
+            description "Gestiona políticas de reintentos para fallos transitorios con backoff exponencial, circuit breaker y límites configurables por tipo de error."
             tags "001 - Fase 1"
         }
 
         deadLetterProcessor = component "Dead Letter Processor" {
             technology "C#, .NET 8"
-            description "Procesa eventos que fallaron después de todos los reintentos, analiza causa raíz y permite reprocessing manual."
+            description "Procesa eventos que fallaron definitivamente después de agotar reintentos, realiza análisis de causa raíz y permite reprocessing manual administrativo."
             tags "001 - Fase 1"
         }
 
         auditService = component "Audit Service" {
             technology "C#, .NET 8, EF Core"
-            description "Registra auditoría inmutable de eventos procesados, generaciones exitosas y fallos."
+            description "Registra auditoría inmutable de todo el ciclo de vida: eventos recibidos, archivos generados, fallos ocurridos y acciones administrativas."
             tags "001 - Fase 1"
         }
 
         dynamicConfigProcessor = component "Dynamic Configuration Processor" {
             technology "C#, .NET 8, FluentValidation"
-            description "Procesador unificado para cambios de configuración con polling inteligente (5min) y actualizaciones dinámicas."
+            description "Detecta cambios de configuración con polling inteligente (5min), valida nuevas configuraciones y actualiza cache dinámicamente sin reinicio."
             tags "Configuration Events" "Feature Flags" "001 - Fase 1"
         }
     }
 
     fileStorage = store "SITA File Storage" {
         technology "AWS S3"
-        description "Almacena los archivos SITA generados"
+        description "Storage distribuido para archivos SITA generados organizados por tenant, partner y fecha, con versionado automático y políticas de retención."
         tags "File Storage" "AWS S3" "001 - Fase 1"
     }
 
     sender = container "SITA Messaging Sender" {
         technology "C#, .NET 8, Background Service"
-        description "Envía archivos generados a partners SITA usando protocolos aeronáuticos estándar con garantías de entrega."
+        description "Background service que gestiona el envío programado de archivos SITA a partners aeronáuticos con garantías de entrega, rate limiting y monitoreo completo."
         tags "CSharp" "Background Service" "001 - Fase 1"
 
         worker = component "Worker" {
             technology "C#, .NET 8, BackgroundService"
-            description "Background service que ejecuta tareas periódicas de envío con scheduling inteligente y rate limiting por partner."
+            description "Scheduler inteligente que ejecuta tareas de envío programadas con rate limiting por partner, horarios específicos y manejo de prioridades."
             tags "Background Service" "001 - Fase 1"
         }
 
         messageService = component "Message Service" {
             technology "C#, .NET 8, FluentValidation"
-            description "Orquesta el envío de mensajes SITA con validación de esquemas aeronáuticos y coordinación de delivery workflows."
+            description "Servicio principal que orquesta el proceso completo de envío: selección de archivos, validación aeronáutica, coordinación con partners y tracking de entrega."
             tags "Business Logic" "001 - Fase 1"
         }
 
         messageRepository = component "Message Repository" {
             technology "C#, .NET 8, EF Core"
-            description "Repositorio especializado para mensajes SITA con queries optimizadas y cache de metadata."
+            description "Repositorio especializado que consulta archivos SITA pendientes de envío, configuraciones de partners y metadata de entregas desde business schema."
             tags "Data Access" "001 - Fase 1"
         }
 
         fileFetcher = component "File Fetcher" {
             technology "C#, .NET 8, AWS SDK"
-            description "Gestiona descarga optimizada de archivos SITA desde S3 con retry automático y verificación de integridad."
+            description "Cliente optimizado para descarga de archivos SITA desde S3 con streaming, verificación de integridad (hash) y retry automático por fallos de red."
             tags "File Management" "001 - Fase 1"
         }
 
         messageSender = component "Message Sender" {
             technology "C#, .NET 8, HttpClient"
-            description "Cliente especializado para envío a partners SITA con autenticación por certificados y retry policies."
+            description "Cliente especializado para entrega a partners SITA que maneja múltiples protocolos (HTTPS, FTP), autenticación por certificados y confirmaciones de recepción."
             tags "External Communication" "001 - Fase 1"
+        }
+
+        partnerManager = component "Partner Manager" {
+            technology "C#, .NET 8, Polly"
+            description "Gestiona configuraciones específicas por partner: rate limiting dinámico, circuit breaker, ventanas de envío y estado de conectividad en tiempo real."
+            tags "Partner Management" "001 - Fase 1"
         }
 
         deliveryTracker = component "Delivery Tracker" {
             technology "C#, .NET 8, EF Core"
-            description "Rastrea estados de entrega con polling de confirmaciones y escalamiento automático de fallos."
+            description "Rastrea estados de entrega en tiempo real con polling de confirmaciones, escalamiento automático de fallos y SLA tracking por partner."
             tags "Tracking" "001 - Fase 1"
         }
 
         // Componentes de Observabilidad
         healthCheck = component "Health Check" {
-            technology "ASP.NET Core Health Checks"
-            description "Health checks específicos para conectividad SITA: validación de endpoints de partners y verificación de certificados."
+            technology "C#, .NET 8, ASP.NET Core Health Checks"
+            description "Monitorea salud del Sender: conectividad con partners SITA, validación de certificados, disponibilidad S3 y latencias de Configuration Platform."
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
-            technology "Prometheus.NET"
-            description "Métricas específicas SITA: delivery success rate por partner, send times y response times."
+            technology "C#, .NET 8, Prometheus.NET"
+            description "Recolecta métricas de delivery específicas: success rate por partner, tiempos de envío, throughput de archivos y SLA compliance."
             tags "Observability" "001 - Fase 1"
         }
 
         logger = component "Structured Logger" {
-            technology "Serilog"
-            description "Logging estructurado con enrichment de correlationId, partner context y message metadata."
+            technology "C#, .NET 8, Serilog"
+            description "Logging estructurado para operaciones de envío con enrichment de partner context, correlationId y metadata de archivos para trazabilidad completa."
             tags "Observability" "001 - Fase 1"
         }
 
         configManager = component "Configuration Manager" {
             technology "C#, .NET 8, IMemoryCache"
-            description "Gestiona configuraciones de delivery con cache inteligente (TTL 30min) y fallback automático."
+            description "Gestiona configuraciones de delivery por partner con cache inteligente (TTL 30min), polling a Configuration Platform y fallback automático."
             tags "Configuration" "001 - Fase 1"
         }
 
-        configCache = component "Configuration Cache" {
-            technology "IMemoryCache"
-            description "Cache en memoria para configuraciones de delivery con TTL optimizado por tipo."
-            tags "Cache" "001 - Fase 1"
+        // Componentes de Resiliencia
+        retryHandler = component "Retry Handler" {
+            technology "C#, .NET 8, Polly"
+            description "Gestiona políticas de reintentos para fallos de envío con backoff exponencial específico por partner y circuit breaker adaptativo."
+            tags "Resilience" "001 - Fase 1"
+        }
+
+        auditService = component "Audit Service" {
+            technology "C#, .NET 8, EF Core"
+            description "Registra auditoría inmutable de todo el proceso de delivery: intentos de envío, confirmaciones de partners, fallos y acciones correctivas."
+            tags "Audit" "001 - Fase 1"
         }
     }
 
     // ========================================
-    // RELACIONES INTERNAS DEL SISTEMA
+    // RELACIONES CROSS-SYSTEM (CONSUMO DE EVENTOS)
     // ========================================
+    // NOTA: Esta relación se define después de que ambos sistemas estén disponibles
+    // trackAndTrace.trackingAPI.reliableEventPublisher -> eventProcessor.reliableEventConsumer "Publica eventos Track & Trace para procesamiento SITA" "PostgreSQL Cross-Schema" "001 - Fase 1"
 
     // ========================================
-    // RELACIONES INTERNAS DEL SISTEMA
+    // RELACIONES INTERNAS - ACCESO A DATOS
     // ========================================
 
-    // Event Processor - Flujo principal de messaging
-    eventProcessor.reliableEventConsumer -> sitaMessagingDatabase "Consume eventos de seguimiento con garantías ACID desde tabla de mensajes confiables" "PostgreSQL Polling" "001 - Fase 1"
-    eventProcessor.templateProvider -> sitaMessagingDatabase "Lee templates SITA con versionado desde esquema de negocio" "Entity Framework Core" "001 - Fase 1"
+    // Event Processor - Acceso a esquemas de base de datos
+    eventProcessor.templateProvider -> sitaMessagingDatabase.businessSchema "Lee templates SITA con versionado y cache" "EF Core" "001 - Fase 1"
+    eventProcessor.fileRepository -> sitaMessagingDatabase.businessSchema "Almacena metadata de archivos generados" "EF Core" "001 - Fase 1"
+    eventProcessor.auditService -> sitaMessagingDatabase.businessSchema "Registra auditoría inmutable de procesamiento" "EF Core" "001 - Fase 1"
+    eventProcessor.reliableEventConsumer -> sitaMessagingDatabase.messagingSchema "Consume y actualiza eventos desde reliable messages table" "EF Core" "001 - Fase 1"
+    eventProcessor.deadLetterProcessor -> sitaMessagingDatabase.messagingSchema "Almacena eventos fallidos en dead letter table" "EF Core" "001 - Fase 1"
+    eventProcessor.configurationManager -> sitaMessagingDatabase.businessSchema "Lee configuraciones por tenant desde configuration table" "EF Core" "001 - Fase 1"
 
-    // Event Processor - Acceso a datos unificado
-    eventProcessor.fileRepository -> sitaMessagingDatabase "Acceso unificado: mensajes, metadata, configuraciones" "EF Core" "001 - Fase 1"
-    eventProcessor.auditService -> sitaMessagingDatabase "Almacena auditoría de generación en esquema de negocio" "EF Core" "001 - Fase 1"
+    // Sender - Acceso a esquemas de base de datos
+    sender.messageRepository -> sitaMessagingDatabase.businessSchema "Consulta templates y configuraciones SITA" "EF Core" "001 - Fase 1"
+    sender.deliveryTracker -> sitaMessagingDatabase.messagingSchema "Actualiza estado de entregas en reliable messages table" "EF Core" "001 - Fase 1"
+    sender.auditService -> sitaMessagingDatabase.businessSchema "Almacena auditoría de entregas y confirmaciones" "EF Core" "001 - Fase 1"
+
+    // Sender - Acceso a archivos
+    sender.fileFetcher -> fileStorage "Descarga archivos SITA generados con verificación de integridad" "AWS S3 SDK" "001 - Fase 1"
+
+    // ========================================
+    // RELACIONES EXTERNAS - INTEGRACIONES
+    // ========================================
+
+    // Integración con Notification System para envío
+    sender.messageSender -> notification.api.notificationController "Solicita envío de emails SITA con archivos adjuntos" "HTTPS/REST" "001 - Fase 1"
+
+    // Envío a partners aeronáuticos externos
+    sender.messageSender -> airlines "Entrega archivos SITA por email" "SMTP via Notification System" "001 - Fase 1"
+    sender.messageSender -> descartes "Entrega archivos SITA por protocolo específico" "HTTPS/FTP" "001 - Fase 1"
+
+    // Integración con Configuration Platform
+    eventProcessor.configurationManager -> configPlatform.configService "Obtiene configuraciones por tenant en cache miss" "HTTPS/REST" "001 - Fase 1"
+    eventProcessor.configurationManager -> configPlatform.secretsService "Obtiene secretos de partners en cache miss" "HTTPS/REST" "001 - Fase 1"
+    eventProcessor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración con polling" "HTTPS/REST" "001 - Fase 1"
+    sender.configManager -> configPlatform.configService "Obtiene configuraciones de delivery en cache miss" "HTTPS/REST" "001 - Fase 1"
+    sender.configManager -> configPlatform.secretsService "Obtiene credenciales de partners cuando se requiere" "HTTPS/REST" "001 - Fase 1"
+
+    // ========================================
+    // FLUJO DE PROCESAMIENTO DE EVENTOS
+    // ========================================
+
+    // Event Processor - Pipeline principal
+    eventProcessor.reliableEventConsumer -> eventProcessor.eventHandler "Delega eventos consumidos para procesamiento de negocio" "In-Memory" "001 - Fase 1"
+    eventProcessor.eventHandler -> eventProcessor.service "Solicita generación de mensajes SITA validados" "In-Memory" "001 - Fase 1"
+    eventProcessor.service -> eventProcessor.templateProvider "Consulta template específico por tipo de evento" "In-Memory" "001 - Fase 1"
+    eventProcessor.service -> eventProcessor.configurationManager "Consulta configuración por tenant con cache-first" "In-Memory" "001 - Fase 1"
+    eventProcessor.service -> eventProcessor.generator "Delega generación de archivo SITA con template" "In-Memory" "001 - Fase 1"
+    eventProcessor.service -> eventProcessor.fileRepository "Solicita almacenamiento de archivo y metadata" "In-Memory" "001 - Fase 1"
+    eventProcessor.fileRepository -> fileStorage "Almacena archivo SITA generado en bucket específico" "AWS S3 SDK" "001 - Fase 1"
+    eventProcessor.service -> eventProcessor.auditService "Registra evento de generación exitosa" "In-Memory" "001 - Fase 1"
 
     // Event Processor - Manejo de errores
-    eventProcessor.deadLetterProcessor -> sitaMessagingDatabase "Envía eventos fallidos a tabla DLQ con análisis de errores" "PostgreSQL" "001 - Fase 1"
+    eventProcessor.eventHandler -> eventProcessor.retryHandler "Delega manejo de fallos con políticas específicas" "In-Memory" "001 - Fase 1"
+    eventProcessor.retryHandler -> eventProcessor.deadLetterProcessor "Envía a DLQ tras agotar reintentos configurados" "In-Memory" "001 - Fase 1"
+    eventProcessor.deadLetterProcessor -> eventProcessor.auditService "Registra fallo definitivo con análisis de causa" "In-Memory" "001 - Fase 1"
 
     // Event Processor - Configuración dinámica
-    // Configuración agnóstica eliminada - se usa cache local con polling
-
-    // Sender - Archivos y datos
-    sender.fileFetcher -> fileStorage "Obtiene archivos SITA generados" "HTTPS" "001 - Fase 1"
-    sender.messageRepository -> sitaMessagingDatabase "Lee templates y configuración de mensajes SITA" "" "001 - Fase 1"
-    sender.deliveryTracker -> sitaMessagingDatabase "Almacena estado de entregas en tabla de mensajes confiables" "" "001 - Fase 1"
+    eventProcessor.dynamicConfigProcessor -> eventProcessor.configurationManager "Invalida cache específico al detectar cambios" "In-Memory" "001 - Fase 1"
 
     // ========================================
-    // ========================================
-    // RELACIONES EXTERNAS - SISTEMAS
-    // ========================================
-
-    // Integración con Notification System para envío de emails
-    sender.messageSender -> notification.api.notificationController "Solicita envío de emails SITA" "HTTPS via API Gateway" "001 - Fase 1"
-
-    // Envío a partners externos
-    sender.messageSender -> airlines "Envía archivos SITA" "Via Email por\nNotification System" "001 - Fase 1"
-    sender.messageSender -> descartes "Envía archivos SITA" "" "001 - Fase 1"
-
-    // ========================================
-    // RELACIONES ENTRE COMPONENTES INTERNOS
+    // OBSERVABILIDAD - EVENT PROCESSOR
     // ========================================
 
-    // Event Processor - Flujo principal de procesamiento
-    eventProcessor.reliableEventConsumer -> eventProcessor.eventHandler "Envía eventos consumidos para procesamiento" "" "001 - Fase 1"
-    eventProcessor.eventHandler -> eventProcessor.service "Delega generación de mensajes SITA procesados" "" "001 - Fase 1"
+    // Health Checks
+    eventProcessor.healthCheck -> sitaMessagingDatabase "Ejecuta health check con query de conectividad" "PostgreSQL" "001 - Fase 1"
+    eventProcessor.healthCheck -> fileStorage "Verifica conectividad S3 y permisos de escritura" "AWS S3 SDK" "001 - Fase 1"
+    eventProcessor.healthCheck -> configPlatform.configService "Verifica disponibilidad de configuraciones críticas" "HTTPS/REST" "001 - Fase 1"
 
-    // Event Processor - Flujo de generación con cache-first pattern
-    eventProcessor.service -> eventProcessor.templateProvider "Solicita template SITA específico (con cache)" "" "001 - Fase 1"
-    eventProcessor.service -> eventProcessor.configurationManager "Consulta configuración por tenant (cache-first)" "" "001 - Fase 1"
-    eventProcessor.service -> eventProcessor.generator "Delega generación de archivo SITA validado" "" "001 - Fase 1"
-    eventProcessor.service -> eventProcessor.fileRepository "Delega almacenamiento de archivo y metadata" "" "001 - Fase 1"
-    eventProcessor.fileRepository -> fileStorage "Almacena archivo SITA generado" "HTTPS" "001 - Fase 1"
+    // Logging estructurado
+    eventProcessor.service -> eventProcessor.logger "Registra eventos de generación y validaciones" "Serilog" "001 - Fase 1"
+    eventProcessor.eventHandler -> eventProcessor.logger "Registra eventos procesados con contexto" "Serilog" "001 - Fase 1"
+    eventProcessor.retryHandler -> eventProcessor.logger "Registra reintentos y políticas aplicadas" "Serilog" "001 - Fase 1"
+    eventProcessor.configurationManager -> eventProcessor.logger "Registra cache hit/miss y actualizaciones" "Serilog" "001 - Fase 1"
+    eventProcessor.templateProvider -> eventProcessor.logger "Registra cache de templates y versionado" "Serilog" "001 - Fase 1"
+    eventProcessor.fileRepository -> eventProcessor.logger "Registra persistencia de archivos y metadata" "Serilog" "001 - Fase 1"
+    eventProcessor.generator -> eventProcessor.logger "Registra generación de archivos SITA" "Serilog" "001 - Fase 1"
+    eventProcessor.deadLetterProcessor -> eventProcessor.logger "Registra eventos DLQ y análisis de causa" "Serilog" "001 - Fase 1"
+    eventProcessor.dynamicConfigProcessor -> eventProcessor.logger "Registra cambios de configuración detectados" "Serilog" "001 - Fase 1"
+    eventProcessor.healthCheck -> eventProcessor.logger "Registra resultados de health checks" "Serilog" "001 - Fase 1"
 
-    // Event Processor - Persistencia y auditoría
-    eventProcessor.service -> eventProcessor.auditService "Registra auditoría de generación exitosa" "" "001 - Fase 1"
+    // Métricas de negocio y técnicas
+    eventProcessor.service -> eventProcessor.metricsCollector "Publica métricas de tiempo generación y throughput" "Prometheus" "001 - Fase 1"
+    eventProcessor.eventHandler -> eventProcessor.metricsCollector "Publica métricas de eventos procesados por tipo" "Prometheus" "001 - Fase 1"
+    eventProcessor.configurationManager -> eventProcessor.metricsCollector "Publica métricas de cache hit ratio" "Prometheus" "001 - Fase 1"
+    eventProcessor.reliableEventConsumer -> eventProcessor.metricsCollector "Publica métricas de consumo y lag" "Prometheus" "001 - Fase 1"
+    eventProcessor.templateProvider -> eventProcessor.metricsCollector "Publica métricas de cache de templates" "Prometheus" "001 - Fase 1"
+    eventProcessor.generator -> eventProcessor.metricsCollector "Publica métricas de generación por partner" "Prometheus" "001 - Fase 1"
+    eventProcessor.fileRepository -> eventProcessor.metricsCollector "Publica métricas de I/O y tamaño archivos" "Prometheus" "001 - Fase 1"
+    eventProcessor.deadLetterProcessor -> eventProcessor.metricsCollector "Publica métricas de mensajes DLQ" "Prometheus" "001 - Fase 1"
+    eventProcessor.dynamicConfigProcessor -> eventProcessor.metricsCollector "Publica métricas de configuración dinámica" "Prometheus" "001 - Fase 1"
+    eventProcessor.healthCheck -> eventProcessor.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
 
-    // Event Processor - Configuración con cache-first pattern
-    eventProcessor.configurationManager -> configPlatform.configService "Obtiene configuraciones en cache miss (polling TTL: 30min)" "HTTPS" "001 - Fase 1"
-    eventProcessor.configurationManager -> configPlatform.secretsService "Obtiene secretos en cache miss" "HTTPS" "001 - Fase 1"
-    eventProcessor.configurationManager -> sitaMessagingDatabase "Lee configuraciones específicas por tenant en cache miss" "EF Core" "001 - Fase 1"
+    // Auditoría
+    eventProcessor.dynamicConfigProcessor -> eventProcessor.auditService "Registra cambios de configuración aplicados" "EF Core" "001 - Fase 1"
 
-    // Event Processor - Configuración dinámica: polling inteligente para cambios
-    eventProcessor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios de configuración (polling TTL: 5min)" "HTTPS" "001 - Fase 1"
-    eventProcessor.dynamicConfigProcessor -> eventProcessor.configurationManager "Invalida cache específico cuando detecta cambios" "" "001 - Fase 1"
+    // ========================================
+    // FLUJO DE ENVÍO DE MENSAJES
+    // ========================================
 
-    // Event Processor - Manejo de errores y resiliencia
-    eventProcessor.eventHandler -> eventProcessor.retryHandler "Delega reintentos cuando detecta fallos" "" "001 - Fase 1"
-    eventProcessor.retryHandler -> eventProcessor.deadLetterProcessor "Envía a DLQ cuando agota reintentos (max: 3)" "" "001 - Fase 1"
-    eventProcessor.deadLetterProcessor -> eventProcessor.auditService "Registra fallos definitivos con análisis de causa raíz" "" "001 - Fase 1"
+    // Sender - Pipeline principal de envío
+    sender.worker -> sender.messageService "Ejecuta tareas de envío programadas con scheduling" "In-Memory" "001 - Fase 1"
+    sender.messageService -> sender.messageRepository "Consulta mensajes SITA pendientes de envío" "In-Memory" "001 - Fase 1"
+    sender.messageService -> sender.fileFetcher "Solicita descarga de archivos desde storage" "In-Memory" "001 - Fase 1"
+    sender.messageService -> sender.partnerManager "Consulta estado y configuración de partners" "In-Memory" "001 - Fase 1"
+    sender.partnerManager -> sender.messageSender "Autoriza envío según rate limits y circuit breaker" "In-Memory" "001 - Fase 1"
+    sender.messageSender -> sender.deliveryTracker "Solicita rastreo de estado de entrega" "In-Memory" "001 - Fase 1"
 
-    // Event Processor - Health checks y monitoring
-    eventProcessor.healthCheck -> sitaMessagingDatabase "Verifica conectividad BD y latencia" "Health Check" "001 - Fase 1"
-    eventProcessor.healthCheck -> fileStorage "Verifica conectividad S3 y permisos" "Health Check" "001 - Fase 1"
-    eventProcessor.healthCheck -> configPlatform.configService "Verifica disponibilidad de configuraciones críticas" "Health Check" "001 - Fase 1"
-    eventProcessor.healthCheck -> eventProcessor.metricsCollector "Métricas: estado de dependencias, latencias" "" "001 - Fase 1"
+    // Sender - Manejo de errores y resiliencia
+    sender.messageSender -> sender.retryHandler "Delega reintentos en fallos de envío" "In-Memory" "001 - Fase 1"
+    sender.partnerManager -> sender.retryHandler "Notifica fallos para actualizar circuit breaker" "In-Memory" "001 - Fase 1"
+    sender.retryHandler -> sender.auditService "Registra reintentos y fallos permanentes" "In-Memory" "001 - Fase 1"
+    sender.deliveryTracker -> sender.auditService "Registra auditoría de entregas y confirmaciones" "In-Memory" "001 - Fase 1"
 
-    // Event Processor - Observabilidad: Logging con acciones específicas
-    eventProcessor.service -> eventProcessor.logger "Registra logs de generaciones SITA, validaciones y errores" "" "001 - Fase 1"
-    eventProcessor.eventHandler -> eventProcessor.logger "Registra logs de eventos procesados, tipos y tenants" "" "001 - Fase 1"
-    eventProcessor.retryHandler -> eventProcessor.logger "Registra logs de reintentos, backoff y fallos permanentes" "" "001 - Fase 1"
-    eventProcessor.configurationManager -> eventProcessor.logger "Registra logs de cache hit/miss, invalidaciones y actualizaciones" "" "001 - Fase 1"
-    eventProcessor.templateProvider -> eventProcessor.logger "Registra logs de cache de templates, versionado y fallos" "" "001 - Fase 1"
-    eventProcessor.fileRepository -> eventProcessor.logger "Registra logs de persistencia de archivos y metadata" "" "001 - Fase 1"
-    eventProcessor.generator -> eventProcessor.logger "Registra logs de generación de archivos SITA y validaciones" "" "001 - Fase 1"
-    eventProcessor.deadLetterProcessor -> eventProcessor.logger "Registra logs de eventos enviados a DLQ y análisis de causa" "" "001 - Fase 1"
+    // Sender - Configuración
+    sender.messageService -> sender.configManager "Consulta configuraciones de delivery por partner" "In-Memory" "001 - Fase 1"
 
-    // Event Processor - Observabilidad: Métricas con acciones específicas
-    eventProcessor.service -> eventProcessor.metricsCollector "Envía métricas de tiempo generación, archivos/sec, éxito/fallo rate" "" "001 - Fase 1"
-    eventProcessor.eventHandler -> eventProcessor.metricsCollector "Envía métricas de eventos procesados/sec, tipos de evento" "" "001 - Fase 1"
-    eventProcessor.configurationManager -> eventProcessor.metricsCollector "Envía métricas de cache hit ratio, invalidaciones, feature flags usage" "" "001 - Fase 1"
-    eventProcessor.reliableEventConsumer -> eventProcessor.metricsCollector "Envía métricas de eventos consumidos/sec, lag, acknowledgments" "" "001 - Fase 1"
-    eventProcessor.templateProvider -> eventProcessor.metricsCollector "Envía métricas de template cache hit/miss, versionado" "" "001 - Fase 1"
-    eventProcessor.generator -> eventProcessor.metricsCollector "Envía métricas de tiempo generación por partner, throughput" "" "001 - Fase 1"
-    eventProcessor.fileRepository -> eventProcessor.metricsCollector "Envía métricas de operaciones I/O, tamaño archivos" "" "001 - Fase 1"
-    eventProcessor.deadLetterProcessor -> eventProcessor.metricsCollector "Envía métricas de mensajes DLQ, tipos de errores" "" "001 - Fase 1"
+    // ========================================
+    // OBSERVABILIDAD - SENDER
+    // ========================================
 
-    // Event Processor - Configuración dinámica con observabilidad y auditoría
-    eventProcessor.dynamicConfigProcessor -> eventProcessor.logger "Registra logs de cambios detectados, validaciones y rollbacks" "" "001 - Fase 1"
-    eventProcessor.dynamicConfigProcessor -> eventProcessor.metricsCollector "Envía métricas de configuraciones actualizadas, tiempo invalidación" "" "001 - Fase 1"
-    eventProcessor.dynamicConfigProcessor -> eventProcessor.auditService "Registra auditoría de cambios de configuración aplicados" "" "001 - Fase 1"
+    // Health Checks
+    sender.healthCheck -> sitaMessagingDatabase "Ejecuta health check con query de conectividad" "PostgreSQL" "001 - Fase 1"
+    sender.healthCheck -> fileStorage "Verifica conectividad S3 y permisos de lectura" "AWS S3 SDK" "001 - Fase 1"
+    sender.healthCheck -> configPlatform.configService "Verifica disponibilidad de configuraciones de delivery" "HTTPS/REST" "001 - Fase 1"
 
-    // Event Processor - Health Checks con acciones específicas
-    eventProcessor.healthCheck -> eventProcessor.logger "Registra logs de health checks, status y latencias" "" "001 - Fase 1"
-    eventProcessor.healthCheck -> eventProcessor.metricsCollector "Envía métricas de health status, latencia checks, dependencies status" "" "001 - Fase 1"
-    eventProcessor.healthCheck -> sitaMessagingDatabase "Ejecuta health check con query específico (SELECT 1)" "" "001 - Fase 1"
+    // Logging estructurado
+    sender.messageService -> sender.logger "Registra operaciones de envío y estado" "Serilog" "001 - Fase 1"
+    sender.messageSender -> sender.logger "Registra envíos a partners con detalles" "Serilog" "001 - Fase 1"
+    sender.deliveryTracker -> sender.logger "Registra confirmaciones y fallos de entrega" "Serilog" "001 - Fase 1"
+    sender.worker -> sender.logger "Registra ejecución de tareas programadas" "Serilog" "001 - Fase 1"
+    sender.messageRepository -> sender.logger "Registra queries y acceso a datos" "Serilog" "001 - Fase 1"
+    sender.fileFetcher -> sender.logger "Registra descarga de archivos S3" "Serilog" "001 - Fase 1"
+    sender.configManager -> sender.logger "Registra cache hit/miss de configuraciones" "Serilog" "001 - Fase 1"
+    sender.partnerManager -> sender.logger "Registra rate limiting y circuit breaker" "Serilog" "001 - Fase 1"
+    sender.retryHandler -> sender.logger "Registra reintentos y políticas aplicadas" "Serilog" "001 - Fase 1"
+    sender.auditService -> sender.logger "Registra eventos de auditoría" "Serilog" "001 - Fase 1"
+    sender.healthCheck -> sender.logger "Registra resultados de health checks" "Serilog" "001 - Fase 1"
 
-    // Event Processor - Data Access con acciones específicas
-    eventProcessor.reliableEventConsumer -> sitaMessagingDatabase "Consulta eventos pendientes con FOR UPDATE SKIP LOCKED" "" "001 - Fase 1"
-    eventProcessor.reliableEventConsumer -> sitaMessagingDatabase "Actualiza status eventos a 'processing' en transacción" "" "001 - Fase 1"
-    eventProcessor.fileRepository -> sitaMessagingDatabase "Persiste metadata de archivos generados (filename, size, hash)" "" "001 - Fase 1"
-    eventProcessor.deadLetterProcessor -> sitaMessagingDatabase "Almacena eventos fallidos con causa y timestamp" "" "001 - Fase 1"
-
-    // Event Processor - Integraciones externas con acciones específicas
-    eventProcessor.configurationManager -> configPlatform.configService "Consulta configuraciones específicas por tenant" "" "001 - Fase 1"
-    eventProcessor.configurationManager -> configPlatform.configService "Consulta feature flags habilitados por environment" "" "001 - Fase 1"
-
-    // Sender - Flujo principal con acciones específicas
-    sender.worker -> sender.messageService "Ejecuta tareas periódicas de envío SITA programadas" "" "001 - Fase 1"
-    sender.messageService -> sender.messageRepository "Consulta mensajes SITA pendientes de envío" "" "001 - Fase 1"
-    sender.messageService -> sender.fileFetcher "Solicita descarga de archivos SITA desde storage" "" "001 - Fase 1"
-    sender.messageService -> sender.messageSender "Delega envío de archivos a partners específicos" "" "001 - Fase 1"
-    sender.messageSender -> sender.deliveryTracker "Solicita rastreo de estado de entrega" "" "001 - Fase 1"
-
-    // Sender - Configuración y cache con acciones específicas
-    sender.messageService -> sender.configManager "Consulta configuraciones de delivery por partner" "" "001 - Fase 1"
-    sender.configManager -> sender.configCache "Consulta cache de configuraciones (cache-first)" "" "001 - Fase 1"
-    sender.configManager -> configPlatform.configService "Obtiene configuraciones en cache miss" "HTTPS" "001 - Fase 1"
-    sender.configManager -> configPlatform.secretsService "Obtiene secretos de partners cuando se requiere" "HTTPS" "001 - Fase 1"
-
-    // Sender - Observabilidad con acciones específicas
-    sender.messageService -> sender.logger "Registra logs de operaciones de envío y status" "" "001 - Fase 1"
-    sender.messageSender -> sender.logger "Registra logs de envíos a partners con detalles" "" "001 - Fase 1"
-    sender.deliveryTracker -> sender.logger "Registra logs de confirmaciones y fallos de entrega" "" "001 - Fase 1"
-
-    sender.messageService -> sender.metricsCollector "Envía métricas de procesamiento y throughput" "" "001 - Fase 1"
-    sender.messageSender -> sender.metricsCollector "Envía métricas de delivery (éxito/fallo rate, tiempos)" "" "001 - Fase 1"
-    sender.deliveryTracker -> sender.metricsCollector "Envía métricas de tracking y confirmaciones" "" "001 - Fase 1"
-    sender.configManager -> sender.metricsCollector "Envía métricas de cache hit/miss ratio configuraciones" "" "001 - Fase 1"
+    // Métricas de negocio y técnicas
+    sender.messageService -> sender.metricsCollector "Publica métricas de procesamiento y throughput" "Prometheus" "001 - Fase 1"
+    sender.messageSender -> sender.metricsCollector "Publica métricas de delivery success rate" "Prometheus" "001 - Fase 1"
+    sender.deliveryTracker -> sender.metricsCollector "Publica métricas de tracking y confirmaciones" "Prometheus" "001 - Fase 1"
+    sender.configManager -> sender.metricsCollector "Publica métricas de cache hit/miss ratio" "Prometheus" "001 - Fase 1"
+    sender.worker -> sender.metricsCollector "Publica métricas de scheduling y latencia" "Prometheus" "001 - Fase 1"
+    sender.messageRepository -> sender.metricsCollector "Publica métricas de query performance" "Prometheus" "001 - Fase 1"
+    sender.fileFetcher -> sender.metricsCollector "Publica métricas de descarga y throughput" "Prometheus" "001 - Fase 1"
+    sender.partnerManager -> sender.metricsCollector "Publica métricas de rate limiting por partner" "Prometheus" "001 - Fase 1"
+    sender.retryHandler -> sender.metricsCollector "Publica métricas de reintentos y circuit breaker" "Prometheus" "001 - Fase 1"
+    sender.auditService -> sender.metricsCollector "Publica métricas de auditoría y compliance" "Prometheus" "001 - Fase 1"
+    sender.healthCheck -> sender.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
 }

@@ -1,92 +1,62 @@
-identity = softwareSystem "Identity & Authentication System" {
-    description "Servicio centralizado de autenticación y autorización empresarial con soporte para JWT y múltiples proveedores OAuth."
+identity = softwareSystem "Identity & Access Management System" {
+    description "Sistema corporativo de gestión de identidad y acceso basado en Keycloak con contenedor Docker oficial para multi-tenancy, federación y administración centralizada."
     tags "Identity" "001 - Fase 1"
 
-    identityService = application "Identity Service" {
-        technology "Keycloak"
-        description "Plataforma de gestión de identidad y acceso con autenticación multifactor y federación de identidades."
-        tags "Keycloak" "001 - Fase 1"
-
-        // Componentes de Observabilidad para Keycloak
-        healthCheck = component "Health Check" {
-            technology "Keycloak Health Check"
-            description "Expone endpoints de salud con verificación de conectividad a base de datos y proveedores externos."
-            tags "Observability" "001 - Fase 1"
-        }
-
-        metricsCollector = component "Metrics Collector" {
-            technology "Prometheus Client"
-            description "Recolecta métricas de identidad: logins/sec, tasa de validación de tokens, autenticaciones fallidas por tenant."
-            tags "Observability" "001 - Fase 1"
-        }
-
-        logger = component "Structured Logger" {
-            technology "Serilog"
-            description "Logging estructurado de eventos de seguridad, autenticación y autorización con correlationId."
-            tags "Observability" "001 - Fase 1"
-        }
-
-        identityConfigurationManager = component "Identity Configuration Provider" {
-            technology "C# .NET 8, IConfigurationProvider"
-            description "Proveedor agnóstico para configuraciones de seguridad con cache local: proveedores OAuth, políticas y timeouts por tenant."
-            tags "Configuración" "001 - Fase 1"
-        }
-
-        identityConfigurationCache = component "Local Security Configuration Cache" {
-            technology "IMemoryCache"
-            description "Cache local para configuraciones de seguridad con polling inteligente (TTL: 30min) e invalidación por políticas críticas."
-            tags "Cache" "001 - Fase 1"
-        }
-
-        securityFeatureFlagService = component "Security Feature Flag Service" {
-            technology "C# .NET 8, IConfigurationProvider"
-            description "Servicio agnóstico para feature flags de seguridad: proveedores OAuth por país, políticas MFA por tenant, con cache local."
-            tags "Feature Flags" "001 - Fase 1"
-        }
+    // ========================================
+    // KEYCLOAK - CONTENEDOR DOCKER OFICIAL
+    // ========================================
+    keycloakServer = container "Keycloak Server" {
+        technology "Keycloak Docker Official, PostgreSQL"
+        description "Servidor Keycloak oficial con soporte completo para multi-tenancy via tenants (realms), federación con IdPs externos, user management, delegated administration y observabilidad."
+        tags "Keycloak" "Docker" "001 - Fase 1"
     }
 
-    identityDatabase = store "Identity Database" {
+    // ========================================
+    // BASE DE DATOS
+    // ========================================
+    keycloakDatabase = store "Keycloak Database" {
         technology "PostgreSQL"
-        description "Base de datos segura para usuarios, roles, permisos y configuraciones de autenticación por tenant."
+        description "Base de datos PostgreSQL para Keycloak con esquemas separados por tenant (realm) para completo aislamiento multi-tenant."
         tags "Database" "PostgreSQL" "001 - Fase 1"
     }
 
     // ========================================
-    // RELACIONES INTERNAS DEL SISTEMA
+    // RELACIONES INTERNAS
     // ========================================
 
-    // Relaciones básicas del servicio
-    identityService -> identityDatabase "Gestiona datos de usuarios, roles y configuración de seguridad" "PostgreSQL" "001 - Fase 1"
-
-    // Relaciones de componentes de configuración (Cache-first pattern)
-    identityService.identityConfigurationManager -> identityService.identityConfigurationCache "Cache-first: busca configuración" "" "001 - Fase 1"
-    identityService.identityConfigurationCache -> configPlatform.configService "Cache miss: polling inteligente (TTL: 30min)" "HTTPS" "001 - Fase 1"
-    identityService.identityConfigurationCache -> configPlatform.secretsService "Cache miss: obtiene secretos" "HTTPS" "001 - Fase 1"
-    identityService.securityFeatureFlagService -> identityService.identityConfigurationCache "Evalúa feature flags desde cache" "" "001 - Fase 1"
-
-    // Relaciones de observabilidad
-    identityService.identityConfigurationManager -> identityService.metricsCollector "Envía métricas de configuración" "" "001 - Fase 1"
-    identityService.securityFeatureFlagService -> identityService.metricsCollector "Envía métricas de feature flags de seguridad" "" "001 - Fase 1"
+    // Keycloak con su base de datos
+    keycloakServer -> keycloakDatabase "Almacena configuración, usuarios, tenants (realms), tokens y sesiones" "PostgreSQL JDBC" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - ACTORES
     // ========================================
 
-    // Administrador
-    admin -> identityService "Administra usuarios, roles y configuraciones de seguridad" "HTTPS vía API Gateway" "001 - Fase 1"
+    // Administradores corporativos
+    admin -> keycloakServer "Gestiona tenants, usuarios, federación via Admin Console" "HTTPS" "001 - Fase 1"
 
-    // Aplicaciones por país
-    appPeru -> identityService "Solicita autenticación" "HTTPS vía API Gateway" "001 - Fase 1"
-    appEcuador -> identityService "Solicita autenticación" "HTTPS vía API Gateway" "001 - Fase 1"
-    appColombia -> identityService "Solicita autenticación" "HTTPS vía API Gateway" "001 - Fase 1"
-    appMexico -> identityService "Solicita autenticación" "HTTPS vía API Gateway" "001 - Fase 1"
+    // Administradores delegados por país (usando roles delegados de Keycloak)
+    countryAdmin -> keycloakServer "Administra usuarios de su tenant específico" "HTTPS via API Gateway" "001 - Fase 1"
+
+    // Aplicaciones por país - Autenticación OAuth2/OIDC
+    appPeru -> keycloakServer "Autenticación OAuth2/OIDC tenant Peru" "HTTPS via API Gateway" "001 - Fase 1"
+    appEcuador -> keycloakServer "Autenticación OAuth2/OIDC tenant Ecuador" "HTTPS via API Gateway" "001 - Fase 1"
+    appColombia -> keycloakServer "Autenticación OAuth2/OIDC tenant Colombia" "HTTPS via API Gateway" "001 - Fase 1"
+    appMexico -> keycloakServer "Autenticación OAuth2/OIDC tenant Mexico" "HTTPS via API Gateway" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - SISTEMAS
     // ========================================
 
     // Integración con API Gateway
-    apiGateway.reverseProxyGateway.authorizationMiddleware -> identityService "Redirige solicitudes de autorización" "HTTPS" "001 - Fase 1"
+    apiGateway.reverseProxyGateway.authorizationMiddleware -> keycloakServer "Valida tokens JWT via token introspection" "HTTPS" "001 - Fase 1"
+    apiGateway.reverseProxyGateway.authenticationMiddleware -> keycloakServer "Redirige autenticación OAuth2" "HTTPS" "001 - Fase 1"
 
-    // Configuración agnóstica ya configurada arriba
+    // Federación con proveedores externos (Identity Brokering nativo)
+    keycloakServer -> microsoftAD "Federación con Active Directory via LDAP/SAML" "LDAP/SAML" "001 - Fase 1"
+    keycloakServer -> googleWorkspace "Federación con Google Workspace via OIDC" "OIDC/OAuth2" "001 - Fase 1"
+    keycloakServer -> peruNationalIdP "Federación con RENIEC via SAML" "SAML/REST API" "001 - Fase 1"
+    keycloakServer -> mexicoNationalIdP "Federación con CURP/RFC via SAML" "SAML/REST API" "001 - Fase 1"
+
+    // Configuración externa (para automatización de setup)
+    configPlatform.configService -> keycloakServer "Configuración inicial de tenants via Admin API" "Keycloak Admin REST API" "001 - Fase 1"
 }

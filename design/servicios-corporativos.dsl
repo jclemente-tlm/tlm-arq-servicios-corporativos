@@ -25,6 +25,11 @@ workspace {
             tags "Admin" "001 - Fase 1"
         }
 
+        countryAdmin = person "Country Admin" {
+            description "Administrador delegado que gestiona usuarios y configuraciones específicas de su país/tenant"
+            tags "Admin" "Delegated" "001 - Fase 1"
+        }
+
         operationalUser = person "Usuario Operativo" {
             description "Usuario que opera los sistemas corporativos"
             tags "User"
@@ -106,6 +111,30 @@ workspace {
             }
         }
 
+        // Proveedores de identidad externos
+        externalIdentityGroup = group "Proveedores de Identidad Externos" {
+
+            peruNationalIdP = softwareSystem "Reniec - Perú" {
+                description "Proveedor de identidad nacional de Perú - RENIEC para validación de documentos y datos de ciudadanos"
+                tags "External, Identity, Government, Peru, 001 - Fase 1"
+            }
+
+            mexicoNationalIdP = softwareSystem "CURP/RFC - México" {
+                description "Proveedor de identidad nacional de México - CURP/RFC para validación de documentos y datos de ciudadanos"
+                tags "External, Identity, Government, Mexico, 001 - Fase 1"
+            }
+
+            microsoftAD = softwareSystem "Microsoft Active Directory" {
+                description "Active Directory corporativo para federación con cuentas empresariales existentes"
+                tags "External, Identity, Microsoft, LDAP, 001 - Fase 1"
+            }
+
+            googleWorkspace = softwareSystem "Google Workspace" {
+                description "Google Workspace para federación con cuentas de Google empresariales"
+                tags "External, Identity, Google, OAuth2, 001 - Fase 1"
+            }
+        }
+
         // Aerolíneas asociadas
         sitaClientsGroup = group "Receptores de mensajería SITA" {
             airlines = softwareSystem "Airlines" {
@@ -145,7 +174,12 @@ workspace {
             !include ./systems/track-and-trace/track-and-trace-models.dsl
 
             !include ./systems/notification/notification-deployment-models.dsl
-            // sitaMessaging.eventProcessor.eventConsumer -> trackAndTrace "Consume eventos de tracking" "RabbitMQ"
+
+            // ========================================
+            // RELACIONES CROSS-SYSTEM
+            // ========================================
+            // Integración Track & Trace -> SITA Messaging
+            trackAndTrace.trackingAPI.reliableEventPublisher -> sitaMessaging.eventProcessor.reliableEventConsumer "Publica eventos Track & Trace para procesamiento SITA" "PostgreSQL Cross-Schema" "001 - Fase 1"
         }
 
         // Infraestructura de Observabilidad
