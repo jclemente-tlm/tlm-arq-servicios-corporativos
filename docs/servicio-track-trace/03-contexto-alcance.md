@@ -2,7 +2,7 @@
 
 El **Sistema de Track & Trace** es la plataforma centralizada de trazabilidad operacional que captura, procesa y proporciona visibilidad en tiempo real de todos los eventos críticos en las operaciones aeroportuarias y de aviación.
 
-## 3.1 Contexto de negocio
+## 3.1 Contexto empresarial
 
 ### Propósito del Sistema
 
@@ -14,26 +14,26 @@ El sistema de track & trace actúa como el sistema nervioso de las operaciones, 
 - **Dashboards en tiempo real** para toma de decisiones operacionales
 - **Integración de eventos** entre sistemas heterogéneos
 
-### Stakeholders Principales
+### Partes Interesadas Principales
 
-| Stakeholder | Rol | Responsabilidad | Expectativa |
+| Parte Interesada | Rol | Responsabilidad | Expectativa |
 |-------------|-----|----------------|-------------|
 | **Operations Control Center** | Control Operacional | Monitoreo en tiempo real, respuesta a incidencias | Visibilidad completa, alertas inmediatas |
 | **Airport Operations** | Operaciones Aeroportuarias | Coordinación de recursos, gestión de flujos | Información actualizada, trazabilidad |
 | **Airline Operations** | Operaciones Aerolíneas | Seguimiento de vuelos, gestión de recursos | Datos precisos, integración SITA |
-| **Management** | Gerencia | KPIs operacionales, análisis de performance | Reportes, métricas, tendencias |
+| **Management** | Gerencia | KPIs operacionales, análisis de rendimiento | Reportes, métricas, tendencias |
 | **Compliance Officers** | Cumplimiento | Auditoría, investigaciones, regulaciones | Trazabilidad completa, reportes de auditoría |
-| **IT Operations** | Operaciones TI | Mantenimiento sistema, performance | Sistema estable, monitoreo proactivo |
+| **IT Operations** | Operaciones TI | Mantenimiento sistema, rendimiento | Sistema estable, monitoreo proactivo |
 
-### Objetivos de Negocio
+### Objetivos Empresariales
 
 | Objetivo | Descripción | Métricas de Éxito |
 |----------|-------------|-------------------|
 | **Visibilidad Operacional** | Transparencia completa de operaciones | 100% event capture, < 5 sec latency |
 | **Trazabilidad Completa** | Auditoría completa de eventos críticos | 7 años retención, 99.999% durabilidad |
 | **Decisiones Informadas** | Datos en tiempo real para operaciones | < 200ms query response, real-time dashboards |
-| **Compliance Regulatorio** | Cumplimiento auditoría y regulaciones | 100% audit trail, regulatory compliance |
-| **Integración Seamless** | Conexión de sistemas heterogéneos | Event-driven integration, API standardization |
+| **Cumplimiento Regulatorio** | Cumplimiento auditoría y regulaciones | 100% audit trail, regulatory compliance |
+| **Integración Sin Interrupciones** | Conexión de sistemas heterogéneos | Event-driven integration, API standardization |
 
 ![Track and Trace System](../../diagrams/track_and_trace_system.png)
 
@@ -45,7 +45,7 @@ El sistema de track & trace actúa como el sistema nervioso de las operaciones, 
 
 ```text
 ┌─────────────────────────────────────────────────────────────────┐
-│                    EXTERNAL SYSTEMS & DATA SOURCES              │
+│                    SISTEMAS EXTERNOS Y FUENTES DE DATOS         │
 │  [SITA Network] [Airport Systems] [Airline Systems] [Gov APIs] │
 └─────────────────────┬───────────────────────────────────────────┘
                       │ Events, API calls, Real-time feeds
@@ -68,7 +68,7 @@ El sistema de track & trace actúa como el sistema nervioso de las operaciones, 
                       │ Real-time data, APIs, Notifications
                       ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                   CONSUMERS & DASHBOARDS                       │
+│                   CONSUMIDORES Y DASHBOARDS                     │
 │  [Operations Dashboard] [Mobile Apps] [Notification System]   │
 │  [SITA Messaging] [Reporting Tools] [External Partners]       │
 └─────────────────────────────────────────────────────────────────┘
@@ -140,7 +140,7 @@ El sistema de track & trace actúa como el sistema nervioso de las operaciones, 
 
 #### Salida de Datos
 
-| Interface | Destino | Tipo de Datos | Frecuencia | Formato |
+| Interfaz | Destino | Tipo de Datos | Frecuencia | Formato |
 |-----------|---------|---------------|------------|---------|
 | **Real-time Events** | Dashboards | Live operational data | Continuous | WebSocket (JSON) |
 | **API Queries** | Client applications | Filtered event data | On-demand | REST/GraphQL (JSON) |
@@ -178,7 +178,7 @@ El sistema de track & trace actúa como el sistema nervioso de las operaciones, 
 
 ## 3.5 Casos de uso principales
 
-### Ingestión de Evento Operacional
+### Ingesta de Evento Operacional
 
 ```text
 Actor: SITA Messaging System
@@ -249,7 +249,7 @@ Postcondición: Anomalía identificada y comunicada
 
 ## 3.6 Arquitectura CQRS específica
 
-### Command Side (Write Operations)
+### Command Side (Operaciones de Escritura)
 
 | Componente | Responsabilidad | Tecnología | Capacidad |
 |------------|----------------|------------|-----------|
@@ -258,7 +258,7 @@ Postcondición: Anomalía identificada y comunicada
 | **Aggregate Roots** | Domain logic, consistency | Domain models | Business rule enforcement |
 | **Event Publishers** | Publicación de domain events | Kafka producers | Guaranteed delivery |
 
-### Query Side (Read Operations)
+### Query Side (Operaciones de Lectura)
 
 | Componente | Responsabilidad | Tecnología | Capacidad |
 |------------|----------------|------------|-----------|
@@ -267,9 +267,9 @@ Postcondición: Anomalía identificada y comunicada
 | **Query Handlers** | Query processing | .NET Query Handlers | 10k queries/sec |
 | **Cache Layer** | Query acceleration | Redis | Sub-millisecond access |
 
-### Event Streaming Infrastructure
+### Infraestructura de Streaming de Eventos
 
-| Componente | Responsabilidad | Tecnología | Configuration |
+| Componente | Responsabilidad | Tecnología | Configuración |
 |------------|----------------|------------|---------------|
 | **Event Topics** | Event categorization | Kafka Topics | Partitioned by entity |
 | **Consumer Groups** | Parallel processing | Kafka Consumer Groups | Auto-scaling |
@@ -278,36 +278,36 @@ Postcondición: Anomalía identificada y comunicada
 
 ## 3.7 Atributos de calidad
 
-### Performance
+### Rendimiento
 
-| Atributo | Métrica | Target | Medición |
+| Atributo | Métrica | Objetivo | Medición |
 |----------|---------|--------|----------|
 | **Event Ingestion Rate** | Events per second | 50,000 events/sec | Kafka metrics |
 | **Query Response Time** | Query latency | p95 < 200ms | APM monitoring |
 | **Real-time Updates** | Update latency | < 5 seconds | End-to-end monitoring |
 | **Dashboard Load Time** | UI responsiveness | < 2 seconds | Frontend monitoring |
 
-### Reliability
+### Confiabilidad
 
-| Atributo | Métrica | Target | Medición |
+| Atributo | Métrica | Objetivo | Medición |
 |----------|---------|--------|----------|
 | **Data Durability** | Event loss rate | < 0.0001% | Data integrity checks |
 | **System Availability** | Service uptime | 99.95% | Health monitoring |
 | **Event Ordering** | Out-of-order events | < 0.01% | Sequence validation |
 | **Recovery Time** | MTTR | < 1 hour | Incident response |
 
-### Scalability
+### Escalabilidad
 
-| Atributo | Métrica | Target | Medición |
+| Atributo | Métrica | Objetivo | Medición |
 |----------|---------|--------|----------|
 | **Horizontal Scaling** | Linear scaling capability | Auto-scaling | Load testing |
 | **Storage Scaling** | Data growth handling | Petabyte scale | Storage monitoring |
 | **Query Scaling** | Concurrent query support | 10k concurrent queries | Concurrency testing |
 | **Event Retention** | Historical data access | 7 years retention | Archive validation |
 
-### Data Quality
+### Calidad de Datos
 
-| Atributo | Métrica | Target | Medición |
+| Atributo | Métrica | Objetivo | Medición |
 |----------|---------|--------|----------|
 | **Data Completeness** | Missing events | < 0.1% | Completeness checks |
 | **Data Accuracy** | Incorrect events | < 0.01% | Validation rules |

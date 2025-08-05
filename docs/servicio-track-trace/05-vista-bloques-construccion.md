@@ -3,41 +3,41 @@
 ## 5.1 Sistema Track & Trace - Nivel 1 (Whitebox)
 
 ### Responsabilidad
-Sistema de trazabilidad operacional que captura, procesa y analiza eventos de negocio en tiempo real utilizando arquitectura CQRS + Event Sourcing para proporcionar visibilidad completa de operaciones críticas.
+Sistema de trazabilidad operacional que captura, procesa y analiza eventos empresariales en tiempo real utilizando arquitectura CQRS + Event Sourcing para proporcionar visibilidad completa de operaciones críticas.
 
 ### Bloques de Construcción Contenidos
 
-#### Event Ingestion Layer
+#### Capa de Ingesta de Eventos
 - **Responsabilidad:** Captura de eventos de múltiples fuentes y normalización
 - **Tecnología:** Apache Kafka Connect + Custom Connectors
 - **Interfaz:** Event streaming + REST APIs para ingesta manual
 
-#### Command Processing Service
+#### Servicio de Procesamiento de Comandos
 - **Responsabilidad:** Procesamiento de comandos y orquestación de workflows
 - **Tecnología:** .NET 8 con MediatR para CQRS
-- **Interfaz:** REST API + gRPC para alta performance
+- **Interfaz:** REST API + gRPC para alto rendimiento
 
 #### Event Store
 - **Responsabilidad:** Almacenamiento inmutable de eventos con replay capability
 - **Tecnología:** Apache Kafka como event log + Apache Cassandra para indexing
 - **Interfaz:** Kafka Streams + REST API para queries
 
-#### Read Model Engine
+#### Motor de Modelos de Lectura
 - **Responsabilidad:** Proyección de eventos en modelos optimizados para consulta
 - **Tecnología:** Kafka Streams + múltiples stores especializados
 - **Interfaz:** MaterializedViews + REST APIs
 
-#### Analytics & Reporting Service
+#### Servicio de Analytics y Reportes
 - **Responsabilidad:** Análisis en tiempo real y generación de insights
 - **Tecnología:** Apache Spark + MLlib para machine learning
 - **Interfaz:** Real-time dashboards + scheduled reports
 
-#### Notification Engine
+#### Motor de Notificaciones
 - **Responsabilidad:** Alertas proactivas basadas en patrones y anomalías
 - **Tecnología:** Complex Event Processing (CEP) con Apache Flink
 - **Interfaz:** Push notifications + webhook callbacks
 
-## 5.2 Event Ingestion Layer - Nivel 2 (Whitebox)
+## 5.2 Capa de Ingesta de Eventos - Nivel 2 (Whitebox)
 
 ### Conectores de Entrada
 
@@ -55,7 +55,7 @@ public class SitaMessageConnector : IEventConnector
 }
 ```
 
-#### Corporate Services Connector
+#### Conector de Servicios Corporativos
 ```csharp
 public class CorporateServicesConnector : IEventConnector
 {
@@ -69,15 +69,15 @@ public class CorporateServicesConnector : IEventConnector
 }
 ```
 
-#### External Systems Connector
+#### Conector de Sistemas Externos
 - **ERP Integration:** SAP, Oracle events via REST/SOAP
 - **Legacy Mainframe:** IBM MQ message parsing
 - **Mobile Apps:** Real-time event streaming via WebSockets
 - **IoT Devices:** Sensor data via MQTT protocol
 
-### Event Normalization Engine
+### Motor de Normalización de Eventos
 
-#### Canonical Event Model
+#### Modelo de Evento Canónico
 ```json
 {
   "eventId": "uuid",
@@ -105,7 +105,7 @@ public class CorporateServicesConnector : IEventConnector
 - **Validation:** Real-time schema validation
 - **Documentation:** Auto-generated from schemas
 
-## 5.3 Command Processing Service - Nivel 2 (Whitebox)
+## 5.3 Servicio de Procesamiento de Comandos - Nivel 2 (Whitebox)
 
 ### CQRS Implementation
 
@@ -123,7 +123,7 @@ public class TrackFlightCommandHandler : IRequestHandler<TrackFlightCommand, Com
 }
 ```
 
-#### Command Validation
+#### Validación de Comandos
 ```csharp
 public class TrackFlightCommandValidator : AbstractValidator<TrackFlightCommand>
 {
@@ -136,9 +136,9 @@ public class TrackFlightCommandValidator : AbstractValidator<TrackFlightCommand>
 }
 ```
 
-### Workflow Orchestration
+### Orquestación de Flujos de Trabajo
 
-#### Saga Pattern Implementation
+#### Implementación del Patrón Saga
 ```csharp
 public class FlightOperationSaga : ISaga<FlightDepartureEvent>
 {
@@ -152,7 +152,7 @@ public class FlightOperationSaga : ISaga<FlightDepartureEvent>
 }
 ```
 
-#### Business Process Engine
+#### Motor de Procesos Empresariales
 - **Flight Operations:** Departure → En Route → Arrival → Turnaround
 - **Passenger Journey:** Check-in → Security → Boarding → Flight
 - **Cargo Operations:** Acceptance → Loading → Transport → Delivery
@@ -160,9 +160,9 @@ public class FlightOperationSaga : ISaga<FlightDepartureEvent>
 
 ## 5.4 Event Store - Nivel 2 (Whitebox)
 
-### Apache Kafka as Event Log
+### Apache Kafka como Event Log
 
-#### Topic Architecture
+#### Arquitectura de Topics
 ```yaml
 Event Topics:
   flight-operations:
@@ -195,9 +195,9 @@ public class EventSerializer : ISerializer<TrackingEvent>
 }
 ```
 
-### Cassandra for Event Indexing
+### Cassandra para Indexación de Eventos
 
-#### Event Index Tables
+#### Tablas de Índice de Eventos
 ```cql
 CREATE TABLE events_by_trace (
     trace_id UUID,
@@ -219,15 +219,15 @@ CREATE TABLE events_by_entity (
 ) WITH CLUSTERING ORDER BY (timestamp DESC);
 ```
 
-#### Query Optimization
+#### Optimización de Consultas
 - **Time-based Partitioning:** Events partitioned by date
 - **Entity Indexing:** Fast lookup by business entities
 - **Materialized Views:** Pre-computed aggregations
 - **TTL Management:** Automatic data expiration
 
-## 5.5 Read Model Engine - Nivel 2 (Whitebox)
+## 5.5 Motor de Modelos de Lectura - Nivel 2 (Whitebox)
 
-### Specialized Data Stores
+### Almacenes de Datos Especializados
 
 #### PostgreSQL - Operational Views
 ```sql
@@ -338,9 +338,9 @@ public class FlightStatusProjectionHandler : IEventHandler<FlightEvent>
 }
 ```
 
-## 5.6 Analytics & Reporting Service - Nivel 2 (Whitebox)
+## 5.6 Servicio de Analytics y Reportes - Nivel 2 (Whitebox)
 
-### Real-time Analytics Engine
+### Motor de Analytics en Tiempo Real
 
 #### Kafka Streams Processing
 ```java
@@ -382,9 +382,9 @@ public class FlightDelayDetectionRule : IEventRule
 }
 ```
 
-### Machine Learning Pipeline
+### Pipeline de Machine Learning
 
-#### Predictive Models
+#### Modelos Predictivos
 ```python
 class FlightDelayPredictor:
     def __init__(self):
@@ -401,7 +401,7 @@ class FlightDelayPredictor:
         self.model.fit(features, labels)
 ```
 
-#### Anomaly Detection
+#### Detección de Anomalías
 ```csharp
 public class OperationalAnomalyDetector
 {
@@ -415,9 +415,9 @@ public class OperationalAnomalyDetector
 }
 ```
 
-## 5.7 Notification Engine - Nivel 2 (Whitebox)
+## 5.7 Motor de Notificaciones - Nivel 2 (Whitebox)
 
-### Event Pattern Matching
+### Coincidencia de Patrones de Eventos
 
 #### Complex Event Processing with Apache Flink
 ```java
@@ -438,7 +438,7 @@ public class FlightDelayPattern extends PatternProcessFunction<FlightEvent, Dela
 }
 ```
 
-#### Rule Engine Integration
+#### Integración del Motor de Reglas
 ```csharp
 public class BusinessRuleEngine
 {
@@ -461,16 +461,16 @@ public class BusinessRuleEngine
 }
 ```
 
-### Alert Distribution
+### Distribución de Alertas
 
-#### Multi-channel Notifications
+#### Notificaciones Multi-canal
 - **Push Notifications:** Mobile apps, web dashboards
 - **Email Alerts:** Stakeholder notifications
 - **SMS/WhatsApp:** Critical operational alerts
 - **Webhook Callbacks:** System-to-system notifications
 - **Dashboard Updates:** Real-time UI refreshes
 
-#### Escalation Policies
+#### Políticas de Escalamiento
 ```yaml
 Escalation Rules:
   Critical Alerts:
@@ -489,7 +489,7 @@ Escalation Rules:
 
 ## 5.8 Interfaces Externas
 
-### Upstream Event Sources
+### Fuentes de Eventos Upstream
 ```yaml
 Event Producers:
   - SITA Messaging: Flight operational data
@@ -499,7 +499,7 @@ Event Producers:
   - IoT Sensors: Location, temperature, weight
 ```
 
-### Downstream Consumers
+### Consumidores Downstream
 ```yaml
 Event Consumers:
   - Business Intelligence: Analytics and reporting
@@ -509,7 +509,7 @@ Event Consumers:
   - Partner Systems: Codeshare, alliances
 ```
 
-### Integration Patterns
+### Patrones de Integración
 - **Event Streaming:** Kafka for real-time data flow
 - **Request/Response:** REST APIs for synchronous operations
 - **Batch Processing:** Scheduled ETL for historical data

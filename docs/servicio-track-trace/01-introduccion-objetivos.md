@@ -26,7 +26,7 @@ El sistema de Track & Trace actúa como el sistema nervioso central para el trac
 | **RF-TT-03** | **Consultas Optimizadas** | CQRS para separar comandos de queries, índices optimizados |
 | **RF-TT-04** | **Multi-tenant Tracking** | Aislamiento completo de datos por tenant/país |
 | **RF-TT-05** | **Real-time Dashboards** | APIs para dashboards en tiempo real con métricas agregadas |
-| **RF-TT-06** | **Event Correlation** | Correlación automática de eventos relacionados por business key |
+| **RF-TT-06** | **Event Correlation** | Correlación automática de eventos relacionados por clave empresarial |
 | **RF-TT-07** | **Historical Analysis** | Consultas históricas con agregaciones y filtros complejos |
 | **RF-TT-08** | **Audit Compliance** | Inmutabilidad de eventos, audit trail completo |
 | **RF-TT-09** | **Integration with SITA** | Publicación de eventos críticos para procesamiento SITA |
@@ -36,10 +36,10 @@ El sistema de Track & Trace actúa como el sistema nervioso central para el trac
 
 | Categoría | Requisito | Target | Medición |
 |-----------|-----------|--------|----------|
-| **Performance** | Event ingestion throughput | 10,000 events/second | Load testing continuo |
-| **Performance** | Query response time | p95 < 150ms | APM monitoring |
+| **Rendimiento** | Event ingestion throughput | 10,000 events/second | Load testing continuo |
+| **Rendimiento** | Query response time | p95 < 150ms | APM monitoring |
 | **Availability** | System uptime | 99.9% | SLA monitoring |
-| **Scalability** | Data growth support | 100M events/month | Database performance |
+| **Escalabilidad** | Data growth support | 100M events/month | Rendimiento de base de datos |
 | **Retention** | Historical data retention | 7 años configurable | Automated archiving |
 | **Recovery** | RTO/RPO objectives | RTO < 5 min, RPO < 30 sec | Disaster recovery testing |
 
@@ -61,8 +61,8 @@ El sistema de Track & Trace actúa como el sistema nervioso central para el trac
 | Prioridad | Objetivo | Escenario | Métrica Objetivo |
 |-----------|----------|-----------|------------------|
 | **1** | **Data Integrity** | Eventos nunca perdidos, inmutabilidad garantizada | 100% event durability |
-| **2** | **Query Performance** | Consultas complejas responden rápidamente | p95 < 150ms |
-| **3** | **Real-time Processing** | Eventos disponibles para query inmediatamente | < 1 segundo ingestion-to-query |
+| **2** | **Rendimiento de Consultas** | Consultas complejas responden rápidamente | p95 < 150ms |
+| **3** | **Procesamiento en Tiempo Real** | Eventos disponibles para query inmediatamente | < 1 segundo ingestion-to-query |
 
 ### Objetivos Secundarios
 
@@ -84,12 +84,12 @@ El sistema de Track & Trace actúa como el sistema nervioso central para el trac
 
 ## 1.3 Partes interesadas
 
-### Stakeholders Principales
+### Partes Interesadas Principales
 
 | Rol | Contacto | Responsabilidades | Expectativas |
 |-----|----------|-------------------|--------------|
-| **Operations Manager** | Ops Team | Monitoreo operacional, KPIs de negocio | Real-time visibility, accurate tracking |
-| **Data Analysts** | Analytics Team | Business intelligence, reporting | Rich query capabilities, historical data |
+| **Gerente de Operaciones** | Ops Team | Monitoreo operacional, KPIs de negocio | Real-time visibility, accurate tracking |
+| **Analistas de Datos** | Analytics Team | Inteligencia empresarial, reporting | Rich query capabilities, historical data |
 | **Compliance Officers** | Legal Team | Auditorías, regulatory compliance | Complete audit trails, data lineage |
 | **System Integrators** | Dev Teams | Integración con sistemas upstream | Simple APIs, reliable ingestion |
 | **Arquitecto de Software** | jclemente-tlm | Decisiones técnicas, evolución del sistema | Scalable design, performance optimization |
@@ -109,7 +109,7 @@ El sistema de Track & Trace actúa como el sistema nervioso central para el trac
 | Sistema | Tipo de Consumo | Datos Requeridos | Latencia Esperada |
 |---------|----------------|------------------|-------------------|
 | **SITA Messaging** | Event subscription | Flight-related events | < 30 sec |
-| **Business Dashboards** | REST API pull | Aggregated metrics | < 100ms |
+| **Dashboards Empresariales** | REST API pull | Aggregated metrics | < 100ms |
 | **Notification System** | Event triggers | Alert conditions | < 5 sec |
 | **Data Warehouse** | Batch ETL | Historical data export | Daily batch |
 | **ML/Analytics Platform** | Streaming | Real-time event stream | < 1 sec |
@@ -118,10 +118,10 @@ El sistema de Track & Trace actúa como el sistema nervioso central para el trac
 
 | Stakeholder | Frecuencia | Canal | Contenido |
 |-------------|------------|-------|-----------|
-| **Operations** | Real-time | Dashboards, alerts | System status, business KPIs |
-| **Data Analysts** | Daily | Reports, APIs | Data quality, query performance |
+| **Operaciones** | Real-time | Dashboards, alerts | System status, KPIs empresariales |
+| **Analistas de Datos** | Daily | Reports, APIs | Data quality, rendimiento de consultas |
 | **Compliance** | Monthly | Audit reports | Compliance metrics, audit findings |
-| **Architects** | Weekly | Technical reviews | Performance metrics, technical debt |
+| **Arquitectos** | Weekly | Technical reviews | Métricas de rendimiento, technical debt |
 | **Integrators** | On-demand | Documentation, support | API changes, troubleshooting |
 
 ### Requisitos de Comunicación
@@ -129,7 +129,7 @@ El sistema de Track & Trace actúa como el sistema nervioso central para el trac
 | Tipo | Método | Formato | Frecuencia |
 |------|--------|---------|-----------|
 | **Status Updates** | Automated dashboards | Grafana visualizations | Real-time |
-| **Performance Reports** | Email reports | PDF/HTML | Weekly |
+| **Reportes de Rendimiento** | Email reports | PDF/HTML | Weekly |
 | **Incident Notifications** | Slack/PagerDuty | Structured alerts | Immediate |
 | **Architecture Changes** | ADRs, documentation | Markdown | As needed |
 | **Compliance Reports** | Formal documents | PDF reports | Quarterly |

@@ -11,26 +11,26 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 | **CQRS Pattern** | Separación Command/Query obligatoria | Optimización lectura vs escritura, escalabilidad | Comandos para ingestión, queries para consulta |
 | **Event Sourcing** | Almacenamiento basado en eventos | Auditabilidad completa, reconstrucción de estado | Event store como fuente de verdad |
 | **Message Queue** | Apache Kafka para event streaming | High throughput, durabilidad, replay capability | Kafka topics por tipo de evento |
-| **Read Models** | Vistas materializadas para consultas | Performance de consultas complejas | PostgreSQL para read models |
+| **Read Models** | Vistas materializadas para consultas | Rendimiento de consultas complejas | PostgreSQL para read models |
 
 ### Stack Tecnológico Mandatorio
 
 | Componente | Tecnología Requerida | Versión Mínima | Justificación |
 |------------|---------------------|----------------|---------------|
-| **Runtime** | .NET 8 LTS | 8.0+ | Standardización corporativa, performance |
+| **Runtime** | .NET 8 LTS | 8.0+ | Standardización corporativa, rendimiento |
 | **Event Store** | Apache Kafka | 3.5+ | Event streaming, high availability |
 | **Read Database** | PostgreSQL | 15+ | Complex queries, JSON support, analytics |
-| **Cache Layer** | Redis | 7.0+ | Query performance, real-time dashboards |
+| **Cache Layer** | Redis | 7.0+ | Rendimiento de consultas, real-time dashboards |
 | **Time Series DB** | InfluxDB | 2.7+ | Metrics storage, time-based analytics |
 | **Search Engine** | Elasticsearch | 8.0+ | Full-text search, log aggregation |
 
-### Performance y Capacidad
+### Rendimiento y Capacidad
 
 | Métrica | Restricción | Justificación | Arquitectura Requerida |
 |---------|-------------|---------------|------------------------|
 | **Event Ingestion** | 50,000 eventos/segundo | Peak operational loads | Partitioned Kafka, async processing |
 | **Query Response** | p95 < 200ms | Real-time dashboard requirements | Materialized views, caching |
-| **Data Retention** | 7 años eventos, 2 años métricas | Compliance, operational analysis | Tiered storage, archival strategy |
+| **Data Retention** | 7 años eventos, 2 años métricas | Cumplimiento, análisis operacional | Tiered storage, archival strategy |
 | **Real-time Updates** | < 5 segundos latencia | Operational decision making | Event streaming, WebSocket notifications |
 
 ### Integración y Conectividad
@@ -51,16 +51,16 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 |---------|-------------|---------------|----------------|
 | **Uptime Target** | 99.95% availability | Critical operational visibility | Active-active clustering |
 | **Data Durability** | 99.999999999% (11 9's) | Event data cannot be lost | Kafka replication, backup strategies |
-| **Disaster Recovery** | RTO: 1 hour, RPO: 5 minutes | Business continuity | Cross-region replication |
+| **Disaster Recovery** | RTO: 1 hour, RPO: 5 minutes | Continuidad empresarial | Cross-region replication |
 | **Event Replay** | Support for historical replay | Data recovery, debugging | Kafka retention, offset management |
 
-### Escalabilidad y Performance
+### Escalabilidad y Rendimiento
 
 | Aspecto | Requirement | Implementation | Monitoring |
 |---------|-------------|----------------|------------|
-| **Horizontal Scaling** | Linear scaling with load | Stateless services, partitioned data | Performance metrics, auto-scaling |
-| **Data Partitioning** | Partition by tenant/time | Optimal query performance | Partition monitoring |
-| **Query Optimization** | Sub-second response times | Indexed read models, caching | Query performance tracking |
+| **Horizontal Scaling** | Linear scaling with load | Stateless services, partitioned data | Métricas de rendimiento, auto-scaling |
+| **Data Partitioning** | Partition by tenant/time | Rendimiento óptimo de consultas | Partition monitoring |
+| **Query Optimization** | Sub-second response times | Indexed read models, caching | Seguimiento de rendimiento de consultas |
 | **Storage Scaling** | Automatic storage expansion | Elastic storage, data lifecycle | Storage utilization monitoring |
 
 ### Data Management
@@ -85,16 +85,18 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 
 ### Auditoría y Compliance
 
-| Requirement | Standard | Implementation | Validation |
-|-------------|----------|----------------|------------|
+### Auditoría y Cumplimiento
+
+| Restricción | Descripción | Implementación | Validación |
+|-------------|-------------|----------------|------------|
 | **Audit Trail** | Complete event history | Immutable event log | Audit compliance checks |
 | **Data Privacy** | GDPR, LGPD compliance | Data anonymization, deletion | Privacy impact assessments |
 | **Access Control** | RBAC with fine-grained permissions | Identity integration | Access reviews, monitoring |
 | **Change Tracking** | All modifications logged | Event sourcing pattern | Change audit reports |
 
-### Jurisdictional Requirements
+### Requerimientos Jurisdiccionales
 
-| Jurisdiction | Requirement | Implementation | Compliance Check |
+| Jurisdicción | Requerimiento | Implementación | Verificación de Cumplimiento |
 |-------------|-------------|----------------|------------------|
 | **European Union** | GDPR data protection | Data residency, encryption | Privacy compliance audits |
 | **United States** | SOX financial controls | Access controls, audit trails | Financial audit compliance |
@@ -105,25 +107,25 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 
 ### Autenticación y Autorización
 
-| Aspecto | Requirement | Implementation | Validation |
+| Aspecto | Requerimiento | Implementación | Validación |
 |---------|-------------|----------------|------------|
 | **API Authentication** | OAuth2/OIDC mandatory | Keycloak integration | Token validation testing |
 | **Service-to-Service** | mTLS for internal communication | Certificate-based authentication | Certificate validation |
 | **Data Access** | Role-based permissions | Fine-grained authorization | Permission testing |
 | **Sensitive Data** | Field-level encryption | Column encryption, key management | Encryption compliance |
 
-### Data Security
+### Seguridad de Datos
 
-| Control | Purpose | Implementation | Monitoring |
+| Control | Propósito | Implementación | Monitoreo |
 |---------|---------|----------------|------------|
 | **Encryption at Rest** | Data protection | AES-256 database encryption | Encryption status monitoring |
 | **Encryption in Transit** | Communication security | TLS 1.3 for all communications | Certificate monitoring |
 | **Event Integrity** | Tamper detection | Digital signatures, checksums | Integrity validation |
 | **Access Logging** | Security auditing | Comprehensive access logs | Security event monitoring |
 
-### Network Security
+### Seguridad de Red
 
-| Aspect | Requirement | Implementation | Validation |
+| Aspecto | Requerimiento | Implementación | Validación |
 |--------|-------------|----------------|------------|
 | **Network Segmentation** | Isolated network zones | VPC, subnets, security groups | Network topology review |
 | **Firewall Rules** | Least privilege access | Minimal port exposure | Security rule audits |
@@ -134,7 +136,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 
 ### Command Side (Write)
 
-| Aspect | Constraint | Implementation | Validation |
+| Aspecto | Restricción | Implementación | Validación |
 |--------|------------|----------------|------------|
 | **Event Schema** | Immutable event structure | Avro schema evolution | Schema compatibility testing |
 | **Command Validation** | Business rule enforcement | Domain validation | Business rule testing |
@@ -143,7 +145,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 
 ### Query Side (Read)
 
-| Aspect | Constraint | Implementation | Validation |
+| Aspecto | Restricción | Implementación | Validación |
 |--------|------------|----------------|------------|
 | **View Materialization** | Optimized for read patterns | Denormalized read models | Query performance testing |
 | **Cache Strategy** | Multi-level caching | Redis + application cache | Cache hit rate monitoring |
@@ -152,27 +154,27 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 
 ### Event Store
 
-| Aspect | Constraint | Implementation | Validation |
+| Aspecto | Restricción | Implementación | Validación |
 |--------|------------|----------------|------------|
 | **Event Versioning** | Schema evolution support | Version fields, migration scripts | Compatibility testing |
 | **Snapshot Strategy** | Performance optimization | Periodic snapshots | Snapshot validation |
 | **Replay Capability** | Historical event processing | Offset management | Replay testing |
 | **Storage Optimization** | Cost-effective storage | Compression, tiered storage | Storage efficiency monitoring |
 
-## 2.6 Restricciones de integration
+## 2.6 Restricciones de integración
 
-### Event-Driven Integration
+### Integración Basada en Eventos
 
-| System | Event Types | Constraints | Implementation |
+| Sistema | Tipos de Eventos | Restricciones | Implementación |
 |--------|-------------|-------------|----------------|
 | **SITA Messaging** | Flight events, message status | Real-time consumption | Kafka consumer groups |
 | **Notification System** | Alert triggers, status updates | Low latency publishing | Async event publishing |
 | **Dashboard Systems** | Real-time metrics, alerts | Sub-second updates | WebSocket streaming |
 | **External Analytics** | Data export, reporting | Batch and streaming | Data pipeline integration |
 
-### API Integration
+### Integración de API
 
-| Integration Type | Protocol | Constraints | Implementation |
+| Tipo de Integración | Protocolo | Restricciones | Implementación |
 |------------------|----------|-------------|----------------|
 | **Internal APIs** | REST + GraphQL | Standard patterns | OpenAPI specs, GraphQL schema |
 | **External Partners** | REST APIs | Rate limiting, security | API gateway, authentication |
@@ -181,18 +183,18 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 
 ## 2.7 Restricciones de monitoreo
 
-### Observabilidad Mandatoria
+### Observabilidad Obligatoria
 
-| Component | Tool | Purpose | Configuration |
+| Componente | Herramienta | Propósito | Configuración |
 |-----------|------|---------|---------------|
 | **Metrics** | Prometheus + Grafana | Performance monitoring | Custom metrics, dashboards |
 | **Logging** | ELK Stack | Centralized logging | Structured JSON logs |
 | **Tracing** | OpenTelemetry + Jaeger | Distributed tracing | Request correlation |
 | **Health Checks** | ASP.NET Core Health Checks | Service availability | Health endpoints |
 
-### Business Metrics
+### Métricas Empresariales
 
-| Metric | Purpose | Implementation | Alerting |
+| Métrica | Propósito | Implementación | Alertas |
 |--------|---------|----------------|----------|
 | **Event Ingestion Rate** | Operational monitoring | Counter metrics | Rate anomaly detection |
 | **Query Response Time** | Performance tracking | Histogram metrics | SLA breach alerts |
@@ -203,25 +205,25 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 
 ### Decisiones Arquitectónicas Derivadas
 
-| Constraint | Design Decision | Trade-off | Mitigation |
+| Restricción | Decisión de Diseño | Compromiso | Mitigación |
 |------------|----------------|-----------|------------|
 | **CQRS Requirement** | Separate read/write models | Eventual consistency | Event-driven synchronization |
 | **High Throughput** | Event streaming architecture | Complexity increase | Managed Kafka service |
 | **Real-time Requirements** | In-memory caching | Memory overhead | Cache optimization |
 | **Long-term Retention** | Tiered storage strategy | Storage costs | Automated lifecycle policies |
 
-### Technology Stack Implications
+### Implicaciones de la Pila Tecnológica
 
-| Layer | Technology Choice | Constraint Driver | Alternative Considered |
+| Capa | Elección Tecnológica | Factor de Restricción | Alternativa Considerada |
 |-------|-------------------|-------------------|----------------------|
 | **Event Store** | Apache Kafka | Throughput, durability | EventStore (complexity), AWS Kinesis (vendor lock) |
 | **Read Database** | PostgreSQL | Query complexity, JSON support | MongoDB (consistency), ClickHouse (operational complexity) |
 | **Time Series** | InfluxDB | Time-based analytics | Prometheus (query language), TimescaleDB (licensing) |
 | **Search** | Elasticsearch | Full-text search, analytics | Solr (maintenance), Amazon OpenSearch (vendor dependency) |
 
-### Operational Considerations
+### Consideraciones Operacionales
 
-| Aspect | Implication | Mitigation Strategy |
+| Aspecto | Implicación | Estrategia de Mitigación |
 |--------|-------------|-------------------|
 | **Data Volume** | Large storage requirements | Compression, archival, tiered storage |
 | **Query Complexity** | Performance optimization needed | Materialized views, indexing, caching |
