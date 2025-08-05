@@ -39,6 +39,7 @@ src/
 ### 7.1.2 Módulos principales
 
 #### Event Store Module
+
 ```csharp
 // Core abstraction
 public interface IEventStore
@@ -90,6 +91,7 @@ public class PostgreSqlEventStore : IEventStore
 ```
 
 #### Read Model Projections
+
 ```csharp
 // Entity timeline projection
 public class EntityTimelineProjection : IEventHandler<EntityEvent>

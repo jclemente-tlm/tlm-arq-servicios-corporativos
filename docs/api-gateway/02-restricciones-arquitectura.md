@@ -12,17 +12,17 @@ Esta sección define las restricciones técnicas, organizacionales y operacional
 | **Proxy** | YARP | Integración nativa .NET |
 | **Contenedores** | Docker + ECS | Estándar de deployment |
 | **Base de datos** | PostgreSQL | Standard corporativo |
-| **Cache** | Redis | Performance y escalabilidad |
+| **Cache** | Redis | Rendimiento y escalabilidad |
 
 ### 🌐 Protocolos y Estándares
 
 - **OAuth2 + OIDC** para autenticación
 - **JWT (RS256)** para tokens
 - **TLS 1.3** mínimo para transporte
-- **HTTP/2** para performance
+- **HTTP/2** para rendimiento
 - **OpenAPI 3.0** para documentación
 
-### 📊 Requisitos de Performance
+### 📊 Requisitos de Rendimiento
 
 | Métrica | Requisito | Justificación |
 |---------|-----------|---------------|
@@ -60,7 +60,7 @@ Esta sección define las restricciones técnicas, organizacionales y operacional
 
 ### ☁️ Cloud Provider
 
-- **Primary**: AWS (ECS, ALB, RDS)
+- **Primario**: AWS (ECS, ALB, RDS)
 - **Portabilidad**: Diseño agnóstico de proveedor
 - **Backup plan**: Multi-cloud ready architecture
 
@@ -110,8 +110,8 @@ El API Gateway **SOLO** puede enrutar a estos servicios:
 - **Fase 2**: Cache distribuido y features avanzados
 - **Migration window**: Máximo 4 horas downtime
 | **Cross-tenant Access** | Prohibited except admin functions | Security, compliance | Tenant context validation, access controls |
-| **Tenant Configuration** | Country-specific routing rules | Operational requirements | Configuration per tenant, feature flags |
-| **Shared Infrastructure** | Common gateway instance | Cost optimization | Multi-tenant aware middleware |
+| **Tenant Configuration** | Country-specific routing rules | Requisitos operacionales | Configuration per tenant, feature flags |
+| **Shared Infrastructure** | Common gateway instance | Optimización de costos | Multi-tenant aware middleware |
 
 ### Compliance y Regulatorio
 
@@ -122,14 +122,14 @@ El API Gateway **SOLO** puede enrutar a estos servicios:
 | **Local Privacy Laws** | Per country regulations | Regional operations | Country-specific configurations |
 | **PCI DSS** | Payment card security | Financial transactions | Secure data handling, encryption |
 
-### Operational Requirements
+### Requisitos Operacionales
 
 | Aspecto | Restricción | Justificación | Implementación |
 |---------|-------------|---------------|----------------|
 | **24/7 Operations** | Continuous availability | Airport operations critical | Blue-green deployments, circuit breakers |
 | **Budget Optimization** | Cost control mandatorio | Financial constraints | Reserved instances, auto-scaling, monitoring |
 | **Change Windows** | Limited maintenance windows | Minimize operational impact | Rolling deployments, feature flags |
-| **Disaster Recovery** | RTO: 30 minutes, RPO: 5 minutes | Business continuity | Multi-region deployment, automated failover |
+| **Disaster Recovery** | RTO: 30 minutes, RPO: 5 minutes | Continuidad empresarial | Multi-region deployment, automated failover |
 
 ## 2.3 Restricciones de seguridad
 
@@ -180,11 +180,11 @@ El API Gateway **SOLO** puede enrutar a estos servicios:
 | **Retry Policies** | Resilience patterns | Exponential backoff | Retry attempt tracking |
 | **Timeout Management** | Request timeout handling | Configurable timeouts | Timeout occurrence monitoring |
 
-### Performance Optimization
+### Optimización de Rendimiento
 
 | Optimization | Target | Method | Measurement |
 |--------------|--------|--------|-------------|
-| **Connection Pooling** | Efficient resource usage | HTTP client pooling | Pool utilization metrics |
+| **Pooling de Conexiones** | Efficient resource usage | HTTP client pooling | Pool utilization metrics |
 | **Response Caching** | Reduce backend load | Cache-aside pattern | Cache hit rates |
 | **Compression** | Bandwidth optimization | Gzip/Brotli compression | Compression ratios |
 | **Keep-Alive** | Connection reuse | HTTP keep-alive | Connection metrics |
@@ -210,7 +210,7 @@ El API Gateway **SOLO** puede enrutar a estos servicios:
 
 ### Service Mesh Integration
 
-| Aspect | Requirement | Implementation | Benefits |
+| Aspect | Requirement | Implementation | Beneficios |
 |--------|-------------|----------------|----------|
 | **Service Discovery** | Dynamic service location | Consul/Eureka integration | Automatic failover |
 | **Traffic Management** | Advanced routing | Istio/Linkerd compatibility | Canary deployments |
@@ -252,18 +252,18 @@ El API Gateway **SOLO** puede enrutar a estos servicios:
 
 | Component | Tool | Purpose | Configuration |
 |-----------|------|---------|---------------|
-| **Metrics** | CloudWatch + Prometheus | Performance monitoring | Custom metrics, dashboards |
+| **Metrics** | CloudWatch + Prometheus | Monitoreo de rendimiento | Custom metrics, dashboards |
 | **Logging** | CloudWatch Logs | Centralized logging | Structured JSON logs |
 | **Tracing** | AWS X-Ray + OpenTelemetry | Request tracing | Trace correlation |
-| **APM** | Application monitoring | Performance insights | Error tracking, profiling |
+| **APM** | Application monitoring | Perspectivas de rendimiento | Error tracking, profiling |
 
-### Business Metrics
+### Métricas Empresariales
 
 | Metric | Purpose | Implementation | Alerting |
 |--------|---------|----------------|----------|
 | **Request Rate** | Traffic monitoring | Counter metrics | Traffic spike detection |
 | **Error Rate** | System health | Error ratio calculation | SLA breach alerts |
-| **Response Time** | Performance tracking | Histogram metrics | Latency degradation |
+| **Response Time** | Seguimiento de rendimiento | Histogram metrics | Latency degradation |
 | **Tenant Metrics** | Multi-tenant monitoring | Tenant-specific metrics | Per-tenant alerting |
 
 ### SLA Monitoring
@@ -271,7 +271,7 @@ El API Gateway **SOLO** puede enrutar a estos servicios:
 | SLA Metric | Target | Measurement | Action |
 |------------|--------|-------------|--------|
 | **Availability** | 99.9% uptime | Health check aggregation | Incident response |
-| **Response Time** | p95 < 200ms | Latency percentiles | Performance optimization |
+| **Response Time** | p95 < 200ms | Latency percentiles | Optimización de rendimiento |
 | **Error Rate** | < 0.1% | Error ratio monitoring | Root cause analysis |
 | **Throughput** | 50k req/min | Request rate tracking | Capacity planning |
 
@@ -284,7 +284,7 @@ El API Gateway **SOLO** puede enrutar a estos servicios:
 | **Multi-tenant Support** | Tenant-aware middleware | Request processing overhead | Efficient tenant resolution |
 | **High Availability** | Stateless design | Session management complexity | External session storage |
 | **Security Requirements** | Comprehensive validation | Processing latency | Optimized validation pipelines |
-| **Performance Targets** | Caching strategies | Data consistency challenges | Cache invalidation strategies |
+| **Objetivos de Rendimiento** | Caching strategies | Data consistency challenges | Cache invalidation strategies |
 
 ### Technology Stack Implications
 
@@ -293,16 +293,16 @@ El API Gateway **SOLO** puede enrutar a estos servicios:
 | **Gateway Platform** | Microsoft YARP | .NET ecosystem alignment | Envoy Proxy (complexity), NGINX (features) |
 | **Runtime** | .NET 8 | Corporate standard | Node.js (expertise), Java (licensing) |
 | **Database** | PostgreSQL | ACID compliance | DynamoDB (consistency), Redis (durability) |
-| **Caching** | Redis | Performance requirements | Memcached (features), Hazelcast (complexity) |
+| **Caching** | Redis | Requisitos de rendimiento | Memcached (features), Hazelcast (complexity) |
 
-### Operational Considerations
+### Consideraciones Operacionales
 
 | Aspect | Implication | Mitigation Strategy |
 |--------|-------------|-------------------|
 | **Configuration Complexity** | Multi-tenant routing rules | Automation, templating, validation |
 | **Security Surface** | Single point of entry | Defense in depth, monitoring, hardening |
-| **Performance Bottleneck** | Gateway saturation | Horizontal scaling, caching, optimization |
-| **Operational Overhead** | Complex deployment | Automation, monitoring, documentation |
+| **Cuello de Botella de Rendimiento** | Gateway saturation | Horizontal scaling, caching, optimization |
+| **Sobrecarga Operacional** | Complex deployment | Automation, monitoring, documentation |
 
 ## Referencias
 
@@ -337,7 +337,7 @@ El API Gateway **SOLO** puede enrutar a estos servicios:
 |-------------|---------------------|-------------|-------------|
 | **Control de Versiones** | Git + GitHub Enterprise | GitHub branch protection | Hotfixes críticos con aprobación |
 | **CI/CD Pipeline** | GitHub Actions mandatorio | Quality gates, automated testing | Manual deploys solo en emergencias |
-| **Code Quality** | SonarQube quality gates | PR blocks si quality gate falla | Technical debt con plan de resolución |
+| **Code Quality** | SonarQube quality gates | PR blocks si quality gate falla | Deuda técnica con plan de resolución |
 | **Security Scanning** | Checkov + Dependency scanning | Automated en pipeline | False positives con justificación |
 | **Testing Coverage** | Mínimo 80% cobertura | PR blocks si coverage < 80% | Legacy code con plan de mejora |
 
@@ -374,12 +374,12 @@ El API Gateway **SOLO** puede enrutar a estos servicios:
 - **Data Residency:** Datos por país en región AWS correspondiente
 - **Privacy by Design:** GDPR compliance built-in
 
-## 2.6 Restricciones de Performance
+## 2.6 Restricciones de Rendimiento
 
 | Métrica | Target | Measurement | Enforcement |
 |---------|--------|-------------|-------------|
 | **Latency Overhead** | < 10ms p95 | APM monitoring | SLA monitoring, alertas |
-| **Throughput** | 10K req/s mínimo | Load testing continuo | Performance budgets |
+| **Throughput** | 10K req/s mínimo | Testing de carga continuo | Presupuestos de rendimiento |
 | **Availability** | 99.9% uptime | Health checks, circuit breakers | Incident response SLA |
 | **Resource Usage** | CPU < 70%, Memory < 80% | Container metrics | Auto-scaling triggers |
 | **Error Rate** | < 0.1% errors | Error tracking, dashboards | Error budgets, postmortems |

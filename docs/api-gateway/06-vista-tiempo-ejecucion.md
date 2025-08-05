@@ -33,6 +33,7 @@ sequenceDiagram
 ```
 
 **Descripción del flujo**:
+
 1. Cliente envía request con JWT token en Authorization header
 2. Gateway extrae token del header Authorization
 3. Verifica si token está en cache de Redis
@@ -75,6 +76,7 @@ sequenceDiagram
 ```
 
 **Timing de health checks**:
+
 - **Intervalo**: 30 segundos
 - **Timeout**: 5 segundos
 - **Threshold**: 3 fallos consecutivos para abrir circuit
@@ -103,10 +105,12 @@ sequenceDiagram
     Client->>Gateway1: Request 1001
     Gateway1->>Redis: INCR rate_limit:ABC123:/api/users
     Redis->>Gateway1: Counter: 1001
+
     Gateway1->>Client: 429 Too Many Requests
 ```
 
 **Algoritmo de rate limiting**:
+
 - **Sliding window**: Ventana deslizante de 1 minuto
 - **Estado compartido**: Redis para sincronización entre instancias
 - **Granularidad**: Por client_id + endpoint
@@ -120,8 +124,8 @@ sequenceDiagram
 sequenceDiagram
     participant Client as Cliente
     participant Gateway as API Gateway
-    participant Primary as Service Primary
-    participant Secondary as Service Secondary
+    participant Primary as Servicio Primario
+    participant Secondary as Servicio Secundario
     participant Monitor as Health Monitor
 
     Client->>Gateway: Normal request
@@ -144,11 +148,14 @@ sequenceDiagram
     Primary->>Monitor: 200 OK
     Monitor->>Gateway: Mark primary healthy
 
+
     Client->>Gateway: Next request
     Gateway->>Primary: Back to primary (load balanced)
+
 ```
 
 **Características del failover**:
+
 - **Detección**: 3 health checks fallidos consecutivos
 - **Switchover time**: < 30 segundos
 - **Load balancing**: Round-robin entre instancias sanas
@@ -302,7 +309,7 @@ sequenceDiagram
     end
 ```
 
-## 6.5 Patrones de performance
+## 6.5 Patrones de rendimiento
 
 ### 6.5.1 Request pooling y connection reuse
 
@@ -327,14 +334,17 @@ sequenceDiagram
     Client->>Gateway: Request 2 (concurrent)
     Gateway->>Pool: Get connection
     Pool->>Gateway: Reuse existing connection
+
     Gateway->>Service: Send request (reused connection)
     Service->>Gateway: Response
     Gateway->>Client: Response
+
 
     Note over Pool: Pool maintains 5-50 connections per service
 ```
 
 **Configuración del pool**:
+
 - **Min connections**: 5 por service cluster
 - **Max connections**: 50 por service cluster
 - **Idle timeout**: 30 segundos
@@ -364,21 +374,24 @@ sequenceDiagram
             Gateway->>L1Cache: Store in L1 cache
             Gateway->>Client: Response (X-Cache: L2-HIT)
         else L2 Cache miss
+
             Gateway->>Service: Forward request
             Service->>Gateway: Response
             Gateway->>L2Cache: Store in L2 cache
             Gateway->>L1Cache: Store in L1 cache
             Gateway->>Client: Response (X-Cache: MISS)
+
         end
     end
 ```
 
 **TTL Configuration**:
+
 - **L1 Cache (Memory)**: 2 minutos
 - **L2 Cache (Redis)**: 10 minutos
 - **Cache invalidation**: Event-driven para configuration changes
 
-## 6.6 Timing y performance targets
+## 6.6 Timing y objetivos de rendimiento
 
 | Operación | Target | Timeout | SLA |
 |-----------|--------|---------|-----|

@@ -13,10 +13,10 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 | Stakeholder | Rol | Expectativas | Interés |
 |-------------|-----|---------------|---------|
 | **Frontend Developers** | Consumidores API | APIs consistentes, documentación clara | Productividad de desarrollo |
-| **Mobile Developers** | Consumidores API | Performance, compatibilidad offline | Experiencia de usuario |
+| **Mobile Developers** | Consumidores API | Rendimiento, compatibilidad offline | Experiencia de usuario |
 | **DevOps Engineers** | Operadores | Observabilidad, escalabilidad | Estabilidad operacional |
 | **Security Team** | Auditores | Compliance, seguridad centralizada | Gestión de riesgos |
-| **Business Users** | Usuarios finales | Disponibilidad, performance | Continuidad del negocio |
+| **Usuarios Empresariales** | Usuarios finales | Disponibilidad, rendimiento | Continuidad del negocio |
 | **External Partners** | Integradores | Interfaces estables, SLAs claros | Integración confiable |
 
 ## 3.2 Contexto Técnico
@@ -55,11 +55,11 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 
 | Aspecto | Especificación | Rationale |
 |---------|----------------|-----------|
-| **Platform** | .NET 8 + ASP.NET Core | Performance, ecosystem |
+| **Platform** | .NET 8 + ASP.NET Core | Rendimiento, ecosystem |
 | **Reverse Proxy** | YARP (Yet Another Reverse Proxy) | Microsoft supported, flexible |
 | **Authentication** | OAuth2 + JWT | Industry standard |
-| **Protocol** | HTTP/2, HTTPS only | Security, performance |
-| **Load Balancing** | Round-robin with health checks | Reliability |
+| **Protocol** | HTTP/2, HTTPS only | Security, rendimiento |
+| **Load Balancing** | Round-robin with health checks | Confiabilidad |
 | **Rate Limiting** | Token bucket algorithm | Fairness, burst handling |
 | **Circuit Breaker** | Polly framework | Fault tolerance |
 | **Observability** | OpenTelemetry + Prometheus | Standards compliance |
@@ -78,10 +78,10 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 | Parameter | Value | Purpose |
 |-----------|-------|---------|
 | **TLS Version** | 1.3 minimum | Security compliance |
-| **HTTP Version** | HTTP/2 | Performance optimization |
+| **HTTP Version** | HTTP/2 | Optimización de rendimiento |
 | **Keep-Alive** | 60 seconds | Connection efficiency |
 | **Request Timeout** | 30 seconds | User experience |
-| **Header Size Limit** | 32KB | Security and performance |
+| **Header Size Limit** | 32KB | Security y rendimiento |
 
 ## 3.3 Alcance del Sistema
 
@@ -98,7 +98,7 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 
 #### Cross-cutting Concerns
 
-- **Observability:** Logging estructurado, métricas de performance, distributed tracing
+- **Observability:** Logging estructurado, métricas de rendimiento, distributed tracing
 - **Security:** TLS termination, HTTPS enforcement, security headers injection
 - **Configuration:** Gestión dinámica de configuración sin downtime
 - **Health Monitoring:** Health checks proactivos de servicios downstream
@@ -108,7 +108,7 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 
 #### Fuera del Alcance
 
-- **Business Logic:** No procesamiento de lógica de dominio específica
+- **Lógica Empresarial:** No procesamiento de lógica de dominio específica
 - **Data Storage:** No persistencia de datos de negocio (solo cache temporal)
 - **User Management:** No CRUD de usuarios (delegado a Identity System)
 - **File Processing:** No manipulación de archivos grandes o procesamiento multimedia
@@ -156,7 +156,7 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 
 | Interface | Fuente | Tipo de Datos | Frecuencia | Formato |
 |-----------|--------|---------------|------------|---------|
-| **API Requests** | Aplicaciones cliente | Business requests | Tiempo real | HTTP/REST (JSON) |
+| **API Requests** | Aplicaciones cliente | Solicitudes empresariales | Tiempo real | HTTP/REST (JSON) |
 | **Authentication Tokens** | Aplicaciones cliente | JWT tokens | Por request | HTTP headers |
 | **Configuration Updates** | Plataforma config | Configuración gateway | Periódica | HTTP/JSON |
 | **Health Checks** | Sistemas monitoreo | Health probes | Continua | HTTP/JSON |
@@ -165,9 +165,9 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 
 | Interface | Destino | Tipo de Datos | Frecuencia | Formato |
 |-----------|---------|---------------|------------|---------|
-| **Proxied Requests** | Servicios downstream | Business requests | Tiempo real | HTTP/REST |
+| **Proxied Requests** | Servicios downstream | Solicitudes empresariales | Tiempo real | HTTP/REST |
 | **Authentication Queries** | Sistema identidad | Validación tokens | Por request | HTTP/OIDC |
-| **Metrics Data** | Sistemas monitoreo | Métricas performance | Continua | Prometheus metrics |
+| **Metrics Data** | Sistemas monitoreo | Métricas de rendimiento | Continua | Prometheus metrics |
 | **Access Logs** | Sistemas logging | Logs requests | Continua | JSON estructurado |
 | **Health Status** | Load balancer | Estado servicios | Continua | HTTP status codes |
 
@@ -200,7 +200,7 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 | **Authentication** | OAuth2 + JWT | RFC 6749, RFC 7519 | Autenticación basada en tokens |
 | **API Design** | OpenAPI | 3.0+ | Especificación de APIs |
 | **Logging** | JSON estructurado | Schema custom | Observabilidad |
-| **Metrics** | Prometheus | Latest | Monitoreo de performance |
+| **Metrics** | Prometheus | Latest | Monitoreo de rendimiento |
 
 ## Referencias
 

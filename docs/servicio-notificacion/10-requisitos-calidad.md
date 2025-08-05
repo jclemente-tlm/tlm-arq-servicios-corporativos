@@ -4,7 +4,7 @@ Este capítulo define los atributos de calidad específicos del **Sistema de Not
 
 *[INSERTAR AQUÍ: Diagrama C4 - Notification Quality Attributes]*
 
-## 10.1 Performance y Eficiencia
+## 10.1 Rendimiento y Eficiencia
 
 ### 10.1.1 Latencia y Throughput Targets
 
@@ -21,18 +21,18 @@ Este capítulo define los atributos de calidad específicos del **Sistema de Not
 ### 10.1.2 Capacity and Throughput
 
 ```yaml
-Capacity Requirements:
+Requisitos de Capacidad:
   Normal Load:
     - API Requests: 1,000 req/min
-    - Email Processing: 5,000 emails/hour
-    - SMS Processing: 2,000 SMS/hour
+    - Procesamiento de Email: 5,000 emails/hora
+    - Procesamiento de SMS: 2,000 SMS/hora
     - Push Notifications: 10,000 notifications/hour
     - WhatsApp Messages: 1,000 messages/hour
 
   Peak Load (Campaign Bursts):
     - API Requests: 5,000 req/min
-    - Email Processing: 50,000 emails/hour
-    - SMS Processing: 20,000 SMS/hour
+    - Procesamiento de Email: 50,000 emails/hora
+    - Procesamiento de SMS: 20,000 SMS/hora
     - Push Notifications: 100,000 notifications/hour
     - WhatsApp Messages: 10,000 messages/hour
 
@@ -40,16 +40,16 @@ Capacity Requirements:
     - Maximum Capacity: 10x normal load
     - Burst Duration: 30 minutes sustained
     - Graceful Degradation: Above 80% capacity
-    - Queue Processing: No message loss during peaks
+    - Procesamiento de Cola: Sin pérdida de mensajes durante picos
 
-Performance Benchmarks:
+Benchmarks de Rendimiento:
   Resource Utilization:
     - CPU Usage: < 60% normal, < 80% peak
     - Memory Usage: < 70% normal, < 85% peak
     - Network I/O: < 50% available bandwidth
     - Disk I/O: < 1000 IOPS per instance
 
-  Database Performance:
+  Rendimiento de Base de Datos:
     - Query Response Time: < 50ms average
     - Connection Pool Usage: < 70%
     - Lock Wait Time: < 10ms
@@ -91,7 +91,7 @@ public class NotificationServiceScalingPolicy
 
 ## 10.2 Disponibilidad y Confiabilidad
 
-### 10.2.1 Service Level Agreements (SLA)
+### 10.2.1 Acuerdos de Nivel de Servicio (SLA)
 
 ```yaml
 Availability SLA:
@@ -101,10 +101,10 @@ Availability SLA:
     - Exclusions: Planned maintenance (announced 48h)
 
   Per Channel SLA:
-    Email Service: 99.95%
-    SMS Service: 99.9%
-    Push Notifications: 99.8%
-    WhatsApp Service: 99.5%
+    Servicio de Email: 99.95%
+    Servicio de SMS: 99.9%
+    Servicio Push: 99.8%
+    Servicio de WhatsApp: 99.5%
 
   Delivery SLA:
     Email Delivery: 95% within 10 minutes
@@ -115,7 +115,7 @@ Availability SLA:
 Error Rate Targets:
   API Errors (4xx): < 2% (excluding auth failures)
   System Errors (5xx): < 0.5%
-  Provider Failures: < 1%
+  Fallos de Proveedor: < 1%
   Template Rendering Errors: < 0.1%
 ```
 
@@ -123,12 +123,12 @@ Error Rate Targets:
 
 ```yaml
 Multi-AZ Deployment:
-  Primary Region: us-east-1
+  Región Primaria: us-east-1
     - AZ-1a: 2 API instances, 2 processors
     - AZ-1b: 2 API instances, 2 processors
     - AZ-1c: 1 API instance, 1 processor (standby)
 
-  Secondary Region: us-west-2
+  Región Secundaria: us-west-2
     - AZ-2a: 1 API instance, 1 processor (standby)
     - Database: Read replica for disaster recovery
 
@@ -140,7 +140,7 @@ Load Balancing:
     - Target Response: HTTP 200 within 5s
 
   Database Load Balancing:
-    - Write Operations: Primary instance only
+    - Operaciones de Escritura: Solo instancia primaria
     - Read Operations: Read replicas (round-robin)
     - Connection Pooling: PgBouncer (100 connections/pool)
 ```
@@ -169,7 +169,7 @@ Recovery Procedures:
     AZ Failure:
       - Detection: ALB health checks + CloudWatch alarms
       - Response: Automatic traffic redistribution
-      - Impact: < 5 minutes service degradation
+      - Impacto: < 5 minutos de degradación del servicio
 
     Regional Failure:
       - Detection: Multi-region health monitoring

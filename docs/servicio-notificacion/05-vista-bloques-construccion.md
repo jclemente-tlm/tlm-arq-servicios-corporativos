@@ -1,6 +1,6 @@
 # 5. Vista de bloques de construcción
 
-Esta sección describe la descomposición estática del sistema de notificaciones en sus componentes principales, siguiendo un enfoque jerárquico desde la vista general hasta los detalles de implementación.
+Esta sección describe la descomposición estática del sistema de notificaciones en sus componentes principales, siguiendo un enfoque jerárquico desde la vista general hasta los detalles de la implementación.
 
 ## 5.1 Sistema de Notificaciones - Nivel 1 (Whitebox)
 
@@ -12,7 +12,7 @@ Esta sección describe la descomposición estática del sistema de notificacione
 El sistema se estructura siguiendo los principios de Clean Architecture y Domain-Driven Design, separando claramente las responsabilidades:
 
 - **Separación de canales:** Cada canal de notificación tiene características específicas
-- **Escalabilidad independiente:** Componentes pueden escalar según demanda
+- **Escalabilidad independiente:** Los componentes pueden escalar según demanda
 - **Mantenibilidad:** Módulos cohesivos con bajo acoplamiento
 - **Testabilidad:** Interfaces bien definidas para testing
 
@@ -82,8 +82,8 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 
 **Interfaces:**
 
-- Template management API
-- Rendering service
+- API de gestión de templates
+- Servicio de renderizado
 
 **Tecnología:** Liquid Templates, Redis Cache
 
@@ -97,7 +97,7 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 {
   "messageId": "uuid",
   "tenantId": "string",
-  "notificationType": "transactional|promotional|operational",
+  "notificationType": "transaccional|promocional|operacional",
   "channels": ["email", "sms", "whatsapp", "push"],
   "recipients": [
     {
@@ -125,7 +125,7 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 ```json
 {
   "messageId": "uuid",
-  "status": "accepted|processing|sent|delivered|failed",
+  "status": "aceptado|procesando|enviado|entregado|fallido",
   "submittedAt": "datetime",
   "channels": [
     {
@@ -197,7 +197,7 @@ public class WebhookController : ControllerBase
 #### Notification Service
 
 - **Responsabilidad:** Validación, enriquecimiento y encolado de notificaciones
-- **Dependencias:** Template Service, Validation Service, Event Publisher
+- **Dependencias:** Servicio de Templates, Servicio de Validación, Event Publisher
 - **Patrones:** CQRS para separación read/write operations
 
 

@@ -454,7 +454,7 @@ public class RetryPolicyService
 }
 ```
 
-## 8.4 Performance y caching
+## 8.4 Rendimiento y caching
 
 ### 8.4.1 Estrategia de caching multinivel
 

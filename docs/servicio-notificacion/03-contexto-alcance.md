@@ -177,19 +177,19 @@ graph LR
 | **Delivery Tracking** | Seguimiento estado entregas | Operations, customer service | Alta |
 | **Retry & Fallback** | Reintentos automáticos y canales alternativos | Sistema automático | Media |
 | **Personalization** | Contenido personalizado por usuario/contexto | End users | Media |
-| **Bulk Notifications** | Envío masivo eficiente | Marketing, operations | Media |
-| **A/B Testing** | Pruebas de variantes de contenido | Marketing teams | Baja |
-| **Analytics & Reporting** | Métricas de entrega y engagement | Management | Baja |
+| **Bulk Notifications** | Envío masivo eficiente | Marketing, operaciones | Media |
+| **A/B Testing** | Pruebas de variantes de contenido | Equipos de marketing | Baja |
+| **Analytics & Reporting** | Métricas de entrega y engagement | Gestión | Baja |
 
 ### Funcionalidades Excluidas
 
 | Función | Razón de Exclusión | Alternativa |
 |---------|-------------------|-------------|
-| **Content Creation Tools** | Fuera del dominio técnico | Business content management tools |
-| **User Preference Management** | Responsabilidad de Identity System | User profile management |
-| **Campaign Management** | Marketing functionality | Dedicated marketing platforms |
-| **Customer Database** | Data ownership elsewhere | CRM systems, user databases |
-| **Payment Notifications** | Specialized domain | Payment gateway notifications |
+| **Content Creation Tools** | Fuera del dominio técnico | Herramientas empresariales de gestión de contenido |
+| **User Preference Management** | Responsabilidad del Identity System | Gestión de perfiles de usuario |
+| **Campaign Management** | Funcionalidad de marketing | Plataformas dedicadas de marketing |
+| **Customer Database** | Propiedad de datos externa | Sistemas CRM, bases de datos de usuarios |
+| **Payment Notifications** | Dominio especializado | Notificaciones de pasarela de pago |
 
 ## 3.5 Casos de uso principales
 
@@ -234,13 +234,13 @@ Postcondición: Notificación manual enviada exitosamente
 Actor: Content Manager
 Precondición: Manager autenticado con permisos de template
 Flujo Principal:
-1. Content manager accede a template management
+1. Content manager accede a gestión de templates
 2. Manager crea/edita template base
 3. Manager agrega versiones por idioma/país
 4. Manager define variables de personalización
 5. Sistema valida sintaxis y variables
 6. Manager somete template para aprobación
-7. Approver revisa y aprueba template
+7. Aprobador revisa y aprueba template
 8. Sistema activa template para uso
 Postcondición: Template multi-idioma disponible
 ```
@@ -268,62 +268,62 @@ Postcondición: Lote procesado con reporte de entrega
 
 | Aspecto | Especificación | Providers | Capacidades |
 |---------|---------------|-----------|-------------|
-| **Delivery** | High-volume transactional email | SendGrid (primary), Amazon SES (fallback) | 100k emails/hour |
-| **Features** | Templates, attachments, tracking | HTML/text, DKIM/SPF, open/click tracking | Rich content support |
-| **Compliance** | CAN-SPAM, GDPR compliant | Unsubscribe, list management | Automated compliance |
+| **Delivery** | Email transaccional de alto volumen | SendGrid (primary), Amazon SES (fallback) | 100k emails/hora |
+| **Features** | Templates, adjuntos, seguimiento | HTML/texto, DKIM/SPF, seguimiento de apertura/clic | Soporte de contenido enriquecido |
+| **Compliance** | Cumplimiento CAN-SPAM, GDPR | Desuscripción, gestión de listas | Cumplimiento automatizado |
 
 ### SMS Channel
 
 | Aspecto | Especificación | Providers | Capacidades |
 |---------|---------------|-----------|-------------|
-| **Delivery** | Global SMS delivery | Twilio (primary), local providers (fallback) | 50k SMS/hour |
-| **Features** | Unicode support, delivery receipts | 160/70 char limits, concatenation | Multi-language support |
-| **Compliance** | Carrier regulations, opt-out | STOP keyword, carrier compliance | Automated opt-out |
+| **Delivery** | Entrega global de SMS | Twilio (primary), proveedores locales (fallback) | 50k SMS/hora |
+| **Features** | Soporte Unicode, recibos de entrega | Límites 160/70 caracteres, concatenación | Soporte multi-idioma |
+| **Compliance** | Regulaciones de operadores, opt-out | Palabra clave STOP, cumplimiento de operadores | Opt-out automatizado |
 
 ### WhatsApp Channel
 
 | Aspecto | Especificación | Providers | Capacidades |
 |---------|---------------|-----------|-------------|
-| **Delivery** | WhatsApp Business messaging | WhatsApp Business API | 10k messages/hour |
-| **Features** | Template messages, media support | Pre-approved templates, images/docs | Rich media messaging |
-| **Compliance** | WhatsApp policies | Template approval, content guidelines | Platform compliance |
+| **Delivery** | Mensajería WhatsApp Business | WhatsApp Business API | 10k mensajes/hora |
+| **Features** | Mensajes de template, soporte multimedia | Templates pre-aprobados, imágenes/documentos | Mensajería multimedia enriquecida |
+| **Compliance** | Políticas de WhatsApp | Aprobación de templates, directrices de contenido | Cumplimiento de plataforma |
 
 ### Push Notifications Channel
 
 | Aspecto | Especificación | Providers | Capacidades |
 |---------|---------------|-----------|-------------|
-| **Delivery** | Mobile push notifications | Firebase FCM, Apple APNS | 1M pushes/hour |
-| **Features** | Rich notifications, deep links | Images, actions, custom data | Interactive notifications |
-| **Compliance** | Platform guidelines | Permission management, badge control | User consent required |
+| **Delivery** | Notificaciones push móviles | Firebase FCM, Apple APNS | 1M pushes/hora |
+| **Features** | Notificaciones enriquecidas, deep links | Imágenes, acciones, datos personalizados | Notificaciones interactivas |
+| **Compliance** | Directrices de plataforma | Gestión de permisos, control de badge | Consentimiento del usuario requerido |
 
 ## 3.7 Atributos de calidad
 
-### Reliability
+### Confiabilidad
 
-| Atributo | Métrica | Target | Medición |
+| Atributo | Métrica | Objetivo | Medición |
 |----------|---------|--------|----------|
-| **Delivery Rate** | Successful deliveries | > 95% across all channels | Provider webhooks, tracking |
-| **System Availability** | Service uptime | 99.9% | Health monitoring |
-| **Message Durability** | Message loss rate | < 0.01% | Queue monitoring |
-| **Retry Success** | Retry delivery rate | > 80% after retries | Retry analytics |
+| **Tasa de Entrega** | Entregas exitosas | > 95% en todos los canales | Webhooks de proveedores, seguimiento |
+| **Disponibilidad del Sistema** | Tiempo de actividad del servicio | 99.9% | Monitoreo de salud |
+| **Durabilidad de Mensajes** | Tasa de pérdida de mensajes | < 0.01% | Monitoreo de colas |
+| **Éxito de Reintentos** | Tasa de entrega tras reintentos | > 80% después de reintentos | Analítica de reintentos |
 
-### Performance
+### Rendimiento
 
-| Atributo | Métrica | Target | Medición |
+| Atributo | Métrica | Objetivo | Medición |
 |----------|---------|--------|----------|
-| **Processing Latency** | End-to-end delivery time | p95 < 5 seconds | APM monitoring |
-| **Throughput** | Messages per hour | 100k messages/hour | Load testing |
-| **Template Processing** | Template render time | < 500ms | Performance profiling |
-| **API Response Time** | REST API latency | p95 < 200ms | API monitoring |
+| **Latencia de Procesamiento** | Tiempo de entrega extremo a extremo | p95 < 5 segundos | Monitoreo APM |
+| **Rendimiento** | Mensajes por hora | 100k mensajes/hora | Pruebas de carga |
+| **Procesamiento de Templates** | Tiempo de renderizado de template | < 500ms | Perfilado de rendimiento |
+| **Tiempo de Respuesta API** | Latencia API REST | p95 < 200ms | Monitoreo de API |
 
-### Scalability
+### Escalabilidad
 
-| Atributo | Métrica | Target | Medición |
+| Atributo | Métrica | Objetivo | Medición |
 |----------|---------|--------|----------|
-| **Horizontal Scaling** | Auto-scaling capability | Linear scaling | Load testing |
-| **Queue Capacity** | Message queue depth | Handle 1M queued messages | Queue monitoring |
-| **Concurrent Processing** | Parallel message handling | 1000 concurrent processors | Concurrency testing |
-| **Storage Scaling** | Template/log storage | Automatic expansion | Storage monitoring |
+| **Escalado Horizontal** | Capacidad de auto-escalado | Escalado lineal | Pruebas de carga |
+| **Capacidad de Cola** | Profundidad de cola de mensajes | Manejar 1M mensajes en cola | Monitoreo de colas |
+| **Procesamiento Concurrente** | Manejo paralelo de mensajes | 1000 procesadores concurrentes | Pruebas de concurrencia |
+| **Escalado de Almacenamiento** | Almacenamiento de templates/logs | Expansión automática | Monitoreo de almacenamiento |
 
 ## Referencias
 

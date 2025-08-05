@@ -45,12 +45,12 @@ Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una 
 
 | Categoría | Requisito | Target | Medición |
 |-----------|-----------|--------|----------|
-| **Performance** | Latencia de proxy | p95 < 50ms | APM monitoring |
-| **Performance** | Throughput | > 10,000 RPS per instance | Load testing |
+| **Rendimiento** | Latencia de proxy | p95 < 50ms | APM monitoring |
+| **Rendimiento** | Throughput | > 10,000 RPS per instance | Testing de carga |
 | **Availability** | Uptime | 99.95% | SLA monitoring |
 | **Scalability** | Horizontal scaling | Auto-scale en < 2 min | Container metrics |
 | **Security** | Token validation | < 5ms per request | Security metrics |
-| **Reliability** | Error rate | < 0.1% | Business metrics |
+| **Confiabilidad** | Error rate | < 0.1% | Métricas empresariales |
 
 ## 1.2 Objetivos de Calidad
 
@@ -58,8 +58,8 @@ Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una 
 
 | Prioridad | Objetivo | Escenario | Métrica Objetivo |
 |-----------|----------|-----------|------------------|
-| **1** | **Performance** | Proxy transparente sin latencia significativa | p95 < 50ms overhead |
-| **2** | **Reliability** | Alta disponibilidad para operaciones críticas | 99.95% uptime |
+| **1** | **Rendimiento** | Proxy transparente sin latencia significativa | p95 < 50ms overhead |
+| **2** | **Confiabilidad** | Alta disponibilidad para operaciones críticas | 99.95% uptime |
 | **3** | **Security** | Protección robusta contra amenazas | Zero security incidents |
 
 ### Objetivos Secundarios
@@ -106,7 +106,7 @@ Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una 
 
 | Componente | Tecnología | Versión | Justificación |
 |------------|------------|---------|---------------|
-| **Runtime** | .NET 8 + ASP.NET Core | 8.0 LTS | Performance, long-term support |
+| **Runtime** | .NET 8 + ASP.NET Core | 8.0 LTS | Rendimiento, soporte a largo plazo |
 | **Proxy Engine** | YARP | Latest | Microsoft-supported, high performance |
 | **Resilience** | Polly | 8.x | Industry standard for .NET |
 | **Logging** | Serilog | 3.x | Structured logging capabilities |
@@ -137,7 +137,7 @@ Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una 
 
 ### Fuera del Alcance
 
-- Business logic específico de servicios
+- Lógica empresarial específica de servicios
 - Almacenamiento de datos de negocio
 - Procesamiento de eventos de dominio
 - Integración directa con sistemas legacy

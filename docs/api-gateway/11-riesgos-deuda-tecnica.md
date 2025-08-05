@@ -8,7 +8,7 @@
 |----|--------|--------------|---------|-----------|------------|
 | **RT-01** | YARP como tecnología nueva | Media | Alto | ⚠️ Alto | Evaluación exhaustiva, pruebas piloto, plan de contingencia |
 | **RT-02** | Punto único de falla en gateway | Media | Crítico | 🔴 Crítico | Despliegue multi-AZ, health checks, auto-scaling |
-| **RT-03** | Degradación de performance bajo carga | Alta | Alto | ⚠️ Alto | Load testing continuo, métricas en tiempo real, tuning |
+| **RT-03** | Degradación de rendimiento bajo carga | Alta | Alto | ⚠️ Alto | Testing de carga continuo, métricas en tiempo real, tuning |
 | **RT-04** | Fallos en cascada por circuit breakers | Media | Medio | 🟡 Medio | Configuración adaptativa, timeouts graduales |
 | **RT-05** | Vulnerabilidades en validación JWT | Baja | Alto | ⚠️ Alto | Auditorías de seguridad, validación rigurosa, logs |
 
@@ -92,7 +92,7 @@ public class RiskMitigationService
 | **RO-01** | Configuración incorrecta de routing | Media | Alto | ⚠️ Alto | Validación automática, tests de integración, blue-green |
 | **RO-02** | Saturación de Redis para rate limiting | Media | Medio | 🟡 Medio | Clustering, monitoreo, fallback local |
 | **RO-03** | Pérdida de conectividad con Identity Service | Baja | Alto | ⚠️ Alto | Cache local, degradación graceful, health checks |
-| **RO-04** | Logs excesivos que afectan performance | Alta | Bajo | 🟢 Bajo | Filtrado inteligente, sampling, archiving |
+| **RO-04** | Logs excesivos que afectan rendimiento | Alta | Bajo | 🟢 Bajo | Filtrado inteligente, sampling, archiving |
 | **RO-05** | Desincronización entre instancias | Media | Medio | 🟡 Medio | Configuración centralizada, versionado |
 
 ```yaml
@@ -283,7 +283,7 @@ public class SecurityMitigationService
 | **Monitoreo** | Implementación de tracing distribuido completo | Media | 2-3 semanas | Q2 2024 |
 | **Testing** | Cobertura de pruebas de integración < 60% | Alta | 3-4 semanas | Q1-Q2 2024 |
 | **Documentación** | APIs sin documentación OpenAPI completa | Media | 1-2 semanas | Q2 2024 |
-| **Performance** | Optimización de connection pooling | Baja | 1 semana | Q3 2024 |
+| **Rendimiento** | Optimización de connection pooling | Baja | 1 semana | Q3 2024 |
 
 ```csharp
 // Plan de resolución de deuda técnica

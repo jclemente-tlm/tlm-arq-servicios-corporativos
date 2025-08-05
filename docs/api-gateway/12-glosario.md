@@ -46,7 +46,7 @@
 
 ## F
 
-**Failover**: Proceso automático de cambiar a un sistema redundante cuando el sistema principal falla.
+**Failover (Conmutación por error)**: Proceso automático de cambiar a un sistema redundante cuando el sistema principal falla.
 
 **FluentValidation**: Biblioteca .NET para construcción de reglas de validación usando una interfaz fluida.
 

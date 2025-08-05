@@ -50,11 +50,11 @@ El sistema permite a las aplicaciones corporativas enviar notificaciones a usuar
 
 | Categoría | Requisito | Target | Medición |
 |-----------|-----------|--------|----------|
-| **Performance** | Throughput de ingesta | 50,000 notifications/min | Load testing continuo |
-| **Performance** | Latencia de API | p95 < 200ms | APM monitoring |
+| **Rendimiento** | Throughput de ingesta | 50,000 notifications/min | Testing de carga continuo |
+| **Rendimiento** | Latencia de API | p95 < 200ms | APM monitoring |
 | **Availability** | Uptime del sistema | 99.9% | SLA monitoring |
 | **Scalability** | Auto-scaling | Horizontal scaling en 2 min | Container metrics |
-| **Reliability** | Delivery rate | 99.9% successful delivery | Business metrics |
+| **Confiabilidad** | Delivery rate | 99.9% successful delivery | Métricas empresariales |
 | **Security** | Data encryption | AES-256 at rest, TLS in transit | Security audits |
 
 ### Tipos de Notificaciones
@@ -72,9 +72,9 @@ El sistema permite a las aplicaciones corporativas enviar notificaciones a usuar
 
 | Prioridad | Objetivo | Escenario | Métrica Objetivo |
 |-----------|----------|-----------|------------------|
-| **1** | **Reliability** | Garantizar entrega de notificaciones críticas | 99.9% delivery rate |
+| **1** | **Confiabilidad** | Garantizar entrega de notificaciones críticas | 99.9% delivery rate |
 | **2** | **Scalability** | Manejar picos de tráfico sin degradación | 10x current load support |
-| **3** | **Performance** | Respuesta rápida para APIs síncronas | p95 < 200ms API response |
+| **3** | **Rendimiento** | Respuesta rápida para APIs síncronas | p95 < 200ms API response |
 
 ### Objetivos Secundarios
 
@@ -93,7 +93,7 @@ El sistema permite a las aplicaciones corporativas enviar notificaciones a usuar
 |-----|----------|-------------------|--------------|
 | **Product Owner** | Business Team | Definición de funcionalidades, roadmap | Features delivered on time, user satisfaction |
 | **Arquitecto de Software** | jclemente-tlm | Decisiones técnicas, patrones, ADRs | Scalable design, maintainable architecture |
-| **Equipo de Desarrollo** | Dev Team | Implementación, testing, debugging | Clear requirements, technical documentation |
+| **Equipo de Desarrollo** | Dev Team | Implementación, testing, debugging | Clear requirements, documentación técnica |
 | **DevOps/SRE** | SRE Team | Deployment, monitoring, incident response | Reliable deployments, actionable alerts |
 | **Equipo de Seguridad** | Security Team | Compliance, auditoría, vulnerability assessment | Secure by design, audit trails |
 
@@ -102,10 +102,10 @@ El sistema permite a las aplicaciones corporativas enviar notificaciones a usuar
 | Rol | Contacto | Interés | Comunicación |
 |-----|----------|---------|--------------|
 | **Marketing Teams** | Marketing Depts | Campañas promocionales, segmentación | API documentation, best practices |
-| **Customer Support** | Support Teams | Troubleshooting delivery issues | Operational runbooks, dashboards |
+| **Customer Support** | Support Teams | Troubleshooting delivery issues | Runbooks operacionales, dashboards |
 | **Legal/Compliance** | Legal Team | Regulatory compliance, data privacy | Compliance reports, audit trails |
 | **Finance** | Finance Team | Cost control, budget planning | Cost reporting, optimization metrics |
-| **External Providers** | Email/SMS/WhatsApp providers | Integration, SLAs, billing | Technical specifications, SLA monitoring |
+| **External Providers** | Email/SMS/WhatsApp providers | Integration, SLAs, billing | Especificaciones técnicas, SLA monitoring |
 
 ### Usuarios Finales
 
@@ -121,7 +121,7 @@ El sistema permite a las aplicaciones corporativas enviar notificaciones a usuar
 | Stakeholder | Frecuencia | Canal | Contenido |
 |-------------|------------|-------|-----------|
 | **Product Owner** | Semanal | Sprint reviews, Jira | Features completed, blockers, next priorities |
-| **Arquitecto** | Bi-semanal | ADR reviews, tech talks | Architecture decisions, technical debt |
+| **Arquitecto** | Bi-semanal | ADR reviews, tech talks | Architecture decisions, deuda técnica |
 | **DevOps** | Diario | Dashboards, Slack alerts | System health, performance metrics |
 | **Security** | Mensual | Security reports | Vulnerability assessments, compliance status |
 | **Legal** | Trimestral | Compliance reports | GDPR compliance, audit findings |

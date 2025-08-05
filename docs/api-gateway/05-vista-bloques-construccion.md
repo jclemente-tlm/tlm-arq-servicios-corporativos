@@ -108,7 +108,7 @@ var retryPolicy = Policy
 - Request/Response logging
 - Tenant context
 - Correlation IDs
-- Performance metrics
+- Métricas de rendimiento
 
 ### 🏥 Health Check
 
@@ -117,7 +117,7 @@ var retryPolicy = Policy
 **Verificaciones**:
 - Conectividad a servicios downstream
 - Estado de circuit breakers
-- Performance de endpoints críticos
+- Rendimiento de endpoints críticos
 
 ## Pipeline de Middleware
 
@@ -649,7 +649,7 @@ spec:
 
 **Justificación**:
 - **Native .NET**: Mejor integración con ecosystem .NET
-- **Performance**: Alto rendimiento y baja latencia
+- **Rendimiento**: Alto rendimiento y baja latencia
 - **Flexibility**: Configuración dinámica y extensibilidad
 - **Microsoft Support**: Soporte oficial y roadmap claro
 

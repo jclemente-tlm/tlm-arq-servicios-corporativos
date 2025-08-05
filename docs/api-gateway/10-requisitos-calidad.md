@@ -2,7 +2,7 @@
 
 ## 10.1 Atributos de calidad
 
-### 10.1.1 Performance
+### 10.1.1 Rendimiento
 
 | Atributo | Métrica | Objetivo | Crítico |
 |----------|---------|----------|---------|
@@ -84,7 +84,7 @@ public void ConfigureServices(IServiceCollection services)
 | Dimensión | Capacidad actual | Capacidad objetivo | Estrategia |
 |-----------|------------------|-------------------|------------|
 | **Requests concurrentes** | 1,000 | 10,000 | Horizontal scaling |
-| **Servicios backend** | 10 | 50+ | Dynamic routing |
+| **Servicios backend** | 10 | 50+ | Enrutamiento dinámico |
 | **Tenants** | 100 | 1,000+ | Multi-tenant architecture |
 | **Regiones** | 1 | 3+ | Multi-region deployment |
 
@@ -144,7 +144,7 @@ spec:
 | **Autorización** | RBAC por tenant | Claims-based policies | Policy unit tests |
 | **Encriptación** | TLS 1.3 en tránsito | HTTPS everywhere | SSL Labs A+ rating |
 | **Headers de seguridad** | OWASP compliance | Security middleware | Security scan tools |
-| **Rate limiting** | Prevenir DDoS | Distributed rate limiter | Load testing |
+| **Rate limiting** | Prevenir DDoS | Distributed rate limiter | Testing de carga |
 
 ```csharp
 // Configuración de políticas de seguridad
@@ -186,12 +186,12 @@ public void ConfigureServices(IServiceCollection services)
 
 ## 10.2 Escenarios de calidad
 
-### 10.2.1 Escenario de performance bajo carga
+### 10.2.1 Escenario de rendimiento bajo carga
 
 ```gherkin
-Feature: Performance bajo alta carga
+Feature: Rendimiento bajo alta carga
   Como operador del sistema
-  Quiero que el API Gateway mantenga performance aceptable bajo carga alta
+  Quiero que el API Gateway mantenga rendimiento aceptable bajo carga alta
   Para garantizar experiencia de usuario consistente
 
 Scenario: Handling peak traffic
@@ -389,7 +389,7 @@ groups:
 
 ## 10.4 Pruebas de calidad
 
-### 10.4.1 Load testing
+### 10.4.1 Testing de carga
 
 ```javascript
 // K6 script para pruebas de carga
