@@ -9,6 +9,7 @@ El **Sistema de Track & Trace** maneja eventos críticos operacionales que requi
 ### 11.1.1 Riesgos técnicos de alta prioridad
 
 #### RT-001: Event Store Performance Degradation
+
 | Campo | Valor |
 |-------|-------|
 | **Categoría** | Performance/Scalability |
@@ -21,6 +22,7 @@ El **Sistema de Track & Trace** maneja eventos críticos operacionales que requi
 Con el crecimiento exponencial de eventos (50M eventos/año proyectado), el Event Store PostgreSQL puede experimentar degradación de performance en queries complejas y append operations.
 
 **Indicadores de riesgo:**
+
 - Query latency P95 > 200ms
 - Append operations P95 > 100ms
 - Database connection pool exhaustion
@@ -29,6 +31,7 @@ Con el crecimiento exponencial de eventos (50M eventos/año proyectado), el Even
 **Estrategias de mitigación:**
 
 **Inmediatas (0-3 meses)**:
+
 ```sql
 -- Database optimization
 CREATE INDEX CONCURRENTLY idx_events_stream_timestamp
@@ -46,11 +49,13 @@ ALTER SYSTEM SET effective_cache_size = '24GB';
 ```
 
 **Medianas (3-6 meses)**:
+
 - Implementación de read replicas para queries analíticos
 - Sharding horizontal por tenant para distribución de carga
 - Archiving automático de eventos > 1 año a cold storage
 
 **Largo plazo (6-12 meses)**:
+
 - Migración a Event Store distribuido (EventStoreDB cluster)
 - Implementación de CQRS avanzado con projection engine optimizado
 
@@ -70,6 +75,7 @@ ALTER SYSTEM SET effective_cache_size = '24GB';
 Fallo en la implementación de tenant isolation podría permitir acceso cross-tenant a datos sensibles, violando compliance regulatorio y confianza del cliente.
 
 **Indicadores de riesgo:**
+
 - Authorization bypass attempts detectados
 - Schema switching errors en logs
 - Cross-tenant queries en audit trail
@@ -141,6 +147,7 @@ public class EventRepository : IEventRepository
 Inconsistencias entre Event Store y read models debido a failures en el proceso de proyección, causando datos desactualizados en consultas críticas.
 
 **Indicadores de riesgo:**
+
 - Projection lag > 30 segundos
 - Failed projection updates en logs
 - Data discrepancies en health checks
@@ -216,7 +223,7 @@ public class ProjectionConsistencyService
 
 ---
 
-#### RT-004: Kafka Message Loss
+#### RT-004: Event Bus Message Loss
 
 | Campo | Valor |
 |-------|-------|
@@ -227,15 +234,15 @@ public class ProjectionConsistencyService
 | **Owner** | Integration Team |
 
 **Descripción detallada:**
-Pérdida de mensajes en Kafka durante picos de tráfico o failures de brokers, causando desincronización entre servicios corporativos.
+Pérdida de mensajes en Event Bus durante picos de tráfico o failures de brokers, causando desincronización entre servicios corporativos.
 
 **Estrategias de mitigación:**
 
 ```csharp
-// Enhanced Kafka producer configuration
-services.Configure<KafkaProducerConfig>(options =>
+// Enhanced Event Bus producer configuration
+services.Configure<EventBusProducerConfig>(options =>
 {
-    options.BootstrapServers = "kafka-cluster:9092";
+    options.ConnectionString = "eventbus-cluster:5672";
     options.Acks = Acks.All; // Require all replicas acknowledgment
     options.Retries = int.MaxValue; // Unlimited retries
     options.EnableIdempotence = true; // Prevent duplicates
@@ -304,6 +311,7 @@ public class ReliableEventPublisher : IEventPublisher
 **Descripción**: Dependencia crítica en 2 desarrolladores senior con conocimiento especializado en Event Sourcing y arquitectura del sistema.
 
 **Estrategias de mitigación**:
+
 - Documentación técnica detallada (en progreso)
 - Cross-training programa para desarrolladores junior
 - Pair programming obligatorio para features críticas
@@ -321,9 +329,10 @@ public class ReliableEventPublisher : IEventPublisher
 | **Risk Score** | 🟡 **10 (Medio)** |
 | **Owner** | DevOps Team |
 
-**Descripción**: Dependencias en servicios externos (Keycloak, Kafka managed service, monitoring tools) pueden causar indisponibilidad.
+**Descripción**: Dependencias en servicios externos (Keycloak, Event Bus managed service, monitoring tools) pueden causar indisponibilidad.
 
 **Estrategias de mitigación**:
+
 ```yaml
 # Circuit breaker configuration
 circuit_breakers:
@@ -332,7 +341,7 @@ circuit_breakers:
     recovery_timeout: 30s
     fallback: cached_token_validation
 
-  kafka_producer:
+  eventbus_producer:
     failure_threshold: 3
     recovery_timeout: 60s
     fallback: local_event_queue
@@ -358,6 +367,7 @@ circuit_breakers:
 **Descripción**: Event Store inmutable puede retener PII más allá de los límites permitidos por GDPR.
 
 **Estrategias de mitigación**:
+
 ```csharp
 // GDPR-compliant event pseudonymization
 public class GdprComplianceService
@@ -389,12 +399,14 @@ public class GdprComplianceService
 ### 11.2.1 Deuda de alto impacto
 
 #### DT-001: Event Versioning Strategy
+
 **Descripción**: Ausencia de versionado formal para esquemas de eventos, dificultando evolución backward-compatible.
 **Impacto**: Alto - Bloquea evolución de dominio
 **Esfuerzo estimado**: 3 sprints
 **Prioridad**: P1
 
 **Plan de remediación**:
+
 ```csharp
 // Implement event versioning
 public abstract class VersionedEvent : IDomainEvent
@@ -428,12 +440,14 @@ public class EntityCreatedEventV2 : EntityCreatedEvent
 ---
 
 #### DT-002: Testing Infrastructure Gaps
+
 **Descripción**: Cobertura insuficiente de integration tests y ausencia de contract testing entre eventos.
 **Impacto**: Alto - Riesgo de regressions
 **Esfuerzo estimado**: 2 sprints
 **Prioridad**: P1
 
 **Plan de remediación**:
+
 ```csharp
 // Integration test infrastructure
 [TestFixture]
@@ -478,6 +492,7 @@ public class EventContractTests
 ---
 
 #### DT-003: Monitoring and Observability Gaps
+
 **Descripción**: Métricas business-level insuficientes y alerting reactivo en lugar de predictivo.
 **Impacto**: Medio - Debugging difficulties
 **Esfuerzo estimado**: 1.5 sprints
@@ -486,12 +501,14 @@ public class EventContractTests
 ### 11.2.2 Deuda de impacto medio
 
 #### DT-004: Code Duplication in Projection Handlers
+
 **Descripción**: Lógica repetitiva en múltiples projection handlers.
 **Impacto**: Medio - Mantenibilidad
 **Esfuerzo estimado**: 1 sprint
 **Prioridad**: P3
 
 #### DT-005: Configuration Management Complexity
+
 **Descripción**: Configuración dispersa en múltiples archivos sin validación central.
 **Impacto**: Medio - Operational overhead
 **Esfuerzo estimado**: 0.5 sprints
@@ -502,12 +519,14 @@ public class EventContractTests
 ### 11.3.1 Governance Framework
 
 **Risk Assessment Cadence**:
+
 - **Daily**: Monitoring de indicadores de riesgo técnico
 - **Weekly**: Review de métricas de deuda técnica en retrospectiva
 - **Monthly**: Risk assessment completo con stakeholders
 - **Quarterly**: Estrategia de mitigación update y budget allocation
 
 **Escalation Matrix**:
+
 ```yaml
 risk_escalation:
   low_risk:
@@ -530,11 +549,13 @@ risk_escalation:
 ### 11.3.2 Mitigation Budget Allocation
 
 **Technical Debt Budget** (20% of sprint capacity):
+
 - 50% - High impact debt remediation
 - 30% - Infrastructure improvements
 - 20% - Developer experience enhancements
 
 **Risk Mitigation Investment**:
+
 - Q1 2024: $150K - Performance optimization + monitoring
 - Q2 2024: $100K - Security hardening + compliance tools
 - Q3 2024: $200K - Architecture evolution + scalability
@@ -543,12 +564,14 @@ risk_escalation:
 ### 11.3.3 Success Metrics
 
 **Risk Reduction KPIs**:
+
 - Risk exposure reduction: 25% por quarter
 - Mean time to mitigation: < 48 hours para high-risk issues
 - Technical debt ratio: < 15% (currently 23%)
 - Security vulnerability remediation: < 7 days for critical
 
 **Quality Improvement Metrics**:
+
 - Code coverage: Target 90% (currently 78%)
 - Deployment success rate: Target 99% (currently 94%)
 - Production incident reduction: 50% year-over-year
@@ -559,6 +582,7 @@ risk_escalation:
 ### 11.4.1 Early Warning Indicators
 
 **Technical Risk Indicators**:
+
 ```yaml
 technical_indicators:
   performance_degradation:
@@ -581,6 +605,7 @@ technical_indicators:
 ```
 
 **Compliance Risk Indicators**:
+
 ```yaml
 compliance_indicators:
   data_retention_violation:
@@ -605,11 +630,13 @@ compliance_indicators:
 ### 11.4.2 Automated Risk Response
 
 **Technical Debt Thresholds**:
+
 - **Complexity increase** > 15% en 1 sprint → Mandatory refactoring
 - **Coverage decrease** > 5% → Block deployment
 - **Duplication increase** > 2% → Technical debt sprint
 
 **Architecture Erosion**:
+
 - **Cross-layer dependencies** detected → Architecture review
 - **Event schema violations** → Immediate fix required
 - **Performance regression** > 10% → Rollback consideration
@@ -617,12 +644,14 @@ compliance_indicators:
 ### 11.4.3 Acciones automáticas
 
 **Preventive Actions**:
+
 - **Auto-scaling**: Trigger en 70% CPU/Memory por 5 minutos
 - **Circuit breaker**: Abrir en 50% error rate por 1 minuto
 - **Snapshot creation**: Trigger en 1000 events por stream
 - **Partition creation**: Trigger en 80% capacidad
 
 **Remediation Actions**:
+
 - **Event replay**: Automático para corruption detection
 - **Read model rebuild**: Trigger en consistency SLA breach
 - **Failover**: Automático para Event Store unavailability
@@ -631,18 +660,21 @@ compliance_indicators:
 ## 11.5 Investment Strategy
 
 ### 11.5.1 Continuous Investment (20% capacity)
+
 - Event Sourcing tooling improvements
 - Performance optimizations
 - Developer experience enhancements
 - Monitoring and observability
 
 ### 11.5.2 Planned Technical Debt Sprints (2024)
+
 - **Sprint 24.6**: Event versioning standardization
 - **Sprint 24.8**: Projection engine refactoring
 - **Sprint 24.10**: Testing infrastructure improvements
 - **Sprint 24.12**: Configuration management consolidation
 
 ### 11.5.3 Architecture Evolution (2024 Roadmap)
+
 - **Q2**: Sharding strategy implementation
 - **Q3**: Multi-region deployment preparation
 - **Q4**: ML-based anomaly detection integration
@@ -650,16 +682,19 @@ compliance_indicators:
 ### 11.5.4 ROI Expectations
 
 **Immediate ROI (0-6 months)**:
+
 - 40% reduction en incident response time
 - 25% improvement en deployment success rate
 - 60% reduction en time-to-resolution para performance issues
 
 **Medium-term ROI (6-18 months)**:
+
 - 50% reduction en operational overhead
 - 30% improvement en developer velocity
 - 20% reduction en infrastructure costs through optimization
 
 **Long-term ROI (18+ months)**:
+
 - 70% reduction en compliance risk exposure
 - Platform readiness para 10x scale growth
 - Architecture foundation para future service expansion
@@ -691,7 +726,7 @@ Performance Optimization Strategy:
     - Database query performance monitoring
 
   Long Term (2026):
-    - Evaluate Event Store DB or Apache Kafka for event storage
+    - Evaluate Event Store DB or PostgreSQL with SNS+SQS for event storage
     - Implement polyglot persistence strategy
     - Cross-region event replication
     - Machine learning-based capacity planning
@@ -751,6 +786,7 @@ public class EventStorePerformanceMonitor
 ```
 
 #### RT-002: Event Schema Evolution Complexity
+
 | Campo | Valor |
 |-------|-------|
 | **Categoría** | Data Management |
@@ -763,6 +799,7 @@ public class EventStorePerformanceMonitor
 Cambios en la estructura de eventos pueden romper compatibilidad con sistemas existentes y afectar la integridad de la cadena de eventos históricos.
 
 **Escenarios de riesgo:**
+
 - Cambios en campos requeridos de eventos existentes
 - Modificación de tipos de datos en eventos
 - Eliminación de campos utilizados por read models
@@ -916,6 +953,7 @@ public class EventSchemaEvolutionTests
 ```
 
 #### RT-003: CQRS Read Model Synchronization Lag
+
 | Campo | Valor |
 |-------|-------|
 | **Categoría** | Data Consistency |
@@ -928,6 +966,7 @@ public class EventSchemaEvolutionTests
 El lag entre la escritura de eventos en el Event Store y la actualización de los read models puede causar inconsistencias percibidas por los usuarios y problemas en dashboards operacionales.
 
 **Factores que aumentan el lag:**
+
 - Alto volumen de eventos durante picos operacionales
 - Complejidad de las proyecciones de read models
 - Fallos temporales en la infraestructura de messaging
@@ -1024,6 +1063,7 @@ public class ReadModelSynchronizationService
 ### 11.1.2 Riesgos operacionales
 
 #### RO-001: Dependency on External Systems
+
 | Campo | Valor |
 |-------|-------|
 | **Categoría** | Integration/Availability |
@@ -1033,10 +1073,11 @@ public class ReadModelSynchronizationService
 | **Owner** | DevOps Team + Integration Team |
 
 **Sistemas de dependencia críticos:**
+
 - **SITA Network**: Para eventos aeronáuticos globales
 - **Airport Operational Systems**: Para datos operacionales locales
 - **Identity Service**: Para autenticación y autorización
-- **Kafka Cluster**: Para event streaming y messaging
+- **Event Bus Cluster**: Para event streaming y messaging
 
 **Estrategias de resilencia:**
 
@@ -1077,6 +1118,7 @@ Fallback Strategies:
 ### 11.1.3 Riesgos de compliance y seguridad
 
 #### RC-001: Data Retention and Privacy Compliance
+
 | Campo | Valor |
 |-------|-------|
 | **Categoría** | Compliance/Legal |
@@ -1086,6 +1128,7 @@ Fallback Strategies:
 | **Owner** | Legal Team + Privacy Officer |
 
 **Regulaciones aplicables:**
+
 - **GDPR**: Right to be forgotten, data portability
 - **Local Aviation Regulations**: 7-year operational data retention
 - **SOX**: Financial audit trail requirements
@@ -1204,16 +1247,19 @@ public class ComplianceAutomationService
 ### 11.2.2 Estrategia de remediación
 
 **Q1 2025 - Prioridad Crítica:**
+
 - ✅ Implementar optimizaciones de performance del Event Store
 - ✅ Desarrollar framework de versionado de eventos
 - ✅ Iniciar herramientas de compliance automation
 
 **Q2 2025 - Estabilización:**
+
 - 🔄 Completar framework de versionado
 - 🔄 Finalizar compliance automation
 - 🔄 Implementar rebuild automation para read models
 
 **Q3 2025 - Mejoras:**
+
 - 📋 Dashboard enhancements
 - 📋 Advanced monitoring capabilities
 - 📋 Performance optimization phase 2
@@ -1251,15 +1297,17 @@ public class TechnicalDebtMetrics
     }
 }
 ```
+
 - **Probabilidad**: Baja
 - **Impacto**: Alto
 - **Mitigación**:
-  - Kafka cluster redundante multi-AZ
+  - Event Bus cluster redundante multi-AZ
   - Dead letter queues para mensajes fallidos
-  - Circuit breaker para Kafka producers
+  - Circuit breaker para Event Bus producers
   - Fallback a polling directo del Event Store
 
 #### RI-002: Integración con múltiples sistemas externos
+
 - **Descripción**: Cada integración introduce puntos de falla adicionales
 - **Probabilidad**: Media
 - **Impacto**: Medio
@@ -1272,6 +1320,7 @@ public class TechnicalDebtMetrics
 ### 11.1.3 Riesgos operacionales
 
 #### RO-001: Escalabilidad de multi-tenancy
+
 - **Descripción**: Crecimiento exponencial de tenants puede saturar recursos
 - **Probabilidad**: Alta
 - **Impacto**: Alto
@@ -1282,6 +1331,7 @@ public class TechnicalDebtMetrics
   - Monitoring predictivo de capacidad
 
 #### RO-002: Complejidad de debugging
+
 - **Descripción**: Event Sourcing hace más complejo el debugging de issues
 - **Probabilidad**: Media
 - **Impacto**: Medio
@@ -1292,6 +1342,7 @@ public class TechnicalDebtMetrics
   - Dashboards específicos para troubleshooting
 
 #### RO-003: Compliance y auditoría
+
 - **Descripción**: Requisitos regulatorios pueden cambiar impactando diseño
 - **Probabilidad**: Media
 - **Impacto**: Alto
@@ -1306,6 +1357,7 @@ public class TechnicalDebtMetrics
 ### 11.2.1 Deuda de arquitectura
 
 #### DT-001: Read model synchronization
+
 - **Descripción**: Lógica de sincronización distribuida en múltiples handlers
 - **Impacto**: Dificultad para mantener consistency y debuggear issues
 - **Plan de resolución**: Centralizar en projection engine unificado
@@ -1313,6 +1365,7 @@ public class TechnicalDebtMetrics
 - **Estimación**: 4 sprints
 
 #### DT-002: Event versioning inconsistente
+
 - **Descripción**: Diferentes estrategias de versioning entre tipos de eventos
 - **Impacto**: Complejidad en evolución de esquemas
 - **Plan de resolución**: Estandarizar con event migration framework
@@ -1320,6 +1373,7 @@ public class TechnicalDebtMetrics
 - **Estimación**: 3 sprints
 
 #### DT-003: Snapshot strategy no optimizada
+
 - **Descripción**: Snapshots manuales sin criterios claros de cuando crear
 - **Impacto**: Performance degradada para entidades con muchos eventos
 - **Plan de resolución**: Snapshot automático basado en métricas
@@ -1329,6 +1383,7 @@ public class TechnicalDebtMetrics
 ### 11.2.2 Deuda de código
 
 #### DT-004: Duplicación en event handlers
+
 - **Descripción**: Lógica similar repetida en múltiples projection handlers
 - **Impacto**: Mantenimiento complejo y riesgo de inconsistencias
 - **Plan de resolución**: Abstraer en base classes y utilities compartidas
@@ -1336,6 +1391,7 @@ public class TechnicalDebtMetrics
 - **Estimación**: 2 sprints
 
 #### DT-005: Testing insuficiente de scenarios de concurrencia
+
 - **Descripción**: Falta de tests para race conditions y optimistic concurrency
 - **Impacto**: Bugs potenciales en producción bajo alta carga
 - **Plan de resolución**: Test suite especializada en concurrency
@@ -1343,6 +1399,7 @@ public class TechnicalDebtMetrics
 - **Estimación**: 3 sprints
 
 #### DT-006: Logging no estructurado en algunos componentes
+
 - **Descripción**: Componentes legacy con logging text-based
 - **Impacto**: Dificultad en observability y debugging
 - **Plan de resolución**: Migración gradual a structured logging
@@ -1352,13 +1409,15 @@ public class TechnicalDebtMetrics
 ### 11.2.3 Deuda de infraestructura
 
 #### DT-007: Configuración manual de partitions
-- **Descripción**: Partitions de Kafka y PostgreSQL creadas manualmente
+
+- **Descripción**: Partitions de Event Bus y PostgreSQL creadas manualmente
 - **Impacto**: Inconsistencias entre entornos y scaling manual
 - **Plan de resolución**: Infrastructure as Code para todo el setup
 - **Prioridad**: Media
 - **Estimación**: 2 sprints
 
 #### DT-008: Monitoring gaps
+
 - **Descripción**: Métricas de negocio no centralizadas ni estandarizadas
 - **Impacto**: Dificultad en identificar trends y issues de negocio
 - **Plan de resolución**: Dashboard unificado con métricas estándar
@@ -1384,12 +1443,14 @@ public class TechnicalDebtMetrics
 ### 11.3.2 Métricas de seguimiento
 
 #### Riesgos técnicos
+
 - **Event Store latency**: Meta P95 < 50ms (actual 45ms) ✅
 - **Read model lag**: Meta < 3s (actual 2.1s) ✅
 - **Error rate**: Meta < 0.1% (actual 0.05%) ✅
 - **Team velocity**: Mantener > 80% durante refactoring
 
 #### Deuda técnica
+
 - **Code coverage**: Meta 90% (actual 87%) 🟡
 - **Cyclomatic complexity**: Meta < 8 (actual 9.2) 🔴
 - **Duplication rate**: Meta < 3% (actual 5.1%) 🔴
@@ -1398,11 +1459,13 @@ public class TechnicalDebtMetrics
 ### 11.3.3 Proceso de revisión
 
 **Governance**:
+
 - **Frecuencia**: Weekly risk review en standup, monthly deep-dive
 - **Stakeholders**: Tech Lead, Product Owner, Senior Developers
 - **Escalación**: CTO para riesgos críticos o deuda > 10% del capacity
 
 **Criterios de priorización**:
+
 1. **Riesgo crítico**: Probabilidad alta + impacto alto
 2. **Deuda que bloquea features**: Impacto directo en roadmap
 3. **Security/compliance risks**: Impacto regulatorio
@@ -1413,12 +1476,14 @@ public class TechnicalDebtMetrics
 ### 11.4.1 Métricas críticas
 
 **Technical Health**:
+
 - **Event Store latency P99** > 200ms → Investigación inmediata
 - **Read model lag** > 10 segundos → Escalación automática
 - **Error rate** > 0.5% por 10 minutos → Alerta crítica
 - **Disk usage** > 85% → Planning de scaling urgente
 
 **Business Impact**:
+
 - **Event ingestion rate** decline > 20% → Business escalation
 - **Query timeout rate** > 2% → Performance review
 - **Tenant onboarding** blocked → Process review
@@ -1426,11 +1491,13 @@ public class TechnicalDebtMetrics
 ### 11.4.2 Debt Accumulation Thresholds
 
 **Code Quality**:
+
 - **Complexity increase** > 15% en 1 sprint → Mandatory refactoring
 - **Coverage decrease** > 5% → Block deployment
 - **Duplication increase** > 2% → Technical debt sprint
 
 **Architecture Erosion**:
+
 - **Cross-layer dependencies** detected → Architecture review
 - **Event schema violations** → Immediate fix required
 - **Performance regression** > 10% → Rollback consideration
@@ -1438,12 +1505,14 @@ public class TechnicalDebtMetrics
 ### 11.4.3 Acciones automáticas
 
 **Preventive Actions**:
+
 - **Auto-scaling**: Trigger en 70% CPU/Memory por 5 minutos
 - **Circuit breaker**: Abrir en 50% error rate por 1 minuto
 - **Snapshot creation**: Trigger en 1000 events por stream
 - **Partition creation**: Trigger en 80% capacidad
 
 **Remediation Actions**:
+
 - **Event replay**: Automático para corruption detection
 - **Read model rebuild**: Trigger en consistency SLA breach
 - **Failover**: Automático para Event Store unavailability
@@ -1452,17 +1521,20 @@ public class TechnicalDebtMetrics
 ## 11.5 Investment Strategy
 
 ### 11.5.1 Continuous Investment (20% capacity)
+
 - Event Sourcing tooling improvements
 - Performance optimizations
 - Developer experience enhancements
 - Monitoring and observability
 
 ### 11.5.2 Planned Technical Debt Sprints (Q2 2024)
+
 - **Sprint 24.6**: Event versioning standardization
 - **Sprint 24.8**: Projection engine refactoring
 - **Sprint 24.10**: Testing infrastructure improvements
 
 ### 11.5.3 Architecture Evolution (2024 Roadmap)
+
 - **Q2**: Sharding strategy implementation
 - **Q3**: Multi-region deployment
 - **Q4**: ML-based anomaly detection

@@ -21,7 +21,7 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 | Componente | Responsabilidad | Tecnología | Interfaces |
 |------------|-----------------|------------|------------|
 | **Notification API** | Punto de entrada REST, validación, encolado | ASP.NET Core 8 | REST API, Webhooks |
-| **Notification Processor** | Procesamiento asíncrono, orquestación | .NET 8 Worker Services | Kafka, Internal APIs |
+| **Notification Processor** | Procesamiento asíncrono, orquestación | .NET 8 Worker Services | Event Bus, Internal APIs |
 | **Template Engine** | Gestión y renderizado de templates | Liquid Templates | Template API |
 | **Channel Processors** | Envío específico por canal | Strategy Pattern | Provider APIs |
 | **Database** | Persistencia de datos | PostgreSQL | Entity Framework |
@@ -53,7 +53,7 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 
 **Propósito/Responsabilidad:**
 
-- Consumo de eventos de Kafka
+- Consumo de eventos del message bus
 - Orquestación del pipeline de procesamiento
 - Gestión de reintentos y error handling
 
@@ -61,11 +61,11 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 
 **Interfaces:**
 
-- Kafka consumer (eventos)
+- Event consumer (eventos)
 - HTTP clients hacia channel processors
 - Database para tracking
 
-**Tecnología:** .NET 8 Worker Services, Apache Kafka
+**Tecnología:** .NET 8 Worker Services, Event Bus abstraction
 
 **Ubicación:** `/src/Notification.Processor/`
 
@@ -91,7 +91,7 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 
 ### Interfaces Importantes
 
-#### Event Schema (Kafka)
+#### Event Schema (Message Bus)
 
 ```json
 {

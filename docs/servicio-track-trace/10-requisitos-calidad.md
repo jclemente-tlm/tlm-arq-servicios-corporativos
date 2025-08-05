@@ -677,7 +677,7 @@ chaos_experiments:
     - Verify resource limiting and recovery
 
   dependency_failure:
-    - Stop Kafka brokers
+    - Stop Event Bus brokers
     - Redis cluster failure
     - External API timeouts
 ```

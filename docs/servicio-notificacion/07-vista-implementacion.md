@@ -29,7 +29,7 @@ spec:
               name: db-secret
               key: url
         - name: KAFKA_BROKERS
-          value: "kafka-cluster:9092"
+          value: "eventbus-cluster:9092"
         resources:
           requests:
             memory: "512Mi"
@@ -76,7 +76,7 @@ spec:
 
 ### Message Queue Infrastructure
 ```yaml
-Apache Kafka Cluster:
+Event Bus agnóstico Cluster:
   Brokers: 3 instances
   Partitions per Topic: 12
   Replication Factor: 3
@@ -442,7 +442,7 @@ Recovery Point Objectives:
 ## Referencias
 - [Kubernetes Best Practices](https://kubernetes.io/docs/concepts/configuration/overview/)
 - [Microservices Deployment Patterns](https://microservices.io/patterns/deployment/)
-- [Apache Kafka Operations](https://kafka.apache.org/documentation/#operations)
+- [Event Bus agnóstico Operations](https://kafka.apache.org/documentation/#operations)
 - [Arc42 Deployment View](https://docs.arc42.org/section-7/)
 ├── docker/
 └── README.md

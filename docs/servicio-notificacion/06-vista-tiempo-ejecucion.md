@@ -24,7 +24,7 @@ sequenceDiagram
     participant App as Aplicación Cliente
     participant Gateway as API Gateway
     participant API as Notification API
-    participant Kafka as Apache Kafka
+    participant EventBus as Event Bus
     participant Processor as Channel Processor
     participant Provider as External Provider
     participant DB as Database
@@ -77,7 +77,7 @@ Flujo automático triggered por eventos del sistema Track & Trace para notificac
 ```mermaid
 sequenceDiagram
     participant TrackTrace as Track & Trace
-    participant Kafka as Apache Kafka
+    participant EventBus as Event Bus
     participant EventConsumer as Event Consumer
     participant TemplateEngine as Template Engine
     participant ChannelRouter as Channel Router

@@ -9,7 +9,7 @@ Sistema de trazabilidad operacional que captura, procesa y analiza eventos empre
 
 #### Capa de Ingesta de Eventos
 - **Responsabilidad:** Captura de eventos de múltiples fuentes y normalización
-- **Tecnología:** Apache Kafka Connect + Custom Connectors
+- **Tecnología:** Event connectors + REST APIs para ingesta manual
 - **Interfaz:** Event streaming + REST APIs para ingesta manual
 
 #### Servicio de Procesamiento de Comandos
@@ -18,14 +18,14 @@ Sistema de trazabilidad operacional que captura, procesa y analiza eventos empre
 - **Interfaz:** REST API + gRPC para alto rendimiento
 
 #### Event Store
-- **Responsabilidad:** Almacenamiento inmutable de eventos con replay capability
-- **Tecnología:** Apache Kafka como event log + Apache Cassandra para indexing
-- **Interfaz:** Kafka Streams + REST API para queries
+- **Responsabilidad:** Almacenamiento inmutable de eventos para Event Sourcing
+- **Tecnología:** PostgreSQL para inicio, escalable a SNS+SQS según volumen
+- **Interfaz:** IEventStore abstraction para intercambio de tecnología
 
-#### Motor de Modelos de Lectura
-- **Responsabilidad:** Proyección de eventos en modelos optimizados para consulta
-- **Tecnología:** Kafka Streams + múltiples stores especializados
-- **Interfaz:** MaterializedViews + REST APIs
+#### Query Engine
+- **Responsabilidad:** Procesamiento de consultas complejas y projections
+- **Tecnología:** Event stream processing + múltiples stores especializados
+- **Interfaz:** GraphQL + REST APIs optimizadas
 
 #### Servicio de Analytics y Reportes
 - **Responsabilidad:** Análisis en tiempo real y generación de insights
@@ -160,24 +160,36 @@ public class FlightOperationSaga : ISaga<FlightDepartureEvent>
 
 ## 5.4 Event Store - Nivel 2 (Whitebox)
 
-### Apache Kafka como Event Log
+### Event Store Agnóstico
 
-#### Arquitectura de Topics
+#### Abstracción de Tecnología
+```csharp
+public interface IEventStore
+{
+    Task AppendEventsAsync(string streamId, IEnumerable<EventData> events);
+    Task<IEnumerable<EventData>> ReadEventsAsync(string streamId, int fromVersion);
+    Task<EventStream> ReadStreamAsync(string streamId);
+}
+
+// Implementaciones según volumen:
+// - PostgreSQLEventStore (< 1,000 eventos/hora)
+// - SnsEventStore (1,000-10,000 eventos/hora)
+// - RabbitMQEventStore (> 10,000 eventos/hora)
+```
+
+#### Estructura de Eventos
 ```yaml
-Event Topics:
-  flight-operations:
-    partitions: 24  # By hour for time-based partitioning
-    replication: 3
-    retention: 90 days
-
-  passenger-journey:
-    partitions: 12  # By terminal/gate
-    replication: 3
-    retention: 30 days
-
-  cargo-operations:
-    partitions: 6   # By cargo type
-    replication: 3
+Event Schema:
+  eventId: UUID
+  eventType: string
+  aggregateId: string
+  timestamp: DateTime
+  tenantId: string
+  payload: object
+  metadata:
+    source: string
+    correlationId: string
+    causationId: string
     retention: 180 days
 ```
 
@@ -342,20 +354,33 @@ public class FlightStatusProjectionHandler : IEventHandler<FlightEvent>
 
 ### Motor de Analytics en Tiempo Real
 
-#### Kafka Streams Processing
-```java
-StreamsBuilder builder = new StreamsBuilder();
+#### Event Stream Processing
+```csharp
+public class FlightAnalyticsProcessor : IEventHandler<FlightEvent>
+{
+    private readonly IEventStore _eventStore;
+    private readonly IMetricsStore _metricsStore;
 
-KStream<String, FlightEvent> flightEvents = builder.stream("flight-operations");
+    public async Task Handle(FlightEvent @event)
+    {
+        switch (@event.EventType)
+        {
+            case "FLIGHT_ARRIVED":
+                await CalculateOnTimePerformance(@event);
+                break;
+            case "FLIGHT_DELAYED":
+                await UpdateDelayMetrics(@event);
+                break;
+        }
+    }
 
-// Calculate on-time performance
-KTable<String, Double> onTimePerformance = flightEvents
-    .filter((key, event) -> event.getEventType().equals("FLIGHT_ARRIVED"))
-    .groupBy((key, event) -> event.getAirline())
-    .aggregate(
-        OnTimeMetrics::new,
-        (airline, event, metrics) -> metrics.addFlight(event),
-        Materialized.as("on-time-performance-store")
+    private async Task CalculateOnTimePerformance(FlightEvent @event)
+    {
+        var metrics = await _metricsStore.GetAirlineMetrics(@event.Airline);
+        metrics.AddFlight(@event);
+        await _metricsStore.UpdateMetrics(metrics);
+    }
+}
     )
     .mapValues(metrics -> metrics.getOnTimePercentage());
 ```
@@ -510,14 +535,15 @@ Event Consumers:
 ```
 
 ### Patrones de Integración
-- **Event Streaming:** Kafka for real-time data flow
+- **Event Streaming:** Event-driven architecture for real-time data flow
 - **Request/Response:** REST APIs for synchronous operations
 - **Batch Processing:** Scheduled ETL for historical data
 - **WebSockets:** Real-time UI updates
 - **GraphQL:** Flexible query interface for dashboards
 
-## Referencias
-- [Event Sourcing Patterns](https://microservices.io/patterns/data/event-sourcing.html)
-- [CQRS Architecture Guide](https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs)
-- [Apache Kafka Documentation](https://kafka.apache.org/documentation/)
-- [Arc42 Building Blocks](https://docs.arc42.org/section-5/)
+### Referencias
+- [CQRS Pattern](https://martinfowler.com/bliki/CQRS.html)
+- [Event Sourcing Pattern](https://martinfowler.com/eaaDev/EventSourcing.html)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [Amazon SNS Documentation](https://docs.aws.amazon.com/sns/)
+- [RabbitMQ Documentation](https://www.rabbitmq.com/documentation.html)

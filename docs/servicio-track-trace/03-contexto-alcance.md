@@ -54,7 +54,7 @@ El sistema de track & trace actúa como el sistema nervioso de las operaciones, 
 │                     TRACK & TRACE SYSTEM                       │
 │  ┌─────────────────────────────────────────────────────────────┐│
 │  │              EVENT INGESTION LAYER                         ││
-│  │  [API Gateway] [Kafka Consumers] [WebSocket] [File Proc]  ││
+│  │  [API Gateway] [Event Consumers] [WebSocket] [File Proc]  ││
 │  └─────────────────────────────────────────────────────────────┘│
 │  ┌─────────────────────────────────────────────────────────────┐│
 │  │                CQRS PROCESSING ENGINE                      ││
@@ -116,11 +116,11 @@ El sistema de track & trace actúa como el sistema nervioso de las operaciones, 
 
 | Sistema | Tipo | Protocolo | Propósito | Datos Intercambiados |
 |---------|------|-----------|-----------|---------------------|
-| **SITA Messaging System** | Internal Service | Apache Kafka | Flight message events | Message status, delivery confirmations, errors |
+| **SITA Messaging System** | Internal Service | Event Bus | Flight message events | Message status, delivery confirmations, errors |
 | **Airport Operations** | External System | REST API / WebSocket | Operational events | Gate assignments, baggage events, security events |
 | **Airline Systems** | External Partners | REST API / SITA Network | Flight operations | Flight updates, crew changes, passenger data |
 | **Air Traffic Control** | Government System | Secure APIs | Flight tracking | Flight plans, route changes, clearances |
-| **Notification System** | Internal Service | Apache Kafka | Alert triggering | Event notifications, alert definitions |
+| **Notification System** | Internal Service | Event Bus | Alert triggering | Event notifications, alert definitions |
 | **Identity System** | Internal Service | OAuth2/OIDC | Authentication | User tokens, permissions, audit identity |
 | **Government APIs** | External System | REST/SOAP | Regulatory reporting | Compliance data, incident reports |
 | **Partner Airlines** | External Partners | EDI/XML/API | Data exchange | Schedule data, operational updates |
@@ -131,7 +131,7 @@ El sistema de track & trace actúa como el sistema nervioso de las operaciones, 
 
 | Interface | Fuente | Tipo de Datos | Frecuencia | Formato |
 |-----------|--------|---------------|------------|---------|
-| **SITA Events** | SITA Messaging | Message lifecycle events | Real-time | Kafka messages (Avro) |
+| **SITA Events** | SITA Messaging | Message lifecycle events | Real-time | Event messages (Avro) |
 | **Flight Events** | Airlines/Airport | Flight operational data | Real-time | REST API (JSON) |
 | **Equipment Events** | Airport Systems | Equipment status, alerts | Real-time | WebSocket (JSON) |
 | **Manual Events** | Operations Staff | Manual event entry | On-demand | REST API (JSON) |
@@ -144,7 +144,7 @@ El sistema de track & trace actúa como el sistema nervioso de las operaciones, 
 |-----------|---------|---------------|------------|---------|
 | **Real-time Events** | Dashboards | Live operational data | Continuous | WebSocket (JSON) |
 | **API Queries** | Client applications | Filtered event data | On-demand | REST/GraphQL (JSON) |
-| **Notification Triggers** | Notification System | Alert events | Event-driven | Kafka messages |
+| **Notification Triggers** | Notification System | Alert events | Event-driven | Event messages |
 | **Analytics Data** | BI Systems | Aggregated metrics | Batch/streaming | Data pipeline |
 | **Audit Reports** | Compliance Systems | Audit trail data | Scheduled | Report files |
 | **Partner Feeds** | External Partners | Operational status | Real-time | Partner-specific APIs |
@@ -186,7 +186,7 @@ Precondición: Evento de mensaje SITA ocurre
 Flujo Principal:
 1. SITA System detecta cambio estado mensaje
 2. Sistema genera evento normalizado
-3. Evento publicado a Kafka topic específico
+3. Evento publicado a event topic específico
 4. Track & Trace consume evento
 5. Sistema valida formato y contenido
 6. Evento almacenado en event store
@@ -254,9 +254,9 @@ Postcondición: Anomalía identificada y comunicada
 | Componente | Responsabilidad | Tecnología | Capacidad |
 |------------|----------------|------------|-----------|
 | **Command Handlers** | Procesamiento de comandos | .NET Command Handlers | 50k commands/sec |
-| **Event Store** | Almacenamiento de eventos | Apache Kafka | Unlimited retention |
+| **Event Store** | Almacenamiento de eventos | PostgreSQL/SNS+SQS/RabbitMQ | Scalable retention |
 | **Aggregate Roots** | Domain logic, consistency | Domain models | Business rule enforcement |
-| **Event Publishers** | Publicación de domain events | Kafka producers | Guaranteed delivery |
+| **Event Publishers** | Publicación de domain events | Event producers | Guaranteed delivery |
 
 ### Query Side (Operaciones de Lectura)
 
@@ -271,10 +271,10 @@ Postcondición: Anomalía identificada y comunicada
 
 | Componente | Responsabilidad | Tecnología | Configuración |
 |------------|----------------|------------|---------------|
-| **Event Topics** | Event categorization | Kafka Topics | Partitioned by entity |
-| **Consumer Groups** | Parallel processing | Kafka Consumer Groups | Auto-scaling |
+| **Event Topics** | Event categorization | Event Topics | Partitioned by entity |
+| **Consumer Groups** | Parallel processing | Event Consumer Groups | Auto-scaling |
 | **Schema Registry** | Event schema management | Confluent Schema Registry | Avro schemas |
-| **Stream Processing** | Real-time analytics | Kafka Streams | Windowed aggregations |
+| **Stream Processing** | Real-time analytics | Event Stream Processing | Windowed aggregations |
 
 ## 3.7 Atributos de calidad
 
@@ -282,7 +282,7 @@ Postcondición: Anomalía identificada y comunicada
 
 | Atributo | Métrica | Objetivo | Medición |
 |----------|---------|--------|----------|
-| **Event Ingestion Rate** | Events per second | 50,000 events/sec | Kafka metrics |
+| **Event Ingestion Rate** | Events per second | 50,000 events/sec | Event metrics |
 | **Query Response Time** | Query latency | p95 < 200ms | APM monitoring |
 | **Real-time Updates** | Update latency | < 5 seconds | End-to-end monitoring |
 | **Dashboard Load Time** | UI responsiveness | < 2 seconds | Frontend monitoring |
@@ -322,11 +322,11 @@ Postcondición: Anomalía identificada y comunicada
 - [Event Sourcing Pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing)
 - [Saga Pattern for Distributed Transactions](https://microservices.io/patterns/data/saga.html)
 
-### Apache Kafka
+### Event Streaming Architecture
 
-- [Kafka Documentation](https://kafka.apache.org/documentation/)
-- [Kafka Streams](https://kafka.apache.org/documentation/streams/)
-- [Schema Registry](https://docs.confluent.io/platform/current/schema-registry/)
+- [Event-Driven Architecture](https://martinfowler.com/articles/201701-event-driven.html)
+- [Event Sourcing Pattern](https://martinfowler.com/eaaDev/EventSourcing.html)
+- [PostgreSQL for Event Store](https://www.postgresql.org/docs/current/)
 
 ### Analytics and Time Series
 

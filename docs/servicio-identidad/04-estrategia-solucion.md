@@ -110,7 +110,7 @@ El sistema de identidad se basa en una **arquitectura de microservicios orientad
 | Componente | Tecnología | Propósito | Configuración |
 |------------|------------|-----------|---------------|
 | **API Integration** | REST/HTTP | Service communication | OpenAPI 3.0 specs |
-| **Event Streaming** | Apache Kafka | User lifecycle events | Event-driven architecture |
+| **Event Streaming** | Event Bus agnóstico | User lifecycle events | Event-driven architecture |
 | **Monitoring** | Prometheus/Grafana | Performance metrics | Custom dashboards |
 | **Logging** | ELK Stack | Audit trails | Structured logging |
 | **Secrets Management** | HashiCorp Vault | Credential storage | Dynamic secrets |

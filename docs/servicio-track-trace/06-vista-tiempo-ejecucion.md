@@ -12,7 +12,7 @@ sequenceDiagram
     participant CommandBus as Command Bus
     participant Handler as Command Handler
     participant EventStore as Event Store
-    participant Kafka as Kafka Bus
+    participant EventBus as Event Bus
     participant ReadModel as Read Model Service
 
     Client->>API: POST /api/v1/events
@@ -24,11 +24,11 @@ sequenceDiagram
         CommandBus->>Handler: Handle(CreateEventCommand)
         Handler->>EventStore: AppendEvent(OperationalEvent)
         EventStore-->>Handler: EventAppended
-        Handler->>Kafka: PublishEvent(EventCreated)
+        Handler->>EventBus: PublishEvent(EventCreated)
         Handler-->>API: CommandResult.Success
         API-->>Client: 201 Created {eventId}
 
-        Kafka->>ReadModel: ConsumeEvent(EventCreated)
+        EventBus->>ReadModel: ConsumeEvent(EventCreated)
         ReadModel->>ReadModel: UpdateProjections
     else Validation Failed
         API-->>Client: 400 BadRequest {errors}
@@ -101,7 +101,7 @@ sequenceDiagram
 - Tenant activo
 
 **Flujo normal**:
-1. Recepción de evento vía API REST o Kafka
+1. Recepción de evento vía API REST o Event Bus
 2. Validación de formato y permisos
 3. Enriquecimiento con metadata
 4. Persistencia en Event Store

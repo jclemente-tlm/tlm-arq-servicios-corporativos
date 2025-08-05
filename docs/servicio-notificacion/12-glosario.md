@@ -361,7 +361,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 
 ### Message Queue Standards
 - **AMQP**: Advanced Message Queuing Protocol
-- **Apache Kafka Protocol**: Kafka wire protocol specification
+- **Event Bus Protocol**: Protocolos estándar para event streaming agnóstico
 - **CloudEvents**: Specification for describing event data in common formats
 
 **Eventual Consistency**: Modelo de consistencia donde el sistema alcanzará consistencia eventualmente, no inmediatamente.

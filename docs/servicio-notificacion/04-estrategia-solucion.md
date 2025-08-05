@@ -16,7 +16,7 @@ La solución se basa en una arquitectura **Clean Architecture** y **microservici
 |--------------------------|-----------------------------------------------|
 | `Clean Architecture`     | Organización modular y desacoplada            |
 | `Microservicios`         | Independencia y escalabilidad                 |
-| `Event-driven`           | Procesamiento asíncrono con <b>Kafka</b>      |
+| `Event-driven`           | Procesamiento asíncrono con <b>Event Bus</b>  |
 | `API REST`               | Exposición de servicios                       |
 | `PostgreSQL`             | Persistencia de datos                         |
 | `S3`                     | Almacenamiento de adjuntos                    |

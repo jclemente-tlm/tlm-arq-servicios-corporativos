@@ -14,7 +14,7 @@
 
 ### Tecnologías Core
 
-#### Message Broker: Apache Kafka
+#### Message Broker: Event Bus Agnóstico
 - **Event Streaming:** Para manejo de mensajes Type A/B de alto volumen
 - **Durabilidad:** Garantiza entrega de mensajes críticos
 - **Particionamiento:** Por aerolínea/ruta para optimizar throughput

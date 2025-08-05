@@ -117,8 +117,8 @@ El sistema de mensajería SITA actúa como el puente de comunicación con la ind
 | **Partner Airlines** | External Partners | SITATEX | Operational communication | Flight messages, status updates, coordination |
 | **Ground Handling Systems** | External Partners | SITATEX/API | Service coordination | Baggage, cargo, passenger handling messages |
 | **Air Traffic Control** | Government System | SITATEX | Flight coordination | Flight plans, clearances, coordination messages |
-| **Track & Trace System** | Internal Service | Apache Kafka | Event-driven messaging | Operational events, trigger data |
-| **Notification System** | Internal Service | Apache Kafka | Alert notifications | Message status, delivery failures |
+| **Track & Trace System** | Internal Service | Event Bus | Event-driven messaging | Operational events, trigger data |
+| **Notification System** | Internal Service | Event Bus | Alert notifications | Message status, delivery failures |
 | **Identity System** | Internal Service | OAuth2/OIDC | Authentication | User tokens, permissions, audit identity |
 | **Airport Operations** | Internal System | REST API | Operational data | Flight data, gate assignments, resource status |
 
@@ -331,6 +331,6 @@ Postcondición: Estado de mensajes monitoreado y gestionado
 
 ### Technical Integration
 
-- [Apache Kafka Documentation](https://kafka.apache.org/documentation/)
+- [Event Bus Documentation](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-overview)
 - [Event-Driven Architecture](https://martinfowler.com/articles/201701-event-driven.html)
 - [Arc42 Context Template](https://docs.arc42.org/section-3/)

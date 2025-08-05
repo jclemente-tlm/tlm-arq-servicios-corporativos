@@ -120,7 +120,7 @@ Diccionario completo de términos técnicos y de negocio utilizados en el **Sist
 
 ## K
 
-**Kafka**: Plataforma distribuida de streaming para construir pipelines de datos en tiempo real y aplicaciones de streaming.
+**Event Bus**: Plataforma de messaging para construir pipelines de datos en tiempo real y aplicaciones de streaming.
 
 **Key-Value Store**: Tipo de base de datos NoSQL que almacena datos como pares clave-valor simples.
 
@@ -371,7 +371,7 @@ Este glosario sirve como referencia central para todo el equipo, facilitando com
 
 ## K
 
-**Kafka Integration**: Integración con Apache Kafka para streaming de eventos en tiempo real y comunicación asíncrona entre servicios.
+**Event Bus Integration**: Integración con Event Bus para streaming de eventos en tiempo real y comunicación asíncrona entre servicios.
 
 **Key-Value Projection**: Tipo de read model que almacena datos en formato clave-valor optimizado para consultas de lookup rápidas.
 
@@ -534,7 +534,7 @@ Este glosario sirve como referencia central para todo el equipo, facilitando com
 - [GDPR Compliance Guide](https://gdpr.eu/) - Official GDPR Resource
 - [OAuth 2.0 Security Best Practices](https://tools.ietf.org/html/draft-ietf-oauth-security-topics) - IETF RFC
 
-**Kafka**: Plataforma distribuida de streaming para manejo de eventos en tiempo real.
+**Event Bus**: Plataforma de messaging para manejo de eventos en tiempo real.
 
 ## O
 

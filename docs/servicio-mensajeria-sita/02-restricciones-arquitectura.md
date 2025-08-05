@@ -20,7 +20,7 @@ El **Sistema de Mensajería SITA** debe operar dentro de restricciones técnicas
 | **Contenedorización** | Despliegue obligatorio en Docker containers | Estandardización DevOps, portabilidad | Docker + Kubernetes orchestration |
 | **Base de Datos** | PostgreSQL como RDBMS principal | Expertise del equipo, compliance requirements | PostgreSQL 15+ con replicación |
 | **Runtime** | .NET 8 LTS como plataforma principal | Standardización corporativa, soporte Enterprise | ASP.NET Core Web APIs |
-| **Message Queuing** | Apache Kafka para message streaming | High throughput, event sourcing capabilities | Kafka cluster con partitioning |
+| **Message Queuing** | Event Bus agnóstico para message streaming | High throughput, event sourcing capabilities | Event Bus cluster con partitioning |
 | **Logging** | Serilog para logging estructurado | Observabilidad, troubleshooting | Structured JSON logging |
 
 ### Integración y Conectividad

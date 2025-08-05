@@ -28,7 +28,7 @@ graph TB
     subgraph "Infrastructure Layer"
         SITA[SITA Protocol Adapter]
         DB[(PostgreSQL)]
-        KAFKA[Kafka Producer/Consumer]
+        EVENTBUS[Event Bus Abstraction]
         AUDIT[Audit Store]
     end
 
@@ -40,7 +40,7 @@ graph TB
     SVC --> REPO
     REPO --> SITA
     REPO --> DB
-    AS --> KAFKA
+    AS --> EVENTBUS
     SVC --> AUDIT
 ```
 
@@ -56,13 +56,13 @@ graph TB
 
 #### Corporate Services Interface
 - **Propósito**: Integración con servicios corporativos internos
-- **Protocolo**: REST API + Kafka events
+- **Protocolo**: REST API + Event bus events
 - **Formato**: JSON con esquemas versionados
 - **Autenticación**: OAuth2 JWT tokens
 
 #### Track & Trace Integration
 - **Propósito**: Registrar eventos de mensajería para trazabilidad
-- **Método**: Event publishing via Kafka
+- **Método**: Event publishing via Event Bus
 - **Formato**: CloudEvents estándar
 - **Garantías**: At-least-once delivery
 

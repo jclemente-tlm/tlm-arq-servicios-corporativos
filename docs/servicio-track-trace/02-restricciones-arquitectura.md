@@ -10,7 +10,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 |-------------|-------------|---------------|----------------|
 | **CQRS Pattern** | Separación Command/Query obligatoria | Optimización lectura vs escritura, escalabilidad | Comandos para ingestión, queries para consulta |
 | **Event Sourcing** | Almacenamiento basado en eventos | Auditabilidad completa, reconstrucción de estado | Event store como fuente de verdad |
-| **Message Queue** | Apache Kafka para event streaming | High throughput, durabilidad, replay capability | Kafka topics por tipo de evento |
+| **Message Queue** | Event Bus para event streaming | High throughput, durabilidad, replay capability | Event topics por tipo de evento |
 | **Read Models** | Vistas materializadas para consultas | Rendimiento de consultas complejas | PostgreSQL para read models |
 
 ### Stack Tecnológico Mandatorio
@@ -18,7 +18,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 | Componente | Tecnología Requerida | Versión Mínima | Justificación |
 |------------|---------------------|----------------|---------------|
 | **Runtime** | .NET 8 LTS | 8.0+ | Standardización corporativa, rendimiento |
-| **Event Store** | Apache Kafka | 3.5+ | Event streaming, high availability |
+| **Event Store** | PostgreSQL/SNS+SQS/RabbitMQ | 15+/Latest | Event streaming, high availability |
 | **Read Database** | PostgreSQL | 15+ | Complex queries, JSON support, analytics |
 | **Cache Layer** | Redis | 7.0+ | Rendimiento de consultas, real-time dashboards |
 | **Time Series DB** | InfluxDB | 2.7+ | Metrics storage, time-based analytics |
@@ -28,7 +28,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 
 | Métrica | Restricción | Justificación | Arquitectura Requerida |
 |---------|-------------|---------------|------------------------|
-| **Event Ingestion** | 50,000 eventos/segundo | Peak operational loads | Partitioned Kafka, async processing |
+| **Event Ingestion** | 50,000 eventos/segundo | Peak operational loads | Event partitioning, async processing |
 | **Query Response** | p95 < 200ms | Real-time dashboard requirements | Materialized views, caching |
 | **Data Retention** | 7 años eventos, 2 años métricas | Cumplimiento, análisis operacional | Tiered storage, archival strategy |
 | **Real-time Updates** | < 5 segundos latencia | Operational decision making | Event streaming, WebSocket notifications |
@@ -37,8 +37,8 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 
 | Sistema | Protocolo | Restricción | Implementación |
 |---------|-----------|-------------|----------------|
-| **SITA Messaging** | Apache Kafka | Real-time event consumption | Event-driven integration |
-| **Notification System** | Apache Kafka | Event-based notifications | Publish events to notification topics |
+| **SITA Messaging** | Event Bus | Real-time event consumption | Event-driven integration |
+| **Notification System** | Event Bus | Event-based notifications | Publish events to notification topics |
 | **Identity System** | OAuth2/OIDC | Secure API access | JWT token validation |
 | **External APIs** | REST/GraphQL | Standard protocols | RESTful APIs, GraphQL for complex queries |
 | **Dashboard Systems** | WebSocket + REST | Real-time updates | SignalR hubs, REST APIs |
@@ -50,9 +50,9 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 | Aspecto | Restricción | Justificación | Implementación |
 |---------|-------------|---------------|----------------|
 | **Uptime Target** | 99.95% availability | Critical operational visibility | Active-active clustering |
-| **Data Durability** | 99.999999999% (11 9's) | Event data cannot be lost | Kafka replication, backup strategies |
+| **Data Durability** | 99.999999999% (11 9's) | Event data cannot be lost | Event replication, backup strategies |
 | **Disaster Recovery** | RTO: 1 hour, RPO: 5 minutes | Continuidad empresarial | Cross-region replication |
-| **Event Replay** | Support for historical replay | Data recovery, debugging | Kafka retention, offset management |
+| **Event Replay** | Support for historical replay | Data recovery, debugging | Event retention, offset management |
 
 ### Escalabilidad y Rendimiento
 
@@ -140,7 +140,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 |--------|------------|----------------|------------|
 | **Event Schema** | Immutable event structure | Avro schema evolution | Schema compatibility testing |
 | **Command Validation** | Business rule enforcement | Domain validation | Business rule testing |
-| **Event Ordering** | Chronological ordering | Kafka partitioning strategy | Ordering verification |
+| **Event Ordering** | Chronological ordering | Event partitioning strategy | Ordering verification |
 | **Idempotency** | Duplicate event handling | Idempotency keys | Duplicate detection testing |
 
 ### Query Side (Read)
@@ -167,7 +167,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 
 | Sistema | Tipos de Eventos | Restricciones | Implementación |
 |--------|-------------|-------------|----------------|
-| **SITA Messaging** | Flight events, message status | Real-time consumption | Kafka consumer groups |
+| **SITA Messaging** | Flight events, message status | Real-time consumption | Event consumer groups |
 | **Notification System** | Alert triggers, status updates | Low latency publishing | Async event publishing |
 | **Dashboard Systems** | Real-time metrics, alerts | Sub-second updates | WebSocket streaming |
 | **External Analytics** | Data export, reporting | Batch and streaming | Data pipeline integration |
@@ -208,7 +208,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 | Restricción | Decisión de Diseño | Compromiso | Mitigación |
 |------------|----------------|-----------|------------|
 | **CQRS Requirement** | Separate read/write models | Eventual consistency | Event-driven synchronization |
-| **High Throughput** | Event streaming architecture | Complexity increase | Managed Kafka service |
+| **High Throughput** | Event streaming architecture | Complexity increase | Managed Event service |
 | **Real-time Requirements** | In-memory caching | Memory overhead | Cache optimization |
 | **Long-term Retention** | Tiered storage strategy | Storage costs | Automated lifecycle policies |
 
@@ -216,7 +216,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 
 | Capa | Elección Tecnológica | Factor de Restricción | Alternativa Considerada |
 |-------|-------------------|-------------------|----------------------|
-| **Event Store** | Apache Kafka | Throughput, durability | EventStore (complexity), AWS Kinesis (vendor lock) |
+| **Event Store** | PostgreSQL/SNS+SQS/RabbitMQ | Throughput, durability | EventStore (complexity), AWS Kinesis (vendor lock) |
 | **Read Database** | PostgreSQL | Query complexity, JSON support | MongoDB (consistency), ClickHouse (operational complexity) |
 | **Time Series** | InfluxDB | Time-based analytics | Prometheus (query language), TimescaleDB (licensing) |
 | **Search** | Elasticsearch | Full-text search, analytics | Solr (maintenance), Amazon OpenSearch (vendor dependency) |
@@ -240,7 +240,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 
 ### Technologies
 
-- [Apache Kafka Documentation](https://kafka.apache.org/documentation/)
+- [Event-Driven Architecture](https://martinfowler.com/articles/201701-event-driven.html)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 - [InfluxDB Documentation](https://docs.influxdata.com/)
 - [Elasticsearch Documentation](https://www.elastic.co/guide/)

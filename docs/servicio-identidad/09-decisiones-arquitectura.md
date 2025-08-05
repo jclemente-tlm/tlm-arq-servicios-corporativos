@@ -753,7 +753,7 @@ Compliance requirements demandan:
 ```yaml
 Event Store:
   Primary: PostgreSQL with JSONB events
-  Stream: Apache Kafka for real-time processing
+  Stream: Event Bus agnóstico para procesamiento en tiempo real
   Archive: AWS S3 for long-term storage
   Analytics: AWS Athena for querying archived events
 
@@ -1029,7 +1029,7 @@ Requerimientos regulatorios exigen trazabilidad completa de eventos de seguridad
 
 ### Decisión
 
-Implementar Event Sourcing con Apache Kafka para audit trail.
+Implementar Event Sourcing con Event Store agnóstico para audit trail.
 
 ### Justificación
 

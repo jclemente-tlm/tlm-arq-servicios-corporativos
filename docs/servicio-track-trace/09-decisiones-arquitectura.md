@@ -41,10 +41,10 @@ Adoptamos **Event Sourcing** como patrón arquitectónico principal.
 Necesidad de un almacén confiable y performante para eventos con soporte ACID y capacidades de consulta avanzadas.
 
 ### Alternativas consideradas
-1. **EventStore DB**: Base especializada en event sourcing
-2. **PostgreSQL**: Base relacional con soporte JSONB
-3. **Apache Kafka**: Stream processing platform
-4. **DynamoDB**: Base NoSQL managed
+1. **PostgreSQL**: Base relacional con soporte JSONB, estrategia inicial
+2. **SNS+SQS**: Escalabilidad managed AWS para volúmenes medios
+3. **RabbitMQ/Amazon MQ**: Event streaming robusto para alto volumen
+4. **EventStore DB**: Base especializada en event sourcing (evaluación futura)
 
 ### Justificación
 - **ACID compliance**: Transacciones consistentes para eventos críticos
@@ -155,7 +155,7 @@ public class ProjectionManager
 
 ---
 
-## 9.4 ADR-004: Apache Kafka para Event Streaming
+## 9.4 ADR-004: Event Store Agnóstico para Event Streaming
 
 **Estado**: Aceptado
 **Fecha**: 2024-02-01
@@ -172,7 +172,7 @@ Integración con otros servicios corporativos y distribución de eventos para an
 5. **AWS EventBridge**: Serverless event bus
 
 ### Decisión
-Adoptamos **Apache Kafka** como plataforma de event streaming.
+Adoptamos **Event Store agnóstico** starting with PostgreSQL para event streaming.
 
 ### Justificación
 - **Throughput**: Alto volumen de eventos (>100k/sec)
@@ -600,29 +600,29 @@ public class TimelineReadModel : ITimelineQueries
 
 ---
 
-## 9.4 ADR-004: Apache Kafka para event streaming
+## 9.4 ADR-004: Event Store Agnóstico para Event Streaming
 
 **Estado**: Aceptado
-**Fecha**: 2024-02-01
+**Fecha**: 2024-02-01 (Actualizado: 2025-08-05)
 **Decidido por**: Equipo de Arquitectura
 
 ### Contexto
-Necesidad de streaming de eventos hacia read models y sistemas externos con alta throughput y durabilidad.
+Necesidad de streaming de eventos hacia read models y sistemas externos con alta throughput y durabilidad, con flexibilidad para escalar según volumen operacional.
 
 ### Alternativas consideradas
-1. **RabbitMQ**: Message broker tradicional
-2. **Apache Kafka**: Distributed streaming platform
-3. **Azure Service Bus**: Managed message service
-4. **Direct database polling**: Polling de event store
+1. **PostgreSQL**: Inicio simple, ACID compliance, expertise del equipo
+2. **SNS+SQS**: Escalabilidad managed AWS, integración nativa
+3. **RabbitMQ/Amazon MQ**: Event streaming robusto, patrones messaging complejos
+4. **Apache Kafka**: Alto throughput, ecosistema maduro (para volúmenes muy altos)
 
 ### Decisión
-Adoptamos **Apache Kafka** para event streaming.
+Adoptamos **Event Store agnóstico basado en volumen** con abstracción IEventStore.
 
 ### Justificación
-- **Throughput**: Manejo de alto volumen de eventos
-- **Durabilidad**: Persistencia configurable de mensajes
-- **Ordering**: Garantías de orden por partición
-- **Ecosystem**: Integración con herramientas de analytics
+- **PostgreSQL-first**: Inicio con PostgreSQL para simplicidad operacional
+- **Volume-based scaling**: < 1K events/hora PostgreSQL, 1K-10K evaluación, > 10K SNS+SQS/RabbitMQ
+- **Abstraction pattern**: IEventStore permite migración sin reescribir lógica de negocio
+- **Cost-effective**: Optimización de costos según volumen real vs proyectado
 - **Scalability**: Escalamiento horizontal natural
 
 ### Configuración

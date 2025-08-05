@@ -218,7 +218,7 @@ El sistema de notificaciones requiere un message broker que soporte:
 | **Amazon SNS + SQS** | ❌ AWS only | Excelente | FIFO limited | Media | Medio | ❌ Rechazado |
 | **RabbitMQ** | ✅ Full | Buena | Cola | Media | Medio | ⚠️ Considerado |
 | **Amazon MQ** | ⚠️ Multi-cloud | Buena | Limited | Media | Alto | ❌ Rechazado |
-| **Apache Kafka** | ✅ Full | Excelente | Partición | Alta | Alto | ❌ No primera opción |
+| **Event Bus agnóstico** | ✅ Full | Excelente | Partición | Alta | Alto | ❌ No primera opción |
 
 ### Decisión
 

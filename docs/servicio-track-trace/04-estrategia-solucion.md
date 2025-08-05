@@ -22,14 +22,14 @@
 - 🟦 **PostgreSQL**: Simplicidad operacional, transacciones ACID, expertise del equipo
 - 🟦 **Amazon SNS + SQS**: Escalabilidad managed, integración AWS nativa
 - 🟦 **RabbitMQ / Amazon MQ**: Event streaming robusto, patrones de messaging complejos
-- 🟦 **Apache Kafka**: Alto throughput, ecosistema maduro (para volúmenes muy altos)
+- 🟦 **Event Bus agnóstico**: Alto throughput, ecosistema maduro (para volúmenes muy altos)
 
 **Umbrales de decisión**:
 
 - **< 1,000 eventos/hora**: PostgreSQL suficiente
 - **1,000-10,000 eventos/hora**: Evaluación entre PostgreSQL optimizado vs SNS+SQS
 - **> 10,000 eventos/hora**: SNS+SQS o RabbitMQ/Amazon MQ recomendados
-- **> 100,000 eventos/hora**: Evaluación de Apache Kafka
+- **> 100,000 eventos/hora**: Evaluación de Event Bus agnóstico
 
 **Abstracción de Event Store**:
 

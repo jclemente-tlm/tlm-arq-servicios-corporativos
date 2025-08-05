@@ -611,10 +611,10 @@ public class ConfigurationService
       "SnapshotFrequency": 50
     },
     "Messaging": {
-      "Kafka": {
-        "BootstrapServers": "localhost:9092",
+      "EventBus": {
+        "Configuration": "localhost:5672",
         "GroupId": "track-trace-dev",
-        "AutoOffsetReset": "Earliest"
+        "AutoRestart": "true"
       }
     },
     "Security": {
@@ -638,8 +638,8 @@ public class ConfigurationService
       "SnapshotFrequency": 100
     },
     "Messaging": {
-      "Kafka": {
-        "BootstrapServers": "${KAFKA_BOOTSTRAP_SERVERS}",
+      "EventBus": {
+        "Configuration": "${EVENTBUS_CONFIGURATION}",
         "GroupId": "track-trace-prod",
         "SecurityProtocol": "SaslSsl",
         "SaslMechanism": "Plain"
@@ -1385,7 +1385,7 @@ public class EventHandlerTracing
 1. **Event Sourcing**: Principio arquitectónico fundamental que garantiza auditabilidad y permite análisis temporal
 2. **CQRS**: Separación clara entre comandos y consultas con read models especializados
 3. **Seguridad**: Multi-tenant con JWT, autorización granular y cumplimiento normativo
-4. **Comunicación**: Event-driven architecture con Kafka y patrones de resiliencia
+4. **Comunicación**: Event-driven architecture con Event Bus y patrones de resiliencia
 5. **Persistencia**: Event Store optimizado con PostgreSQL y proyecciones especializadas
 6. **Observabilidad**: Logging estructurado, métricas detalladas y distributed tracing
 7. **Testing**: Estrategia completa desde unit tests hasta contract testing

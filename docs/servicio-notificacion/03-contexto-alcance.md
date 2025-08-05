@@ -84,8 +84,8 @@ El sistema se integra con el ecosistema corporativo para proporcionar comunicaci
 
 | Sistema | Protocolo | Formato | Autenticación | SLA |
 |---------|-----------|---------|---------------|-----|
-| **Track & Trace** | Apache Kafka | Avro | mTLS | < 1s event processing |
-| **SITA Messaging** | Apache Kafka | JSON | mTLS | < 2s event processing |
+| **Track & Trace** | Event Bus | Avro | mTLS | < 1s event processing |
+| **SITA Messaging** | Event Bus | JSON | mTLS | < 2s event processing |
 | **Identity System** | HTTPS REST | JWT | OAuth 2.0 | < 200ms response |
 | **API Gateway** | HTTPS | JSON | JWT Bearer | < 100ms routing |
 
@@ -125,7 +125,7 @@ graph LR
 | Componente | Tecnología | Propósito | Configuración |
 |------------|------------|-----------|---------------|
 | **API Gateway** | YARP (ASP.NET Core) | Routing y rate limiting | Load balancing, timeout 30s |
-| **Message Broker** | Apache Kafka | Event streaming | Retention 7 days, 3 replicas |
+| **Message Broker** | Event Bus agnóstico | Event streaming | Retention 7 days, 3 replicas |
 | **Database** | PostgreSQL | Data persistence | Multi-tenant schema design |
 | **Cache** | Redis | Response caching | TTL 300s, cluster mode |
 | **File Storage** | S3-Compatible | Attachment storage | Versioning enabled, lifecycle policies |
@@ -343,7 +343,7 @@ Postcondición: Lote procesado con reporte de entrega
 ### Architecture References
 
 - [Event-Driven Architecture Patterns](https://microservices.io/patterns/data/event-driven-architecture.html)
-- [Apache Kafka Documentation](https://kafka.apache.org/documentation/)
+- [Event Bus Architecture Documentation](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing)
 - [Arc42 Context Template](https://docs.arc42.org/section-3/)
 ```
 

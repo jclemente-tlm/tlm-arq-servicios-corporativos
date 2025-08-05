@@ -22,7 +22,7 @@ El sistema se estructura siguiendo los principios de arquitectura de microservic
 | **Keycloak Core** | Identity Provider central | Keycloak 23+ | OAuth2/OIDC, SAML, Admin API |
 | **Identity Management API** | Gestión programática de identidades | ASP.NET Core 8 | REST API, GraphQL |
 | **Token Validation Service** | Validación distribuida de JWT | .NET 8 gRPC | gRPC, HTTP/2 |
-| **Audit & Compliance** | Logging y cumplimiento | Event Sourcing | Kafka Events, REST Reports |
+| **Audit & Compliance** | Logging y cumplimiento | Event Sourcing | Event Bus, REST Reports |
 | **Federation Gateway** | Integración external IdPs | Custom Connectors | SAML, OIDC, LDAP |
 | **Admin Console** | Interface administrativa | React SPA | REST API consumption |
 
@@ -584,11 +584,11 @@ public class ComplianceReportingService : IComplianceReportingService
 #### Event Publishing
 
 ```yaml
-Kafka Topics:
+Event Topics:
   identity.user.created:
     schema: UserCreatedEvent
     retention: 7 days
-    partitions: 12
+    routing: user-events
 
   identity.user.login:
     schema: UserLoggedInEvent

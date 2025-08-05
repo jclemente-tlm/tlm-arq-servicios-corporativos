@@ -27,7 +27,7 @@ src/
 ├── TLM.Services.TrackTrace.Infrastructure/ # Infrastructure Layer
 │   ├── EventStore/                        # Implementación Event Store
 │   ├── ReadModels/                        # Read Model Projections
-│   ├── Kafka/                             # Kafka Integration
+│   ├── EventBus/                           # Event Bus Integration
 │   ├── Authentication/                    # OAuth2/JWT
 │   └── Monitoring/                        # Telemetría y Métricas
 └── TLM.Services.TrackTrace.Tests/         # Test Projects
@@ -215,10 +215,10 @@ spec:
             secretKeyRef:
               name: db-secrets
               key: eventstore-connection
-        - name: Kafka__BootstrapServers
+        - name: EventBus__Configuration
           valueFrom:
             configMapKeyRef:
-              name: kafka-config
+              name: eventbus-config
               key: bootstrap-servers
         resources:
           requests:
@@ -265,8 +265,8 @@ Authentication:
   ValidateLifetime: true
   ClockSkew: 300  # 5 minutes
 
-Kafka:
-  BootstrapServers: "${KAFKA_SERVERS}"
+EventBus:
+  Configuration: "${EVENTBUS_CONFIG}"
   GroupId: "tracktrace-consumers"
   Topics:
     Events: "track-trace-events"
@@ -294,7 +294,7 @@ Monitoring:
 | `DB_PASSWORD` | Contraseña de base de datos | - | ✅ |
 | `READ_DB_HOST` | Host del Read Model PostgreSQL | localhost | ✅ |
 | `KEYCLOAK_AUTHORITY` | Authority del proveedor OAuth2 | - | ✅ |
-| `KAFKA_SERVERS` | Servidores Kafka bootstrap | localhost:9092 | ✅ |
+| `EVENTBUS_CONFIG` | Event Bus configuration | localhost:5672 | ✅ |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | Endpoint OpenTelemetry | - | ❌ |
 | `LOG_LEVEL` | Nivel de logging | Information | ❌ |
 
