@@ -9,31 +9,31 @@ src/
 ├── TLM.Services.TrackTrace.API/           # REST API Layer
 │   ├── Controllers/                       # API Controllers
 │   ├── Middleware/                        # HTTP Middleware
-│   ├── Configuration/                     # DI Configuration
+│   ├── Configuration/                     # Configuración DI
 │   └── Program.cs                         # Application Entry Point
 ├── TLM.Services.TrackTrace.Application/   # Application Layer
 │   ├── Commands/                          # CQRS Commands
 │   ├── Queries/                           # CQRS Queries
 │   ├── Handlers/                          # Command/Query Handlers
 │   ├── Validators/                        # FluentValidation Rules
-│   ├── Services/                          # Application Services
+│   ├── Services/                          # Servicios de Aplicación
 │   └── DTOs/                              # Data Transfer Objects
 ├── TLM.Services.TrackTrace.Domain/        # Domain Layer
 │   ├── Entities/                          # Domain Entities
 │   ├── ValueObjects/                      # Value Objects
 │   ├── Events/                            # Domain Events
 │   ├── Repositories/                      # Repository Abstractions
-│   └── Services/                          # Domain Services
+│   └── Services/                          # Servicios de Dominio
 ├── TLM.Services.TrackTrace.Infrastructure/ # Infrastructure Layer
-│   ├── EventStore/                        # Event Store Implementation
+│   ├── EventStore/                        # Implementación Event Store
 │   ├── ReadModels/                        # Read Model Projections
 │   ├── Kafka/                             # Kafka Integration
 │   ├── Authentication/                    # OAuth2/JWT
-│   └── Monitoring/                        # Telemetry & Metrics
+│   └── Monitoring/                        # Telemetría y Métricas
 └── TLM.Services.TrackTrace.Tests/         # Test Projects
     ├── Unit/                              # Unit Tests
     ├── Integration/                       # Integration Tests
-    └── Performance/                       # Load Tests
+    └── Performance/                       # Pruebas de Carga
 ```
 
 ### 7.1.2 Módulos principales
@@ -51,7 +51,7 @@ public interface IEventStore
     Task SaveSnapshotAsync(string streamId, Snapshot snapshot);
 }
 
-// PostgreSQL implementation
+// Implementación PostgreSQL
 public class PostgreSqlEventStore : IEventStore
 {
     private readonly IDbContext _context;
@@ -116,7 +116,7 @@ public class EntityTimelineProjection : IEventHandler<EntityEvent>
     }
 }
 
-// Performance metrics projection
+// Proyección de métricas de rendimiento
 public class PerformanceMetricsProjection : IEventHandler<OperationalEvent>
 {
     private readonly ITimeSeriesStore _timeSeriesStore;
@@ -143,7 +143,7 @@ public class PerformanceMetricsProjection : IEventHandler<OperationalEvent>
 
 ## 7.2 Configuración de despliegue
 
-### 7.2.1 Docker Configuration
+### 7.2.1 Configuración Docker
 
 ```dockerfile
 # Multi-stage build
@@ -170,21 +170,21 @@ RUN dotnet publish "TLM.Services.TrackTrace.API/TLM.Services.TrackTrace.API.cspr
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
-# Security: Run as non-root user
+# Seguridad: Ejecutar como usuario no-root
 RUN adduser --disabled-password --home /app --gecos '' appuser && chown -R appuser /app
 USER appuser
 
 COPY --from=publish /app/publish .
 EXPOSE 8080
 
-# Health check
+# Verificación de salud
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8080/health || exit 1
 
 ENTRYPOINT ["dotnet", "TLM.Services.TrackTrace.API.dll"]
 ```
 
-### 7.2.2 Kubernetes Deployment
+### 7.2.2 Despliegue en Kubernetes
 
 ```yaml
 apiVersion: apps/v1
@@ -300,10 +300,10 @@ Monitoring:
 
 ## 7.3 Infraestructura como Código
 
-### 7.3.1 Terraform Configuration
+### 7.3.1 Configuración Terraform
 
 ```hcl
-# Event Store Database
+# Base de Datos Event Store
 resource "aws_rds_instance" "event_store" {
   identifier     = "tracktrace-eventstore-${var.environment}"
   engine         = "postgres"
@@ -339,7 +339,7 @@ resource "aws_rds_instance" "event_store" {
   }
 }
 
-# Read Model Database
+# Base de Datos Read Model
 resource "aws_rds_instance" "read_model" {
   identifier     = "tracktrace-readmodel-${var.environment}"
   engine         = "postgres"
@@ -399,7 +399,7 @@ resource "aws_ecs_service" "tracktrace_api" {
 }
 ```
 
-### 7.3.2 Helm Chart Values
+### 7.3.2 Valores de Helm Chart
 
 ```yaml
 # values.yaml
@@ -485,10 +485,10 @@ configMap:
 
 ## 7.4 Migración y Versionado
 
-### 7.4.1 Database Migrations
+### 7.4.1 Migraciones de Base de Datos
 
 ```csharp
-// Event Store Schema Migration
+// Migración de Esquema Event Store
 public class InitialEventStoreMigration : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
@@ -600,10 +600,10 @@ public class FlightStatusEventUpgrader : IEventUpgrader
 
 ## 7.5 Estrategia de Deployment
 
-### 7.5.1 Blue-Green Deployment
+### 7.5.1 Despliegue Blue-Green
 
 ```yaml
-# Blue-Green deployment strategy
+# Estrategia de despliegue Blue-Green
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
@@ -877,10 +877,10 @@ public class EventHandlerTracing
 ### 7.6.1 Configuración de Seguridad de Contenedores
 
 ```dockerfile
-# Security-hardened Dockerfile
+# Dockerfile reforzado en seguridad
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS runtime
 
-# Install security updates
+# Instalar actualizaciones de seguridad
 RUN apk upgrade --no-cache
 
 # Create non-root user
@@ -899,7 +899,7 @@ RUN apk del --no-cache \
 # Switch to non-root user
 USER 1001
 
-# Security settings
+# Configuraciones de seguridad
 ENV ASPNETCORE_URLS=http://+:8080
 ENV DOTNET_RUNNING_IN_CONTAINER=true
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
@@ -912,7 +912,7 @@ EXPOSE 8080
 ENTRYPOINT ["dotnet", "TLM.Services.TrackTrace.API.dll"]
 ```
 
-### 7.6.2 Network Policies
+### 7.6.2 Políticas de Red
 
 ```yaml
 # Network policy for Track & Trace API
@@ -966,12 +966,12 @@ spec:
           port: 53
 ```
 
-## 7.7 Troubleshooting y Debugging
+## 7.7 Solución de Problemas y Depuración
 
-### 7.7.1 Logging Configuration
+### 7.7.1 Configuración de Logging
 
 ```csharp
-// Structured logging setup
+// Configuración de logging estructurado
 public static class LoggingConfiguration
 {
     public static IServiceCollection AddStructuredLogging(
