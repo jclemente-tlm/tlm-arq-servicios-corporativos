@@ -8,34 +8,34 @@ Este capítulo identifica, evalúa y documenta los riesgos significativos del **
 
 ### 11.1.1 Matriz de Riesgos
 
-| Risk ID | Categoría | Descripción | Probabilidad | Impacto | Risk Score | Estado |
+| ID Riesgo | Categoría | Descripción | Probabilidad | Impacto | Puntuación Riesgo | Estado |
 |---------|-----------|-------------|--------------|---------|------------|---------|
-| **PVD-001** | Proveedor | Fallo simultáneo múltiples providers | Baja | Crítico | 9 | 🟡 Monitoreado |
-| **INF-001** | Infraestructura | Saturación Kafka cluster | Media | Alto | 12 | 🔴 Activo |
+| **PVD-001** | Proveedor | Fallo simultáneo múltiples proveedores | Baja | Crítico | 9 | 🟡 Monitoreado |
+| **INF-001** | Infraestructura | Saturación cluster Kafka | Media | Alto | 12 | 🔴 Activo |
 | **SEC-001** | Seguridad | Exposición datos PII | Baja | Crítico | 9 | 🟡 Monitoreado |
-| **CMP-001** | Compliance | Violación CAN-SPAM/GDPR | Baja | Crítico | 9 | 🟡 Monitoreado |
-| **PER-001** | Performance | Degradación template rendering | Alta | Medio | 12 | 🔴 Activo |
-| **OPS-001** | Operacional | Falta expertise Kafka | Media | Alto | 12 | 🔴 Activo |
+| **CMP-001** | Cumplimiento | Violación CAN-SPAM/GDPR | Baja | Crítico | 9 | 🟡 Monitoreado |
+| **PER-001** | Rendimiento | Degradación renderizado plantillas | Alta | Medio | 12 | 🔴 Activo |
+| **OPS-001** | Operacional | Falta experiencia Kafka | Media | Alto | 12 | 🔴 Activo |
 
 ### 11.1.2 Criterios de Evaluación
 
 ```yaml
-Probability Scale:
+Escala de Probabilidad:
   Muy Baja (1): < 5% en 12 meses
   Baja (2): 5-20% en 12 meses
   Media (3): 20-50% en 12 meses
   Alta (4): 50-80% en 12 meses
   Muy Alta (5): > 80% en 12 meses
 
-Impact Scale:
+Escala de Impacto:
   Muy Bajo (1): Impacto mínimo, no afecta usuarios
-  Bajo (2): Degradación menor, workarounds disponibles
+  Bajo (2): Degradación menor, alternativas disponibles
   Medio (3): Funcionalidad limitada, impacto temporal
   Alto (4): Impacto significativo en operaciones
   Crítico (5): Fallo completo del servicio
 
-Risk Score Calculation:
-  Risk Score = Probability × Impact
+Cálculo de Puntuación de Riesgo:
+  Puntuación Riesgo = Probabilidad × Impacto
   - 1-6: Bajo (🟢) - Monitoreo periódico
   - 7-12: Medio (🟡) - Mitigación recomendada
   - 13-20: Alto (🔴) - Mitigación inmediata
@@ -44,7 +44,7 @@ Risk Score Calculation:
 
 ## 11.2 Riesgos de Proveedores
 
-### PVD-001: Fallo Simultáneo de Múltiples Providers
+### PVD-001: Fallo Simultáneo de Múltiples Proveedores
 
 | Aspecto | Detalle |
 |---------|---------|

@@ -10,10 +10,10 @@ Esta sección describe el mapping de la arquitectura lógica del **Sistema de Id
 
 El sistema de identidad se despliega como una suite de contenedores orquestados en AWS ECS Fargate, proporcionando escalabilidad automática y gestión simplificada de infraestructura.
 
-#### Keycloak Identity Provider Cluster
+#### Cluster de Proveedor de Identidad Keycloak
 
 ```yaml
-# ECS Task Definition para Keycloak
+# Definición de Tarea ECS para Keycloak
 {
   "family": "keycloak-cluster",
   "networkMode": "awsvpc",
@@ -97,10 +97,10 @@ El sistema de identidad se despliega como una suite de contenedores orquestados 
 }
 ```
 
-#### Identity Management API Service
+#### Servicio de API de Gestión de Identidad
 
 ```yaml
-# ECS Task Definition para Identity API
+# Definición de Tarea ECS para API de Identidad
 {
   "family": "identity-api",
   "networkMode": "awsvpc",

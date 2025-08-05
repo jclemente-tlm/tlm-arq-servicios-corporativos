@@ -16,25 +16,25 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 
 | Componente | Propósito | Tecnología |
 |------------|-----------|------------|
-| **Event Processor** | Consume eventos del Track & Trace, aplica reglas de negocio | .NET 8 Background Services |
-| **Message Generator** | Transforma eventos en mensajes SITA según templates | Template Engine (Liquid), Business Rules |
-| **Delivery Engine** | Entrega confiable a partners SITA via múltiples protocolos | SFTP, HTTP/S, File Transfer |
-| **Configuration Manager** | Gestión de templates, mappings y configuración por partner | Dynamic Configuration Platform |
+| **Procesador de Eventos** | Consume eventos del Track & Trace, aplica reglas de negocio | .NET 8 Background Services |
+| **Generador de Mensajes** | Transforma eventos en mensajes SITA según plantillas | Template Engine (Liquid), Business Rules |
+| **Motor de Entrega** | Entrega confiable a partners SITA vía múltiples protocolos | SFTP, HTTP/S, File Transfer |
+| **Gestor de Configuración** | Gestión de plantillas, mapeos y configuración por partner | Dynamic Configuration Platform |
 
 ### Requisitos Funcionales Principales
 
 | ID | Requisito | Descripción Detallada |
 |----|-----------|-----------------------|
-| **RF-SITA-01** | **Message Generation** | Generación de mensajes SITA (MVTC, LDMC, etc.) desde eventos internos |
-| **RF-SITA-02** | **Template Management** | Templates configurables por aerolínea y tipo de mensaje |
-| **RF-SITA-03** | **Multi-Protocol Delivery** | Entrega via SFTP, HTTP/S, email según preferencias del partner |
-| **RF-SITA-04** | **Partner Configuration** | Configuración específica por aerolínea (formatos, protocolos, schedules) |
-| **RF-SITA-05** | **Delivery Scheduling** | Envío programado según horarios específicos del partner |
-| **RF-SITA-06** | **Retry & Error Handling** | Reintentos inteligentes con escalación manual para fallos persistentes |
-| **RF-SITA-07** | **Format Validation** | Validación de mensajes SITA según estándares IATA antes del envío |
-| **RF-SITA-08** | **Audit & Compliance** | Tracking completo para auditorías y compliance regulatorio |
-| **RF-SITA-09** | **Multi-tenant Support** | Soporte para múltiples aeropuertos/países con configuración independiente |
-| **RF-SITA-10** | **Real-time Monitoring** | Dashboards para monitoreo de entregas y status de partners |
+| **RF-SITA-01** | **Generación de Mensajes** | Generación de mensajes SITA (MVTC, LDMC, etc.) desde eventos internos |
+| **RF-SITA-02** | **Gestión de Plantillas** | Plantillas configurables por aerolínea y tipo de mensaje |
+| **RF-SITA-03** | **Entrega Multi-Protocolo** | Entrega vía SFTP, HTTP/S, email según preferencias del partner |
+| **RF-SITA-04** | **Configuración de Partner** | Configuración específica por aerolínea (formatos, protocolos, horarios) |
+| **RF-SITA-05** | **Programación de Entrega** | Envío programado según horarios específicos del partner |
+| **RF-SITA-06** | **Reintentos y Manejo de Errores** | Reintentos inteligentes con escalación manual para fallos persistentes |
+| **RF-SITA-07** | **Validación de Formato** | Validación de mensajes SITA según estándares IATA antes del envío |
+| **RF-SITA-08** | **Auditoría y Cumplimiento** | Seguimiento completo para auditorías y cumplimiento regulatorio |
+| **RF-SITA-09** | **Soporte Multi-tenant** | Soporte para múltiples aeropuertos/países con configuración independiente |
+| **RF-SITA-10** | **Monitoreo Tiempo Real** | Paneles para monitoreo de entregas y estado de partners |
 
 ### Tipos de Mensajes SITA Soportados
 
@@ -49,24 +49,24 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 
 ### Requisitos No Funcionales
 
-| Categoría | Requisito | Target | Medición |
+| Categoría | Requisito | Objetivo | Medición |
 |-----------|-----------|--------|----------|
-| **Reliability** | Message delivery success rate | 99.9% | Delivery tracking |
-| **Performance** | Message processing throughput | 1,000 messages/hour | Performance monitoring |
-| **Availability** | System uptime | 99.9% | SLA monitoring |
-| **Compliance** | SITA network compliance | 100% standard compliance | Format validation |
-| **Security** | Secure transmission | Encryption in transit | Security audits |
-| **Auditability** | Complete message audit trail | 100% messages tracked | Audit reports |
+| **Confiabilidad** | Tasa éxito entrega mensajes | 99.9% | Seguimiento entregas |
+| **Rendimiento** | Capacidad procesamiento mensajes | 1,000 mensajes/hora | Monitoreo rendimiento |
+| **Disponibilidad** | Tiempo actividad sistema | 99.9% | Monitoreo SLA |
+| **Cumplimiento** | Cumplimiento red SITA | 100% cumplimiento estándares | Validación formato |
+| **Seguridad** | Transmisión segura | Cifrado en tránsito | Auditorías seguridad |
+| **Auditabilidad** | Rastro auditoría completo mensajes | 100% mensajes rastreados | Reportes auditoría |
 
 ### Partners y Protocolos de Integración
 
-| Partner Type | Integration Method | Protocol | Security |
+| Tipo Partner | Método Integración | Protocolo | Seguridad |
 |--------------|-------------------|----------|----------|
-| **Major Airlines** | Direct SITA network | SITATEX, X.25 | SITA security standards |
-| **Regional Airlines** | File transfer | SFTP, HTTPS | TLS 1.3, key-based auth |
-| **Ground Handlers** | API integration | REST API, WebHooks | OAuth2 + JWT |
-| **Cargo Operators** | Batch files | SFTP, scheduled delivery | Certificate-based auth |
-| **Government Agencies** | Secure portal | HTTPS upload | Government PKI |
+| **Aerolíneas Principales** | Red SITA directa | SITATEX, X.25 | Estándares seguridad SITA |
+| **Aerolíneas Regionales** | Transferencia archivos | SFTP, HTTPS | TLS 1.3, autenticación basada claves |
+| **Operadores Tierra** | Integración API | API REST, WebHooks | OAuth2 + JWT |
+| **Operadores Carga** | Archivos lote | SFTP, entrega programada | Autenticación basada certificados |
+| **Agencias Gubernamentales** | Portal seguro | Carga HTTPS | PKI gubernamental |
 
 ## 1.2 Objetivos de calidad
 
@@ -74,27 +74,27 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 
 | Prioridad | Objetivo | Escenario | Métrica Objetivo |
 |-----------|----------|-----------|------------------|
-| **1** | **Compliance** | Mensajes cumplen estándares SITA/IATA al 100% | Zero compliance violations |
-| **2** | **Reliability** | Entrega garantizada de mensajes críticos | 99.9% delivery success |
-| **3** | **Timeliness** | Entrega dentro de ventanas de tiempo requeridas | 95% on-time delivery |
+| **1** | **Cumplimiento** | Mensajes cumplen estándares SITA/IATA al 100% | Cero violaciones cumplimiento |
+| **2** | **Confiabilidad** | Entrega garantizada de mensajes críticos | 99.9% éxito entrega |
+| **3** | **Puntualidad** | Entrega dentro de ventanas tiempo requeridas | 95% entrega a tiempo |
 
 ### Objetivos Secundarios
 
 | Objetivo | Descripción | Métrica |
 |----------|-------------|---------|
-| **Flexibility** | Fácil adición de nuevos partners y formatos | < 1 semana integration |
-| **Observability** | Visibilidad completa del pipeline de mensajes | 100% messages traced |
-| **Cost Efficiency** | Optimización de costos de transmisión | < $0.10 per message |
-| **Maintainability** | Gestión simple de templates y configuraciones | Self-service configuration |
+| **Flexibilidad** | Fácil adición de nuevos partners y formatos | < 1 semana integración |
+| **Observabilidad** | Visibilidad completa del pipeline de mensajes | 100% mensajes rastreados |
+| **Eficiencia Costos** | Optimización de costos de transmisión | < $0.10 por mensaje |
+| **Mantenibilidad** | Gestión simple de plantillas y configuraciones | Configuración autoservicio |
 
 ### Atributos de Calidad Específicos
 
 | Atributo | Definición | Implementación | Verificación |
 |----------|------------|----------------|--------------|
-| **Message Integrity** | Mensajes entregados sin corrupción | Checksums, digital signatures | Automated validation |
-| **Delivery Assurance** | Confirmación de entrega exitosa | Acknowledgment tracking | Receipt verification |
-| **Format Compliance** | Adherencia a estándares SITA/IATA | Schema validation, format checking | Compliance testing |
-| **Partner SLA** | Cumplimiento de SLAs específicos por partner | SLA monitoring, alerting | SLA reporting |
+| **Integridad Mensaje** | Mensajes entregados sin corrupción | Checksums, firmas digitales | Validación automatizada |
+| **Garantía Entrega** | Confirmación de entrega exitosa | Seguimiento acuse recibo | Verificación recepción |
+| **Cumplimiento Formato** | Adherencia a estándares SITA/IATA | Validación schema, verificación formato | Pruebas cumplimiento |
+| **SLA Partner** | Cumplimiento de SLAs específicos por partner | Monitoreo SLA, alertas | Reportes SLA |
 
 ## 1.3 Partes interesadas
 
@@ -102,11 +102,11 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 
 | Rol | Contacto | Responsabilidades | Expectativas |
 |-----|----------|-------------------|--------------|
-| **Airport Operations** | Ops Management | Definición de mensajes críticos, SLAs | Reliable delivery, real-time status |
-| **Airline Relations** | Partner Management | Relaciones con aerolíneas, onboarding | Smooth partner integration |
-| **IT Integration** | Dev Teams | Integración técnica, troubleshooting | Clear APIs, comprehensive documentation |
-| **Compliance Officer** | Legal/Compliance | Regulatory compliance, audits | Full audit trails, compliance reporting |
-| **SITA Technical** | SITA Representatives | Technical standards, certification | Standards compliance, certification |
+| **Operaciones Aeroportuarias** | Gestión Operaciones | Definición de mensajes críticos, SLAs | Entrega confiable, estado tiempo real |
+| **Relaciones Aerolíneas** | Gestión Partners | Relaciones con aerolíneas, incorporación | Integración fluida partners |
+| **Integración TI** | Equipos Desarrollo | Integración técnica, resolución problemas | APIs claras, documentación completa |
+| **Oficial Cumplimiento** | Legal/Cumplimiento | Cumplimiento regulatorio, auditorías | Rastros auditoría completos, reportes cumplimiento |
+| **Técnico SITA** | Representantes SITA | Estándares técnicos, certificación | Cumplimiento estándares, certificación |
 
 ### Partners Externos (Consumidores)
 

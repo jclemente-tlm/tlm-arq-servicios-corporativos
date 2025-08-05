@@ -10,9 +10,9 @@
 
 ## B
 
-**Backend Service**: Servicio que procesa la lógica de negocio y que se encuentra detrás del API Gateway, no expuesto directamente a los clientes.
+**Servicio Backend**: Servicio que procesa la lógica de negocio y que se encuentra detrás del API Gateway, no expuesto directamente a los clientes.
 
-**Blue-Green Deployment**: Estrategia de despliegue donde se mantienen dos entornos idénticos (azul y verde), permitiendo cambios sin downtime.
+**Despliegue Blue-Green**: Estrategia de despliegue donde se mantienen dos entornos idénticos (azul y verde), permitiendo cambios sin downtime.
 
 ## C
 
@@ -28,13 +28,13 @@
 
 ## D
 
-**Distributed Cache**: Sistema de cache que opera a través de múltiples servidores, permitiendo compartir datos en cache entre diferentes instancias de aplicación.
+**Caché Distribuido**: Sistema de cache que opera a través de múltiples servidores, permitiendo compartir datos en cache entre diferentes instancias de aplicación.
 
-**Distributed Tracing**: Técnica de observabilidad que rastrea requests a través de múltiples servicios distribuidos, proporcionando visibilidad completa del flujo.
+**Trazabilidad Distribuida**: Técnica de observabilidad que rastrea requests a través de múltiples servicios distribuidos, proporcionando visibilidad completa del flujo.
 
 **Docker**: Plataforma de contenedorización que permite empaquetar aplicaciones y sus dependencias en contenedores portables.
 
-**Downstream Service**: Servicio que recibe requests del API Gateway; sinónimo de backend service.
+**Servicio Downstream**: Servicio que recibe requests del API Gateway; sinónimo de servicio backend.
 
 ## E
 

@@ -16,29 +16,32 @@
 - Saturación de ancho de banda durante eventos masivos
 
 **Estrategias de mitigación**:
+
 - **Redundancia**: Múltiples conexiones SITA independientes
-- **Buffering**: Queue persistence para mensajes durante outages
-- **Monitoring**: Alertas proactivas de conectividad
+- **Almacenamiento temporal**: Queue persistence para mensajes durante cortes
+- **Monitoreo**: Alertas proactivas de conectividad
 - **Contractual**: SLA con SITA para tiempo de respuesta
 
 #### RT-002: Escalabilidad de certificados X.509
 
 **Probabilidad**: Media (40%)
 **Impacto**: Medio
-**Descripción**: Gestión manual de certificados puede convertirse en bottleneck operacional
+**Descripción**: Gestión manual de certificados puede convertirse en cuello de botella operacional
 
 **Factores de riesgo**:
+
 - 100+ tenants con certificados únicos
 - Renovación manual propensa a errores
 - Falta de automatización para rotación
 
 **Estrategias de mitigación**:
-- **Automatización**: PKI automation con HashiCorp Vault
-- **Monitoring**: Certificate expiration alerting (30/7/1 días)
-- **Self-service**: Portal para tenant certificate management
-- **Backup**: Certificate backup y recovery procedures
 
-#### RT-003: Performance degradation con volumen creciente
+- **Automatización**: PKI automation con HashiCorp Vault
+- **Monitoreo**: Certificate expiration alerting (30/7/1 días)
+- **Autoservicio**: Portal para tenant certificate management
+- **Respaldo**: Certificate backup y recovery procedures
+
+#### RT-003: Degradación de rendimiento con volumen creciente
 
 **Probabilidad**: Alta (60%)
 **Impacto**: Medio

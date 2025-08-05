@@ -10,37 +10,37 @@ Esta sección documenta las decisiones arquitectónicas más importantes del **S
 
 | # | Decisión | Estado | Impacto | Fecha |
 |---|----------|--------|---------|-------|
-| ADR-001 | Multi-Provider Strategy | ✅ Aprobado | Alto | 2024-01-15 |
-| ADR-002 | Database-based Messaging | ✅ Aprobado | Alto | 2024-01-25 |
-| ADR-003 | Liquid Template Engine | ✅ Aprobado | Medio | 2024-02-05 |
-| ADR-004 | Event-Driven Architecture | ✅ Aprobado | Alto | 2024-02-10 |
-| ADR-005 | Multi-cloud NuGet Library | ✅ Aprobado | Alto | 2024-02-15 |
+| ADR-001 | Estrategia Multi-Proveedor | ✅ Aprobado | Alto | 2024-01-15 |
+| ADR-002 | Mensajería Basada en Base de Datos | ✅ Aprobado | Alto | 2024-01-25 |
+| ADR-003 | Motor de Plantillas Liquid | ✅ Aprobado | Medio | 2024-02-05 |
+| ADR-004 | Arquitectura Dirigida por Eventos | ✅ Aprobado | Alto | 2024-02-10 |
+| ADR-005 | Librería NuGet Multi-nube | ✅ Aprobado | Alto | 2024-02-15 |
 
 ### Principios Arquitectónicos
 
 Las decisiones arquitectónicas del Sistema de Notificaciones siguen los principios de:
 
-- **Cloud Agnostic:** Portabilidad total entre AWS, Azure y GCP
-- **Container First:** Optimizado para despliegue en contenedores
-- **Database-Centric Messaging:** Queue basadas en PostgreSQL para cloud independence
+- **Agnóstico de Nube:** Portabilidad total entre AWS, Azure y GCP
+- **Contenedores Primero:** Optimizado para despliegue en contenedores
+- **Mensajería Centrada en Base de Datos:** Colas basadas en PostgreSQL para independencia de nube
 - **Multi-tenant:** Soporte nativo para múltiples inquilinos
-- **Event-Driven:** Comunicación asíncrona mediante eventos de dominio
-- **Zero Vendor Lock-in:** Abstracción completa de proveedores cloud
+- **Dirigido por Eventos:** Comunicación asíncrona mediante eventos de dominio
+- **Sin Dependencia de Proveedor:** Abstracción completa de proveedores de nube
 
-## ADR-001: Multi-Provider Strategy para Reliability
+## ADR-001: Estrategia Multi-Proveedor para Confiabilidad
 
 | Campo | Valor |
 |-------|-------|
 | **Estado** | ✅ Aprobado |
 | **Fecha** | 2024-01-20 |
 | **Decidido por** | Equipo de Arquitectura + Operations |
-| **Stakeholders** | Business Team, DevOps, Finance |
+| **Stakeholders** | Equipo de Negocio, DevOps, Finanzas |
 
 ### Contexto
 
 El servicio de notificaciones maneja comunicaciones críticas para el negocio (alertas de vuelos, confirmaciones de reserva, notificaciones de emergencia) que requieren:
 
-- **Alta disponibilidad:** 99.9% uptime
+- **Alta disponibilidad:** 99.9% tiempo de actividad
 - **Escalabilidad:** 100K+ mensajes/día por tenant
 - **Cobertura global:** Soporte para 4 países
 - **Optimización de costos:** Mejores tarifas mediante diversificación
@@ -218,7 +218,7 @@ El sistema de notificaciones requiere un message broker que soporte:
 | **Amazon SNS + SQS** | ❌ AWS only | Excelente | FIFO limited | Media | Medio | ❌ Rechazado |
 | **RabbitMQ** | ✅ Full | Buena | Cola | Media | Medio | ⚠️ Considerado |
 | **Amazon MQ** | ⚠️ Multi-cloud | Buena | Limited | Media | Alto | ❌ Rechazado |
-| **Event Bus agnóstico** | ✅ Full | Excelente | Partición | Alta | Alto | ❌ No primera opción |
+| **Event Bus** | ✅ Full | Excelente | Partición | Alta | Medio | ✅ Abstracción agnóstica |
 
 ### Decisión
 

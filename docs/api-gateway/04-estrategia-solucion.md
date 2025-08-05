@@ -48,7 +48,7 @@ Request → Security → Tenant → RateLimit → Transform → CircuitBreaker �
 - **Transformation:** Mapeo de datos de solicitud/respuesta
 - **Circuit Breaker:** Aislamiento de fallas con Polly
 
-### Patrón 2: Configuration-as-Code
+### Patrón 2: Configuración como Código
 
 ```
 Config Source → Validation → Hot Reload → Cache Invalidation → Apply Changes
@@ -61,7 +61,7 @@ Config Source → Validation → Hot Reload → Cache Invalidation → Apply Cha
 - **Capacidad de Rollback:** Versionado de configuraciones
 - **Multi-Ambiente:** Configuración específica por ambiente
 
-### Patrón 3: Observability Built-in
+### Patrón 3: Observabilidad Incorporada
 
 ```
 Request → Correlation ID → Structured Logs → Metrics → Tracing → Dashboards
@@ -72,7 +72,7 @@ Request → Correlation ID → Structured Logs → Metrics → Tracing → Dashb
 - **Correlation IDs:** UUID propagado en headers
 - **Structured Logging:** Formato JSON con Serilog
 - **Custom Metrics:** Métricas compatibles con Prometheus
-- **Health Checks:** Verificaciones de salud estilo Kubernetes
+- **Verificaciones de Salud:** Verificaciones de salud estilo Kubernetes
 
 ## 4.3 Enfoque Multi-Tenant (Multi-Realm)
 
@@ -96,7 +96,7 @@ public class TenantContext
 }
 ```
 
-### Tenant (Realm) Isolation Strategy
+### Estrategia de Aislamiento de Tenant (Realm)
 
 | Nivel | Estrategia | Implementación |
 |-------|------------|----------------|
@@ -149,12 +149,12 @@ public class TenantResolutionMiddleware
 
 ## 4.4 Estrategia de Resiliencia
 
-### Circuit Breaker Pattern
+### Patrón Circuit Breaker
 
 - **Implementación:** Integración con librería Polly
 - **Umbrales:** Tasas de falla y timeouts configurables
 - **Estados:** Cerrado → Abierto → Semi-Abierto → Cerrado
-- **Fallback:** Respuestas de degradación elegante
+- **Respaldo:** Respuestas de degradación elegante
 
 ### Estrategia de Reintentos
 
@@ -183,7 +183,7 @@ public class TenantResolutionMiddleware
 | **Rate Limiting** | Gestión de cuotas | Algoritmo token bucket por tenant/realm |
 | **Auditoría** | Registro de acceso | Logs estructurados con correlación + contexto tenant |
 
-### Security Headers
+### Cabeceras de Seguridad
 
 ```
 Strict-Transport-Security: max-age=31536000; includeSubDomains
@@ -200,10 +200,10 @@ Content-Security-Policy: default-src 'self'
 | Técnica | Propósito | Implementación |
 |---------|-----------|----------------|
 | **Pooling de Conexiones** | Reducir latencia | Pooling de clientes HTTP |
-| **Response Compression** | Reducir ancho de banda | Codificación gzip/brotli |
+| **Compresión de Respuesta** | Reducir ancho de banda | Codificación gzip/brotli |
 | **HTTP/2** | Multiplexación | Soporte nativo en .NET |
 | **Caching** | Reducir carga | Headers de caché de respuesta |
-| **Load Balancing** | Distribuir carga | Round-robin ponderado |
+| **Balanceo de Carga** | Distribuir carga | Round-robin ponderado |
 
 ### Objetivos de Rendimiento
 
@@ -252,7 +252,7 @@ Variables de Entorno > AWS SSM > Archivos Locales > Valores por Defecto
 
 ### Estrategia de Testing
 
-- **Shift-Left:** Testing temprano en el ciclo de desarrollo
+- **Desplazamiento hacia la Izquierda:** Testing temprano en el ciclo de desarrollo
 - **Automatizado:** 100% testing automatizado en CI/CD
 - **Paridad de Ambiente:** Testing en ambientes similares a producción
 - **Continuo:** Testing continuo con ciclos de retroalimentación

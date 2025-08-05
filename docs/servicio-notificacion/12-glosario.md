@@ -6,48 +6,48 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 
 ## A
 
-**API First Design**
+**Diseño API Primero** (API First Design)
 : Estrategia de desarrollo donde el diseño de la API precede a la implementación, garantizando contratos claros entre servicios y mejor experiencia para desarrolladores.
 
 **API Gateway**
-: Punto de entrada unificado que maneja authentication, authorization, rate limiting, y routing hacia microservicios específicos. En nuestro caso, implementado con YARP.
+: Punto de entrada unificado que maneja autenticación, autorización, limitación de velocidad y enrutamiento hacia microservicios específicos. En nuestro caso, implementado con YARP.
 
-**At-Least-Once Delivery**
-: Garantía de entrega donde cada mensaje es entregado una o más veces. Requiere idempotencia en consumers para manejar duplicados.
+**Entrega Al-Menos-Una-Vez** (At-Least-Once Delivery)
+: Garantía de entrega donde cada mensaje es entregado una o más veces. Requiere idempotencia en consumidores para manejar duplicados.
 
-**Audit Trail**
+**Rastro de Auditoría** (Audit Trail)
 : Registro cronológico e inmutable de todas las actividades del sistema, implementado mediante event sourcing para cumplimiento regulatorio y debugging.
 
-**Auto-scaling**
-: Capacidad de ajustar automáticamente recursos computacionales (instancias, CPU, memoria) basado en métricas como CPU utilization, queue depth, o response time.
+**Auto-escalado** (Auto-scaling)
+: Capacidad de ajustar automáticamente recursos computacionales (instancias, CPU, memoria) basado en métricas como utilización de CPU, profundidad de cola o tiempo de respuesta.
 
 ## B
 
 **Backoff Exponencial**
 : Estrategia de retry que incrementa exponencialmente el tiempo de espera entre reintentos (1s, 2s, 4s, 8s...) para evitar thundering herd y reducir carga en servicios failing.
 
-**Batch Processing**
-: Procesamiento de múltiples elementos agrupados para optimizar throughput y reducir overhead. Usado en email campaigns y bulk notifications.
+**Procesamiento por Lotes** (Batch Processing)
+: Procesamiento de múltiples elementos agrupados para optimizar throughput y reducir overhead. Usado en campañas de email y notificaciones masivas.
 
-**Blue-Green Deployment**
-: Estrategia de deployment que mantiene dos ambientes idénticos (blue y green) permitiendo switches instantáneos y rollbacks seguros.
+**Despliegue Azul-Verde** (Blue-Green Deployment)
+: Estrategia de despliegue que mantiene dos ambientes idénticos (azul y verde) permitiendo cambios instantáneos y rollbacks seguros.
 
-**Bulk Operations**
-: Operaciones que procesan múltiples elementos en una sola transacción, optimizando performance y reduciendo latencia de red.
+**Operaciones Masivas** (Bulk Operations)
+: Operaciones que procesan múltiples elementos en una sola transacción, optimizando rendimiento y reduciendo latencia de red.
 
-**Business Metrics**
-: Métricas que reflejan el impacto del negocio como delivery rates, template usage, customer satisfaction, y cost per notification.
+**Métricas de Negocio** (Business Metrics)
+: Métricas que reflejan el impacto del negocio como tasas de entrega, uso de plantillas, satisfacción del cliente y costo por notificación.
 
 ## C
 
-**Campaign**
-: Envío masivo de notificaciones a múltiples destinatarios usando el mismo template y contenido, típicamente usado para marketing o comunicaciones corporativas.
+**Campaña**
+: Envío masivo de notificaciones a múltiples destinatarios usando la misma plantilla y contenido, típicamente usado para marketing o comunicaciones corporativas.
 
 **CAN-SPAM Act**
 : Ley estadounidense que establece reglas para email comercial, requiriendo opt-out mechanisms, identificación clara del sender, y physical address.
 
-**Circuit Breaker**
-: Patrón de resilience que previene llamadas a servicios failing, con tres estados: Closed (normal), Open (failing), Half-Open (testing recovery).
+**Cortocircuito** (Circuit Breaker)
+: Patrón de resistencia que previene llamadas a servicios fallidos, con tres estados: Cerrado (normal), Abierto (fallando), Semi-Abierto (probando recuperación).
 
 **Clean Architecture**
 : Patrón arquitectónico que organiza código en capas concéntricas (Entities, Use Cases, Interface Adapters, Frameworks) con dependencies pointing inward.
@@ -131,8 +131,8 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 
 ## K
 
-**Kafka**
-: Distributed event streaming platform usado como message broker principal, proporcionando high throughput, durability, y fault tolerance.
+**Event Bus**
+: Plataforma agnóstica de streaming de eventos usada como message broker principal, proporcionando alto rendimiento, durabilidad y tolerancia a fallos.
 
 **Kafka Connect**
 : Framework para conectar Kafka con external systems (databases, file systems, cloud services) mediante reusable connectors.
@@ -212,7 +212,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 : Technique para controlling número de requests que client puede hacer en specific time period, protecting against abuse y overload.
 
 **Redis**
-: In-memory data structure store usado como database, cache, y message broker, proporcionando high performance para frequently accessed data.
+: Almacén de estructuras de datos en memoria usado como base de datos, cache y message broker, proporcionando alto rendimiento para datos de acceso frecuente.
 
 **Retry Policy**
 : Strategy que define cuándo y cómo retry failed operations, típicamente con exponential backoff y maximum attempt limits.

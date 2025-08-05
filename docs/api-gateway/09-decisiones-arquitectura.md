@@ -4,7 +4,7 @@
 
 **Estado**: Aceptado
 **Fecha**: 2024-01-15
-**Decisores**: Equipo de Arquitectura, DevOps Team
+**Decisores**: Equipo de Arquitectura, Equipo DevOps
 
 ### Contexto y problema
 
@@ -12,7 +12,7 @@ Necesitamos un proxy reverso de alto rendimiento para el API Gateway que pueda:
 - Manejar routing dinámico a múltiples servicios
 - Soportar configuración en tiempo real
 - Integrarse nativamente con .NET 8
-- Proporcionar capacidades de load balancing
+- Proporcionar capacidades de balanceo de carga
 - Ser extensible para funcionalidades personalizadas
 
 ### Alternativas consideradas
@@ -395,14 +395,14 @@ public class HybridTokenValidator : ITokenValidator
 **Positivas**:
 - Latencia de validación muy baja
 - Resistencia a fallos del servicio de identidad
-- Balance entre seguridad y performance
+- Balance entre seguridad y rendimiento
 
 **Negativas**:
 - Ventana de tiempo para tokens revocados
 - Complejidad adicional en gestión de cache
 - Posible inconsistencia temporal
 
-## 9.5 ADR-005: Health checks multinivel
+## 9.5 ADR-005: Verificaciones de salud multinivel
 
 **Estado**: Aceptado
 **Fecha**: 2024-02-05
@@ -410,14 +410,14 @@ public class HybridTokenValidator : ITokenValidator
 
 ### Contexión y problema
 
-Necesitamos health checks que proporcionen información granular sobre el estado del API Gateway y sus dependencias para:
+Necesitamos verificaciones de salud que proporcionen información granular sobre el estado del API Gateway y sus dependencias para:
 - Load balancer routing decisions
 - Alertas automáticas específicas
 - Debugging de problemas de conectividad
 
 ### Decisión
 
-Implementamos health checks multinivel con endpoints especializados:
+Implementamos verificaciones de salud multinivel con endpoints especializados:
 
 ```csharp
 public class CompositeHealthCheck : IHealthCheck

@@ -55,11 +55,11 @@ El sistema se integra con el ecosistema corporativo para proporcionar comunicaci
 
 | Prioridad | Objetivo | KPI | Target |
 |-----------|----------|-----|--------|
-| **Alta** | **Confiabilidad de Entrega** | Delivery Success Rate | > 99.5% |
-| **Alta** | **Tiempo de Respuesta** | API Response Time p95 | < 200ms |
-| **Media** | **Escalabilidad** | Peak Load Handling | 50K notifications/min |
-| **Media** | **Compliance** | Opt-out Processing | < 1 hora |
-| **Baja** | **Cost Efficiency** | Cost per Notification | < $0.05 |
+| **Alta** | **Confiabilidad de Entrega** | Tasa de Éxito de Entrega | > 99.5% |
+| **Alta** | **Tiempo de Respuesta** | Tiempo de Respuesta API p95 | < 200ms |
+| **Media** | **Escalabilidad** | Manejo de Carga Pico | 50K notificaciones/min |
+| **Media** | **Cumplimiento** | Procesamiento de Opt-out | < 1 hora |
+| **Baja** | **Eficiencia de Costo** | Costo por Notificación | < $0.05 |
 
 ## 3.2 Contexto técnico
 
@@ -75,19 +75,19 @@ El sistema se integra con el ecosistema corporativo para proporcionar comunicaci
 | Canal | Proveedor | Protocolo | Formato | Observaciones |
 |-------|-----------|-----------|---------|---------------|
 | **Email** | SendGrid / Amazon SES | HTTPS REST API | JSON | SMTP como fallback |
-| **SMS** | Twilio | HTTPS REST API | JSON | Rate limiting por carrier |
-| **WhatsApp** | WhatsApp Business API | HTTPS REST API | JSON | Template pre-approval required |
-| **Push** | Firebase FCM / APNS | HTTPS REST API | JSON | Device token management |
-| **In-App** | Internal Pub/Sub | WebSocket | JSON | Real-time delivery |
+| **SMS** | Twilio | HTTPS REST API | JSON | Limitación de velocidad por operador |
+| **WhatsApp** | WhatsApp Business API | HTTPS REST API | JSON | Pre-aprobación de template requerida |
+| **Push** | Firebase FCM / APNS | HTTPS REST API | JSON | Gestión de device token |
+| **In-App** | Pub/Sub Interno | WebSocket | JSON | Entrega en tiempo real |
 
 #### Integración con Sistemas Internos
 
 | Sistema | Protocolo | Formato | Autenticación | SLA |
 |---------|-----------|---------|---------------|-----|
-| **Track & Trace** | Event Bus | Avro | mTLS | < 1s event processing |
-| **SITA Messaging** | Event Bus | JSON | mTLS | < 2s event processing |
-| **Identity System** | HTTPS REST | JWT | OAuth 2.0 | < 200ms response |
-| **API Gateway** | HTTPS | JSON | JWT Bearer | < 100ms routing |
+| **Track & Trace** | Bus de Eventos | Avro | mTLS | < 1s procesamiento evento |
+| **SITA Messaging** | Bus de Eventos | JSON | mTLS | < 2s procesamiento evento |
+| **Sistema de Identidad** | HTTPS REST | JWT | OAuth 2.0 | < 200ms respuesta |
+| **API Gateway** | HTTPS | JSON | JWT Bearer | < 100ms enrutamiento |
 
 ### Mapeo de Entrada/Salida a Canales
 

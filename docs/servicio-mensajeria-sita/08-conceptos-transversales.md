@@ -3,35 +3,40 @@
 ## 8.1 Seguridad
 
 ### 8.1.1 Autenticación SITA
-- **Certificados X.509**: Cliente certificates para autenticación con red SITA
-- **Address Codes**: Identificadores únicos SITA por tenant/organización
-- **Session Management**: Gestión segura de sesiones long-lived con SITA network
+
+- **Certificados X.509**: Certificados cliente para autenticación con red SITA
+- **Códigos de Dirección**: Identificadores únicos SITA por tenant/organización
+- **Gestión de Sesión**: Gestión segura de sesiones long-lived con red SITA
 
 ### 8.1.2 Cifrado de datos
+
 - **TLS 1.3**: Todas las comunicaciones con APIs internas
-- **SITA Protocol Security**: Cifrado según estándares SITA Type B
-- **Data at Rest**: AES-256 para almacenamiento de mensajes sensibles
-- **Certificate Rotation**: Renovación automática de certificados SITA
+- **Seguridad Protocolo SITA**: Cifrado según estándares SITA Type B
+- **Datos en Reposo**: AES-256 para almacenamiento de mensajes sensibles
+- **Rotación de Certificados**: Renovación automática de certificados SITA
 
 ### 8.1.3 Autorización
+
 - **OAuth2 + JWT**: Para acceso a APIs internas
 - **RBAC**: Roles específicos por tipo de operación SITA
-- **Tenant Isolation**: Aislamiento completo de datos entre tenants
-- **SITA Permissions**: Validación de permisos SITA por tipo de mensaje
+- **Aislamiento de Tenant**: Aislamiento completo de datos entre tenants
+- **Permisos SITA**: Validación de permisos SITA por tipo de mensaje
 
 ## 8.2 Multi-tenancy y Multi-país
 
 ### 8.2.1 Separación de datos
-- **Schema per Tenant**: Aislamiento a nivel de base de datos
-- **SITA Address Isolation**: Cada tenant tiene addresses SITA únicos
-- **Message Routing**: Routing automático basado en tenant context
-- **Audit Separation**: Logs de auditoría separados por tenant
+
+- **Esquema por Tenant**: Aislamiento a nivel de base de datos
+- **Aislamiento de Dirección SITA**: Cada tenant tiene addresses SITA únicos
+- **Enrutamiento de Mensajes**: Routing automático basado en contexto de tenant
+- **Separación de Auditoría**: Logs de auditoría separados por tenant
 
 ### 8.2.2 Configuración regional
-- **Timezone Handling**: Conversión automática para mensajes SITA
-- **Regulatory Compliance**: Cumplimiento de regulaciones aeronáuticas locales
-- **Message Formats**: Adaptación a formatos específicos por región
-- **SITA Regional Nodes**: Routing a nodos SITA regionales apropiados
+
+- **Manejo de Zona Horaria**: Conversión automática para mensajes SITA
+- **Cumplimiento Regulatorio**: Cumplimiento de regulaciones aeronáuticas locales
+- **Formatos de Mensaje**: Adaptación a formatos específicos por región
+- **Nodos Regionales SITA**: Routing a nodos SITA regionales apropiados
 
 ## 8.3 Observabilidad y Monitoreo
 

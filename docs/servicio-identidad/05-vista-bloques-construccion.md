@@ -10,7 +10,7 @@ Esta sección describe la descomposición estática del **Sistema de Identidad**
 
 El sistema se estructura siguiendo los principios de arquitectura de microservicios y separación de responsabilidades:
 
-- **Separación de concerns:** Authentication vs Authorization vs Administration
+- **Separación de preocupaciones:** Autenticación vs Autorización vs Administración
 - **Escalabilidad independiente:** Componentes pueden escalar según demanda específica
 - **Tolerancia a fallos:** Aislamiento de fallas entre componentes
 - **Mantenibilidad:** Interfaces bien definidas y cohesión alta
@@ -19,14 +19,14 @@ El sistema se estructura siguiendo los principios de arquitectura de microservic
 
 | Componente | Responsabilidad | Tecnología | Interfaces |
 |------------|-----------------|------------|------------|
-| **Keycloak Core** | Identity Provider central | Keycloak 23+ | OAuth2/OIDC, SAML, Admin API |
-| **Identity Management API** | Gestión programática de identidades | ASP.NET Core 8 | REST API, GraphQL |
-| **Token Validation Service** | Validación distribuida de JWT | .NET 8 gRPC | gRPC, HTTP/2 |
-| **Audit & Compliance** | Logging y cumplimiento | Event Sourcing | Event Bus, REST Reports |
-| **Federation Gateway** | Integración external IdPs | Custom Connectors | SAML, OIDC, LDAP |
-| **Admin Console** | Interface administrativa | React SPA | REST API consumption |
+| **Núcleo Keycloak** | Proveedor de identidad central | Keycloak 23+ | OAuth2/OIDC, SAML, Admin API |
+| **API de Gestión de Identidad** | Gestión programática de identidades | ASP.NET Core 8 | API REST, GraphQL |
+| **Servicio de Validación de Tokens** | Validación distribuida de JWT | .NET 8 gRPC | gRPC, HTTP/2 |
+| **Auditoría y Cumplimiento** | Logging y cumplimiento | Event Sourcing | Event Bus, Reportes REST |
+| **Gateway de Federación** | Integración IdPs externos | Conectores Personalizados | SAML, OIDC, LDAP |
+| **Consola de Administración** | Interfaz administrativa | React SPA | Consumo API REST |
 
-#### Keycloak Core
+#### Núcleo Keycloak
 
 **Propósito/Responsabilidad:**
 - Autoridad central de autenticación y autorización
@@ -35,44 +35,44 @@ El sistema se estructura siguiendo los principios de arquitectura de microservic
 - Federación con proveedores de identidad externos
 
 **Interfaces:**
-- OAuth2/OIDC endpoints para aplicaciones cliente
-- SAML IdP para sistemas legacy
-- Admin REST API para gestión programática
-- Events SPI para auditoría
+- Endpoints OAuth2/OIDC para aplicaciones cliente
+- IdP SAML para sistemas legacy
+- API REST de administración para gestión programática
+- SPI de eventos para auditoría
 
 **Tecnología:** Keycloak 23+, Java 21, PostgreSQL
 
-**Ubicación:** Kubernetes deployment con alta disponibilidad
+**Ubicación:** Despliegue Kubernetes con alta disponibilidad
 
-#### Identity Management API
+#### API de Gestión de Identidad
 
 **Propósito/Responsabilidad:**
 - API empresarial para operaciones de identidad
-- Abstracción sobre Keycloak Admin API
-- Workflows de negocio específicos
+- Abstracción sobre API de administración Keycloak
+- Flujos de trabajo de negocio específicos
 - Integración con sistemas corporativos
 
 **Interfaces:**
-- REST API con OpenAPI 3.0 specification
-- GraphQL para queries complejas
-- Webhook callbacks para eventos
+- API REST con especificación OpenAPI 3.0
+- GraphQL para consultas complejas
+- Callbacks webhook para eventos
 
 **Tecnología:** ASP.NET Core 8, Entity Framework Core
 
 **Ubicación:** `/src/Identity.Api/`
 
-#### Token Validation Service
+#### Servicio de Validación de Tokens
 
 **Propósito/Responsabilidad:**
-- Validación high-performance de tokens JWT
-- Cache distribuido de claves públicas
-- Introspection endpoint optimizado
-- Claims enrichment y transformation
+- Validación alto rendimiento de tokens JWT
+- Caché distribuido de claves públicas
+- Endpoint de introspección optimizado
+- Enriquecimiento y transformación de claims
 
 **Interfaces:**
-- gRPC service para alta performance
-- HTTP/2 REST API como fallback
-- Health check endpoints
+- Servicio gRPC para alto rendimiento
+- API REST HTTP/2 como respaldo
+- Endpoints de verificación de salud
 
 **Tecnología:** .NET 8, gRPC, Redis Cluster
 

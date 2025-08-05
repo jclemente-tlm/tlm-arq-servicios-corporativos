@@ -4,31 +4,31 @@ Esta sección describe los aspectos arquitectónicos que afectan múltiples bloq
 
 *[INSERTAR AQUÍ: Diagrama C4 - Cross-cutting Concerns del Sistema de Identidad]*
 
-## 8.1 Seguridad (Security)
+## 8.1 Seguridad
 
-### Modelo de Seguridad Defense-in-Depth
+### Modelo de Seguridad Defensa en Profundidad
 
 El sistema implementa múltiples capas de seguridad siguiendo el principio de defensa en profundidad:
 
 #### Capa de Red
 ```yaml
-Network Security:
-  AWS_Security_Groups:
-    - Ingress: Only required ports (80, 443, 5432, 6379)
-    - Egress: Restrictive outbound rules
-    - Source: Specific security groups, no 0.0.0.0/0
+Seguridad de Red:
+  Grupos_Seguridad_AWS:
+    - Entrada: Solo puertos requeridos (80, 443, 5432, 6379)
+    - Salida: Reglas restrictivas de salida
+    - Origen: Grupos de seguridad específicos, no 0.0.0.0/0
 
   AWS_WAF:
-    - SQL Injection protection
-    - Cross-site scripting (XSS) prevention
-    - Rate limiting per IP
-    - Geographic blocking if needed
+    - Protección inyección SQL
+    - Prevención cross-site scripting (XSS)
+    - Limitación de velocidad por IP
+    - Bloqueo geográfico si es necesario
 
-  VPC_Configuration:
-    - Private subnets for application tier
-    - Database subnets isolated
-    - NAT Gateway for outbound traffic
-    - Flow logs enabled
+  Configuración_VPC:
+    - Subredes privadas para capa aplicación
+    - Subredes base de datos aisladas
+    - Gateway NAT para tráfico salida
+    - Logs de flujo habilitados
 ```
 
 #### Capa de Aplicación
@@ -62,27 +62,27 @@ public class SecurityHeadersMiddleware
 
 #### Gestión Avanzada de Secretos
 ```yaml
-Secret Management Strategy:
-  AWS_Secrets_Manager:
-    - Database credentials with automatic rotation
-    - API keys for external services
-    - JWT signing keys with 90-day rotation
-    - Client secrets for OAuth2 applications
+Estrategia_Gestión_Secretos:
+  Administrador_Secretos_AWS:
+    - Credenciales base datos con rotación automática
+    - Claves API para servicios externos
+    - Claves firma JWT con rotación 90 días
+    - Secretos cliente para aplicaciones OAuth2
 
-  Key_Rotation_Policy:
-    - JWT Keys: 90 days automatic
-    - Database passwords: 60 days automatic
-    - API keys: Manual on security review
-    - TLS certificates: 90 days before expiration
+  Política_Rotación_Claves:
+    - Claves JWT: 90 días automático
+    - Contraseñas base datos: 60 días automático
+    - Claves API: Manual en revisión seguridad
+    - Certificados TLS: 90 días antes expiración
 
-  Access_Control:
-    - IAM roles with least privilege
-    - Service-specific access policies
-    - Audit trail for all secret access
-    - Emergency break-glass procedures
+  Control_Acceso:
+    - Roles IAM con menor privilegio
+    - Políticas acceso específicas servicio
+    - Rastro auditoría para todo acceso secreto
+    - Procedimientos emergencia break-glass
 ```
 
-#### Authentication & Authorization Framework
+#### Marco de Autenticación y Autorización
 ```csharp
 // JWT Token validation with claims enrichment
 public class JwtAuthenticationService

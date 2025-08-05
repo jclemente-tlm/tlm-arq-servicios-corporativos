@@ -8,7 +8,7 @@ Calidad del Servicio SITA Messaging
 │   ├── Disponibilidad: 99.9% uptime
 │   ├── Tolerancia a fallos: Recovery < 30s
 │   └── Integridad de mensajes: 100% delivery guarantee
-├── Performance (Peso: 8/10)
+├── Rendimiento (Peso: 8/10)
 │   ├── Latencia: < 500ms end-to-end
 │   ├── Throughput: 10,000 msg/min
 │   └── Tiempo de conexión: < 2s
@@ -17,10 +17,10 @@ Calidad del Servicio SITA Messaging
 │   ├── Cifrado: TLS 1.3 in transit
 │   └── Auditoría: 100% message tracking
 ├── Usabilidad (Peso: 6/10)
-│   ├── API simplicity: RESTful design
+│   ├── Simplicidad API: RESTful design
 │   ├── Documentación: Complete API docs
 │   └── Monitoreo: Real-time dashboards
-└── Maintainability (Peso: 7/10)
+└── Mantenibilidad (Peso: 7/10)
     ├── Modularidad: Clean Architecture
     ├── Testabilidad: 80% code coverage
     └── Extensibilidad: Plugin architecture
@@ -39,15 +39,17 @@ Calidad del Servicio SITA Messaging
 **Entorno**: Operación normal durante peak hours
 
 **Respuesta**:
+
 - Sistema mantiene latencia < 500ms
 - No hay pérdida de mensajes
 - Auto-scaling de recursos activo
-- Circuit breakers previenen cascading failures
+- Circuit breakers previenen fallos en cascada
 
 **Medida de respuesta**:
+
 - 99.9% de mensajes procesados en < 500ms
 - 0% pérdida de mensajes
-- Recovery time < 30 segundos
+- Tiempo de recuperación < 30 segundos
 - Alertas automáticas activadas
 
 ---

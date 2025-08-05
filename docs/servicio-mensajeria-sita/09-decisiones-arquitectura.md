@@ -10,25 +10,29 @@
 Necesidad de comunicación directa con la red global SITA para intercambio de mensajes aeronáuticos estándar con aerolíneas y autoridades de aviación.
 
 ### Alternativas consideradas
-1. **SITA Type B Direct**: Implementación directa del protocolo SITA
-2. **SITATEX Gateway**: Uso de gateway comercial SITATEX
-3. **Third-party SITA Adapter**: Adaptador de terceros
-4. **Custom Protocol Bridge**: Desarrollo de bridge propietario
+
+1. **SITA Type B Directo**: Implementación directa del protocolo SITA
+2. **Gateway SITATEX**: Uso de gateway comercial SITATEX
+3. **Adaptador SITA de Terceros**: Adaptador de terceros
+4. **Bridge de Protocolo Personalizado**: Desarrollo de bridge propietario
 
 ### Decisión
-Adoptamos **SITA Type B Direct Implementation** con fallback a SITATEX para casos específicos.
+
+Adoptamos **Implementación Directa SITA Type B** con fallback a SITATEX para casos específicos.
 
 ### Justificación
+
 - **Control Total**: Manejo directo de protocolos y errores
-- **Performance**: Latencia mínima sin capas intermedias
+- **Rendimiento**: Latencia mínima sin capas intermedias
 - **Costo**: Eliminación de licensing fees de gateways comerciales
-- **Compliance**: Cumplimiento directo con estándares IATA/ICAO
+- **Cumplimiento**: Cumplimiento directo con estándares IATA/ICAO
 - **Flexibilidad**: Capacidad de adaptación a requerimientos específicos
 
 ### Consecuencias
-- **Positivas**: Control, performance, costo-efectividad
+
+- **Positivas**: Control, rendimiento, costo-efectividad
 - **Negativas**: Complejidad de implementación, expertise requerido
-- **Mitigación**: Training especializado, partnership con expertos SITA
+- **Mitigación**: Entrenamiento especializado, partnership con expertos SITA
 
 ---
 

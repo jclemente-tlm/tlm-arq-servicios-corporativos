@@ -8,34 +8,34 @@ Este capítulo identifica, evalúa y documenta los riesgos significativos del **
 
 ### 11.1.1 Matriz de Riesgos
 
-| Risk ID | Categoría | Descripción | Probabilidad | Impacto | Risk Score | Estado |
+| ID Riesgo | Categoría | Descripción | Probabilidad | Impacto | Puntuación Riesgo | Estado |
 |---------|-----------|-------------|--------------|---------|------------|---------|
 | **TEC-001** | Tecnológico | Dependencia crítica de Keycloak | Media | Alto | 12 | 🔴 Activo |
-| **OPS-001** | Operacional | Single Point of Failure | Media | Crítico | 15 | 🔴 Activo |
+| **OPS-001** | Operacional | Punto Único de Falla | Media | Crítico | 15 | 🔴 Activo |
 | **SEC-001** | Seguridad | Compromiso de claves RSA | Baja | Crítico | 9 | 🟡 Monitoreado |
-| **CMP-001** | Compliance | Violación GDPR/SOX | Baja | Crítico | 9 | 🟡 Monitoreado |
-| **PER-001** | Performance | Degradación escalabilidad DB | Alta | Alto | 16 | 🔴 Activo |
+| **CMP-001** | Cumplimiento | Violación GDPR/SOX | Baja | Crítico | 9 | 🟡 Monitoreado |
+| **PER-001** | Rendimiento | Degradación escalabilidad BD | Alta | Alto | 16 | 🔴 Activo |
 | **DEP-001** | Dependencias | Obsolescencia tecnológica | Media | Medio | 6 | 🟢 Bajo |
 
 ### 11.1.2 Criterios de Evaluación
 
 ```yaml
-Probability Scale:
+Escala_Probabilidad:
   Muy Baja (1): < 5% probabilidad en 12 meses
   Baja (2): 5-20% probabilidad en 12 meses
   Media (3): 20-50% probabilidad en 12 meses
   Alta (4): 50-80% probabilidad en 12 meses
   Muy Alta (5): > 80% probabilidad en 12 meses
 
-Impact Scale:
+Escala_Impacto:
   Muy Bajo (1): Impacto mínimo en operaciones
   Bajo (2): Degradación menor, sin impacto usuario
   Medio (3): Degradación notable, impacto temporal
   Alto (4): Impacto significativo en disponibilidad
   Crítico (5): Fallo completo del sistema
 
-Risk Score Calculation:
-  Risk Score = Probability × Impact
+Cálculo_Puntuación_Riesgo:
+  Puntuación Riesgo = Probabilidad × Impacto
   - 1-6: Bajo (🟢) - Aceptable, monitoreo periódico
   - 7-12: Medio (🟡) - Mitigación recomendada
   - 13-20: Alto (🔴) - Mitigación inmediata requerida
@@ -48,10 +48,10 @@ Risk Score Calculation:
 
 | Aspecto | Detalle |
 |---------|---------|
-| **Descripción** | Lock-in tecnológico con Keycloak como único IdP |
+| **Descripción** | Dependencia tecnológica con Keycloak como único IdP |
 | **Probabilidad** | Media (3) - Comunidad activa pero riesgo corporativo |
 | **Impacto** | Alto (4) - Migración completa requeriría 6+ meses |
-| **Risk Score** | 12 (Alto 🔴) |
+| **Puntuación Riesgo** | 12 (Alto 🔴) |
 
 #### Escenarios de Riesgo
 

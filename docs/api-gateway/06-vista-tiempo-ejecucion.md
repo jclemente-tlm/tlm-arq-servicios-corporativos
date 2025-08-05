@@ -13,21 +13,21 @@ sequenceDiagram
     participant Redis as Redis Cache
 
     Client->>Gateway: 1. Request con JWT token
-    Gateway->>Gateway: 2. Extract token from header
-    Gateway->>Redis: 3. Check token cache
+    Gateway->>Gateway: 2. Extraer token del header
+    Gateway->>Redis: 3. Verificar token en cache
 
     alt Token en cache y válido
         Redis->>Gateway: 4a. Token válido
     else Token no en cache o expirado
-        Gateway->>Auth: 4b. Validate token
-        Auth->>Gateway: 5b. Token validation result
-        Gateway->>Redis: 6b. Cache valid token
+        Gateway->>Auth: 4b. Validar token
+        Auth->>Gateway: 5b. Resultado de validación del token
+        Gateway->>Redis: 6b. Cachear token válido
     end
 
-    Gateway->>Gateway: 7. Resolve tenant context
-    Gateway->>Gateway: 8. Apply rate limiting
-    Gateway->>Gateway: 9. Route selection
-    Gateway->>Service: 10. Forward request con headers
+    Gateway->>Gateway: 7. Resolver contexto tenant
+    Gateway->>Gateway: 8. Aplicar rate limiting
+    Gateway->>Gateway: 9. Selección de ruta
+    Gateway->>Service: 10. Reenviar request con headers
     Service->>Gateway: 11. Response
     Gateway->>Client: 12. Response con rate limit headers
 ```
@@ -44,7 +44,7 @@ sequenceDiagram
 10. Forwarding de request con headers enriquecidos (X-Tenant-ID, X-User-ID)
 11-12. Retorno de response con headers de rate limiting
 
-### 6.1.2 Health check y circuit breaker
+### 6.1.2 Verificación de salud y circuit breaker
 
 ```mermaid
 sequenceDiagram

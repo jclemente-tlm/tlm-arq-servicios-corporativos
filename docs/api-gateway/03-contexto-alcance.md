@@ -12,12 +12,12 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 
 | Stakeholder | Rol | Expectativas | Interés |
 |-------------|-----|---------------|---------|
-| **Frontend Developers** | Consumidores API | APIs consistentes, documentación clara | Productividad de desarrollo |
-| **Mobile Developers** | Consumidores API | Rendimiento, compatibilidad offline | Experiencia de usuario |
-| **DevOps Engineers** | Operadores | Observabilidad, escalabilidad | Estabilidad operacional |
-| **Security Team** | Auditores | Compliance, seguridad centralizada | Gestión de riesgos |
+| **Desarrolladores Frontend** | Consumidores API | APIs consistentes, documentación clara | Productividad de desarrollo |
+| **Desarrolladores Móviles** | Consumidores API | Rendimiento, compatibilidad offline | Experiencia de usuario |
+| **Ingenieros DevOps** | Operadores | Observabilidad, escalabilidad | Estabilidad operacional |
+| **Equipo de Seguridad** | Auditores | Compliance, seguridad centralizada | Gestión de riesgos |
 | **Usuarios Empresariales** | Usuarios finales | Disponibilidad, rendimiento | Continuidad del negocio |
-| **External Partners** | Integradores | Interfaces estables, SLAs claros | Integración confiable |
+| **Socios Externos** | Integradores | Interfaces estables, SLAs claros | Integración confiable |
 
 ## 3.2 Contexto Técnico
 
@@ -57,11 +57,11 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 |---------|----------------|-----------|
 | **Platform** | .NET 8 + ASP.NET Core | Rendimiento, ecosystem |
 | **Reverse Proxy** | YARP (Yet Another Reverse Proxy) | Microsoft supported, flexible |
-| **Authentication** | OAuth2 + JWT | Industry standard |
+| **Authentication** | OAuth2 + JWT | Estándar de la industria |
 | **Protocol** | HTTP/2, HTTPS only | Security, rendimiento |
-| **Load Balancing** | Round-robin with health checks | Confiabilidad |
-| **Rate Limiting** | Token bucket algorithm | Fairness, burst handling |
-| **Circuit Breaker** | Polly framework | Fault tolerance |
+| **Load Balancing** | Round-robin con health checks | Confiabilidad |
+| **Rate Limiting** | Control de tráfico per tenant | Protección de recursos |
+| **Circuit Breaker** | Framework Polly | Tolerancia a fallos |
 | **Observability** | OpenTelemetry + Prometheus | Standards compliance |
 
 ### Protocolos de Comunicación
@@ -129,12 +129,12 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 
 | Actor | Tipo | Descripción | Interacciones Principales |
 |-------|------|-------------|---------------------------|
-| **Web Application Users** | Humano | Usuarios finales de aplicaciones web corporativas | Navegación web, consumo de APIs |
-| **Mobile App Users** | Humano | Usuarios de aplicaciones móviles iOS/Android | Uso de apps móviles, sincronización |
-| **System Administrators** | Humano | Administradores del gateway y infraestructura | Configuración, monitoreo, troubleshooting |
-| **External Partners** | Sistema/Humano | Socios externos con integración API | Llamadas automatizadas, intercambio de datos |
-| **Client Applications** | Sistema | Aplicaciones frontend (SPAs, mobile) | Llamadas REST API, flujos de autenticación |
-| **Downstream Services** | Sistema | Microservicios internos corporativos | Proxy de APIs, health checks |
+| **Usuarios de Aplicaciones Web** | Humano | Usuarios finales de aplicaciones web corporativas | Navegación web, consumo de APIs |
+| **Usuarios de Aplicaciones Móviles** | Humano | Usuarios de aplicaciones móviles iOS/Android | Uso de apps móviles, sincronización |
+| **Administradores del Sistema** | Humano | Administradores del gateway y infraestructura | Configuración, monitoreo, troubleshooting |
+| **Socios Externos** | Sistema/Humano | Socios externos con integración API | Llamadas automatizadas, intercambio de datos |
+| **Aplicaciones Cliente** | Sistema | Aplicaciones frontend (SPAs, mobile) | Llamadas REST API, flujos de autenticación |
+| **Servicios Downstream** | Sistema | Microservicios internos corporativos | Proxy de APIs, health checks |
 
 ### Sistemas Externos Conectados
 

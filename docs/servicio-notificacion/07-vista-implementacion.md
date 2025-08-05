@@ -1,10 +1,11 @@
 # 7. Vista de implementación
 
-## 7.1 Infraestructura de Deployment
+## 7.1 Infraestructura de Despliegue
 
 ### Arquitectura de Contenedores
 
-#### Notification API Service
+#### Servicio API de Notificación
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -39,7 +40,8 @@ spec:
             cpu: "500m"
 ```
 
-#### Notification Processor Service
+#### Servicio Procesador de Notificación
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -74,7 +76,8 @@ spec:
             cpu: "400m"
 ```
 
-### Message Queue Infrastructure
+### Infraestructura de Cola de Mensajes
+
 ```yaml
 Event Bus agnóstico Cluster:
   Brokers: 3 instances
@@ -98,7 +101,8 @@ Topics:
 
 ## 7.2 Deployment Environments
 
-### Development Environment
+### Entorno de Desarrollo
+
 ```yaml
 Environment: Development
 Infrastructure:
@@ -115,7 +119,8 @@ Configuration:
   - Logs: Console output + local files
 ```
 
-### Staging Environment
+### Entorno de Staging
+
 ```yaml
 Environment: Staging
 Infrastructure:
@@ -132,7 +137,8 @@ Configuration:
   - Logs: CloudWatch + centralized logging
 ```
 
-### Production Environment
+### Entorno de Producción
+
 ```yaml
 Environment: Production
 Infrastructure:
@@ -152,6 +158,8 @@ Configuration:
 ## 7.3 Provider Integration Architecture
 
 ### Multi-Provider Strategy
+
+
 ```yaml
 Email Providers:
   Primary: SendGrid
@@ -178,7 +186,9 @@ SMS Providers:
     - Features: Cost optimization
 ```
 
+
 ### Provider Abstraction Layer
+
 ```csharp
 public interface INotificationProvider
 {
@@ -205,7 +215,9 @@ public class EmailProviderFactory
 
 ## 7.4 Security Implementation
 
+
 ### Network Security
+
 ```yaml
 Network Policies:
   - API Tier: Ingress from ALB only
@@ -221,9 +233,11 @@ Security Groups:
   notification-processor:
     - Ingress: None (pull-based)
     - Egress: External providers, Kafka, Redis
+
 ```
 
 ### Secrets Management
+
 ```yaml
 AWS Secrets Manager:
   email-providers:
@@ -236,10 +250,12 @@ AWS Secrets Manager:
 
   push-providers:
     fcm-server-key: "firebase-key"
+
     apns-certificate: "apple-certificate"
 ```
 
 ### Data Encryption
+
 ```yaml
 Encryption Strategy:
   At Rest:
@@ -256,11 +272,13 @@ Encryption Strategy:
     - Email addresses: Hashed for analytics
     - Phone numbers: Encrypted in database
     - Message content: Encrypted until delivery
+
 ```
 
 ## 7.5 Monitoring & Observability
 
 ### Metrics Collection
+
 ```yaml
 Prometheus Metrics:
   Business Metrics:
@@ -271,12 +289,14 @@ Prometheus Metrics:
 
   Technical Metrics:
     - api_requests_total
+
     - processor_queue_depth
     - provider_response_time
     - cache_hit_ratio
 ```
 
 ### Logging Strategy
+
 ```yaml
 Structured Logging:
   Format: JSON with correlation IDs
@@ -293,6 +313,7 @@ Structured Logging:
 
 Log Levels:
   - DEBUG: Development only
+
   - INFO: Successful operations
   - WARN: Recoverable errors
   - ERROR: Failed operations
@@ -300,6 +321,7 @@ Log Levels:
 ```
 
 ### Distributed Tracing
+
 ```yaml
 Jaeger Configuration:
   Sampling:
@@ -309,6 +331,7 @@ Jaeger Configuration:
 
   Span Creation:
     - API requests
+
     - Message processing
     - Provider calls
     - Database operations
@@ -317,6 +340,7 @@ Jaeger Configuration:
 ## 7.6 CI/CD Pipeline
 
 ### Build Pipeline
+
 ```yaml
 GitHub Actions Workflow:
 
@@ -334,6 +358,7 @@ GitHub Actions Workflow:
   Deploy Stage:
     - Validate Kubernetes manifests
     - Deploy to staging
+
     - Run integration tests
     - Load testing
     - Security testing
@@ -343,11 +368,13 @@ GitHub Actions Workflow:
 ```
 
 ### Configuration Management
+
 ```yaml
 Environment Configuration:
   Development:
     ConfigMap: notification-config-dev
     Secrets: notification-secrets-dev
+
 
   Staging:
     ConfigMap: notification-config-staging
@@ -359,6 +386,7 @@ Environment Configuration:
 ```
 
 ### Database Migration Strategy
+
 ```yaml
 Migration Approach:
   - Liquibase for schema versioning
@@ -367,6 +395,7 @@ Migration Approach:
   - Rollback capability
 
 Migration Pipeline:
+
   1. Validate migration scripts
   2. Apply to development database
   3. Run automated tests
@@ -378,6 +407,7 @@ Migration Pipeline:
 ## 7.7 Scaling Strategy
 
 ### Horizontal Scaling
+
 ```yaml
 Auto-scaling Configuration:
 
@@ -385,6 +415,7 @@ Auto-scaling Configuration:
     - Min replicas: 2
     - Max replicas: 10
     - CPU threshold: 70%
+
     - Memory threshold: 80%
     - Custom metric: API requests/second
 
@@ -397,9 +428,11 @@ Auto-scaling Configuration:
 ```
 
 ### Message Queue Scaling
+
 ```yaml
 Kafka Scaling:
   Partition Strategy:
+
     - Notification type based partitioning
     - Tenant-based partitioning for isolation
     - Time-based partitioning for analytics
@@ -413,6 +446,8 @@ Kafka Scaling:
 ## 7.8 Disaster Recovery
 
 ### Backup Strategy
+
+
 ```yaml
 Database Backups:
   - Automated daily backups
@@ -426,11 +461,14 @@ Message Queue Backups:
   - Schema registry backup
 ```
 
+
 ### Recovery Procedures
+
 ```yaml
 Recovery Time Objectives:
   - Database failover: < 5 minutes
   - Application restart: < 10 minutes
+
   - Full region recovery: < 1 hour
 
 Recovery Point Objectives:
@@ -440,12 +478,14 @@ Recovery Point Objectives:
 ```
 
 ## Referencias
+
 - [Kubernetes Best Practices](https://kubernetes.io/docs/concepts/configuration/overview/)
 - [Microservices Deployment Patterns](https://microservices.io/patterns/deployment/)
 - [Event Bus agnóstico Operations](https://kafka.apache.org/documentation/#operations)
 - [Arc42 Deployment View](https://docs.arc42.org/section-7/)
 ├── docker/
 └── README.md
+
 ```
 
 ## 7.2 Consideraciones de despliegue

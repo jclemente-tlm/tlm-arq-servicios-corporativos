@@ -7,8 +7,8 @@
 | ID | Riesgo | Probabilidad | Impacto | Severidad | Mitigación |
 |----|--------|--------------|---------|-----------|------------|
 | **RT-01** | YARP como tecnología nueva | Media | Alto | ⚠️ Alto | Evaluación exhaustiva, pruebas piloto, plan de contingencia |
-| **RT-02** | Punto único de falla en gateway | Media | Crítico | 🔴 Crítico | Despliegue multi-AZ, health checks, auto-scaling |
-| **RT-03** | Degradación de rendimiento bajo carga | Alta | Alto | ⚠️ Alto | Testing de carga continuo, métricas en tiempo real, tuning |
+| **RT-02** | Punto único de falla en gateway | Media | Crítico | 🔴 Crítico | Despliegue multi-AZ, verificaciones de salud, auto-scaling |
+| **RT-03** | Degradación de rendimiento bajo carga | Alta | Alto | ⚠️ Alto | Pruebas de carga continuas, métricas en tiempo real, tuning |
 | **RT-04** | Fallos en cascada por circuit breakers | Media | Medio | 🟡 Medio | Configuración adaptativa, timeouts graduales |
 | **RT-05** | Vulnerabilidades en validación JWT | Baja | Alto | ⚠️ Alto | Auditorías de seguridad, validación rigurosa, logs |
 
@@ -44,13 +44,13 @@ public class RiskMitigationService
         return isHealthy;
     }
 
-    // RT-03: Mitigación degradación de performance
-    public class PerformanceMonitor
+    // RT-03: Mitigación degradación de rendimiento
+    public class MonitorRendimiento
     {
         private readonly IMetrics _metrics;
         private readonly SlidingWindow _latencyWindow = new(TimeSpan.FromMinutes(5));
 
-        public void MonitorPerformance(HttpContext context, TimeSpan duration)
+        public void MonitorearRendimiento(HttpContext context, TimeSpan duration)
         {
             _latencyWindow.Add(duration.TotalMilliseconds);
 
@@ -91,7 +91,7 @@ public class RiskMitigationService
 |----|--------|--------------|---------|-----------|------------|
 | **RO-01** | Configuración incorrecta de routing | Media | Alto | ⚠️ Alto | Validación automática, tests de integración, blue-green |
 | **RO-02** | Saturación de Redis para rate limiting | Media | Medio | 🟡 Medio | Clustering, monitoreo, fallback local |
-| **RO-03** | Pérdida de conectividad con Identity Service | Baja | Alto | ⚠️ Alto | Cache local, degradación graceful, health checks |
+| **RO-03** | Pérdida de conectividad con Identity Service | Baja | Alto | ⚠️ Alto | Cache local, degradación elegante, verificaciones de salud |
 | **RO-04** | Logs excesivos que afectan rendimiento | Alta | Bajo | 🟢 Bajo | Filtrado inteligente, sampling, archiving |
 | **RO-05** | Desincronización entre instancias | Media | Medio | 🟡 Medio | Configuración centralizada, versionado |
 
@@ -160,7 +160,7 @@ data:
 
 ```csharp
 // Implementación de mitigaciones de seguridad
-public class SecurityMitigationService
+public class ServicioMitigacionSeguridad
 {
     private readonly ILogger<SecurityMitigationService> _logger;
     private readonly IMetrics _metrics;

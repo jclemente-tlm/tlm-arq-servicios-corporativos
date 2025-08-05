@@ -6,48 +6,48 @@ Este capítulo define los atributos de calidad específicos del **Sistema de Not
 
 ## 10.1 Rendimiento y Eficiencia
 
-### 10.1.1 Latencia y Throughput Targets
+### 10.1.1 Objetivos de Latencia y Throughput
 
-| Operación | Target P50 | Target P95 | Target P99 | SLA Crítico |
+| Operación | Objetivo P50 | Objetivo P95 | Objetivo P99 | SLA Crítico |
 |-----------|------------|------------|------------|-------------|
-| **API Request (sync)** | 100ms | 200ms | 500ms | < 1s |
-| **Template rendering** | 20ms | 50ms | 100ms | < 200ms |
-| **Provider API call** | 200ms | 800ms | 2s | < 5s |
-| **Email delivery** | 30s | 2min | 5min | < 10min |
-| **SMS delivery** | 5s | 30s | 1min | < 2min |
-| **Push notification** | 1s | 5s | 10s | < 30s |
-| **WhatsApp delivery** | 10s | 1min | 3min | < 5min |
+| **Solicitud API (sync)** | 100ms | 200ms | 500ms | < 1s |
+| **Renderizado de plantilla** | 20ms | 50ms | 100ms | < 200ms |
+| **Llamada API proveedor** | 200ms | 800ms | 2s | < 5s |
+| **Entrega de Email** | 30s | 2min | 5min | < 10min |
+| **Entrega de SMS** | 5s | 30s | 1min | < 2min |
+| **Notificación Push** | 1s | 5s | 10s | < 30s |
+| **Entrega WhatsApp** | 10s | 1min | 3min | < 5min |
 
-### 10.1.2 Capacity and Throughput
+### 10.1.2 Capacidad y Throughput
 
 ```yaml
 Requisitos de Capacidad:
-  Normal Load:
-    - API Requests: 1,000 req/min
+  Carga Normal:
+    - Solicitudes API: 1,000 req/min
     - Procesamiento de Email: 5,000 emails/hora
     - Procesamiento de SMS: 2,000 SMS/hora
-    - Push Notifications: 10,000 notifications/hour
-    - WhatsApp Messages: 1,000 messages/hour
+    - Notificaciones Push: 10,000 notificaciones/hora
+    - Mensajes WhatsApp: 1,000 mensajes/hora
 
-  Peak Load (Campaign Bursts):
-    - API Requests: 5,000 req/min
+  Carga Pico (Ráfagas de Campañas):
+    - Solicitudes API: 5,000 req/min
     - Procesamiento de Email: 50,000 emails/hora
     - Procesamiento de SMS: 20,000 SMS/hora
-    - Push Notifications: 100,000 notifications/hour
-    - WhatsApp Messages: 10,000 messages/hour
+    - Notificaciones Push: 100,000 notificaciones/hora
+    - Mensajes WhatsApp: 10,000 mensajes/hora
 
-  Stress Testing Targets:
-    - Maximum Capacity: 10x normal load
-    - Burst Duration: 30 minutes sustained
-    - Graceful Degradation: Above 80% capacity
+  Objetivos de Pruebas de Estrés:
+    - Capacidad Máxima: 10x carga normal
+    - Duración de Ráfaga: 30 minutos sostenidos
+    - Degradación Gradual: Por encima del 80% de capacidad
     - Procesamiento de Cola: Sin pérdida de mensajes durante picos
 
 Benchmarks de Rendimiento:
-  Resource Utilization:
-    - CPU Usage: < 60% normal, < 80% peak
-    - Memory Usage: < 70% normal, < 85% peak
-    - Network I/O: < 50% available bandwidth
-    - Disk I/O: < 1000 IOPS per instance
+  Utilización de Recursos:
+    - Uso de CPU: < 60% normal, < 80% pico
+    - Uso de Memoria: < 70% normal, < 85% pico
+    - E/S de Red: < 50% ancho de banda disponible
+    - E/S de Disco: < 1000 IOPS por instancia
 
   Rendimiento de Base de Datos:
     - Query Response Time: < 50ms average

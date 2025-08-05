@@ -8,28 +8,28 @@ El Servicio SITA Messaging está diseñado como un adaptador especializado que f
 
 ```mermaid
 graph TB
-    subgraph "API Layer"
-        API[SITA Messaging API]
-        MW[Message Processing Middleware]
+    subgraph "Capa API"
+        API[API Mensajería SITA]
+        MW[Middleware Procesamiento Mensajes]
     end
 
-    subgraph "Application Layer"
-        AS[Application Services]
-        VL[Validation Layer]
-        TR[Translation Engine]
+    subgraph "Capa Aplicación"
+        AS[Servicios de Aplicación]
+        VL[Capa de Validación]
+        TR[Motor de Traducción]
     end
 
-    subgraph "Domain Layer"
-        MSG[Message Entities]
-        SVC[Domain Services]
-        REPO[Repository Interfaces]
+    subgraph "Capa Dominio"
+        MSG[Entidades Mensaje]
+        SVC[Servicios de Dominio]
+        REPO[Interfaces Repositorio]
     end
 
-    subgraph "Infrastructure Layer"
-        SITA[SITA Protocol Adapter]
+    subgraph "Capa Infraestructura"
+        SITA[Adaptador Protocolo SITA]
         DB[(PostgreSQL)]
-        EVENTBUS[Event Bus Abstraction]
-        AUDIT[Audit Store]
+        EVENTBUS[Abstracción Event Bus]
+        AUDIT[Almacén Auditoría]
     end
 
     API --> AS
@@ -48,42 +48,47 @@ graph TB
 
 ### 5.2.1 Interfaces externas
 
-#### SITA Network Interface
+#### Interfaz Red SITA
+
 - **Propósito**: Comunicación con la red global SITA
-- **Protocolo**: SITA Type B messaging over X.25/IP
-- **Formato**: IATA estándar para mensajes aeronáuticos
+- **Protocolo**: Mensajería SITA Type B sobre X.25/IP
+- **Formato**: Estándar IATA para mensajes aeronáuticos
 - **Autenticación**: Certificados SITA + credenciales específicas
 
-#### Corporate Services Interface
-- **Propósito**: Integración con servicios corporativos internos
-- **Protocolo**: REST API + Event bus events
-- **Formato**: JSON con esquemas versionados
-- **Autenticación**: OAuth2 JWT tokens
+#### Interfaz Servicios Corporativos
 
-#### Track & Trace Integration
+- **Propósito**: Integración con servicios corporativos internos
+- **Protocolo**: API REST + eventos de event bus
+- **Formato**: JSON con esquemas versionados
+- **Autenticación**: Tokens JWT OAuth2
+
+#### Integración Track & Trace
+
 - **Propósito**: Registrar eventos de mensajería para trazabilidad
-- **Método**: Event publishing via Event Bus
-- **Formato**: CloudEvents estándar
-- **Garantías**: At-least-once delivery
+- **Método**: Publicación de eventos vía Event Bus
+- **Formato**: Estándar CloudEvents
+- **Garantías**: Entrega al menos una vez
 
 ## 5.3 Nivel 2 - Contenedores
 
-### 5.3.1 SITA Messaging API
+### 5.3.1 API de Mensajería SITA
 
 **Responsabilidad**: Punto de entrada para solicitudes de mensajería SITA
 
 **Tecnología**: ASP.NET Core 8.0, C#
 
 **Interfaces**:
-- REST API endpoints para envío de mensajes
-- Health checks y metrics endpoint
-- Authentication middleware
-- Rate limiting y throttling
+
+- Endpoints API REST para envío de mensajes
+- Endpoint verificaciones salud y métricas
+- Middleware de autenticación
+- Limitación velocidad y throttling
 
 **Patrones implementados**:
-- Controller → Application Service → Domain Service
-- Command/Query separation
-- Validation pipeline con FluentValidation
+
+- Controller → Servicio Aplicación → Servicio Dominio
+- Separación Command/Query
+- Pipeline validación con FluentValidation
 
 ```csharp
 [ApiController]
@@ -109,26 +114,29 @@ public class SitaMessageController : ControllerBase
 }
 ```
 
-### 5.3.2 Message Processing Engine
+### 5.3.2 Motor de Procesamiento de Mensajes
 
 **Responsabilidad**: Procesamiento central de mensajes SITA
 
 **Componentes principales**:
 
-#### Message Validator
+#### Validador de Mensajes
+
 - Validación de formato IATA
 - Verificación de códigos de aeropuerto
 - Validación de sintaxis específica por tipo de mensaje
 
-#### Message Translator
+#### Traductor de Mensajes
+
 - Conversión entre formatos internos y SITA
 - Mapeo de códigos de aerolíneas
 - Normalización de formatos de fecha/hora
 
-#### Protocol Adapter
+#### Adaptador de Protocolo
+
 - Implementación del protocolo SITA Type B
 - Manejo de conexiones X.25/IP
-- Gestión de acknowledgments y retries
+- Gestión de acuses de recibo y reintentos
 
 ```csharp
 public class SitaMessageProcessor : IMessageProcessor
@@ -160,12 +168,14 @@ public class SitaMessageProcessor : IMessageProcessor
 **Responsabilidad**: Interfaz directa con la red SITA
 
 **Características**:
+
 - Conexión permanente con SITA network
 - Pool de conexiones para alta disponibilidad
 - Automatic reconnection y heartbeat
 - Message queuing para resilience
 
 **Implementación**:
+
 ```csharp
 public class SitaProtocolAdapter : ISitaProtocolAdapter
 {
@@ -199,6 +209,7 @@ public class SitaProtocolAdapter : ISitaProtocolAdapter
 **Tecnología**: PostgreSQL con particionamiento por fecha
 
 **Schema principal**:
+
 ```sql
 CREATE TABLE sita_messages (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -229,6 +240,7 @@ CREATE INDEX idx_sita_messages_destination ON sita_messages(destination, created
 ### 5.4.1 Application Services
 
 #### SitaMessageService
+
 ```csharp
 public class SitaMessageService : ISitaMessageService
 {
@@ -293,6 +305,7 @@ public class FlightPlanMessageHandler : ISitaMessageTypeHandler
 ### 5.4.2 Domain Services
 
 #### MessageRoutingService
+
 ```csharp
 public class MessageRoutingService : IMessageRoutingService
 {
@@ -313,6 +326,7 @@ public class MessageRoutingService : IMessageRoutingService
 ```
 
 #### AuditService
+
 ```csharp
 public class AuditService : IAuditService
 {
@@ -393,21 +407,25 @@ public class SitaMessageFailedEvent : IntegrationEvent
 ## 5.6 Patrones arquitectónicos implementados
 
 ### 5.6.1 Adapter Pattern
+
 - SITA Protocol Adapter abstrae la complejidad del protocolo
 - Message Format Adapters para diferentes tipos de mensaje
 - Database Adapters para diferentes stores
 
 ### 5.6.2 Strategy Pattern
+
 - Message Type Handlers para diferentes formatos SITA
 - Routing Strategies para optimización de rutas
 - Retry Strategies para diferentes tipos de fallo
 
 ### 5.6.3 Command Pattern
+
 - Commands para todas las operaciones de escritura
 - Command Handlers con validación y procesamiento
 - Command Queue para procesamiento asíncrono
 
 ### 5.6.4 Observer Pattern
+
 - Event publishing para integración con otros servicios
 - Audit logging para compliance
 - Status notifications para monitoreo
@@ -415,24 +433,28 @@ public class SitaMessageFailedEvent : IntegrationEvent
 ## 5.7 Quality Attributes
 
 ### 5.7.1 Reliability
+
 - Circuit breaker para SITA connections
 - Retry policies con exponential backoff
 - Dead letter queue para mensajes fallidos
 - Audit trail completo para troubleshooting
 
 ### 5.7.2 Performance
+
 - Connection pooling para SITA network
 - Async/await pattern en toda la stack
 - Caching de routing decisions
 - Partitioned storage para escalabilidad
 
 ### 5.7.3 Security
+
 - Certificate-based authentication con SITA
 - OAuth2 para internal APIs
 - Encryption at rest para mensajes sensibles
 - Role-based access control por tenant
 
 ### 5.7.4 Maintainability
+
 - Clean Architecture separation
 - Dependency injection para testability
 - Comprehensive logging y monitoring

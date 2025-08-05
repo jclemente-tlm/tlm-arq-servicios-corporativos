@@ -5,7 +5,7 @@
 **ACARS** (Aircraft Communications Addressing and Reporting System)
 : Sistema de comunicación digital utilizado para transmitir mensajes cortos entre aeronaves y estaciones terrestres via radio o satélite.
 
-**Address Indicator**
+**Indicador de Dirección** (Address Indicator)
 : Código de 7 caracteres que identifica únicamente una terminal o aplicación en la red SITA. Formato: XXXXYZZ donde XXXX=ubicación, Y=empresa, ZZ=aplicación.
 
 **ADS-B** (Automatic Dependent Surveillance-Broadcast)
@@ -19,7 +19,7 @@
 
 ## B
 
-**Batch Processing**
+**Procesamiento por Lotes** (Batch Processing)
 : Procesamiento de mensajes en grupos (lotes) para optimizar eficiencia de red y recursos computacionales.
 
 **BRS** (Business Recovery Services)
@@ -27,7 +27,7 @@
 
 ## C
 
-**C-DM** (Collaborative Decision Making)
+**Toma de Decisiones Colaborativa** (C-DM - Collaborative Decision Making)
 : Proceso colaborativo entre aeropuertos, aerolíneas y control de tráfico aéreo para optimizar operaciones.
 
 **CPDLC** (Controller-Pilot Data Link Communications)
@@ -41,7 +41,7 @@
 **DCS** (Departure Control System)
 : Sistema que maneja el proceso de salida de pasajeros, incluyendo check-in, boarding y gestión de equipaje.
 
-**Dead Letter Queue (DLQ)**
+**Cola de Mensajes Fallidos** (Dead Letter Queue - DLQ)
 : Cola especial donde se almacenan mensajes que no pudieron ser procesados después de múltiples intentos.
 
 **DSL** (Domain Specific Language)

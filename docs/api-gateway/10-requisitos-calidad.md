@@ -7,15 +7,15 @@
 | Atributo | Métrica | Objetivo | Crítico |
 |----------|---------|----------|---------|
 | **Latencia** | Tiempo de respuesta p95 | < 100ms | < 200ms |
-| **Throughput** | Requests/segundo | > 5,000 RPS | > 2,000 RPS |
+| **Rendimiento** | Solicitudes/segundo | > 5,000 RPS | > 2,000 RPS |
 | **Latencia de routing** | Tiempo interno de proxy | < 5ms | < 10ms |
-| **CPU utilization** | Uso promedio de CPU | < 70% | < 85% |
-| **Memory usage** | Uso promedio de memoria | < 2GB | < 4GB |
+| **Utilización de CPU** | Uso promedio de CPU | < 70% | < 85% |
+| **Uso de memoria** | Uso promedio de memoria | < 2GB | < 4GB |
 
 ```yaml
-# Configuración de performance en appsettings.json
+# Configuración de rendimiento en appsettings.json
 {
-  "Performance": {
+  "Rendimiento": {
     "ConnectionPooling": {
       "MaxConnectionsPerServer": 20,
       "PooledConnectionLifetime": "00:02:00",
@@ -40,10 +40,10 @@
 |------------|-----|---------------------------|-----|-----|
 | **API Gateway** | 99.9% | 43.2 minutos | 0 | 30 segundos |
 | **YARP Proxy** | 99.95% | 21.6 minutos | 0 | 15 segundos |
-| **Health Checks** | 99.99% | 4.32 minutos | 0 | 5 segundos |
+| **Verificaciones de Salud** | 99.99% | 4.32 minutos | 0 | 5 segundos |
 
 ```csharp
-// Configuración de health checks para alta disponibilidad
+// Configuración de verificaciones de salud para alta disponibilidad
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddHealthChecks()
@@ -83,7 +83,7 @@ public void ConfigureServices(IServiceCollection services)
 
 | Dimensión | Capacidad actual | Capacidad objetivo | Estrategia |
 |-----------|------------------|-------------------|------------|
-| **Requests concurrentes** | 1,000 | 10,000 | Horizontal scaling |
+| **Solicitudes concurrentes** | 1,000 | 10,000 | Escalado horizontal |
 | **Servicios backend** | 10 | 50+ | Enrutamiento dinámico |
 | **Tenants** | 100 | 1,000+ | Multi-tenant architecture |
 | **Regiones** | 1 | 3+ | Multi-region deployment |

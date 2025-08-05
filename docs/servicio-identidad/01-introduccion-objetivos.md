@@ -50,12 +50,12 @@ El sistema de identidad actúa como la autoridad central de confianza para todos
 
 | Categoría | Requisito | Target | Medición |
 |-----------|-----------|--------|----------|
-| **Performance** | Latencia de autenticación | < 200ms P95 | Response time monitoring |
-| **Scalability** | Usuarios concurrentes | 10,000+ concurrent sessions | Session monitoring |
-| **Availability** | Tiempo de actividad | 99.9% uptime | Health checks, SLA monitoring |
-| **Security** | Cumplimiento de estándares | OIDC, SAML 2.0, OAuth 2.1 | Security audits |
-| **Compliance** | Retención de logs | 2 años audit logs | Log retention policies |
-| **Recovery** | Disaster recovery | RTO 30 min, RPO 5 min | Backup and recovery tests |
+| **Rendimiento** | Latencia de autenticación | < 200ms P95 | Monitoreo de tiempo de respuesta |
+| **Escalabilidad** | Usuarios concurrentes | 10,000+ concurrent sessions | Monitoreo de sesiones |
+| **Disponibilidad** | Tiempo de actividad | 99.9% uptime | Verificaciones de salud, monitoreo SLA |
+| **Seguridad** | Cumplimiento de estándares | OIDC, SAML 2.0, OAuth 2.1 | Auditorías de seguridad |
+| **Cumplimiento** | Retención de logs | 2 años audit logs | Políticas de retención de logs |
+| **Recuperación** | Disaster recovery | RTO 30 min, RPO 5 min | Pruebas de respaldo y recuperación |
 
 ## 1.2 Stakeholders
 
@@ -99,55 +99,55 @@ El sistema de identidad actúa como la autoridad central de confianza para todos
 
 | Atributo | Prioridad | Descripción | Métricas de Éxito |
 |----------|-----------|-------------|-------------------|
-| **Security** | 🔴 Crítico | Protección de identidades y accesos | Zero security incidents, pentesting passed |
-| **Reliability** | 🔴 Crítico | Disponibilidad continua del servicio | 99.9% uptime, MTTR < 15 min |
-| **Performance** | 🟡 Alto | Baja latencia en autenticación | < 200ms login, < 100ms token validation |
-| **Usability** | 🟡 Alto | Experiencia de usuario fluida | < 3 clicks for common tasks, user satisfaction > 4.5/5 |
-| **Scalability** | 🟡 Alto | Soporte de crecimiento organizacional | Support 50K+ users, linear performance scaling |
-| **Compliance** | 🔴 Crítico | Cumplimiento regulatorio | 100% audit compliance, GDPR data rights |
-| **Maintainability** | 🟢 Medio | Facilidad de evolución | < 2 hours for minor changes, automated testing |
-| **Interoperability** | 🟡 Alto | Integración con sistemas externos | Standard protocols (OIDC, SAML), API-first |
+| **Seguridad** | 🔴 Crítico | Protección de identidades y accesos | Zero security incidents, pentesting passed |
+| **Confiabilidad** | 🔴 Crítico | Disponibilidad continua del servicio | 99.9% uptime, MTTR < 15 min |
+| **Rendimiento** | 🟡 Alto | Baja latencia en autenticación | < 200ms login, < 100ms token validation |
+| **Usabilidad** | 🟡 Alto | Experiencia de usuario fluida | < 3 clicks for common tasks, user satisfaction > 4.5/5 |
+| **Escalabilidad** | 🟡 Alto | Soporte de crecimiento organizacional | Support 50K+ users, linear performance scaling |
+| **Cumplimiento** | 🔴 Crítico | Cumplimiento regulatorio | 100% audit compliance, GDPR data rights |
+| **Mantenibilidad** | 🟢 Medio | Facilidad de evolución | < 2 hours for minor changes, automated testing |
+| **Interoperabilidad** | 🟡 Alto | Integración con sistemas externos | Standard protocols (OIDC, SAML), API-first |
 
 ### Quality Tree
 
 ```text
-Identity System Quality
-├── Security (Critical)
-│   ├── Authentication Security
-│   │   ├── Multi-factor authentication
-│   │   ├── Password policy enforcement
-│   │   └── Session security
-│   ├── Authorization Security
-│   │   ├── RBAC implementation
-│   │   ├── Fine-grained permissions
-│   │   └── Tenant isolation
-│   └── Data Protection
-│       ├── Encryption at rest/transit
-│       ├── PII protection
-│       └── GDPR compliance
-├── Reliability (Critical)
-│   ├── High Availability
-│   │   ├── Multi-AZ deployment
-│   │   ├── Health monitoring
-│   │   └── Automatic failover
-│   ├── Disaster Recovery
-│   │   ├── Backup strategies
-│   │   ├── Cross-region replication
-│   │   └── Recovery procedures
-│   └── Fault Tolerance
+Sistema de Identidad - Calidad
+├── Seguridad (Crítico)
+│   ├── Seguridad de Autenticación
+│   │   ├── Autenticación multi-factor
+│   │   ├── Aplicación de políticas de contraseña
+│   │   └── Seguridad de sesiones
+│   ├── Seguridad de Autorización
+│   │   ├── Implementación RBAC
+│   │   ├── Permisos granulares
+│   │   └── Aislamiento de tenant
+│   └── Protección de Datos
+│       ├── Cifrado en reposo/tránsito
+│       ├── Protección PII
+│       └── Cumplimiento GDPR
+├── Confiabilidad (Crítico)
+│   ├── Alta Disponibilidad
+│   │   ├── Despliegue multi-AZ
+│   │   ├── Monitoreo de salud
+│   │   └── Failover automático
+│   ├── Recuperación ante Desastres
+│   │   ├── Estrategias de respaldo
+│   │   ├── Replicación entre regiones
+│   │   └── Procedimientos de recuperación
+│   └── Tolerancia a Fallos
 │       ├── Circuit breakers
-│       ├── Graceful degradation
-│       └── Error handling
-└── Performance (High)
-    ├── Response Time
-    │   ├── Authentication latency < 200ms
-    │   ├── Token validation < 100ms
-    │   └── SSO redirect < 300ms
+│       ├── Degradación elegante
+│       └── Manejo de errores
+└── Rendimiento (Alto)
+    ├── Tiempo de Respuesta
+    │   ├── Latencia de autenticación < 200ms
+    │   ├── Validación de token < 100ms
+    │   └── Redirección SSO < 300ms
     ├── Throughput
-    │   ├── Concurrent users > 10K
-    │   ├── Auth requests > 1K/sec
-    │   └── Token generation > 5K/sec
-    └── Resource Efficiency
+    │   ├── Usuarios concurrentes > 10K
+    │   ├── Requests de auth > 1K/sec
+    │   └── Generación de tokens > 5K/sec
+    └── Eficiencia de Recursos
         ├── Memory optimization
         ├── CPU utilization < 70%
         └── Database connection pooling

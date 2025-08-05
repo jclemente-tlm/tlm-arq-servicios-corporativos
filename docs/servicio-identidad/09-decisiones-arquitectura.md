@@ -17,12 +17,12 @@ Esta sección documenta las decisiones arquitectónicas más importantes del **S
 
 Las decisiones arquitectónicas del Sistema de Identidad siguen los principios de:
 
-- **Cloud Agnostic:** Keycloak containerizado portable entre AWS, Azure y GCP
-- **Zero Custom Development:** Uso de Keycloak out-of-the-box sin modificaciones
-- **Standards-Based:** OAuth2, OIDC, SAML 2.0 para máxima interoperabilidad
+- **Agnóstico de Nube:** Keycloak contenedorizado portable entre AWS, Azure y GCP
+- **Cero Desarrollo Personalizado:** Uso de Keycloak listo para usar sin modificaciones
+- **Basado en Estándares:** OAuth2, OIDC, SAML 2.0 para máxima interoperabilidad
 - **Multi-tenant:** Realms separados por país/tenant
-- **Container First:** Optimizado para Kubernetes y Docker
-- **No Vendor Lock-in:** Complete freedom to move between cloud providers
+- **Contenedores Primero:** Optimizado para Kubernetes y Docker
+- **Sin Dependencia de Proveedor:** Libertad completa para moverse entre proveedores de nube
 
 ## ADR-001: Keycloak Containerizado como Identity Provider Central
 
@@ -31,23 +31,21 @@ Las decisiones arquitectónicas del Sistema de Identidad siguen los principios d
 | **Estado** | ✅ Aprobado |
 | **Fecha** | 2024-01-15 |
 | **Decidido por** | Equipo de Arquitectura + CISO |
-| **Stakeholders** | Development Teams, Security Team, Operations |
+| **Interesados** | Equipos de Desarrollo, Equipo de Seguridad, Operaciones |
 
 ### Contexto
 
-La organización requiere centralizar la gestión de identidades para múltiples aplicaciones corporativas distribuidas en 4 países (Perú, Ecuador, Colombia, México), con enfoque en **portabilidad cloud-agnostic** y sin desarrollo customizado dentro del servicio de identidad.
+La organización requiere centralizar la gestión de identidades para múltiples aplicaciones corporativas distribuidas en 4 países (Perú, Ecuador, Colombia, México), con enfoque en **portabilidad agnóstica de nube** y sin desarrollo personalizado dentro del servicio de identidad.
 
 **Requisitos específicos:**
 
-
-
-- Solución containerizada lista para usar
+- Solución contenedorizada lista para usar
 - Soporte para OAuth2/OIDC y SAML 2.0
 - Multi-tenancy con aislamiento por país
 - Federación con Google Workspace y Active Directory
 - Cumplimiento con GDPR, SOX y regulaciones locales
-- **Cloud agnostic:** Portable entre AWS, Azure, GCP
-- **Cero desarrollo custom:** Usar Keycloak out-of-the-box
+- **Agnóstico de nube:** Portable entre AWS, Azure, GCP
+- **Cero desarrollo personalizado:** Usar Keycloak listo para usar
 
 ### Alternativas Consideradas
 

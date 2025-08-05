@@ -20,29 +20,27 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 
 | Componente | Responsabilidad | Tecnología | Interfaces |
 |------------|-----------------|------------|------------|
-| **Notification API** | Punto de entrada REST, validación, encolado | ASP.NET Core 8 | REST API, Webhooks |
-| **Notification Processor** | Procesamiento asíncrono, orquestación | .NET 8 Worker Services | Event Bus, Internal APIs |
-| **Template Engine** | Gestión y renderizado de templates | Liquid Templates | Template API |
-| **Channel Processors** | Envío específico por canal | Strategy Pattern | Provider APIs |
-| **Database** | Persistencia de datos | PostgreSQL | Entity Framework |
-| **Storage** | Almacenamiento de archivos | S3-Compatible | File API |
+| **API de Notificación** | Punto de entrada REST, validación, encolado | ASP.NET Core 8 | REST API, Webhooks |
+| **Procesador de Notificación** | Procesamiento asíncrono, orquestación | .NET 8 Worker Services | Bus de Eventos, APIs Internas |
+| **Motor de Plantillas** | Gestión y renderizado de plantillas | Plantillas Liquid | API de Plantillas |
+| **Procesadores de Canal** | Envío específico por canal | Patrón Strategy | APIs de Proveedor |
+| **Base de Datos** | Persistencia de datos | PostgreSQL | Entity Framework |
+| **Almacenamiento** | Almacenamiento de archivos | Compatible con S3 | API de Archivos |
 
-#### Notification API
+#### API de Notificación
 
 **Propósito/Responsabilidad:**
 
-
-- Recepción de requests de notificación vía REST API
+- Recepción de solicitudes de notificación vía REST API
 - Validación de datos y autenticación
 - Encolado de mensajes para procesamiento asíncrono
-- Gestión de webhooks para status updates
-
+- Gestión de webhooks para actualizaciones de estado
 
 **Interfaces:**
 
-- REST API endpoints (JSON)
-- Webhook callbacks para delivery status
-- Integration con API Gateway
+- Endpoints REST API (JSON)
+- Callbacks webhook para estado de entrega
+- Integración con API Gateway
 
 **Tecnología:** ASP.NET Core 8, FluentValidation, Mapster
 
@@ -53,39 +51,37 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 
 **Propósito/Responsabilidad:**
 
-- Consumo de eventos del message bus
+- Consumo de eventos del bus de mensajes
 - Orquestación del pipeline de procesamiento
-- Gestión de reintentos y error handling
-
+- Gestión de reintentos y manejo de errores
 - Métricas y logging estructurado
 
 **Interfaces:**
 
-- Event consumer (eventos)
-- HTTP clients hacia channel processors
-- Database para tracking
+- Consumidor de eventos (eventos)
+- Clientes HTTP hacia procesadores de canal
+- Base de datos para seguimiento
 
-**Tecnología:** .NET 8 Worker Services, Event Bus abstraction
+**Tecnología:** .NET 8 Worker Services, Abstracción de Bus de Eventos
 
 **Ubicación:** `/src/Notification.Processor/`
 
 
-#### Template Engine
+#### Motor de Plantillas
 
 **Propósito/Responsabilidad:**
 
-- Almacenamiento y versionado de templates
-
+- Almacenamiento y versionado de plantillas
 - Renderizado con datos dinámicos
 - Soporte de internacionalización
-- Cache de templates compilados
+- Cache de plantillas compiladas
 
 **Interfaces:**
 
-- API de gestión de templates
+- API de gestión de plantillas
 - Servicio de renderizado
 
-**Tecnología:** Liquid Templates, Redis Cache
+**Tecnología:** Plantillas Liquid, Redis Cache
 
 **Ubicación:** `/src/Notification.Templates/`
 

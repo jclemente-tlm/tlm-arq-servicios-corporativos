@@ -9,49 +9,49 @@
 **Justificación:**
 - **Separación de Responsabilidades:** Cada protocolo SITA maneja sus especificidades
 - **Escalabilidad:** Permite añadir nuevos protocolos sin impactar existentes
-- **Mantenibilidad:** Adaptadores aislados facilitan testing y debugging
-- **Compliance:** Cumple estándares IATA/ICAO para comunicaciones aeronáuticas
+- **Mantenibilidad:** Adaptadores aislados facilitan pruebas y depuración
+- **Cumplimiento:** Cumple estándares IATA/ICAO para comunicaciones aeronáuticas
 
 ### Tecnologías Core
 
-#### Message Broker: Event Bus Agnóstico
-- **Event Streaming:** Para manejo de mensajes Type A/B de alto volumen
+#### Intermediario de Mensajes: Event Bus Agnóstico
+- **Transmisión de Eventos:** Para manejo de mensajes Type A/B de alto volumen
 - **Durabilidad:** Garantiza entrega de mensajes críticos
-- **Particionamiento:** Por aerolínea/ruta para optimizar throughput
+- **Particionamiento:** Por aerolínea/ruta para optimizar capacidad procesamiento
 - **Retención Configurable:** Según normativas de auditoría
 
-#### Protocol Adapters: .NET 8
-- **SITATEX Adapter:** Mensajes telegráficos tradicionales
-- **SITA API Adapter:** REST/HTTP para servicios modernos
-- **Type B Processor:** Parser especializado para mensajes operacionales
-- **Legacy Bridge:** Conectores para sistemas mainframe
+#### Adaptadores de Protocolo: .NET 8
+- **Adaptador SITATEX:** Mensajes telegráficos tradicionales
+- **Adaptador API SITA:** REST/HTTP para servicios modernos
+- **Procesador Type B:** Analizador especializado para mensajes operacionales
+- **Puente Legacy:** Conectores para sistemas mainframe
 
 ## 4.2 Patrones Arquitectónicos
 
-### Message Translation Pattern
+### Patrón de Traducción de Mensajes
 ```
-SITA Message → Canonical Format → Internal Events → Target Systems
+Mensaje SITA → Formato Canónico → Eventos Internos → Sistemas Objetivo
 ```
 
-### Circuit Breaker Pattern
-- **Timeout Configurables:** Por tipo de mensaje y destino
-- **Fallback Mechanisms:** Almacenamiento temporal y retry automático
-- **Health Monitoring:** Detección proactiva de fallos de conectividad
+### Patrón Circuit Breaker
+- **Timeouts Configurables:** Por tipo de mensaje y destino
+- **Mecanismos de Respaldo:** Almacenamiento temporal y reintento automático
+- **Monitoreo de Salud:** Detección proactiva de fallos de conectividad
 
 ### Event Sourcing para Auditoría
-- **Message Log:** Trazabilidad completa de mensajes SITA
-- **Replay Capability:** Reconstrucción de estados para análisis
-- **Compliance Reporting:** Generación automática de reportes regulatorios
+- **Registro de Mensajes:** Trazabilidad completa de mensajes SITA
+- **Capacidad de Reproducción:** Reconstrucción de estados para análisis
+- **Reportes de Cumplimiento:** Generación automática de reportes regulatorios
 
 ## 4.3 Estrategia de Conectividad
 
-### SITA Network Integration
+### Integración Red SITA
 - **Redundancia:** Múltiples puntos de acceso SITA
-- **Load Balancing:** Distribución inteligente por geografía
-- **Failover Automático:** Switching transparente entre circuitos
-- **QoS Management:** Priorización por criticidad de mensaje
+- **Balanceo de Carga:** Distribución inteligente por geografía
+- **Conmutación Automática:** Cambio transparente entre circuitos
+- **Gestión QoS:** Priorización por criticidad de mensaje
 
-### Protocol Support Matrix
+### Matriz Soporte de Protocolos
 | Protocolo | Uso Principal | Criticidad | Timeout |
 |-----------|---------------|------------|---------|
 | SITATEX | Mensajes operacionales | Alto | 30s |
@@ -61,17 +61,17 @@ SITA Message → Canonical Format → Internal Events → Target Systems
 
 ## 4.4 Estrategia de Seguridad
 
-### Network Security
-- **VPN Tunneling:** Conexiones seguras a red SITA
-- **Certificate Management:** Rotación automática de certificados
-- **IP Whitelisting:** Restricción por rangos SITA autorizados
-- **Encrypted Transmission:** TLS 1.3 para todos los canales
+### Seguridad de Red
+- **Túneles VPN:** Conexiones seguras a red SITA
+- **Gestión de Certificados:** Rotación automática de certificados
+- **Lista Blanca IP:** Restricción por rangos SITA autorizados
+- **Transmisión Cifrada:** TLS 1.3 para todos los canales
 
-### Message Integrity
-- **Digital Signatures:** Verificación de autenticidad
-- **Hash Validation:** Detección de alteraciones
-- **Sequence Control:** Prevención de duplicados
-- **Timestamp Verification:** Control de freshness
+### Integridad de Mensajes
+- **Firmas Digitales:** Verificación de autenticidad
+- **Validación Hash:** Detección de alteraciones
+- **Control de Secuencia:** Prevención de duplicados
+- **Verificación de Marca Temporal:** Control de frescura
 
 ## 4.5 Estrategia de Performance
 

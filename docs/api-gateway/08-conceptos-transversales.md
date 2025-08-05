@@ -50,10 +50,10 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### 8.1.2 Security headers y protección
+### 8.1.2 Cabeceras de seguridad y protección
 
 ```csharp
-public class SecurityHeadersMiddleware
+public class CabecerasSeguridadMiddleware
 {
     private readonly RequestDelegate _next;
 
@@ -69,7 +69,7 @@ public class SecurityHeadersMiddleware
         response.Headers.Add("Permissions-Policy",
             "camera=(), microphone=(), location=(), payment=()");
 
-        // Content Security Policy
+        // Política de Seguridad de Contenido
         response.Headers.Add("Content-Security-Policy",
             "default-src 'self'; " +
             "script-src 'self' 'unsafe-inline'; " +
@@ -271,7 +271,7 @@ public class MetricsMiddleware
 }
 ```
 
-### 8.2.3 Distributed tracing
+### 8.2.3 Trazabilidad distribuida
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -338,7 +338,7 @@ public class TracingEnrichmentMiddleware
 
 ## 8.3 Resiliencia y manejo de errores
 
-### 8.3.1 Circuit breaker pattern
+### 8.3.1 Patrón circuit breaker
 
 ```csharp
 public class CircuitBreakerService : ICircuitBreakerService
@@ -416,7 +416,7 @@ public class CircuitBreakerState
 }
 ```
 
-### 8.3.2 Retry policies
+### 8.3.2 Políticas de reintentos
 
 ```csharp
 public class RetryPolicyService
@@ -518,7 +518,7 @@ public class MultiLevelCacheService : ICacheService
 }
 ```
 
-### 8.4.2 Connection pooling y reutilización
+### 8.4.2 Agrupación de conexiones y reutilización
 
 ```csharp
 public class HttpClientService

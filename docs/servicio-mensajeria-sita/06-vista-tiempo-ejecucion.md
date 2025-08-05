@@ -30,20 +30,20 @@ sequenceDiagram
         API->>Adapter: SendMessage(sitaMessage)
         Adapter->>SITA: Transmit via SITA Protocol
 
-        alt SITA Success
+        alt Éxito SITA
             SITA-->>Adapter: ACK/NAK Response
             Adapter-->>API: SendResult.Success
             API->>DB: UpdateStatus(SENT)
             API->>Kafka: PublishEvent(MessageSentEvent)
             Kafka->>Track: LogEvent(SitaMessageSent)
-        else SITA Error
+        else Error SITA
             SITA-->>Adapter: Error/Timeout
             Adapter-->>API: SendResult.Failed
             API->>DB: UpdateStatus(FAILED)
             API->>Kafka: PublishEvent(MessageFailedEvent)
         end
 
-    else Validation Failed
+    else Validación Fallida
         Validator-->>API: ValidationResult.Invalid
         API-->>App: 400 BadRequest {errors}
     end
@@ -71,17 +71,17 @@ sequenceDiagram
     Processor->>DB: SaveIncomingMessage(message)
     Processor->>Router: DetermineRoute(message)
 
-    alt Route to Corporate Services
+    alt Ruta a Servicios Corporativos
         Router-->>Processor: Route.ToCorporateServices
         Processor->>Corp: ForwardMessage(translatedMessage)
 
-        alt Corporate Processing Success
+        alt Procesamiento Corporativo Exitoso
             Corp-->>Processor: ProcessingResult.Success
             Processor->>DB: UpdateStatus(PROCESSED)
             Processor->>Kafka: PublishEvent(MessageProcessedEvent)
             Processor->>Adapter: SendAcknowledgment(ACK)
             Adapter->>SITA: ACK Response
-        else Corporate Processing Failed
+        else Procesamiento Corporativo Fallido
             Corp-->>Processor: ProcessingResult.Failed
             Processor->>DB: UpdateStatus(FAILED)
             Processor->>Kafka: PublishEvent(MessageFailedEvent)
@@ -89,7 +89,7 @@ sequenceDiagram
             Adapter->>SITA: NAK Response
         end
 
-    else Route Not Found
+    else Ruta No Encontrada
         Router-->>Processor: Route.NotFound
         Processor->>DB: UpdateStatus(UNROUTABLE)
         Processor->>Adapter: SendAcknowledgment(NAK)
@@ -121,15 +121,15 @@ sequenceDiagram
             Adapter->>SITA: SendMessage(msgN)
         end
 
-        alt All Success
+        alt Todo Exitoso
             SITA-->>Adapter: ACK Responses
             Adapter-->>Processor: BatchResult.AllSuccess
             Processor->>DB: UpdateBatchStatus(SENT)
-        else Partial Success
+        else Éxito Parcial
             SITA-->>Adapter: Mixed ACK/NAK
             Adapter-->>Processor: BatchResult.PartialSuccess
             Processor->>DB: UpdateIndividualStatuses()
-        else All Failed
+        else Todo Fallido
             SITA-->>Adapter: NAK/Timeout
             Adapter-->>Processor: BatchResult.AllFailed
             Processor->>DB: UpdateBatchStatus(FAILED)
@@ -155,11 +155,12 @@ sequenceDiagram
 5. **Monitoring**: Reporte de métricas de conexión
 
 **Flujo de error**:
-- **Connection lost**: Reintento automático con backoff exponencial
-- **Authentication failed**: Renovación de certificados
-- **Network partition**: Activación de conexiones backup
 
-### 6.2.2 Message validation y transformation
+- **Conexión perdida**: Reintento automático con backoff exponencial
+- **Autenticación fallida**: Renovación de certificados
+- **Partición de red**: Activación de conexiones backup
+
+### 6.2.2 Validación y transformación de mensajes
 
 **Descripción**: Validación y transformación de mensajes entre formatos
 
@@ -185,11 +186,13 @@ sequenceDiagram
 **Descripción**: Manejo robusto de errores con estrategias de reintento
 
 **Tipos de error**:
-- **Transient errors**: Network timeouts, temporary unavailability
-- **Permanent errors**: Invalid format, authentication failures
-- **Business errors**: Invalid routing, missing permissions
+
+- **Errores transitorios**: Network timeouts, temporary unavailability
+- **Errores permanentes**: Invalid format, authentication failures
+- **Errores de negocio**: Invalid routing, missing permissions
 
 **Estrategias**:
+
 ```csharp
 public class RetryPolicy
 {

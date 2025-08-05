@@ -1,38 +1,38 @@
 # 12. Glosario
 
-Este glosario define los términos técnicos, conceptos y acrónimos utilizados en la documentación del **Sistema de Identidad**, proporcionando claridad y consistencia en la comunicación entre equipos técnicos y stakeholders.
+Este glosario define los términos técnicos, conceptos y acrónimos utilizados en la documentación del **Sistema de Identidad**, proporcionando claridad y consistencia en la comunicación entre equipos técnicos e interesados.
 
 *[INSERTAR AQUÍ: Diagrama C4 - System Terminology Map]*
 
 ## A
 
-**Access Token**
-: JWT que contiene información de autorización del usuario para acceder a recursos específicos. Tiene un tiempo de vida limitado (15 minutos por defecto) y debe ser validado en cada request.
+**Token de Acceso**
+: JWT que contiene información de autorización del usuario para acceder a recursos específicos. Tiene un tiempo de vida limitado (15 minutos por defecto) y debe ser validado en cada petición.
 
-**ADR (Architecture Decision Record)**
+**ADR (Registro de Decisión Arquitectónica)**
 : Documento que captura una decisión arquitectónica importante, incluyendo el contexto, opciones consideradas, decisión tomada y consecuencias.
 
-**API Gateway**
-: Componente que actúa como punto de entrada único para todas las peticiones a los microservicios, proporcionando funcionalidades como enrutamiento, autenticación, autorización y rate limiting.
+**Puerta de Enlace API**
+: Componente que actúa como punto de entrada único para todas las peticiones a los microservicios, proporcionando funcionalidades como enrutamiento, autenticación, autorización y limitación de velocidad.
 
-**Audit Trail**
-: Registro cronológico e inmutable de todas las actividades del sistema que pueden tener implicaciones de seguridad o compliance, implementado mediante event sourcing.
+**Rastro de Auditoría**
+: Registro cronológico e inmutable de todas las actividades del sistema que pueden tener implicaciones de seguridad o cumplimiento, implementado mediante event sourcing.
 
-**Authentication**
+**Autenticación**
 : Proceso de verificar la identidad de un usuario, dispositivo o sistema. En nuestro contexto, implementado principalmente mediante OAuth2/OIDC.
 
-**Authorization**
-: Proceso de determinar qué acciones puede realizar un usuario autenticado sobre recursos específicos, implementado mediante RBAC y claims-based authorization.
+**Autorización**
+: Proceso de determinar qué acciones puede realizar un usuario autenticado sobre recursos específicos, implementado mediante RBAC y autorización basada en claims.
 
 ## B
 
-**Bearer Token**
-: Tipo de access token que se incluye en el header HTTP Authorization con el prefijo "Bearer ". Es el método estándar para autenticar requests API.
+**Token Portador**
+: Tipo de token de acceso que se incluye en el header HTTP Authorization con el prefijo "Bearer ". Es el método estándar para autenticar peticiones API.
 
-**BPMN (Business Process Model and Notation)**
+**BPMN (Notación de Modelado de Procesos de Negocio)**
 : Notación gráfica estándar para modelar procesos de negocio, utilizada para documentar flujos de autenticación y autorización complejos.
 
-**Bulkhead Pattern**
+**Patrón Mamparo**
 : Patrón de diseño que aísla recursos críticos para prevenir que fallos en un componente afecten a otros, implementado mediante pools de threads separados.
 
 ## C

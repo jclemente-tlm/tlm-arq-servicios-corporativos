@@ -44,7 +44,7 @@ Necesidad de un almacén confiable y performante para eventos con soporte ACID y
 1. **PostgreSQL**: Base relacional con soporte JSONB, estrategia inicial
 2. **SNS+SQS**: Escalabilidad managed AWS para volúmenes medios
 3. **RabbitMQ/Amazon MQ**: Event streaming robusto para alto volumen
-4. **EventStore DB**: Base especializada en event sourcing (evaluación futura)
+4. **Event Store DB**: Base especializada en event sourcing (evaluación futura)
 
 ### Justificación
 - **ACID compliance**: Transacciones consistentes para eventos críticos
@@ -155,146 +155,7 @@ public class ProjectionManager
 
 ---
 
-## 9.4 ADR-004: Event Store Agnóstico para Event Streaming
 
-**Estado**: Aceptado
-**Fecha**: 2024-02-01
-**Decidido por**: Equipo de Arquitectura + Infraestructura
-
-### Contexto
-Integración con otros servicios corporativos y distribución de eventos para analytics en tiempo real.
-
-### Alternativas consideradas
-1. **HTTP webhooks**: Push directo a subscribers
-2. **Azure Service Bus**: Managed message broker
-3. **Apache Kafka**: Stream processing platform
-4. **Redis Streams**: Lightweight streaming
-5. **AWS EventBridge**: Serverless event bus
-
-### Decisión
-Adoptamos **Event Store agnóstico** starting with PostgreSQL para event streaming.
-
-### Justificación
-- **Throughput**: Alto volumen de eventos (>100k/sec)
-- **Durabilidad**: Persistencia configurable de mensajes
-- **Ordering**: Garantías de orden por partition
-- **Ecosystem**: Kafka Connect, Streams, Schema Registry
-- **Multi-consumer**: Múltiples servicios pueden consumir eventos
-- **Replay**: Capacidad de reprocessar eventos históricos
-
-### Implementación
-```csharp
-// Event publisher configuration
-public class KafkaEventPublisher : IEventPublisher
-{
-    private readonly IProducer<string, byte[]> _producer;
-
-    public async Task PublishAsync<T>(T @event, string streamId) where T : IDomainEvent
-    {
-        var topic = GetTopicName<T>();
-        var key = GetPartitionKey(streamId);
-        var value = await _serializer.SerializeAsync(@event);
-
-        var message = new Message<string, byte[]>
-        {
-            Key = key,
-            Value = value,
-            Headers = CreateHeaders(@event)
-        };
-
-        var result = await _producer.ProduceAsync(topic, message);
-        _logger.LogInformation("Event published to {Topic} partition {Partition} offset {Offset}",
-            result.Topic, result.Partition.Value, result.Offset.Value);
-    }
-}
-
-// Topic configuration
-services.Configure<KafkaProducerConfig>(options =>
-{
-    options.BootstrapServers = "kafka-cluster:9092";
-    options.Acks = Acks.All;
-    options.Retries = 3;
-    options.EnableIdempotence = true;
-    options.CompressionType = CompressionType.Snappy;
-});
-```
-
-### Consecuencias
-- **Positivas**: Escalabilidad, durabilidad, ecosystem rico
-- **Negativas**: Complejidad operacional, latencia adicional
-- **Mitigación**: Managed Kafka service, monitoring avanzado
-
----
-
-## 9.5 ADR-005: Redis para caching de Read Models
-
-**Estado**: Aceptado
-**Fecha**: 2024-02-05
-**Decidido por**: Equipo de Desarrollo
-
-### Contexto
-Optimización de latencia para consultas frecuentes y reducción de carga en base de datos principal.
-
-### Alternativas consideradas
-1. **Sin caching**: Consultas directas siempre
-2. **In-memory cache**: Caché en aplicación
-3. **Redis**: Distributed cache
-4. **Memcached**: Cache distribuido simple
-
-### Decisión
-Implementamos **Redis** como capa de caching distribuido.
-
-### Justificación
-- **Latencia**: Sub-millisecond response time
-- **Distribución**: Shared cache entre instancias
-- **Persistence**: Opcional para warm-up rápido
-- **Data structures**: Support para complejas estructuras
-- **Expiration**: TTL automático y manual
-- **Monitoring**: Métricas detalladas disponibles
-
-### Implementación
-```csharp
-public class CachedTimelineService : ITimelineService
-{
-    private readonly ITimelineService _inner;
-    private readonly IDistributedCache _distributedCache;
-
-    public async Task<TimelineView> GetTimelineAsync(string entityId)
-    {
-        var cacheKey = $"timeline:{entityId}";
-
-        return await _distributedCache.GetOrSetAsync(cacheKey,
-            async () => await _inner.GetTimelineAsync(entityId),
-            TimeSpan.FromMinutes(5));
-    }
-
-    public async Task InvalidateTimelineAsync(string entityId)
-    {
-        var cacheKey = $"timeline:{entityId}";
-        await _distributedCache.RemoveAsync(cacheKey);
-    }
-}
-
-// Cache configuration with Redis
-services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = "redis-cluster:6379";
-    options.InstanceName = "TrackTrace";
-});
-
-// Cache policies
-services.Configure<CacheOptions>(options =>
-{
-    options.DefaultExpiration = TimeSpan.FromMinutes(10);
-    options.SlidingExpiration = TimeSpan.FromMinutes(2);
-    options.MaxCacheSize = "1GB";
-});
-```
-
-### Consecuencias
-- **Positivas**: Latencia ultra-baja, escalabilidad, offload de DB
-- **Negativas**: Complejidad adicional, gestión de invalidación
-- **Mitigación**: TTL automático, circuit breaker, fallback a DB
 
 ---
 
@@ -613,7 +474,7 @@ Necesidad de streaming de eventos hacia read models y sistemas externos con alta
 1. **PostgreSQL**: Inicio simple, ACID compliance, expertise del equipo
 2. **SNS+SQS**: Escalabilidad managed AWS, integración nativa
 3. **RabbitMQ/Amazon MQ**: Event streaming robusto, patrones messaging complejos
-4. **Apache Kafka**: Alto throughput, ecosistema maduro (para volúmenes muy altos)
+4. **Event Bus (Kafka)**: Alto throughput, ecosistema maduro (para volúmenes muy altos)
 
 ### Decisión
 Adoptamos **Event Store agnóstico basado en volumen** con abstracción IEventStore.
@@ -696,58 +557,6 @@ public class CacheStrategy
 
 ---
 
-## 9.6 ADR-006: Multi-tenant schema separation
-
-**Estado**: Aceptado
-**Fecha**: 2024-02-10
-**Decidido por**: Equipo de Arquitectura
-
-### Contexto
-Aislamiento completo de datos entre tenants para compliance y security, con diferentes niveles de servicio por cliente.
-
-### Alternativas consideradas
-1. **Single schema con tenant_id**: Row-level security
-2. **Schema per tenant**: Separación a nivel de schema
-3. **Database per tenant**: Base de datos dedicada
-4. **Service per tenant**: Instancia dedicada
-
-### Decisión
-Implementamos **Schema per tenant** en PostgreSQL.
-
-### Justificación
-- **Aislamiento**: Separación física de datos
-- **Performance**: Índices y optimizaciones por tenant
-- **Compliance**: Requisitos regulatorios de aislamiento
-- **Backup**: Estrategias diferenciadas por cliente
-- **Scaling**: Posibilidad de sharding por tenant
-
-### Implementación
-```sql
--- Dynamic schema creation
-CREATE SCHEMA tenant_${tenantId};
-
--- Tenant-specific event table
-CREATE TABLE tenant_${tenantId}.events (
-    stream_id VARCHAR(255) NOT NULL,
-    version BIGINT NOT NULL,
-    event_type VARCHAR(255) NOT NULL,
-    event_data JSONB NOT NULL,
-    timestamp TIMESTAMPTZ DEFAULT NOW(),
-    PRIMARY KEY (stream_id, version)
-);
-
--- Tenant-specific indexes
-CREATE INDEX idx_events_timestamp ON tenant_${tenantId}.events(timestamp);
-CREATE INDEX idx_events_type ON tenant_${tenantId}.events(event_type);
-```
-
-### Consecuencias
-- **Positivas**: Aislamiento total, performance, compliance
-- **Negativas**: Gestión compleja de schemas, migraciones
-- **Mitigación**: Automatización de setup, scripts de migración
-
----
-
 ## 9.7 Resumen de decisiones
 
 | ADR | Decisión | Impacto | Estado |
@@ -755,7 +564,7 @@ CREATE INDEX idx_events_type ON tenant_${tenantId}.events(event_type);
 | 001 | Event Sourcing | Alto - Arquitectura fundamental | ✅ Implementado |
 | 002 | PostgreSQL Event Store | Alto - Storage principal | ✅ Implementado |
 | 003 | CQRS Read Models | Medio - Performance | ✅ Implementado |
-| 004 | Kafka Streaming | Medio - Integration | ✅ Implementado |
+| 004 | Event Bus Streaming | Medio - Integration | ✅ Implementado |
 | 005 | Redis Caching | Bajo - Optimization | ✅ Implementado |
 | 006 | Multi-tenant Schema | Alto - Security/Compliance | ✅ Implementado |
 

@@ -9,9 +9,9 @@ El **Sistema de Identidad** debe cumplir con restricciones técnicas, de segurid
 | Restricción | Descripción | Justificación | Impacto Arquitectónico |
 |-------------|-------------|---------------|------------------------|
 | **Keycloak Obligatorio** | Uso de Keycloak 23+ como IdP principal | Estándar corporativo, features empresariales | Arquitectura basada en Keycloak realms |
-| **PostgreSQL Database** | Base de datos PostgreSQL para Keycloak | Robustez, escalabilidad, expertise del equipo | Esquema Keycloak nativo, optimizaciones específicas |
-| **Docker Deployment** | Despliegue en contenedores Docker | Estandardización DevOps, portabilidad | Containerized Keycloak, orchestration con Kubernetes |
-| **High Availability** | Configuración activo-pasivo mínima | SLA 99.9%, tolerancia a fallos | Clustering, load balancing, session replication |
+| **Base de Datos PostgreSQL** | Base de datos PostgreSQL para Keycloak | Robustez, escalabilidad, expertise del equipo | Esquema Keycloak nativo, optimizaciones específicas |
+| **Despliegue Docker** | Despliegue en contenedores Docker | Estandardización DevOps, portabilidad | Containerized Keycloak, orchestration con Kubernetes |
+| **Alta Disponibilidad** | Configuración activo-pasivo mínima | SLA 99.9%, tolerancia a fallos | Clustering, balanceo de carga, replicación de sesiones |
 
 ### Protocolos y Estándares de Seguridad
 
@@ -23,23 +23,23 @@ El **Sistema de Identidad** debe cumplir con restricciones técnicas, de segurid
 | **SAML 2.0** | OASIS SAML 2.0 | Federation con sistemas legacy | SAML IdP para integración externa |
 | **LDAP v3** | RFC 4511 | Directory integration | User federation, attribute mapping |
 
-### Capacidad y Performance
+### Capacidad y Rendimiento
 
 | Métrica | Restricción | Justificación | Arquitectura Requerida |
 |---------|-------------|---------------|------------------------|
-| **Concurrent Users** | 10,000 sesiones simultáneas | Peak operations, multi-tenant | Clustering, session optimization |
+| **Usuarios Concurrentes** | 10,000 sesiones simultáneas | Operaciones pico, multi-tenant | Clustering, optimización de sesiones |
 | **Authentication Latency** | p95 < 100ms | User experience crítica | In-memory caching, optimized queries |
-| **Token Validation** | p95 < 50ms | API performance | JWT signature validation caching |
-| **User Database** | 50,000 usuarios por realm | Capacidad por país/tenant | Database partitioning, indexing |
+| **Validación de Token** | p95 < 50ms | Rendimiento de API | Caché de validación de firmas JWT |
+| **Base de Datos de Usuarios** | 50,000 usuarios por realm | Capacidad por país/tenant | Particionado de base de datos, indexación |
 
 ### Integración y Conectividad
 
 | Sistema | Protocolo | Restricción | Implementación |
 |---------|-----------|-------------|----------------|
-| **API Gateway** | OIDC Client | Token validation per request | JWT introspection, claims validation |
-| **Corporate Services** | OAuth2 flows | Service-to-service auth | Client credentials, scoped access |
-| **External IdPs** | SAML/OIDC federation | Standards compliance | Protocol adapters, attribute mapping |
-| **LDAP Directories** | LDAP v3 | Read-only integration | User federation, sync strategies |
+| **API Gateway** | OIDC Client | Validación de token por request | Introspección JWT, validación de claims |
+| **Servicios Corporativos** | OAuth2 flows | Autenticación servicio-a-servicio | Client credentials, acceso con alcance |
+| **IdPs Externos** | SAML/OIDC federation | Cumplimiento de estándares | Adaptadores de protocolo, mapeo de atributos |
+| **Directorios LDAP** | LDAP v3 | Integración solo lectura | Federación de usuarios, estrategias de sincronización |
 
 ## 2.2 Restricciones de seguridad
 

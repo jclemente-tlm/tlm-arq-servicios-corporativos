@@ -31,7 +31,7 @@ El sistema implementa un modelo de seguridad robusta que garantiza el aislamient
 
 | Rol | Permisos | Ámbito | Limitaciones |
 |-----|----------|--------|--------------|
-| **notification:admin** | CRUD templates, configuración | Global | Todos los tenants |
+| **notification:admin** | CRUD plantillas, configuración | Global | Todos los tenants |
 | **notification:operator** | Envío, consulta estado | Por tenant | Solo su tenant |
 | **notification:reader** | Solo lectura | Por tenant | Métricas y logs |
 | **system:processor** | Procesamiento interno | Sistema | APIs internas |
@@ -39,15 +39,16 @@ El sistema implementa un modelo de seguridad robusta que garantiza el aislamient
 #### Cifrado y Protección de Datos
 
 - **En tránsito:** TLS 1.3 para todas las comunicaciones
-- **En reposo:** AES-256 para datos sensibles en DB
+- **En reposo:** AES-256 para datos sensibles en BD
 - **Tokens:** Firmado JWT con RS256
-- **Secrets:** Gestión vía HashiCorp Vault o Azure Key Vault
+- **Secretos:** Gestión vía HashiCorp Vault o Azure Key Vault
 
 ### Multi-tenancy y Aislamiento
 
 **Estrategia de Aislamiento:**
-- Schema separation por tenant en PostgreSQL
-- Filtrado automático en queries por tenantId
+
+- Separación de esquema por tenant en PostgreSQL
+- Filtrado automático en consultas por tenantId
 - Storage isolation para attachments
 - Rate limiting independiente por tenant
 

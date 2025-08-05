@@ -33,6 +33,7 @@ Esta sección describe la estructura interna del API Gateway basada en los compo
 **Tecnología**: ASP.NET Core Middleware
 
 **Responsabilidades**:
+
 - Validación de tokens JWT
 - Autenticación OAuth2/OIDC
 - Autorización RBAC
@@ -56,6 +57,7 @@ public class SecurityMiddleware
 **Tecnología**: ASP.NET Core Middleware
 
 **Responsabilidades**:
+
 - Identificar tenant desde headers/subdomain
 - Resolver configuración específica del tenant
 - Establecer contexto para downstream services
@@ -65,6 +67,7 @@ public class SecurityMiddleware
 **Tecnología**: ASP.NET Core Middleware
 
 **Responsabilidades**:
+
 - Aplicar límites por tenant
 - Control de throttling
 - Prevención de abuse
@@ -74,9 +77,10 @@ public class SecurityMiddleware
 **Tecnología**: Polly
 
 **Responsabilidades**:
-- Circuit breaker patterns
+
+- Patrones de circuit breaker
 - Retry con backoff exponencial
-- Timeout handling
+- Manejo de timeout
 - Bulkhead isolation
 
 ```csharp
@@ -95,26 +99,29 @@ var retryPolicy = Policy
 **Tecnología**: Prometheus.NET
 
 **Métricas recolectadas**:
+
 - Request throughput por tenant
 - Latencia por endpoint
 - Rate de errores
-- Circuit breaker status
+- Estado de circuit breaker
 
 ### 📝 Structured Logger
 
 **Tecnología**: Serilog
 
 **Logs estructurados**:
-- Request/Response logging
+
+- Logging de Request/Response
 - Tenant context
 - Correlation IDs
 - Métricas de rendimiento
 
-### 🏥 Health Check
+### 🏥 Verificación de Salud
 
-**Tecnología**: ASP.NET Core Health Checks
+**Tecnología**: ASP.NET Core Verificaciones de Salud
 
 **Verificaciones**:
+
 - Conectividad a servicios downstream
 - Estado de circuit breakers
 - Rendimiento de endpoints críticos
@@ -140,18 +147,22 @@ Request  ──▶ Security      ──▶ Tenant        ──▶ Rate Limiting
 ## Servicios Downstream
 
 ### 🔐 Identity Service (Keycloak)
+
 - **URL**: `/auth/*`
 - **Propósito**: Autenticación y gestión de usuarios
 
 ### 📧 Notification System
+
 - **URL**: `/notifications/*`
 - **Propósito**: Gestión de notificaciones multicanal
 
 ### 📦 Track & Trace
+
 - **URL**: `/tracking/*`
 - **Propósito**: Seguimiento de envíos
 
 ### ✈️ SITA Messaging
+
 - **URL**: `/sita/*`
 - **Propósito**: Mensajería aeroportuaria
 
@@ -162,6 +173,7 @@ Request  ──▶ Security      ──▶ Tenant        ──▶ Rate Limiting
 **Tecnología**: C# + FluentValidation
 
 **Funcionalidades**:
+
 - Polling de configuración externa
 - Validación de schemas
 - Invalidación de cache selectiva
@@ -184,11 +196,13 @@ public class DynamicConfigProcessor : BackgroundService
 ## Integración Externa
 
 ### Configuration Platform
+
 - **Protocolo**: HTTPS/REST
 - **Pattern**: Polling (cada 30s)
 - **Propósito**: Configuración dinámica
 
 ### Redis Cache (Fase 2)
+
 - **Propósito**: Cache distribuido
 - **TTL**: Configurable por tenant
 - **Invalidación**: Inteligente
@@ -208,6 +222,7 @@ public interface IRoutingConfiguration
     Task<ClusterConfig[]> GetClustersAsync();
     Task ReloadConfigurationAsync();
 }
+
 ```
 
 ## 5.3 Nivel 2: Componentes principales
@@ -283,6 +298,7 @@ public class YarpConfiguration
 ```
 
 **Interfaces**:
+
 - Entrada: HTTP requests desde clientes externos
 - Salida: HTTP requests hacia servicios downstream
 
@@ -395,7 +411,7 @@ public class TieredRateLimitPolicy : IRateLimitPolicy
 }
 ```
 
-### 5.3.4 Health Monitoring & Circuit Breaker
+### 5.3.4 Monitoreo de Salud & Circuit Breaker
 
 **Responsabilidad**: Monitoreo de salud de servicios downstream y circuit breaking para resilience.
 
@@ -425,7 +441,7 @@ public class HealthMonitoringService : IHostedService
                 if (!healthResult.IsHealthy)
                 {
                     await _circuitBreaker.OpenCircuitAsync(destination.Id);
-                    // Remove from load balancer rotation
+                    // Remover del balanceador de carga
                     await RemoveFromRotation(destination);
                 }
                 else
@@ -648,6 +664,7 @@ spec:
 **Decisión**: YARP (Yet Another Reverse Proxy)
 
 **Justificación**:
+
 - **Native .NET**: Mejor integración con ecosystem .NET
 - **Rendimiento**: Alto rendimiento y baja latencia
 - **Flexibility**: Configuración dinámica y extensibilidad

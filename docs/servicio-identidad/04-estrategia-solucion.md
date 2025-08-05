@@ -18,11 +18,11 @@ El sistema de identidad se basa en una **arquitectura de microservicios orientad
 
 | Principio | Descripción | Implementación |
 |-----------|-------------|----------------|
-| **Single Source of Truth** | Keycloak como autoridad única de identidad | Centralized user management, federated identity |
-| **Standards Compliance** | Adherencia a protocolos estándar | OAuth2, OIDC, SAML 2.0, JWT |
-| **Defense in Depth** | Múltiples capas de seguridad | MFA, token encryption, audit logging |
-| **Scalability First** | Diseño para crecimiento horizontal | Stateless design, clustering support |
-| **Tenant Isolation** | Aislamiento completo entre tenants | Separate realms, data segregation |
+| **Fuente Única de Verdad** | Keycloak como autoridad única de identidad | Gestión centralizada usuarios, identidad federada |
+| **Cumplimiento de Estándares** | Adherencia a protocolos estándar | OAuth2, OIDC, SAML 2.0, JWT |
+| **Defensa en Profundidad** | Múltiples capas de seguridad | MFA, cifrado tokens, logging auditoría |
+| **Escalabilidad Primero** | Diseño para crecimiento horizontal | Diseño sin estado, soporte clustering |
+| **Aislamiento de Tenant** | Aislamiento completo entre tenants | Realms separados, segregación datos |
 
 ## 4.2 Decisiones arquitectónicas clave
 
@@ -31,14 +31,15 @@ El sistema de identidad se basa en una **arquitectura de microservicios orientad
 **Contexto**: Necesidad de un IdP empresarial robusto con capacidades avanzadas
 
 **Alternativas Evaluadas**:
-- **Keycloak** (seleccionado): Open source, features empresariales, extensible
+- **Keycloak** (seleccionado): Código abierto, características empresariales, extensible
 - **Auth0**: SaaS, fácil uso, costos escalables
-- **Okta**: Enterprise features, vendor lock-in
-- **AWS Cognito**: Cloud-native, limitaciones de customización
+- **Okta**: Características empresariales, dependencia de proveedor
+- **AWS Cognito**: Nativo en la nube, limitaciones de personalización
 
 **Decisión**: Keycloak por flexibilidad, control total, y costo-efectividad
 
 **Consecuencias**:
+
 - ✅ Control completo sobre configuración y extensiones
 - ✅ Costos predecibles sin límites de usuarios
 - ✅ Capacidades avanzadas de federación
@@ -87,13 +88,13 @@ El sistema de identidad se basa en una **arquitectura de microservicios orientad
 
 | Capa | Tecnología | Versión | Justificación |
 |------|------------|---------|---------------|
-| **Identity Provider** | Keycloak | 23+ | Enterprise features, standard compliance |
-| **Database** | PostgreSQL | 15+ | Keycloak compatibility, ACID compliance |
-| **Runtime** | Java/JVM | 21 LTS | Keycloak requirement, enterprise support |
-| **Containerization** | Docker | 24+ | Deployment standardization |
-| **Orchestration** | Kubernetes | 1.28+ | High availability, auto-scaling |
-| **Load Balancer** | NGINX/HAProxy | Latest | SSL termination, load distribution |
-| **Caching** | Redis | 7+ | Session storage, performance |
+| **Proveedor de Identidad** | Keycloak | 23+ | Características empresariales, cumplimiento estándares |
+| **Base de Datos** | PostgreSQL | 15+ | Compatibilidad Keycloak, cumplimiento ACID |
+| **Tiempo de Ejecución** | Java/JVM | 21 LTS | Requerimiento Keycloak, soporte empresarial |
+| **Contenedorización** | Docker | 24+ | Estandarización despliegue |
+| **Orquestación** | Kubernetes | 1.28+ | Alta disponibilidad, auto-escalado |
+| **Balanceador de Carga** | NGINX/HAProxy | Última | Terminación SSL, distribución carga |
+| **Caché** | Redis | 7+ | Almacenamiento sesión, rendimiento |
 
 ### Protocolos y Estándares
 

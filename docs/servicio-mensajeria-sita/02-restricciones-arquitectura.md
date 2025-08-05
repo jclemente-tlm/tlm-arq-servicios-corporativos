@@ -8,43 +8,43 @@ El **Sistema de Mensajería SITA** debe operar dentro de restricciones técnicas
 
 | Restricción | Descripción | Impacto Arquitectónico |
 |-------------|-------------|------------------------|
-| **SITA SITATEX Protocol** | Cumplimiento obligatorio con protocolos SITATEX para comunicación aeronáutica | Implementación de adaptadores específicos, validación de formatos de mensaje |
-| **AFTN Addressing** | Sistema de direccionamiento AFTN (Aeronautical Fixed Telecommunication Network) | Routing engine específico, validación de direcciones aeronáuticas |
-| **ICAO Message Standards** | Formatos de mensaje según Organization de Aviación Civil Internacional | Parser y validator engines para tipos de mensaje específicos |
-| **Type B Message Format** | Estructura específica de mensajes Type B para operaciones aeroportuarias | Template engine especializado, validación de sintaxis Type B |
+| **Protocolo SITA SITATEX** | Cumplimiento obligatorio con protocolos SITATEX para comunicación aeronáutica | Implementación de adaptadores específicos, validación de formatos de mensaje |
+| **Direccionamiento AFTN** | Sistema de direccionamiento AFTN (Red Fija de Telecomunicaciones Aeronáuticas) | Motor de enrutamiento específico, validación de direcciones aeronáuticas |
+| **Estándares Mensaje ICAO** | Formatos de mensaje según Organización de Aviación Civil Internacional | Motores parser y validador para tipos de mensaje específicos |
+| **Formato Mensaje Tipo B** | Estructura específica de mensajes Tipo B para operaciones aeroportuarias | Motor plantillas especializado, validación de sintaxis Tipo B |
 
 ### Infraestructura y Plataforma
 
 | Área | Restricción | Justificación | Solución Adoptada |
 |------|-------------|---------------|-------------------|
-| **Contenedorización** | Despliegue obligatorio en Docker containers | Estandardización DevOps, portabilidad | Docker + Kubernetes orchestration |
-| **Base de Datos** | PostgreSQL como RDBMS principal | Expertise del equipo, compliance requirements | PostgreSQL 15+ con replicación |
-| **Runtime** | .NET 8 LTS como plataforma principal | Standardización corporativa, soporte Enterprise | ASP.NET Core Web APIs |
-| **Message Queuing** | Event Bus agnóstico para message streaming | High throughput, event sourcing capabilities | Event Bus cluster con partitioning |
-| **Logging** | Serilog para logging estructurado | Observabilidad, troubleshooting | Structured JSON logging |
+| **Contenedorización** | Despliegue obligatorio en contenedores Docker | Estandarización DevOps, portabilidad | Orquestación Docker + Kubernetes |
+| **Base de Datos** | PostgreSQL como RDBMS principal | Experiencia del equipo, requisitos cumplimiento | PostgreSQL 15+ con replicación |
+| **Tiempo Ejecución** | .NET 8 LTS como plataforma principal | Estandarización corporativa, soporte empresarial | APIs Web ASP.NET Core |
+| **Colas Mensajes** | Event Bus agnóstico para streaming mensajes | Alto rendimiento, capacidades event sourcing | Cluster Event Bus con particionado |
+| **Registro** | Serilog para logging estructurado | Observabilidad, resolución problemas | Logging JSON estructurado |
 
 ### Integración y Conectividad
 
 | Sistema Externo | Protocolo Requerido | Restricción | Implementación |
 |-----------------|---------------------|-------------|----------------|
-| **SITA Network** | SITATEX over X.25/IP | Legacy protocol support | Protocol bridge adapter |
-| **Partner Airlines** | AFTN/CIDIN | Industry standard messaging | Multi-protocol gateway |
-| **Airport Systems** | Various (SOAP, REST, MQ) | Heterogeneous integration | Enterprise Service Bus pattern |
-| **Track & Trace** | Internal REST APIs | Real-time event delivery | Async HTTP clients |
-| **Government Systems** | Secure channels (VPN/TLS) | Security compliance | Encrypted tunnels, certificates |
+| **Red SITA** | SITATEX sobre X.25/IP | Soporte protocolo legacy | Adaptador puente protocolo |
+| **Aerolíneas Partner** | AFTN/CIDIN | Mensajería estándar industria | Gateway multi-protocolo |
+| **Sistemas Aeropuerto** | Varios (SOAP, REST, MQ) | Integración heterogénea | Patrón Enterprise Service Bus |
+| **Track & Trace** | APIs REST internas | Entrega evento tiempo real | Clientes HTTP asíncronos |
+| **Sistemas Gubernamentales** | Canales seguros (VPN/TLS) | Cumplimiento seguridad | Túneles cifrados, certificados |
 
 ### Performance y Capacidad
 
 | Métrica | Restricción | Justificación | Arquitectura Requerida |
 |---------|-------------|---------------|------------------------|
-| **Message Throughput** | 10,000 mensajes/hora peak | Operaciones aeroportuarias críticas | Async processing, queue-based |
-| **Latency** | < 30 segundos end-to-end | Tiempo crítico para operaciones vuelo | In-memory caching, optimized routing |
-| **Availability** | 99.95% uptime | Operaciones 24/7, impacto en vuelos | Active-passive clustering |
-| **Message Size** | Hasta 32KB por mensaje SITA | Limitación protocolo SITATEX | Message chunking, compression |
+| **Capacidad Procesamiento Mensajes** | 10,000 mensajes/hora pico | Operaciones aeroportuarias críticas | Procesamiento asíncrono, basado en colas |
+| **Latencia** | < 30 segundos extremo a extremo | Tiempo crítico para operaciones vuelo | Caché en memoria, enrutamiento optimizado |
+| **Disponibilidad** | 99.95% tiempo actividad | Operaciones 24/7, impacto en vuelos | Clustering activo-pasivo |
+| **Tamaño Mensaje** | Hasta 32KB por mensaje SITA | Limitación protocolo SITATEX | Fragmentación mensaje, compresión |
 
 ## 2.2 Restricciones organizacionales
 
-### Compliance y Regulatorio
+### Cumplimiento y Regulatorio
 
 | Área | Restricción | Autoridad | Implementación Requerida |
 |------|-------------|-----------|--------------------------|

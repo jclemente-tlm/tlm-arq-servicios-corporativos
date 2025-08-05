@@ -35,27 +35,27 @@ El sistema permite a las aplicaciones corporativas enviar notificaciones a usuar
 
 | ID | Requisito | Descripción |
 |----|-----------|-----------------------|
-| **RF-NOT-01** | **Envío Multicanal** | Soporte para Email, SMS, WhatsApp, Push Notifications e In-App |
-| **RF-NOT-02** | **Templates Dinámicos** | Motor de plantillas Liquid con datos variables y internacionalización |
-| **RF-NOT-03** | **Programación de Envíos** | Scheduling de notificaciones para envío futuro con timezone support |
-| **RF-NOT-04** | **Gestión de Adjuntos** | Upload, storage y delivery de archivos adjuntos via S3 |
-| **RF-NOT-05** | **Preferencias de Usuario** | Opt-in/opt-out, horarios permitidos, frecuencia límites |
-| **RF-NOT-06** | **Reintentos Inteligentes** | Exponential backoff con dead letter queue para fallos persistentes |
-| **RF-NOT-07** | **Multi-tenant Isolation** | Completa separación de datos y configuración por tenant/país |
-| **RF-NOT-08** | **Audit Trail** | Tracking completo del ciclo de vida de notificaciones |
-| **RF-NOT-09** | **Rate Limiting** | Control de velocidad de envío por canal y tipo de notificación |
-| **RF-NOT-10** | **Webhook Integration** | Callbacks para status delivery y eventos del sistema |
+| **RF-NOT-01** | **Envío Multicanal** | Soporte para Email, SMS, WhatsApp, Notificaciones Push e In-App |
+| **RF-NOT-02** | **Plantillas Dinámicas** | Motor de plantillas Liquid con datos variables e internacionalización |
+| **RF-NOT-03** | **Programación de Envíos** | Programación de notificaciones para envío futuro con soporte de zona horaria |
+| **RF-NOT-04** | **Gestión de Adjuntos** | Carga, almacenamiento y entrega de archivos adjuntos via S3 |
+| **RF-NOT-05** | **Preferencias de Usuario** | Opt-in/opt-out, horarios permitidos, límites de frecuencia |
+| **RF-NOT-06** | **Reintentos Inteligentes** | Backoff exponencial con cola de mensajes fallidos para fallos persistentes |
+| **RF-NOT-07** | **Aislamiento Multi-tenant** | Completa separación de datos y configuración por tenant/país |
+| **RF-NOT-08** | **Rastro de Auditoría** | Seguimiento completo del ciclo de vida de notificaciones |
+| **RF-NOT-09** | **Limitación de Velocidad** | Control de velocidad de envío por canal y tipo de notificación |
+| **RF-NOT-10** | **Integración Webhook** | Callbacks para estado de entrega y eventos del sistema |
 
 ### Requisitos No Funcionales
 
 | Categoría | Requisito | Target | Medición |
 |-----------|-----------|--------|----------|
-| **Rendimiento** | Throughput de ingesta | 50,000 notifications/min | Testing de carga continuo |
-| **Rendimiento** | Latencia de API | p95 < 200ms | APM monitoring |
-| **Availability** | Uptime del sistema | 99.9% | SLA monitoring |
-| **Scalability** | Auto-scaling | Horizontal scaling en 2 min | Container metrics |
-| **Confiabilidad** | Delivery rate | 99.9% successful delivery | Métricas empresariales |
-| **Security** | Data encryption | AES-256 at rest, TLS in transit | Security audits |
+| **Rendimiento** | Throughput de ingesta | 50,000 notifications/min | Pruebas de carga continuo |
+| **Rendimiento** | Latencia de API | p95 < 200ms | Monitoreo APM |
+| **Disponibilidad** | Tiempo de actividad del sistema | 99.9% | Monitoreo SLA |
+| **Escalabilidad** | Auto-escalado | Escalado horizontal en 2 min | Métricas de contenedores |
+| **Confiabilidad** | Tasa de entrega | 99.9% entrega exitosa | Métricas empresariales |
+| **Seguridad** | Cifrado de datos | AES-256 en reposo, TLS en tránsito | Auditorías de seguridad |
 
 ### Tipos de Notificaciones
 
@@ -72,18 +72,18 @@ El sistema permite a las aplicaciones corporativas enviar notificaciones a usuar
 
 | Prioridad | Objetivo | Escenario | Métrica Objetivo |
 |-----------|----------|-----------|------------------|
-| **1** | **Confiabilidad** | Garantizar entrega de notificaciones críticas | 99.9% delivery rate |
-| **2** | **Scalability** | Manejar picos de tráfico sin degradación | 10x current load support |
-| **3** | **Rendimiento** | Respuesta rápida para APIs síncronas | p95 < 200ms API response |
+| **1** | **Confiabilidad** | Garantizar entrega de notificaciones críticas | 99.9% tasa de entrega |
+| **2** | **Escalabilidad** | Manejar picos de tráfico sin degradación | Soporte 10x carga actual |
+| **3** | **Rendimiento** | Respuesta rápida para APIs síncronas | p95 < 200ms respuesta API |
 
 ### Objetivos Secundarios
 
 | Objetivo | Descripción | Métrica |
 |----------|-------------|---------|
-| **Observability** | Visibilidad completa del pipeline de notificaciones | 100% requests traced |
-| **Flexibility** | Fácil adición de nuevos canales y providers | < 1 día integration |
-| **Cost Efficiency** | Optimización de costos de providers externos | < $0.05 per notification |
-| **Compliance** | Cumplimiento GDPR, CAN-SPAM, regulations locales | Zero compliance violations |
+| **Observabilidad** | Visibilidad completa del pipeline de notificaciones | 100% requests trazados |
+| **Flexibilidad** | Fácil adición de nuevos canales y proveedores | < 1 día integración |
+| **Eficiencia de Costo** | Optimización de costos de proveedores externos | < $0.05 por notificación |
+| **Cumplimiento** | Cumplimiento GDPR, CAN-SPAM, regulaciones locales | Cero violaciones de cumplimiento |
 
 ## 1.3 Partes interesadas
 
@@ -91,11 +91,11 @@ El sistema permite a las aplicaciones corporativas enviar notificaciones a usuar
 
 | Rol | Contacto | Responsabilidades | Expectativas |
 |-----|----------|-------------------|--------------|
-| **Product Owner** | Business Team | Definición de funcionalidades, roadmap | Features delivered on time, user satisfaction |
-| **Arquitecto de Software** | jclemente-tlm | Decisiones técnicas, patrones, ADRs | Scalable design, maintainable architecture |
-| **Equipo de Desarrollo** | Dev Team | Implementación, testing, debugging | Clear requirements, documentación técnica |
-| **DevOps/SRE** | SRE Team | Deployment, monitoring, incident response | Reliable deployments, actionable alerts |
-| **Equipo de Seguridad** | Security Team | Compliance, auditoría, vulnerability assessment | Secure by design, audit trails |
+| **Product Owner** | Business Team | Definición de funcionalidades, roadmap | Funcionalidades entregadas a tiempo, satisfacción del usuario |
+| **Arquitecto de Software** | jclemente-tlm | Decisiones técnicas, patrones, ADRs | Diseño escalable, arquitectura mantenible |
+| **Equipo de Desarrollo** | Dev Team | Implementación, testing, debugging | Requisitos claros, documentación técnica |
+| **DevOps/SRE** | SRE Team | Despliegue, monitoreo, respuesta a incidentes | Despliegues confiables, alertas accionables |
+| **Equipo de Seguridad** | Security Team | Cumplimiento, auditoría, evaluación de vulnerabilidades | Seguridad por diseño, rastros de auditoría |
 
 ### Stakeholders Secundarios
 

@@ -1,6 +1,6 @@
 # 7. Vista de implementación
 
-## 7.1 Infraestructura y deployment
+## 7.1 Infraestructura y despliegue
 
 ### 7.1.1 Arquitectura de contenedores
 
@@ -62,7 +62,7 @@ volumes:
 ### 7.1.2 Dockerfile optimizado
 
 ```dockerfile
-# Build stage
+# Etapa de construcción
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
@@ -70,7 +70,7 @@ WORKDIR /src
 COPY ["ApiGateway.csproj", "."]
 RUN dotnet restore "ApiGateway.csproj"
 
-# Copy source code and build
+# Copiar código fuente y construir
 COPY . .
 RUN dotnet build "ApiGateway.csproj" -c Release -o /app/build
 
@@ -98,7 +98,7 @@ COPY --from=publish /app/publish .
 RUN chown -R appuser:appuser /app
 USER appuser
 
-# Health check
+# Verificación de salud
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -f http://localhost:8080/health || exit 1
 
@@ -109,12 +109,12 @@ EXPOSE 8443
 ENTRYPOINT ["dotnet", "ApiGateway.dll"]
 ```
 
-### 7.1.3 Kubernetes deployment
+### 7.1.3 Despliegue en Kubernetes
 
 ```yaml
 # api-gateway-deployment.yaml
 apiVersion: apps/v1
-kind: Deployment
+kind: Despliegue
 metadata:
   name: api-gateway
   namespace: corporate-services
@@ -163,7 +163,7 @@ spec:
         - name: Logging__LogLevel__Default
           value: "Information"
         resources:
-          requests:
+          solicitudes:
             memory: "256Mi"
             cpu: "250m"
           limits:
@@ -492,7 +492,7 @@ resource "aws_eks_node_group" "gateway_nodes" {
   }
 }
 
-# Application Load Balancer
+# Balanceador de Carga de Aplicación
 resource "aws_lb" "api_gateway" {
   name               = "api-gateway-alb"
   internal           = false

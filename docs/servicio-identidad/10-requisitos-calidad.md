@@ -4,57 +4,57 @@ Este capítulo define los atributos de calidad específicos del **Sistema de Ide
 
 *[INSERTAR AQUÍ: Diagrama C4 - Quality Attributes Overview]*
 
-## 10.1 Performance y Eficiencia
+## 10.1 Rendimiento y Eficiencia
 
 ### 10.1.1 Latencia de Operaciones Críticas
 
-| Operación | Target P50 | Target P95 | Target P99 | SLA Crítico |
+| Operación | Objetivo P50 | Objetivo P95 | Objetivo P99 | SLA Crítico |
 |-----------|------------|------------|------------|-------------|
-| **Login inicial** | 300ms | 800ms | 1.5s | < 2s |
-| **Validación token (cache hit)** | 5ms | 15ms | 30ms | < 50ms |
-| **Validación token (cache miss)** | 50ms | 120ms | 200ms | < 300ms |
-| **Refresh token** | 80ms | 200ms | 400ms | < 500ms |
-| **Logout** | 100ms | 250ms | 500ms | < 1s |
-| **MFA challenge** | 200ms | 500ms | 1s | < 2s |
+| **Inicio de sesión inicial** | 300ms | 800ms | 1.5s | < 2s |
+| **Validación token (acierto cache)** | 5ms | 15ms | 30ms | < 50ms |
+| **Validación token (fallo cache)** | 50ms | 120ms | 200ms | < 300ms |
+| **Renovación token** | 80ms | 200ms | 400ms | < 500ms |
+| **Cierre sesión** | 100ms | 250ms | 500ms | < 1s |
+| **Desafío MFA** | 200ms | 500ms | 1s | < 2s |
 | **Federación externa** | 800ms | 2s | 4s | < 5s |
 
-### 10.1.2 Throughput y Capacidad
+### 10.1.2 Rendimiento y Capacidad
 
 ```yaml
-Capacity Requirements:
-  Normal Load:
-    - Concurrent Users: 5,000 users
-    - Login Rate: 500 logins/minute
-    - Token Validations: 50,000/minute
-    - Admin Operations: 100/minute
+Requisitos_Capacidad:
+  Carga_Normal:
+    - Usuarios Concurrentes: 5,000 usuarios
+    - Velocidad Login: 500 logins/minuto
+    - Validaciones Token: 50,000/minuto
+    - Operaciones Admin: 100/minuto
 
-  Peak Load (Business Hours):
-    - Concurrent Users: 15,000 users
-    - Login Rate: 2,000 logins/minute
-    - Token Validations: 200,000/minute
-    - Admin Operations: 500/minute
+  Carga_Pico_(Horas_Laborales):
+    - Usuarios Concurrentes: 15,000 usuarios
+    - Velocidad Login: 2,000 logins/minuto
+    - Validaciones Token: 200,000/minuto
+    - Operaciones Admin: 500/minuto
 
-  Stress Testing:
-    - Maximum Capacity: 25,000 concurrent users
-    - Burst Capacity: 5,000 logins/minute
-    - Token Validation Burst: 500,000/minute
-    - Graceful Degradation: Above 80% capacity
+  Pruebas_Estrés:
+    - Capacidad Máxima: 25,000 usuarios concurrentes
+    - Capacidad Ráfaga: 5,000 logins/minuto
+    - Ráfaga Validación Token: 500,000/minuto
+    - Degradación Gradual: Por encima 80% capacidad
 
-Performance Benchmarks:
-  CPU Utilization:
+Puntos_Referencia_Rendimiento:
+  Utilización_CPU:
     - Normal: < 40%
-    - Peak: < 70%
-    - Alert Threshold: 80%
+    - Pico: < 70%
+    - Umbral Alerta: 80%
 
-  Memory Usage:
+  Uso_Memoria:
     - Normal: < 60%
-    - Peak: < 80%
-    - Alert Threshold: 85%
+    - Pico: < 80%
+    - Umbral Alerta: 85%
 
-  Database Connections:
-    - Pool Size: 50 connections
-    - Normal Usage: < 30%
-    - Peak Usage: < 70%
+  Conexiones_Base_Datos:
+    - Tamaño Pool: 50 conexiones
+    - Uso Normal: < 30%
+    - Uso Pico: < 70%
 ```
 
 ### 10.1.3 Escalabilidad Horizontal

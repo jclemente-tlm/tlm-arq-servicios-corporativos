@@ -46,11 +46,11 @@ Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una 
 | Categoría | Requisito | Target | Medición |
 |-----------|-----------|--------|----------|
 | **Rendimiento** | Latencia de proxy | p95 < 50ms | APM monitoring |
-| **Rendimiento** | Throughput | > 10,000 RPS per instance | Testing de carga |
-| **Availability** | Uptime | 99.95% | SLA monitoring |
-| **Scalability** | Horizontal scaling | Auto-scale en < 2 min | Container metrics |
-| **Security** | Token validation | < 5ms per request | Security metrics |
-| **Confiabilidad** | Error rate | < 0.1% | Métricas empresariales |
+| **Rendimiento** | Throughput | > 10,000 RPS por instancia | Pruebas de carga |
+| **Availability** | Tiempo de actividad | 99.95% | Monitoreo de SLA |
+| **Scalability** | Escalado horizontal | Escalado automático en < 2 min | Métricas de contenedores |
+| **Security** | Validación de tokens | < 5ms por request | Métricas de seguridad |
+| **Confiabilidad** | Tasa de errores | < 0.1% | Métricas empresariales |
 
 ## 1.2 Objetivos de Calidad
 
@@ -58,18 +58,18 @@ Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una 
 
 | Prioridad | Objetivo | Escenario | Métrica Objetivo |
 |-----------|----------|-----------|------------------|
-| **1** | **Rendimiento** | Proxy transparente sin latencia significativa | p95 < 50ms overhead |
-| **2** | **Confiabilidad** | Alta disponibilidad para operaciones críticas | 99.95% uptime |
-| **3** | **Security** | Protección robusta contra amenazas | Zero security incidents |
+| **1** | **Rendimiento** | Proxy transparente sin latencia significativa | p95 < 50ms sobrecarga |
+| **2** | **Confiabilidad** | Alta disponibilidad para operaciones críticas | 99.95% disponibilidad |
+| **3** | **Security** | Protección robusta contra amenazas | Cero incidentes de seguridad |
 
 ### Objetivos Secundarios
 
 | Objetivo | Descripción | Métrica |
 |----------|-------------|---------|
-| **Scalability** | Manejo de picos de tráfico sin degradación | 10x current load support |
-| **Maintainability** | Facilidad de configuración y despliegue | < 5 min configuration updates |
-| **Observability** | Visibilidad completa del tráfico de API | 100% requests traced |
-| **Cost Efficiency** | Optimización de recursos computacionales | < 2% CPU overhead |
+| **Scalability** | Manejo de picos de tráfico sin degradación | Soporte de 10x la carga actual |
+| **Maintainability** | Facilidad de configuración y despliegue | < 5 min actualizaciones de configuración |
+| **Observability** | Visibilidad completa del tráfico de API | 100% requests trazados |
+| **Cost Efficiency** | Optimización de recursos computacionales | < 2% sobrecarga de CPU |
 
 ## 1.3 Partes Interesadas
 
@@ -77,28 +77,28 @@ Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una 
 
 | Rol | Contacto | Responsabilidades | Expectativas |
 |-----|----------|-------------------|--------------|
-| **Platform Architect** | jclemente-tlm | Decisiones arquitectónicas, patrones | Scalable design, performance |
-| **DevOps/SRE Team** | SRE Team | Deployment, monitoring, incidents | Reliable deployments, observability |
-| **Security Team** | Security Team | Autenticación, autorización, compliance | Secure by design, audit capabilities |
-| **Application Teams** | Dev Teams | Integración con servicios backend | Consistent APIs, clear documentation |
+| **Arquitecto de Plataforma** | jclemente-tlm | Decisiones arquitectónicas, patrones | Diseño escalable, rendimiento |
+| **Equipo DevOps/SRE** | SRE Team | Deployment, monitoring, incidents | Despliegues confiables, observabilidad |
+| **Equipo de Seguridad** | Security Team | Autenticación, autorización, compliance | Diseño seguro, capacidades de auditoría |
+| **Equipos de Aplicación** | Dev Teams | Integración con servicios backend | APIs consistentes, documentación clara |
 
 ### Stakeholders Secundarios
 
 | Rol | Contacto | Interés | Comunicación |
 |-----|----------|---------|--------------|
-| **Operations Teams** | Ops Teams | Monitoreo de servicios downstream | Dashboards, alerting |
-| **Compliance Officers** | Legal Team | Regulatory compliance, audit trails | Compliance reports |
-| **External Integrators** | Partners | Access to corporate APIs | API documentation, SLAs |
-| **End Users** | Various | Application performance and availability | Transparent operation |
+| **Equipos de Operaciones** | Ops Teams | Monitoreo de servicios downstream | Dashboards, alertas |
+| **Oficiales de Cumplimiento** | Legal Team | Cumplimiento regulatorio, audit trails | Reportes de cumplimiento |
+| **Integradores Externos** | Partners | Acceso a APIs corporativas | Documentación de API, SLAs |
+| **Usuarios Finales** | Various | Rendimiento y disponibilidad de aplicaciones | Operación transparente |
 
 ### Sistemas Cliente
 
 | Sistema | Tipo | Descripción | Expectativas |
 |---------|------|-------------|--------------|
-| **Web Applications** | Frontend | Apps corporativas por país | Fast response, high availability |
-| **Mobile Apps** | Frontend | Apps móviles iOS/Android | Efficient API usage, offline support |
-| **Third-party Systems** | External | Sistemas de partners y proveedores | Stable APIs, clear documentation |
-| **Internal Tools** | Internal | Herramientas administrativas | Secure access, audit trails |
+| **Aplicaciones Web** | Frontend | Apps corporativas por país | Respuesta rápida, alta disponibilidad |
+| **Aplicaciones Móviles** | Frontend | Apps móviles iOS/Android | Uso eficiente de API, soporte offline |
+| **Sistemas de Terceros** | External | Sistemas de partners y proveedores | APIs estables, documentación clara |
+| **Herramientas Internas** | Internal | Herramientas administrativas | Acceso seguro, audit trails |
 
 ## 1.4 Arquitectura de Referencia
 
@@ -106,22 +106,22 @@ Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una 
 
 | Componente | Tecnología | Versión | Justificación |
 |------------|------------|---------|---------------|
-| **Runtime** | .NET 8 + ASP.NET Core | 8.0 LTS | Rendimiento, soporte a largo plazo |
-| **Proxy Engine** | YARP | Latest | Microsoft-supported, high performance |
-| **Resilience** | Polly | 8.x | Industry standard for .NET |
-| **Logging** | Serilog | 3.x | Structured logging capabilities |
-| **Metrics** | Prometheus.NET | Latest | Standard for metrics collection |
-| **Deployment** | AWS ECS + Docker | Latest | Container orchestration |
-| **Cache** | Redis | 7.x | Distributed caching (Phase 2) |
+| **Tiempo de ejecución** | .NET 8 + ASP.NET Core | 8.0 LTS | Rendimiento, soporte a largo plazo |
+| **Motor de Proxy** | YARP | Latest | Soporte de Microsoft, alto rendimiento |
+| **Resilience** | Polly | 8.x | Estándar de la industria para .NET |
+| **Logging** | Serilog | 3.x | Capacidades de logging estructurado |
+| **Metrics** | Prometheus.NET | Latest | Estándar para colección de métricas |
+| **Despliegue** | AWS ECS + Docker | Latest | Orquestación de contenedores |
+| **Cache** | Redis | 7.x | Caché distribuido (Fase 2) |
 
 ### Principios Arquitectónicos
 
 1. **Transparencia:** El gateway debe ser invisible para los clientes
-2. **Resiliencia:** Fail-fast con graceful degradation
+2. **Resiliencia:** Fallo rápido con degradación elegante
 3. **Observabilidad:** Todo debe ser medible y trazable
-4. **Escalabilidad:** Diseño horizontal-first
-5. **Seguridad:** Defense in depth, zero trust
-6. **Configurabilidad:** Dynamic configuration without downtime
+4. **Escalabilidad:** Diseño horizontal primero
+5. **Seguridad:** Defensa en profundidad, zero trust
+6. **Configurabilidad:** Configuración dinámica sin tiempo de inactividad
 
 ## 1.5 Alcance del Sistema
 
@@ -142,10 +142,10 @@ Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una 
 - Procesamiento de eventos de dominio
 - Integración directa con sistemas legacy
 - Content delivery network (CDN)
-- API versioning (Phase 2)
+- Versionado de API (Fase 2)
 
 ### Límites del Sistema
 
-**Upstream:** Recibe requests de aplicaciones cliente
-**Downstream:** Enruta requests a servicios corporativos
-**East-West:** Integración con sistemas de autenticación y monitoreo
+**Flujo ascendente:** Recibe requests de aplicaciones cliente
+**Flujo descendente:** Enruta requests a servicios corporativos
+**Este-Oeste:** Integración con sistemas de autenticación y monitoreo

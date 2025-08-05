@@ -18,22 +18,22 @@ El sistema de mensajería SITA actúa como el puente de comunicación con la ind
 
 | Stakeholder | Rol | Responsabilidad | Expectativa |
 |-------------|-----|----------------|-------------|
-| **Airport Operations Manager** | Gestión Operacional | Coordinación con aerolíneas | Comunicación automática, reducción manual |
-| **Airline Operations Centers** | Operaciones Aerolíneas | Recepción información operacional | Mensajes precisos, formato SITA estándar |
-| **Ground Handling Companies** | Servicios Tierra | Coordinación operaciones | Información oportuna, estado actualizado |
-| **Air Traffic Control** | Control Tráfico Aéreo | Coordinación vuelos | Mensajes regulatorios, compliance |
-| **SITA Network Operations** | Proveedor Red | Conectividad y transmisión | Formato correcto, compliance protocolo |
-| **Compliance Officers** | Cumplimiento | Regulaciones aeronáuticas | Audit trail, cumplimiento ICAO |
+| **Gerente Operaciones Aeroportuarias** | Gestión Operacional | Coordinación con aerolíneas | Comunicación automática, reducción manual |
+| **Centros Operaciones Aerolíneas** | Operaciones Aerolíneas | Recepción información operacional | Mensajes precisos, formato SITA estándar |
+| **Compañías Servicios Tierra** | Servicios Tierra | Coordinación operaciones | Información oportuna, estado actualizado |
+| **Control Tráfico Aéreo** | Control Tráfico Aéreo | Coordinación vuelos | Mensajes regulatorios, cumplimiento |
+| **Operaciones Red SITA** | Proveedor Red | Conectividad y transmisión | Formato correcto, cumplimiento protocolo |
+| **Oficiales Cumplimiento** | Cumplimiento | Regulaciones aeronáuticas | Rastro auditoría, cumplimiento ICAO |
 
 ### Objetivos de Negocio
 
 | Objetivo | Descripción | Métricas de Éxito |
 |----------|-------------|-------------------|
 | **Automatización Operacional** | Reducir intervención manual en comunicaciones | 90% mensajes automáticos, < 5 min latencia |
-| **Compliance ICAO/SITA** | Cumplimiento estándares aeronáuticos | 100% format compliance, zero protocol violations |
-| **Interoperabilidad Global** | Comunicación seamless con aerolíneas | 500+ airlines reached, global coverage |
-| **Trazabilidad Completa** | Audit trail completo de comunicaciones | 100% message tracking, delivery confirmation |
-| **Confiabilidad Operacional** | Entrega garantizada de mensajes críticos | 99.9% delivery rate, redundancy capability |
+| **Cumplimiento ICAO/SITA** | Cumplimiento estándares aeronáuticos | 100% cumplimiento formato, cero violaciones protocolo |
+| **Interoperabilidad Global** | Comunicación fluida con aerolíneas | 500+ aerolíneas alcanzadas, cobertura global |
+| **Trazabilidad Completa** | Rastro auditoría completo de comunicaciones | 100% seguimiento mensajes, confirmación entrega |
+| **Confiabilidad Operacional** | Entrega garantizada de mensajes críticos | 99.9% tasa entrega, capacidad redundancia |
 
 ## 3.2 Contexto técnico
 
@@ -128,7 +128,7 @@ El sistema de mensajería SITA actúa como el puente de comunicación con la ind
 
 | Interface | Fuente | Tipo de Datos | Frecuencia | Formato |
 |-----------|--------|---------------|------------|---------|
-| **Operational Events** | Track & Trace | Flight/operation events | Real-time | Kafka messages (Avro) |
+| **Operational Events** | Track & Trace | Flight/operation events | Real-time | Event Bus messages (Avro) |
 | **Manual Requests** | Operations staff | Ad-hoc messages | On-demand | REST API (JSON) |
 | **Batch Operations** | Scheduled systems | Bulk message generation | Scheduled | REST API (JSON array) |
 | **Template Updates** | Content management | Message templates | As needed | REST API (JSON) |
@@ -139,8 +139,8 @@ El sistema de mensajería SITA actúa como el puente de comunicación con la ind
 | Interface | Destino | Tipo de Datos | Frecuencia | Formato |
 |-----------|---------|---------------|------------|---------|
 | **SITA Messages** | SITA Network | Type B messages | Real-time | SITATEX protocol |
-| **Status Events** | Track & Trace | Message status updates | Event-driven | Kafka messages |
-| **Delivery Confirmations** | Notification System | Success/failure notifications | Real-time | Kafka messages |
+| **Status Events** | Track & Trace | Message status updates | Event-driven | Event Bus messages |
+| **Delivery Confirmations** | Notification System | Success/failure notifications | Real-time | Event Bus messages |
 | **Audit Logs** | Compliance systems | Message audit trail | Continuous | Structured logs |
 | **Metrics Data** | Monitoring systems | Performance metrics | Continuous | Prometheus metrics |
 | **Reports** | Management systems | Operational reports | Scheduled | Report APIs |

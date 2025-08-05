@@ -18,21 +18,21 @@ El sistema de identidad es la piedra angular de la seguridad corporativa, propor
 
 | Stakeholder | Rol | Responsabilidad | Expectativa |
 |-------------|-----|----------------|-------------|
-| **CISO** | Chief Information Security Officer | Políticas de seguridad, compliance | Sistema seguro, zero breaches |
-| **HR Directors** | Recursos Humanos | Gestión de usuarios, onboarding/offboarding | Proceso eficiente, automatización |
-| **IT Operations** | Operaciones TI | Mantenimiento diario, soporte usuarios | Sistema estable, fácil administración |
-| **Compliance Officers** | Oficiales de Cumplimiento | Auditoría, regulaciones | Trazabilidad completa, reportes |
-| **End Users** | Usuarios Finales | Acceso a aplicaciones | Experiencia fluida, seguridad transparente |
+| **CISO** | Director de Seguridad de la Información | Políticas de seguridad, cumplimiento | Sistema seguro, cero violaciones |
+| **Directores de RH** | Recursos Humanos | Gestión de usuarios, incorporación/desvinculación | Proceso eficiente, automatización |
+| **Operaciones de TI** | Operaciones TI | Mantenimiento diario, soporte usuarios | Sistema estable, fácil administración |
+| **Oficiales de Cumplimiento** | Oficiales de Cumplimiento | Auditoría, regulaciones | Trazabilidad completa, reportes |
+| **Usuarios Finales** | Usuarios Finales | Acceso a aplicaciones | Experiencia fluida, seguridad transparente |
 
 ### Objetivos de Negocio
 
 | Objetivo | Descripción | Métricas de Éxito |
 |----------|-------------|-------------------|
-| **Seguridad Centralizada** | Punto único de autenticación y autorización | Zero security breaches, 100% audit compliance |
-| **Experiencia de Usuario** | SSO transparente para aplicaciones corporativas | < 3 clicks para acceso, 95% user satisfaction |
-| **Eficiencia Operativa** | Automatización de gestión de usuarios | 80% self-service, tiempo onboarding < 15 min |
-| **Compliance Regulatorio** | Cumplimiento GDPR, SOX, regulaciones locales | 100% audit success, zero violations |
-| **Escalabilidad Multi-tenant** | Soporte crecimiento por países | Linear scaling, tenant isolation |
+| **Seguridad Centralizada** | Punto único de autenticación y autorización | Cero violaciones de seguridad, 100% cumplimiento auditoría |
+| **Experiencia de Usuario** | SSO transparente para aplicaciones corporativas | < 3 clics para acceso, 95% satisfacción usuario |
+| **Eficiencia Operativa** | Automatización de gestión de usuarios | 80% autoservicio, tiempo incorporación < 15 min |
+| **Cumplimiento Regulatorio** | Cumplimiento GDPR, SOX, regulaciones locales | 100% éxito auditoría, cero violaciones |
+| **Escalabilidad Multi-tenant** | Soporte crecimiento por países | Escalamiento lineal, aislamiento tenant |
 
 ## 3.2 Contexto técnico
 
@@ -72,23 +72,23 @@ El sistema de identidad es la piedra angular de la seguridad corporativa, propor
 
 | Componente | Descripción | Responsabilidad |
 |------------|-------------|-----------------|
-| **Keycloak Identity Provider** | Core IdP server | Authentication, authorization, user management |
-| **Realm Management** | Multi-tenant realms | Per-country tenant isolation |
-| **User Federation** | External IdP integration | LDAP, SAML, OIDC federation |
-| **Token Management** | JWT lifecycle | Token generation, validation, refresh |
-| **Admin Console** | Management interface | User/role administration |
-| **APIs Programáticas** | REST APIs | Programmatic user management |
-| **Audit & Logging** | Security events | Complete audit trail |
+| **Proveedor de Identidad Keycloak** | Servidor IdP central | Autenticación, autorización, gestión usuarios |
+| **Gestión de Realms** | Realms multi-tenant | Aislamiento tenant por país |
+| **Federación de Usuarios** | Integración IdP externos | Federación LDAP, SAML, OIDC |
+| **Gestión de Tokens** | Ciclo de vida JWT | Generación, validación, renovación tokens |
+| **Consola de Administración** | Interfaz de gestión | Administración usuarios/roles |
+| **APIs Programáticas** | APIs REST | Gestión programática usuarios |
+| **Auditoría y Logging** | Eventos de seguridad | Rastro de auditoría completo |
 
 #### Fuera del Alcance
 
 | Componente | Razón de Exclusión | Responsable |
 |------------|-------------------|-------------|
-| **External Identity Providers** | Third-party systems | Google, Microsoft, IT Teams |
-| **Client Applications** | Service consumers | Individual service teams |
-| **Network Infrastructure** | Infrastructure layer | Infrastructure team |
-| **Certificate Management** | PKI infrastructure | Security team |
-| **Monitoring Platform** | Observability tools | DevOps team |
+| **Proveedores de Identidad Externos** | Sistemas de terceros | Google, Microsoft, Equipos TI |
+| **Aplicaciones Cliente** | Consumidores de servicios | Equipos de servicios individuales |
+| **Infraestructura de Red** | Capa de infraestructura | Equipo de infraestructura |
+| **Gestión de Certificados** | Infraestructura PKI | Equipo de seguridad |
+| **Plataforma de Monitoreo** | Herramientas de observabilidad | Equipo DevOps |
 
 ## 3.3 Interfaces externas
 

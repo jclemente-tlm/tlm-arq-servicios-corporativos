@@ -12,10 +12,10 @@ Flujo crítico para notificaciones transaccionales de alta prioridad (confirmaci
 
 - **Aplicación Cliente:** Sistema que origina la notificación
 - **API Gateway:** Punto de entrada con autenticación
-- **Notification API:** Servicio de ingesta y validación
-- **Kafka:** Message broker para desacoplamiento
-- **Channel Processors:** Procesadores especializados por canal
-- **External Providers:** Servicios de entrega (SendGrid, Twilio, etc.)
+- **API de Notificación:** Servicio de ingesta y validación
+- **Bus de Eventos:** Intermediario de mensajes para desacoplamiento
+- **Procesadores de Canal:** Procesadores especializados por canal
+- **Proveedores Externos:** Servicios de entrega (SendGrid, Twilio, etc.)
 
 ### Flujo Principal
 
@@ -23,11 +23,11 @@ Flujo crítico para notificaciones transaccionales de alta prioridad (confirmaci
 sequenceDiagram
     participant App as Aplicación Cliente
     participant Gateway as API Gateway
-    participant API as Notification API
-    participant EventBus as Event Bus
-    participant Processor as Channel Processor
-    participant Provider as External Provider
-    participant DB as Database
+    participant API as API de Notificación
+    participant EventBus as Bus de Eventos
+    participant Processor as Procesador de Canal
+    participant Provider as Proveedor Externo
+    participant DB as Base de Datos
 
     App->>Gateway: 1. POST /notifications/send
     Gateway->>Gateway: 2. Validate JWT token
@@ -38,7 +38,7 @@ sequenceDiagram
     API->>Kafka: 6. Publish notification event
     API->>App: 7. HTTP 202 Accepted {messageId}
 
-    Note over Kafka,Processor: Async Processing
+    Note over Kafka,Processor: Procesamiento Asíncrono
     Kafka->>Processor: 8. Consume notification event
     Processor->>Processor: 9. Render template with data
     Processor->>Provider: 10. Send via provider API
@@ -46,7 +46,7 @@ sequenceDiagram
     Processor->>DB: 12. Update delivery status
     Processor->>Kafka: 13. Publish status event
 
-    Note over Processor,App: Optional Webhook
+    Note over Processor,App: Webhook Opcional
     Processor->>App: 14. Webhook callback (if configured)
 ```
 

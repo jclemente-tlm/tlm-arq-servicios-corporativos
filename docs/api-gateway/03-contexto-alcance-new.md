@@ -57,9 +57,9 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 | **Reverse Proxy** | YARP (Yet Another Reverse Proxy) | Microsoft supported, flexible |
 | **Authentication** | OAuth2 + JWT | Industry standard |
 | **Protocol** | HTTP/2, HTTPS only | Security, rendimiento |
-| **Load Balancing** | Round-robin with health checks | Confiabilidad |
-| **Rate Limiting** | Token bucket algorithm | Fairness, burst handling |
-| **Circuit Breaker** | Polly framework | Fault tolerance |
+| **Load Balancing** | Round-robin con health checks | Confiabilidad |
+| **Rate Limiting** | Control de tráfico per tenant | Protección de recursos |
+| **Circuit Breaker** | Framework Polly | Tolerancia a fallos |
 | **Observability** | OpenTelemetry + Prometheus | Standards compliance |
 
 ### Protocolos de Comunicación
