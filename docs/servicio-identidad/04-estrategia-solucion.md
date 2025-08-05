@@ -99,6 +99,313 @@ El sistema de identidad se basa en una **arquitectura de microservicios orientad
 
 | Protocolo | Versión | Uso Principal | Implementación |
 |-----------|---------|---------------|----------------|
+| **OAuth 2.0** | RFC 6749 + 2.1 | Authorization framework | Authorization Code, Client Credentials |
+| **OpenID Connect** | OIDC 1.0 Core | Authentication layer | ID tokens, UserInfo endpoint |
+| **SAML 2.0** | OASIS SAML 2.0 | Legacy federation | External IdP integration |
+| **JWT** | RFC 7519 | Token format | RS256 signatures, standard claims |
+| **LDAP v3** | RFC 4511 | Directory integration | User federation, attribute mapping |
+
+### Tecnologías de Integración
+
+| Componente | Tecnología | Propósito | Configuración |
+|------------|------------|-----------|---------------|
+| **API Integration** | REST/HTTP | Service communication | OpenAPI 3.0 specs |
+| **Event Streaming** | Apache Kafka | User lifecycle events | Event-driven architecture |
+| **Monitoring** | Prometheus/Grafana | Performance metrics | Custom dashboards |
+| **Logging** | ELK Stack | Audit trails | Structured logging |
+| **Secrets Management** | HashiCorp Vault | Credential storage | Dynamic secrets |
+
+## 4.4 Patrones de diseño aplicados
+
+### Patron 1: Federated Identity Pattern
+
+**Motivación**: Integrar múltiples fuentes de identidad manteniendo experiencia unificada
+
+**Implementación**:
+```mermaid
+graph TB
+    U[User] --> KC[Keycloak]
+    KC --> GW[Google Workspace]
+    KC --> LDAP[Corporate LDAP]
+    KC --> LOCAL[Local Users]
+    KC --> SAML[SAML IdP]
+
+    KC --> APP[Corporate Apps]
+```
+
+**Ventajas**:
+- Experiencia de usuario unificada
+- Gradual migration de usuarios
+- Flexibilidad de authentication sources
+- Centralized authorization
+
+### Patron 2: Multi-Realm Tenant Isolation Pattern
+
+**Motivación**: Aislamiento completo entre países para compliance
+
+**Implementación**:
+```yaml
+Keycloak Instance:
+  Realms:
+    - peru-realm:
+        users: peru_users
+        roles: peru_roles
+        config: peru_config
+    - ecuador-realm:
+        users: ecuador_users
+        roles: ecuador_roles
+        config: ecuador_config
+    - colombia-realm:
+        users: colombia_users
+        roles: colombia_roles
+        config: colombia_config
+    - mexico-realm:
+        users: mexico_users
+        roles: mexico_roles
+        config: mexico_config
+```
+
+**Ventajas**:
+- Compliance con data residency
+- Configuración específica por país
+- Aislamiento de fallas
+- Granular access control
+
+### Patron 3: Token-Based Authentication Pattern
+
+**Motivación**: Autenticación stateless para microservicios
+
+**Flow Implementation**:
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Gateway
+    participant Keycloak
+    participant Service
+
+    Client->>Gateway: Request with credentials
+    Gateway->>Keycloak: Authenticate user
+    Keycloak->>Gateway: Return JWT token
+    Gateway->>Client: JWT token
+    Client->>Gateway: API request + JWT
+    Gateway->>Gateway: Validate JWT locally
+    Gateway->>Service: Forward request + user context
+    Service->>Client: Response
+```
+
+**Ventajas**:
+- Stateless authentication
+- Scalable validation
+- Standard JWT format
+- Microservices friendly
+
+### Patron 4: Circuit Breaker for External IdPs
+
+**Motivación**: Resilencia ante fallos de external identity providers
+
+**Implementation**:
+```csharp
+public class ExternalIdPCircuitBreaker
+{
+    private CircuitBreakerState state = CircuitBreakerState.Closed;
+    private int failureCount = 0;
+    private DateTime lastFailureTime;
+
+    public async Task<AuthResult> AuthenticateAsync(User user)
+    {
+        if (state == CircuitBreakerState.Open)
+        {
+            // Fallback to local authentication
+            return await LocalAuthentication(user);
+        }
+
+        try
+        {
+            var result = await ExternalIdPAuthentication(user);
+            OnSuccess();
+            return result;
+        }
+        catch (Exception)
+        {
+            OnFailure();
+            throw;
+        }
+    }
+}
+```
+
+## 4.5 Calidad y atributos no funcionales
+
+### Performance Strategy
+
+| Aspecto | Target | Strategy | Implementation |
+|---------|--------|----------|----------------|
+| **Authentication Latency** | p95 < 200ms | Local token validation, cached user data | Redis caching, JVM optimization |
+| **Token Validation** | p95 < 50ms | JWT signature validation, no database hits | Local JWT validation, RSA caching |
+| **Concurrent Sessions** | 10,000 users | Stateless design, clustering | Keycloak clustering, session sharing |
+| **Throughput** | 1,000 auth/sec | Optimized database queries, connection pooling | PostgreSQL tuning, prepared statements |
+
+### Security Strategy
+
+| Control | Implementation | Technology | Monitoring |
+|---------|----------------|------------|------------|
+| **Multi-Factor Authentication** | TOTP + WebAuthn + SMS | Keycloak MFA | Failed attempts tracking |
+| **Token Security** | RS256 signatures, short TTL | JWT with RSA keys | Token validation metrics |
+| **Data Encryption** | AES-256 at rest, TLS 1.3 in transit | PostgreSQL encryption, NGINX SSL | Certificate monitoring |
+| **Audit Logging** | Complete user actions trail | Structured logging | SIEM integration |
+
+### Availability Strategy
+
+| Requirement | Target | Implementation | Recovery |
+|-------------|--------|----------------|----------|
+| **System Uptime** | 99.9% | Multi-AZ deployment, health checks | Automated failover |
+| **Database Availability** | 99.95% | PostgreSQL streaming replication | Point-in-time recovery |
+| **Disaster Recovery** | RTO: 4h, RPO: 15min | Cross-region backups | Documented procedures |
+| **Maintenance Windows** | < 4h/month | Rolling updates, blue-green deployment | Zero-downtime deployments |
+
+## 4.6 Organización y estructura
+
+### Team Structure
+
+| Role | Responsibility | Skills Required |
+|------|----------------|-----------------|
+| **Identity Architect** | Architecture decisions, standards compliance | Keycloak, OAuth/OIDC, security patterns |
+| **DevOps Engineer** | Infrastructure, deployment, monitoring | Kubernetes, PostgreSQL, monitoring |
+| **Security Engineer** | Security configuration, compliance | InfoSec, compliance frameworks, auditing |
+| **Platform Developer** | Extensions, customizations, integrations | Java, Keycloak SPI, REST APIs |
+
+### Development Standards
+
+| Aspect | Standard | Rationale | Enforcement |
+|--------|----------|-----------|-------------|
+| **Configuration as Code** | Terraform + Ansible | Infrastructure immutability | CI/CD pipelines |
+| **Realm Configuration** | JSON exports, version control | Change tracking, rollback capability | Git workflows |
+| **Secret Management** | Vault integration | Security best practices | Policy enforcement |
+| **Documentation** | Arc42 + ADRs | Knowledge management | Mandatory reviews |
+
+### Integration Strategy
+
+| Integration Point | Pattern | Technology | Governance |
+|-------------------|---------|------------|------------|
+| **API Gateway** | Token validation | JWT introspection | Rate limiting, monitoring |
+| **Corporate Services** | OAuth2 client | Client credentials flow | Service registry |
+| **External IdPs** | Federation | SAML/OIDC protocols | Security agreements |
+| **Monitoring Systems** | Event streaming | Kafka, metrics export | SLA monitoring |
+
+## 4.7 Migration and deployment strategy
+
+### Deployment Phases
+
+#### Phase 1: Infrastructure Setup (4 weeks)
+
+- **Week 1-2**: Kubernetes cluster setup, networking configuration
+- **Week 3**: PostgreSQL database deployment, backup configuration
+- **Week 4**: Keycloak deployment, basic realm configuration
+
+**Success Criteria**:
+- Keycloak instance running with high availability
+- Database replication configured
+- Monitoring and alerting operational
+
+#### Phase 2: Core Realm Configuration (6 weeks)
+
+- **Week 1-2**: Peru realm setup, user import from LDAP
+- **Week 3-4**: Ecuador and Colombia realm configuration
+- **Week 5-6**: Mexico realm setup, Google Workspace federation
+
+**Success Criteria**:
+- All four country realms operational
+- User federation working for each realm
+- Basic authentication flows functional
+
+#### Phase 3: Service Integration (8 weeks)
+
+- **Week 1-2**: API Gateway integration, token validation
+- **Week 3-4**: Notification service authentication
+- **Week 5-6**: Other corporate services integration
+- **Week 7-8**: End-to-end testing, performance validation
+
+**Success Criteria**:
+- All services integrated with identity system
+- SSO working across all applications
+- Performance targets met
+
+### Migration Strategy
+
+#### User Migration Approach
+
+```yaml
+Migration Strategy:
+  Phase1_LDAP_Users:
+    - Import existing users from corporate LDAP
+    - Maintain LDAP federation for backwards compatibility
+    - Gradual transition to Keycloak native users
+
+  Phase2_Google_Users:
+    - Configure Google Workspace SAML federation
+    - Test with pilot group of users
+    - Full rollout after validation
+
+  Phase3_Legacy_Systems:
+    - SAML integration for systems that support it
+    - API integration for modern applications
+    - Sunset plan for unsupported systems
+```
+
+#### Risk Mitigation
+
+| Risk | Probability | Impact | Mitigation |
+|------|-------------|--------|------------|
+| **User lockout during migration** | Medium | High | Parallel authentication, rollback procedures |
+| **Performance degradation** | Low | Medium | Load testing, gradual traffic increase |
+| **Federation failures** | Medium | Medium | Circuit breakers, local fallback |
+| **Data loss** | Low | High | Comprehensive backups, validation procedures |
+
+### Quality Assurance Strategy
+
+#### Testing Approach
+
+| Test Type | Coverage | Tools | Frequency |
+|-----------|----------|-------|-----------|
+| **Unit Tests** | Core logic, validation | JUnit, Mockito | Every commit |
+| **Integration Tests** | API endpoints, database | TestContainers | Daily build |
+| **Security Tests** | Authentication flows | OWASP ZAP | Weekly |
+| **Performance Tests** | Load, stress testing | JMeter, K6 | Pre-deployment |
+| **Penetration Tests** | Security assessment | External vendor | Quarterly |
+
+*[INSERTAR AQUÍ: Diagrama C4 - Solution Strategy Architecture]*
+
+## 4.8 Decision rationale summary
+
+### Technology Choices Summary
+
+| Decision | Alternative | Chosen | Key Factors |
+|----------|-------------|--------|-------------|
+| **Identity Provider** | Auth0 vs Keycloak vs Okta | Keycloak | Cost, control, flexibility |
+| **Database** | MySQL vs PostgreSQL | PostgreSQL | ACID compliance, JSON support |
+| **Multi-tenancy** | Single realm vs Multiple realms | Multiple realms | Data isolation, compliance |
+| **Federation** | All external vs Hybrid | Hybrid approach | Flexibility, backup authentication |
+| **Deployment** | VM vs Container vs Serverless | Container (K8s) | Scalability, standardization |
+
+### Architecture Trade-offs
+
+| Trade-off | Decision | Rationale |
+|-----------|----------|-----------|
+| **Complexity vs Control** | Higher complexity accepted | Need for customization and compliance |
+| **Cost vs Features** | Higher operational cost | Enterprise features justify investment |
+| **Performance vs Security** | Balanced approach | Both are critical requirements |
+| **Flexibility vs Simplicity** | Flexibility prioritized | Diverse integration requirements |
+
+### Success Metrics
+
+| Metric | Baseline | Target | Measurement |
+|--------|----------|--------|-------------|
+| **Authentication Success Rate** | N/A | 99.5% | Daily monitoring |
+| **Average Login Time** | N/A | < 2 seconds | User experience metrics |
+| **System Availability** | N/A | 99.9% | Uptime monitoring |
+| **Security Incidents** | N/A | Zero breaches | Security dashboard |
+| **User Satisfaction** | N/A | > 90% | Quarterly surveys |
+|-----------|---------|---------------|----------------|
 | **OAuth 2.0** | RFC 6749 | Authorization framework | Client Credentials, Authorization Code |
 | **OpenID Connect** | 1.0 Core | Authentication layer | ID tokens, UserInfo endpoint |
 | **SAML 2.0** | OASIS standard | Enterprise federation | External IdP integration |

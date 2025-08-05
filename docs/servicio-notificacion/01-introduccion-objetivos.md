@@ -1,18 +1,39 @@
 # 1. Introducción y objetivos
 
-El **Sistema de Notificaciones** es una plataforma distribuida multi-tenant y multi-país diseñada para el envío de mensajes por múltiples canales de comunicación. Proporciona capacidades empresariales para notificaciones transaccionales, promocionales y de alerta con garantías de entrega y observabilidad completa.
+El **Sistema de Notificaciones** es una plataforma distribuida multi-tenant y multi-país diseñada para el envío de mensajes por múltiples canales de comunicación. Forma parte de la arquitectura de servicios corporativos de Talma y proporciona capacidades empresariales para notificaciones transaccionales, promocionales y de alerta con garantías de entrega y observabilidad completa.
 
 ## 1.1 Descripción general de los requisitos
 
-### Arquitectura del Sistema
+### Propósito del Sistema
 
-El sistema se compone de dos componentes principales:
-- **Notification API:** Interfaz REST para ingesta de notificaciones
-- **Notification Processor:** Motor de procesamiento asíncrono para entrega
+El sistema permite a las aplicaciones corporativas enviar notificaciones a usuarios finales a través de múltiples canales (Email, SMS, WhatsApp, Push, In-App) de manera agnóstica al proveedor, con soporte nativo para multi-tenancy y configuraciones específicas por país.
+
+### Capacidades Principales
+
+**Gestión de Notificaciones:**
+
+- Recepción de solicitudes de notificación vía API REST
+- Procesamiento asíncrono con garantías de entrega
+- Soporte para scheduling y notificaciones diferidas
+- Sistema de templates con internacionalización
+
+**Multi-canal y Multi-tenant:**
+
+- Envío por Email, SMS, WhatsApp, Push Notifications e In-App
+- Aislamiento completo por tenant/país
+- Configuraciones específicas por canal y región
+- Preferencias de usuario personalizables
+
+**Observabilidad y Confiabilidad:**
+
+- Tracking completo del ciclo de vida
+- Métricas de entrega en tiempo real
+- Sistema de reintentos inteligentes
+- Dead letter queue para fallos persistentes
 
 ### Requisitos Funcionales Principales
 
-| ID | Requisito | Descripción Detallada |
+| ID | Requisito | Descripción |
 |----|-----------|-----------------------|
 | **RF-NOT-01** | **Envío Multicanal** | Soporte para Email, SMS, WhatsApp, Push Notifications e In-App |
 | **RF-NOT-02** | **Templates Dinámicos** | Motor de plantillas Liquid con datos variables y internacionalización |
@@ -104,18 +125,14 @@ El sistema se compone de dos componentes principales:
 | **DevOps** | Diario | Dashboards, Slack alerts | System health, performance metrics |
 | **Security** | Mensual | Security reports | Vulnerability assessments, compliance status |
 | **Legal** | Trimestral | Compliance reports | GDPR compliance, audit findings |
-| **Fiabilidad**   | Entrega garantizada y trazabilidad                                          |
-| **Mantenibilidad**| Modularidad y facilidad de evolución                                       |
-| **Multi-tenant** | Separación lógica y segura de datos por cliente                             |
-| **Multipaís**    | Adaptabilidad a normativas y configuraciones regionales                     |
 
-## 1.3 Partes interesadas
+## 1.4 Resumen Ejecutivo
 
-| Rol/Nombre         | Contacto                | Expectativas                                                        |
-|--------------------|------------------------|---------------------------------------------------------------------|
-| Product Owner      | `<product@talma.com>`  | Plataforma robusta, flexible, multi-tenant y multipaís              |
-| Equipo Dev         | `<dev@talma.com>`     | Facilidad de mantenimiento y evolución                               |
-| Operaciones        | `<ops@talma.com>`     | Monitoreo, alertas y recuperación                                   |
-| Usuarios finales   | -                      | Recepción confiable y segura de notificaciones                      |
-| Clientes corporativos| -                    | Aislamiento de datos y configuración personalizada                   |
-| Administradores regionales | -              | Cumplimiento de normativas locales                                   |
+El Sistema de Notificaciones constituye un componente crítico de la plataforma de servicios corporativos, proporcionando capacidades de comunicación escalables y confiables para las operaciones multi-país de Talma. Su diseño modular y agnóstico permite adaptarse a diferentes proveedores y regulaciones regionales mientras mantiene la consistencia operacional y la separación segura por tenant.
+
+**Valores Arquitectónicos Clave:**
+
+- **Fiabilidad:** Entrega garantizada y trazabilidad completa
+- **Mantenibilidad:** Modularidad y facilidad de evolución
+- **Multi-tenant:** Separación lógica y segura de datos por cliente
+- **Multipaís:** Adaptabilidad a normativas y configuraciones regionales

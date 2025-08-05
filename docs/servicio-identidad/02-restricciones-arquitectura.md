@@ -43,11 +43,145 @@ El **Sistema de Identidad** debe cumplir con restricciones técnicas, de segurid
 
 ## 2.2 Restricciones de seguridad
 
-### Compliance y Regulatorio
+### Cumplimiento y Regulatorio
 
-| Requirement | Standard | Scope | Implementation |
+| Requisito | Estándar | Alcance | Implementación |
 |-------------|----------|-------|----------------|
-| **GDPR Compliance** | EU Regulation 2016/679 | EU user data | Consent management, data minimization, right to deletion |
+| **Cumplimiento GDPR** | Regulación UE 2016/679 | Datos de usuarios UE | Gestión de consentimiento, minimización de datos, derecho al olvido |
+| **Cumplimiento SOX** | Sarbanes-Oxley Act | Datos financieros | Controles de acceso, segregación de deberes, audit trails |
+| **ISO 27001** | Estándar internacional | Gestión de seguridad | SGSI, evaluaciones de riesgo, controles de seguridad |
+| **Regulaciones Locales** | Leyes por país | Datos por jurisdicción | Residencia de datos, políticas específicas por país |
+| **SOX Compliance** | Sarbanes-Oxley Act | Financial controls | Audit trails, segregation of duties, access controls |
+| **ISO 27001** | Information Security | Enterprise security | Risk assessment, security policies, incident management |
+| **PCI DSS** | Payment Card Industry | Credit card data | Data encryption, access restrictions, monitoring |
+
+### Autenticación y Autorización
+
+| Control | Requisito | Justificación | Implementación |
+|---------|-------------|---------------|----------------|
+| **Autenticación Multi-Factor** | MFA obligatorio para roles admin | Seguridad Zero Trust | TOTP, WebAuthn, SMS de respaldo |
+| **Política de Contraseñas** | Complejidad: 12+ caracteres, mayúsculas/minúsculas | Mejores prácticas de seguridad | Políticas de contraseña Keycloak |
+| **Gestión de Sesiones** | Sesión máx: 8h, timeout inactivo: 1h | Seguridad vs usabilidad | Configurable por realm |
+| **TTL de Access Token** | 15 minutos máximo | Minimizar ventana de ataque | Tokens de corta duración, estrategia de refresh |
+| **Rotación de Refresh Token** | Rotación en cada uso | Mitigación de robo de tokens | Rotación de refresh token Keycloak |
+
+### Cifrado y Protección de Datos
+
+| Aspecto | Requisito | Estándar | Implementación |
+|---------|-------------|----------|----------------|
+| **Datos en Reposo** | Cifrado AES-256 | Estándar de la industria | Cifrado de base de datos, cifrado de sistema de archivos |
+| **Datos en Tránsito** | TLS 1.3 obligatorio | Seguridad moderna | HTTPS en todas partes, gestión de certificados |
+| **Firma de Tokens** | RSA-2048 mínimo | Fortaleza criptográfica | Firmas JWT RS256 |
+| **Gestión de Claves** | Módulos de Seguridad de Hardware | Seguridad empresarial | AWS KMS, rotación de claves |
+
+## 2.3 Restricciones organizacionales
+
+### Governance y Operaciones
+
+| Área | Restricción | Justificación | Impacto |
+|------|-------------|---------------|---------|
+| **Team Structure** | DevOps model, 24/7 support | Business continuity | On-call rotations, automation |
+| **Change Management** | ITIL v4 processes | Risk mitigation | Change approval board, rollback procedures |
+| **Documentation** | Arc42 + ADRs mandatory | Knowledge management | Structured documentation, decision tracking |
+| **Code Review** | 2-person approval minimum | Quality assurance | Peer review process, security review |
+
+### Multi-Tenant Requirements
+
+| Tenant | Isolation Level | Compliance | Special Requirements |
+|---------|----------------|------------|---------------------|
+| **Peru** | Realm-level isolation | Local data residency | Spanish language, PEN currency |
+| **Ecuador** | Realm-level isolation | Local data residency | Spanish language, USD currency |
+| **Colombia** | Realm-level isolation | Local data residency | Spanish language, COP currency |
+| **Mexico** | Realm-level isolation | Local data residency | Spanish language, MXN currency |
+
+### Integration Constraints
+
+| System | Integration Type | Constraint | Rationale |
+|--------|-----------------|------------|-----------|
+| **HRIS Systems** | Read-only federation | No write-back capability | Single source of truth for employee data |
+| **Google Workspace** | SAML/OIDC federation | Limited to @talma.pe domain | Corporate email integration |
+| **Legacy Systems** | SAML 2.0 only | Protocol limitation | Existing enterprise applications |
+| **External Partners** | OAuth2 client credentials | Service-to-service only | API access, no user delegation |
+
+## 2.4 Restricciones regulatorias específicas
+
+### Data Residency por País
+
+| País | Regulación | Requirement | Implementation |
+|------|------------|-------------|----------------|
+| **Perú** | Ley de Protección de Datos Personales | Data must remain in Peru | AWS Lima region deployment |
+| **Ecuador** | Ley Orgánica de Protección de Datos | Data sovereignty | Regional data isolation |
+| **Colombia** | Ley Estatutaria 1581 | Habeas data compliance | Consent management, data rights |
+| **México** | Ley Federal de Protección de Datos | INAI compliance | Privacy notice, data subject rights |
+
+### Cross-Border Data Transfer
+
+| Scenario | Restriction | Compliance Mechanism | Technical Implementation |
+|----------|-------------|---------------------|-------------------------|
+| **Admin Access** | EU personnel access to LATAM data | Standard Contractual Clauses | VPN + audit logging |
+| **Support Operations** | 24/7 global support team | Data Processing Agreements | Role-based access, data minimization |
+| **Disaster Recovery** | Cross-region backup | Adequate data protection | Encrypted backups, limited retention |
+| **Analytics** | Anonymized data only | GDPR compliance | Data anonymization, consent tracking |
+
+## 2.5 Restricciones de infraestructura
+
+### AWS Cloud Environment
+
+| Component | Restriction | Rationale | Implementation |
+|-----------|-------------|-----------|----------------|
+| **Compute** | ECS Fargate only | Serverless management | Container orchestration |
+| **Database** | RDS PostgreSQL | Managed service | Multi-AZ deployment |
+| **Load Balancer** | Application Load Balancer | SSL termination, health checks | Target group management |
+| **Networking** | VPC with private subnets | Security isolation | NAT gateways, security groups |
+
+### Monitoring y Observability
+
+| Tool | Purpose | Requirement | Integration |
+|------|---------|-------------|-------------|
+| **CloudWatch** | Infrastructure monitoring | AWS native | ECS, RDS, ALB metrics |
+| **Prometheus** | Application metrics | Custom metrics | Keycloak metrics export |
+| **Grafana** | Visualization | Centralized dashboards | Multi-tenant dashboards |
+| **OpenTelemetry** | Distributed tracing | Request tracing | OTLP export to Jaeger |
+
+### Backup y Disaster Recovery
+
+| Aspect | Requirement | RTO | RPO | Implementation |
+|--------|-------------|-----|-----|----------------|
+| **Database Backup** | Automated daily | 4 hours | 15 minutes | RDS automated backups |
+| **Configuration Backup** | Keycloak realm export | 2 hours | 1 hour | Automated realm export |
+| **Cross-Region DR** | Standby environment | 8 hours | 1 hour | RDS cross-region replicas |
+| **Point-in-Time Recovery** | 7 days retention | 1 hour | 5 minutes | RDS PITR capability |
+
+*[INSERTAR AQUÍ: Diagrama C4 - Constraints and Dependencies]*
+
+## 2.6 Constrains tecnológicos adicionales
+
+### Versioning y Lifecycle
+
+| Component | Version Strategy | Upgrade Policy | Backward Compatibility |
+|-----------|-----------------|----------------|----------------------|
+| **Keycloak** | LTS versions only | Quarterly assessment | N-1 version support |
+| **.NET Runtime** | LTS versions | Annual upgrades | API compatibility |
+| **PostgreSQL** | Major.minor tracking | Annual major upgrades | Migration testing |
+| **Docker Images** | Semantic versioning | Security patches weekly | Container compatibility |
+
+### Performance Baselines
+
+| Metric | Baseline | Target | Monitoring |
+|--------|----------|--------|------------|
+| **Login Response Time** | 500ms | 200ms | Synthetic monitoring |
+| **Token Validation** | 100ms | 50ms | Application metrics |
+| **Database Connections** | 50 | 200 max | Connection pooling |
+| **Memory Usage** | 2GB | 4GB max | Container limits |
+
+### Security Constraints
+
+| Control | Implementation | Validation | Automation |
+|---------|----------------|------------|------------|
+| **Vulnerability Scanning** | Weekly scans | CVSS 7+ remediation | Automated patching |
+| **Penetration Testing** | Quarterly | External assessment | Remediation tracking |
+| **Security Audits** | Annual | SOC 2 Type II | Compliance reporting |
+| **Code Security** | Static analysis | SonarQube gates | CI/CD integration |
 | **SOX Compliance** | Sarbanes-Oxley Act | Financial access controls | Segregation of duties, audit trails, access reviews |
 | **ISO 27001** | Information Security | Security management | Risk assessment, security controls, continuous monitoring |
 | **Local Privacy Laws** | Per country regulations | Regional compliance | Country-specific privacy configurations |

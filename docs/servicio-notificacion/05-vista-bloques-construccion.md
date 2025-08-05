@@ -1,42 +1,150 @@
 # 5. Vista de bloques de construcción
 
+Esta sección describe la descomposición estática del sistema de notificaciones en sus componentes principales, siguiendo un enfoque jerárquico desde la vista general hasta los detalles de implementación.
+
 ## 5.1 Sistema de Notificaciones - Nivel 1 (Whitebox)
 
-### Responsabilidad
-Sistema multi-canal para envío de notificaciones (Email, SMS, WhatsApp, Push) con alta disponibilidad, trazabilidad completa y soporte para múltiples proveedores.
+**🏗️ Diagrama de Arquitectura General**
+*[INSERTAR AQUÍ: Diagrama C4 - Container Level del Sistema de Notificaciones]*
 
-### Bloques de Construcción Contenidos
+### Motivación de la Descomposición
 
-#### Notification API Service
-- **Responsabilidad:** API REST para recepción y gestión de solicitudes de notificación
-- **Tecnología:** ASP.NET Core 8 con middleware de autenticación
-- **Interfaz:** RESTful endpoints + Webhook callbacks
+El sistema se estructura siguiendo los principios de Clean Architecture y Domain-Driven Design, separando claramente las responsabilidades:
 
-#### Channel Processing Engine
-- **Responsabilidad:** Orquestación y procesamiento de notificaciones por canal
-- **Tecnología:** .NET 8 Worker Services con patrón Command/Handler
-- **Interfaz:** Event-driven architecture via Apache Kafka
+- **Separación de canales:** Cada canal de notificación tiene características específicas
+- **Escalabilidad independiente:** Componentes pueden escalar según demanda
+- **Mantenibilidad:** Módulos cohesivos con bajo acoplamiento
+- **Testabilidad:** Interfaces bien definidas para testing
 
-#### Template & Personalization Service
-- **Responsabilidad:** Gestión de plantillas y personalización de contenido
-- **Tecnología:** Razor Engine + Liquid templates
-- **Interfaz:** Template API + bulk operations
+### Bloques de Construcción Principales
 
-#### Delivery Orchestrator
-- **Responsabilidad:** Coordinación de envíos, reintentos y fallbacks
-- **Tecnología:** Hangfire para job scheduling + Polly para resilience
-- **Interfaz:** Background job processing + status reporting
+| Componente | Responsabilidad | Tecnología | Interfaces |
+|------------|-----------------|------------|------------|
+| **Notification API** | Punto de entrada REST, validación, encolado | ASP.NET Core 8 | REST API, Webhooks |
+| **Notification Processor** | Procesamiento asíncrono, orquestación | .NET 8 Worker Services | Kafka, Internal APIs |
+| **Template Engine** | Gestión y renderizado de templates | Liquid Templates | Template API |
+| **Channel Processors** | Envío específico por canal | Strategy Pattern | Provider APIs |
+| **Database** | Persistencia de datos | PostgreSQL | Entity Framework |
+| **Storage** | Almacenamiento de archivos | S3-Compatible | File API |
 
-#### Provider Integration Layer
-- **Responsabilidad:** Adaptadores para múltiples proveedores de notificación
-- **Tecnología:** Strategy pattern con implementaciones específicas
-- **Interfaz:** Unified provider abstraction
+#### Notification API
+
+**Propósito/Responsabilidad:**
+
+
+- Recepción de requests de notificación vía REST API
+- Validación de datos y autenticación
+- Encolado de mensajes para procesamiento asíncrono
+- Gestión de webhooks para status updates
+
+
+**Interfaces:**
+
+- REST API endpoints (JSON)
+- Webhook callbacks para delivery status
+- Integration con API Gateway
+
+**Tecnología:** ASP.NET Core 8, FluentValidation, Mapster
+
+**Ubicación:** `/src/Notification.Api/`
+
+#### Notification Processor
+
+
+**Propósito/Responsabilidad:**
+
+- Consumo de eventos de Kafka
+- Orquestación del pipeline de procesamiento
+- Gestión de reintentos y error handling
+
+- Métricas y logging estructurado
+
+**Interfaces:**
+
+- Kafka consumer (eventos)
+- HTTP clients hacia channel processors
+- Database para tracking
+
+**Tecnología:** .NET 8 Worker Services, Apache Kafka
+
+**Ubicación:** `/src/Notification.Processor/`
+
+
+#### Template Engine
+
+**Propósito/Responsabilidad:**
+
+- Almacenamiento y versionado de templates
+
+- Renderizado con datos dinámicos
+- Soporte de internacionalización
+- Cache de templates compilados
+
+**Interfaces:**
+
+- Template management API
+- Rendering service
+
+**Tecnología:** Liquid Templates, Redis Cache
+
+**Ubicación:** `/src/Notification.Templates/`
+
+### Interfaces Importantes
+
+#### Event Schema (Kafka)
+
+```json
+{
+  "messageId": "uuid",
+  "tenantId": "string",
+  "notificationType": "transactional|promotional|operational",
+  "channels": ["email", "sms", "whatsapp", "push"],
+  "recipients": [
+    {
+      "email": "string",
+      "phone": "string",
+      "deviceToken": "string",
+      "preferences": {}
+    }
+  ],
+  "template": {
+    "id": "string",
+    "version": "string",
+    "data": {}
+  },
+  "scheduling": {
+    "sendAt": "datetime",
+    "timezone": "string"
+  },
+  "priority": "low|normal|high|critical"
+}
+```
+
+#### API Response Schema
+
+```json
+{
+  "messageId": "uuid",
+  "status": "accepted|processing|sent|delivered|failed",
+  "submittedAt": "datetime",
+  "channels": [
+    {
+      "type": "email",
+      "status": "pending|sent|delivered|bounced|failed",
+      "providerId": "string",
+      "deliveredAt": "datetime"
+    }
+  ]
+}
+```
+
 
 ## 5.2 Notification API Service - Nivel 2 (Whitebox)
 
 ### Controladores Principales
 
 #### Notification Controller
+
 ```csharp
 [Route("api/v1/notifications")]
 public class NotificationController : ControllerBase
@@ -47,12 +155,14 @@ public class NotificationController : ControllerBase
     [HttpPost("bulk")]
     public async Task<IActionResult> SendBulkNotifications([FromBody] BulkNotificationRequest request);
 
+
     [HttpGet("{id}/status")]
     public async Task<IActionResult> GetNotificationStatus(Guid id);
 }
 ```
 
 #### Template Controller
+
 ```csharp
 [Route("api/v1/templates")]
 public class TemplateController : ControllerBase
@@ -61,6 +171,7 @@ public class TemplateController : ControllerBase
     public async Task<IActionResult> CreateTemplate([FromBody] TemplateCreateRequest request);
 
     [HttpPut("{id}")]
+
     public async Task<IActionResult> UpdateTemplate(Guid id, [FromBody] TemplateUpdateRequest request);
 
     [HttpPost("{id}/preview")]
@@ -69,23 +180,29 @@ public class TemplateController : ControllerBase
 ```
 
 #### Webhook Controller
+
 ```csharp
 [Route("api/v1/webhooks")]
 public class WebhookController : ControllerBase
+
 {
     [HttpPost("delivery-status")]
     public async Task<IActionResult> HandleDeliveryStatus([FromBody] DeliveryStatusWebhook webhook);
 }
 ```
 
+
 ### Servicios de Aplicación
 
 #### Notification Service
+
 - **Responsabilidad:** Validación, enriquecimiento y encolado de notificaciones
 - **Dependencias:** Template Service, Validation Service, Event Publisher
 - **Patrones:** CQRS para separación read/write operations
 
+
 #### Validation Service
+
 - **Responsabilidad:** Validación de destinatarios, contenido y compliance
 - **Características:** Anti-spam, GDPR compliance, rate limiting
 - **Reglas:** Configurable per tenant/channel
@@ -95,6 +212,8 @@ public class WebhookController : ControllerBase
 ### Procesadores por Canal
 
 #### Email Processor
+
+
 ```csharp
 public class EmailProcessor : IChannelProcessor
 {
@@ -105,7 +224,9 @@ public class EmailProcessor : IChannelProcessor
 }
 ```
 
+
 #### SMS Processor
+
 ```csharp
 public class SmsProcessor : IChannelProcessor
 {
@@ -116,7 +237,9 @@ public class SmsProcessor : IChannelProcessor
 }
 ```
 
+
 #### WhatsApp Processor
+
 ```csharp
 public class WhatsAppProcessor : IChannelProcessor
 {
@@ -127,7 +250,9 @@ public class WhatsAppProcessor : IChannelProcessor
 }
 ```
 
+
 #### Push Notification Processor
+
 ```csharp
 public class PushProcessor : IChannelProcessor
 {
@@ -141,7 +266,9 @@ public class PushProcessor : IChannelProcessor
 ### Event Handlers
 
 #### Notification Event Handler
+
 ```csharp
+
 public class NotificationEventHandler : IEventHandler<NotificationRequested>
 {
     public async Task Handle(NotificationRequested @event)
@@ -151,6 +278,7 @@ public class NotificationEventHandler : IEventHandler<NotificationRequested>
         // Initialize tracking and audit trail
     }
 }
+
 ```
 
 ## 5.4 Template & Personalization Service - Nivel 2 (Whitebox)
@@ -158,15 +286,19 @@ public class NotificationEventHandler : IEventHandler<NotificationRequested>
 ### Template Engine
 
 #### Razor Template Processor
+
+
 ```csharp
 public interface ITemplateProcessor
 {
     Task<string> ProcessAsync(string template, object model);
     Task<TemplateValidationResult> ValidateAsync(string template);
 }
+
 ```
 
 #### Template Storage
+
 - **Database:** Template definitions y versiones
 - **Cache:** Redis para templates frecuentemente usados
 - **CDN:** Assets estáticos (imágenes, CSS)
@@ -174,24 +306,30 @@ public interface ITemplateProcessor
 
 ### Personalization Features
 
+
 #### Dynamic Content
+
 - **Merge Fields:** {{user.firstName}}, {{order.total}}
 - **Conditional Logic:** if/else statements
 - **Loops:** Para contenido repetitivo
 - **Formatters:** Fechas, números, monedas
 
 #### A/B Testing
+
 - **Variant Management:** Múltiples versiones por template
 - **Traffic Splitting:** Configurable por tenant
 - **Metrics Collection:** Open rates, click rates
 - **Statistical Significance:** Automated test conclusions
+
 
 ## 5.5 Delivery Orchestrator - Nivel 2 (Whitebox)
 
 ### Job Management
 
 #### Background Jobs
+
 ```csharp
+
 [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 30, 300, 3600 })]
 public class NotificationDeliveryJob
 {
@@ -202,9 +340,11 @@ public class NotificationDeliveryJob
         // Retry logic with exponential backoff
     }
 }
+
 ```
 
 #### Scheduled Jobs
+
 - **Batch Processing:** Off-peak bulk notifications
 - **Cleanup Jobs:** Old notification cleanup
 - **Analytics Jobs:** Daily/weekly reporting
@@ -213,7 +353,9 @@ public class NotificationDeliveryJob
 ### Resilience Patterns
 
 #### Circuit Breaker
+
 ```csharp
+
 public class ProviderCircuitBreaker
 {
     // Auto-failover to backup providers
@@ -223,9 +365,11 @@ public class ProviderCircuitBreaker
 ```
 
 #### Retry Policies
+
 ```yaml
 Retry Configuration:
   MaxAttempts: 5
+
   BackoffStrategy: Exponential
   BaseDelay: 30s
   MaxDelay: 1h
@@ -237,20 +381,25 @@ Retry Configuration:
 ### Email Providers
 
 #### SendGrid Integration
+
 ```csharp
 public class SendGridProvider : IEmailProvider
 {
+
     public async Task<DeliveryResult> SendAsync(EmailMessage message)
     {
         // API key rotation
         // Webhook signature validation
         // Suppression list management
+
     }
 }
 ```
 
 #### Amazon SES Integration
+
 ```csharp
+
 public class SesProvider : IEmailProvider
 {
     public async Task<DeliveryResult> SendAsync(EmailMessage message)
@@ -264,12 +413,16 @@ public class SesProvider : IEmailProvider
 
 ### SMS Providers
 
+
 #### Twilio Integration
+
 - **Features:** Global SMS, short codes, long codes
 - **Compliance:** Carrier filtering, opt-out management
 - **Analytics:** Delivery rates por país/carrier
 
+
 #### AWS SNS Integration
+
 - **Features:** Global reach, cost optimization
 - **Routing:** Intelligent routing por región
 - **Monitoring:** CloudWatch integration
@@ -277,6 +430,8 @@ public class SesProvider : IEmailProvider
 ### Provider Selection Strategy
 
 #### Load Balancing
+
+
 ```yaml
 Provider Priority Matrix:
   Email:
@@ -285,10 +440,12 @@ Provider Priority Matrix:
     Fallback: Mailgun (5%)
   SMS:
     Primary: Twilio (80%)
+
     Secondary: SNS (20%)
 ```
 
 #### Cost Optimization
+
 - **Volume Tiers:** Automatic provider switching
 - **Geographic Routing:** Lowest cost per region
 - **Performance Monitoring:** SLA-based selection
@@ -296,6 +453,7 @@ Provider Priority Matrix:
 ## 5.7 Interfaces Externas
 
 ### Upstream Dependencies
+
 ```yaml
 Required Services:
   - Identity Service: User authentication/authorization
@@ -305,6 +463,7 @@ Required Services:
 ```
 
 ### Downstream Integrations
+
 ```yaml
 External Providers:
   Email: [SendGrid, AWS SES, Mailgun]
@@ -314,6 +473,7 @@ External Providers:
 ```
 
 ### Event Integrations
+
 ```yaml
 Event Streams:
   - notification.requested
@@ -323,20 +483,117 @@ Event Streams:
   - notification.bounced
 ```
 
+## 5.8 Modelo de Datos y Persistencia
+
+### Esquema de Base de Datos
+
+**🗄️ Diagrama de Entidad-Relación**
+*[INSERTAR AQUÍ: Diagrama C4 - Component Level Database Schema]*
+
+#### Tabla: notifications
+
+Tabla principal que almacena el ciclo de vida completo de cada notificación.
+
+| Campo | Tipo | Descripción | Índices |
+|-------|------|-------------|---------|
+| `notification_id` | UUID | PK - Identificador único | PK, IDX |
+| `tenant_id` | UUID | FK - Identificador del tenant | IDX |
+| `country_code` | VARCHAR(3) | Código país ISO (PE, CO, EC, MX) | IDX |
+| `message_type` | VARCHAR(50) | transactional\|promotional\|operational | IDX |
+| `channels` | JSONB | Array de canales [email, sms, whatsapp, push] | GIN |
+| `recipient_data` | JSONB | Datos del destinatario | GIN |
+| `template_id` | UUID | FK - Referencia a template | IDX |
+| `template_data` | JSONB | Variables para renderizado | GIN |
+| `status` | VARCHAR(20) | pending\|processing\|sent\|delivered\|failed | IDX |
+| `priority` | VARCHAR(10) | low\|normal\|high\|critical | IDX |
+| `scheduled_at` | TIMESTAMPTZ | Fecha programada de envío | IDX |
+| `sent_at` | TIMESTAMPTZ | Fecha real de envío | IDX |
+| `created_at` | TIMESTAMPTZ | Fecha de creación | IDX |
+| `updated_at` | TIMESTAMPTZ | Fecha de última actualización | IDX |
+| `channels` | JSONB | Array de canales [email, sms, whatsapp, push] | GIN |
+| `recipient_data` | JSONB | Datos del destinatario | GIN |
+| `template_id` | UUID | FK - Referencia a template | IDX |
+| `template_data` | JSONB | Variables para renderizado | GIN |
+| `status` | VARCHAR(20) | pending\|processing\|sent\|delivered\|failed | IDX |
+| `priority` | VARCHAR(10) | low\|normal\|high\|critical | IDX |
+| `scheduled_at` | TIMESTAMPTZ | Fecha programada de envío | IDX |
+| `sent_at` | TIMESTAMPTZ | Fecha real de envío | IDX |
+| `created_at` | TIMESTAMPTZ | Fecha de creación | IDX |
+| `updated_at` | TIMESTAMPTZ | Fecha de última actualización | IDX |
+
+#### Tabla: channel_deliveries
+
+Tracking detallado por canal de cada notificación.
+
+| Campo | Tipo | Descripción | Índices |
+|-------|------|-------------|---------|
+| `delivery_id` | UUID | PK - Identificador único | PK |
+| `notification_id` | UUID | FK - Referencia a notificación | IDX |
+| `channel_type` | VARCHAR(20) | email\|sms\|whatsapp\|push | IDX |
+| `provider_id` | VARCHAR(50) | sendgrid\|twilio\|whatsapp-api\|fcm | IDX |
+| `provider_message_id` | VARCHAR(255) | ID del proveedor externo | IDX |
+| `recipient_address` | VARCHAR(255) | Email, teléfono, device token | IDX |
+| `status` | VARCHAR(20) | pending\|sent\|delivered\|bounced\|failed | IDX |
+| `attempts` | INTEGER | Número de intentos realizados | - |
+| `last_attempt_at` | TIMESTAMPTZ | Fecha del último intento | IDX |
+| `delivered_at` | TIMESTAMPTZ | Fecha de entrega confirmada | IDX |
+| `error_details` | JSONB | Detalles de errores si aplica | GIN |
+| `cost` | DECIMAL(10,4) | Costo de envío por este canal | - |
+
+#### Tabla: templates
+
+Gestión de templates multi-tenant con versionado.
+
+| Campo | Tipo | Descripción | Índices |
+|-------|------|-------------|---------|
+| `template_id` | UUID | PK - Identificador único | PK |
+| `tenant_id` | UUID | FK - Identificador del tenant | IDX |
+| `name` | VARCHAR(100) | Nombre del template | IDX |
+| `category` | VARCHAR(50) | transactional\|promotional\|operational | IDX |
+| `version` | INTEGER | Versión del template | IDX |
+| `is_active` | BOOLEAN | Template activo | IDX |
+| `supported_channels` | VARCHAR[] | Canales soportados | GIN |
+| `content` | JSONB | Contenido por canal | GIN |
+| `variables_schema` | JSONB | Esquema de variables requeridas | GIN |
+| `approval_status` | VARCHAR(20) | draft\|pending\|approved\|rejected | IDX |
+| `created_at` | TIMESTAMPTZ | Fecha de creación | IDX |
+| `updated_at` | TIMESTAMPTZ | Fecha de actualización | IDX |
+
+### Patrones de Acceso a Datos
+
+#### Repository Pattern
+
+```csharp
+public interface INotificationRepository
+{
+    Task<Notification> CreateAsync(Notification notification);
+    Task<Notification> GetByIdAsync(Guid notificationId, Guid tenantId);
+    Task<PagedResult<Notification>> GetByTenantAsync(
+        Guid tenantId,
+        NotificationFilter filter,
+        PaginationOptions pagination);
+    Task UpdateStatusAsync(Guid notificationId, NotificationStatus status);
+    Task<IEnumerable<Notification>> GetPendingNotificationsAsync(int batchSize);
+}
+```
+
+#### Multi-tenant Data Isolation
+
+```csharp
+// Automatic tenant filtering in base repository
+public abstract class TenantRepository<T> : IRepository<T> where T : ITenantEntity
+{
+    protected IQueryable<T> ApplyTenantFilter(IQueryable<T> query)
+    {
+        var tenantId = _tenantContext.CurrentTenantId;
+        return query.Where(e => e.TenantId == tenantId);
+    }
+}
+```
+
 ## Referencias
+
 - [Notification System Design Patterns](https://microservices.io/patterns/data/event-driven-architecture.html)
 - [Multi-channel Communication Best Practices](https://aws.amazon.com/blogs/messaging-and-targeting/)
 - [Template Engine Performance Guidelines](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor)
 - [Arc42 Building Blocks](https://docs.arc42.org/section-5/)
-      Rel(Service, DB, "Lee/Escribe notificaciones")
-```
-
-## 5.2 Descripción de componentes
-
-| Componente         | Descripción                                                      |
-|--------------------|------------------------------------------------------------------|
-| `API Notificaciones` | Expone endpoints REST para gestión y consulta de notificaciones |
-| `Servicio de Envío`  | Procesa y envía notificaciones a canales externos               |
-| `Base de Datos`      | Almacena notificaciones, logs y adjuntos                        |
-| `Kafka`              | Mensajería asíncrona para eventos y reintentos                  |
-| `S3`                 | Almacenamiento de adjuntos                                      |

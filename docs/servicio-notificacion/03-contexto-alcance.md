@@ -1,126 +1,155 @@
 # 3. Contexto y alcance del sistema
 
-El **Sistema de Notificación Multi-canal** es la plataforma centralizada para envío de notificaciones a través de Email, SMS, WhatsApp y Push Notifications, integrándose con eventos operacionales y sistemas corporativos.
+El **Sistema de Notificaciones** actúa como la plataforma centralizada de comunicaciones multi-canal dentro de la arquitectura de servicios corporativos de Talma, proporcionando capacidades de notificación agnósticas al proveedor para todas las aplicaciones corporativas.
 
 ## 3.1 Contexto de negocio
 
-### Propósito del Sistema
+### Posición en el Ecosistema
 
-El sistema de notificación actúa como el hub central de comunicaciones, proporcionando:
+El sistema se integra con el ecosistema corporativo para proporcionar comunicaciones confiables y trazables:
 
-- **Comunicación multi-canal** unificada para operaciones críticas
-- **Notificaciones automáticas** basadas en eventos operacionales
-- **Entrega confiable** con fallback y retry automático
-- **Personalización** de contenido por tenant y contexto
-- **Trazabilidad completa** de entregas y estados
+**🎯 Diagrama de Contexto de Negocio**
+*[INSERTAR AQUÍ: Diagrama C4 - Context Level]*
 
-### Stakeholders Principales
+### Actores del Sistema
 
-| Stakeholder | Rol | Responsabilidad | Expectativa |
-|-------------|-----|----------------|-------------|
-| **Operations Managers** | Gestión Operacional | Comunicación crítica, alertas | Notificaciones inmediatas, 100% entrega |
-| **Customer Service** | Atención al Cliente | Comunicación con pasajeros | Multi-canal, personalización |
-| **IT Operations** | Operaciones TI | Mantenimiento sistema, monitoreo | Sistema estable, alertas proactivas |
-| **Compliance Officers** | Cumplimiento | Regulaciones comunicaciones | Opt-out compliance, audit trail |
-| **End Users** | Usuarios Finales | Recepción notificaciones | Contenido relevante, canales preferidos |
+#### Usuarios Primarios
+
+| Actor | Descripción | Interacciones Principales |
+|-------|-------------|---------------------------|
+| **Aplicaciones Corporativas** | Sistemas que requieren envío de notificaciones | Envío de requests vía API REST |
+| **Usuarios Finales** | Destinatarios de las notificaciones | Recepción por Email, SMS, WhatsApp, Push |
+| **Administradores del Sistema** | Gestores de configuración y monitoreo | Configuración de templates, canales, monitoring |
+
+#### Usuarios Secundarios
+
+| Actor | Descripción | Interacciones |
+|-------|-------------|---------------|
+| **Marketing Teams** | Equipos de marketing regional | Configuración de campañas promocionales |
+| **Operations Teams** | Equipos operacionales | Monitoreo de entregas, troubleshooting |
+| **Compliance Officers** | Responsables de cumplimiento | Audit de entregas, gestión de opt-outs |
+
+### Interfaces de Dominio
+
+#### Entradas al Sistema
+
+| Origen | Interface | Tipo de Datos | Propósito |
+|--------|-----------|---------------|-----------|
+| **Aplicaciones Corporativas** | REST API `/notifications` | JSON notification requests | Solicitudes de envío |
+| **Sistema de Templates** | Template Management API | Template definitions | Gestión de plantillas |
+| **Admin Console** | Configuration API | Configuration data | Gestión de configuraciones |
+| **Webhook Providers** | Callback endpoints | Delivery status | Status de entrega |
+
+#### Salidas del Sistema
+
+| Destino | Interface | Tipo de Datos | Propósito |
+|---------|-----------|---------------|-----------|
+| **Proveedores Email** | SMTP/API | Email messages | Envío de emails |
+| **Proveedores SMS** | HTTP API | SMS messages | Envío de SMS |
+| **WhatsApp Business** | WhatsApp API | WhatsApp messages | Mensajes WhatsApp |
+| **Push Services** | FCM/APNS | Push notifications | Notificaciones push |
+| **Sistemas Origen** | Webhooks | Delivery callbacks | Status de entrega |
+| **Observability Stack** | Metrics/Logs | Telemetry data | Monitoreo y alertas |
 
 ### Objetivos de Negocio
 
-| Objetivo | Descripción | Métricas de Éxito |
-|----------|-------------|-------------------|
-| **Entrega Confiable** | Garantizar entrega de notificaciones críticas | > 95% delivery rate across channels |
-| **Experiencia Omnicanal** | Comunicación consistente en todos los canales | 90% user satisfaction, channel coverage |
-| **Automatización Operacional** | Reducir intervención manual en comunicaciones | 80% automated notifications |
-| **Compliance Regulatorio** | Cumplir regulaciones de comunicaciones | 100% opt-out compliance, zero violations |
-| **Performance Operacional** | Notificaciones en tiempo real | < 5 seconds end-to-end latency |
+| Prioridad | Objetivo | KPI | Target |
+|-----------|----------|-----|--------|
+| **Alta** | **Confiabilidad de Entrega** | Delivery Success Rate | > 99.5% |
+| **Alta** | **Tiempo de Respuesta** | API Response Time p95 | < 200ms |
+| **Media** | **Escalabilidad** | Peak Load Handling | 50K notifications/min |
+| **Media** | **Compliance** | Opt-out Processing | < 1 hora |
+| **Baja** | **Cost Efficiency** | Cost per Notification | < $0.05 |
 
 ## 3.2 Contexto técnico
 
-### Posición en la Arquitectura
+### Arquitectura de Integración
 
-```text
-┌─────────────────────────────────────────────────────────────────┐
-│                    EXTERNAL NOTIFICATION PROVIDERS              │
-│  [SendGrid]  [Twilio]  [WhatsApp API]  [Firebase FCM]          │
-└─────────────────────┬───────────────────────────────────────────┘
-                      │ Provider APIs
-                      ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                  NOTIFICATION SYSTEM                           │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐│
-│  │Email        │ │SMS          │ │WhatsApp     │ │Push         ││
-│  │Processor    │ │Processor    │ │Processor    │ │Processor    ││
-│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘│
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │        Notification API & Template Engine                  ││
-│  └─────────────────────────────────────────────────────────────┘│
-└─────────────────────┬───────────────────────────────────────────┘
-                      │ Event Consumption & API Calls
-                      ▲
-┌─────────────────────────────────────────────────────────────────┐
-│                    EVENT SOURCES & CLIENTS                     │
-│  [Track&Trace] [SITA Messages] [Web Apps] [Mobile Apps]       │
-└─────────────────────────────────────────────────────────────────┘
+**🔧 Diagrama de Contexto Técnico**
+*[INSERTAR AQUÍ: Diagrama C4 - Technical Context]*
+
+### Canales de Comunicación
+
+#### Protocolos y Tecnologías
+
+| Canal | Proveedor | Protocolo | Formato | Observaciones |
+|-------|-----------|-----------|---------|---------------|
+| **Email** | SendGrid / Amazon SES | HTTPS REST API | JSON | SMTP como fallback |
+| **SMS** | Twilio | HTTPS REST API | JSON | Rate limiting por carrier |
+| **WhatsApp** | WhatsApp Business API | HTTPS REST API | JSON | Template pre-approval required |
+| **Push** | Firebase FCM / APNS | HTTPS REST API | JSON | Device token management |
+| **In-App** | Internal Pub/Sub | WebSocket | JSON | Real-time delivery |
+
+#### Integración con Sistemas Internos
+
+| Sistema | Protocolo | Formato | Autenticación | SLA |
+|---------|-----------|---------|---------------|-----|
+| **Track & Trace** | Apache Kafka | Avro | mTLS | < 1s event processing |
+| **SITA Messaging** | Apache Kafka | JSON | mTLS | < 2s event processing |
+| **Identity System** | HTTPS REST | JWT | OAuth 2.0 | < 200ms response |
+| **API Gateway** | HTTPS | JSON | JWT Bearer | < 100ms routing |
+
+### Mapeo de Entrada/Salida a Canales
+
+#### Flujo de Datos Simplificado
+
+```mermaid
+graph LR
+    A[Corporate Apps] -->|REST API| B[Notification API]
+    C[Track & Trace] -->|Kafka Events| B
+    D[SITA Messaging] -->|Kafka Events| B
+
+    B --> E[Template Engine]
+    B --> F[Channel Router]
+
+    F --> G[Email Processor]
+    F --> H[SMS Processor]
+    F --> I[WhatsApp Processor]
+    F --> J[Push Processor]
+
+    G -->|HTTPS| K[SendGrid]
+    H -->|HTTPS| L[Twilio]
+    I -->|HTTPS| M[WhatsApp API]
+    J -->|HTTPS| N[FCM/APNS]
+
+    G --> O[Delivery Tracking]
+    H --> O
+    I --> O
+    J --> O
+
+    O -->|Webhooks| A
 ```
 
-### Fronteras del Sistema
+#### Tecnologías de Integración
 
-#### Dentro del Alcance
+| Componente | Tecnología | Propósito | Configuración |
+|------------|------------|-----------|---------------|
+| **API Gateway** | YARP (ASP.NET Core) | Routing y rate limiting | Load balancing, timeout 30s |
+| **Message Broker** | Apache Kafka | Event streaming | Retention 7 days, 3 replicas |
+| **Database** | PostgreSQL | Data persistence | Multi-tenant schema design |
+| **Cache** | Redis | Response caching | TTL 300s, cluster mode |
+| **File Storage** | S3-Compatible | Attachment storage | Versioning enabled, lifecycle policies |
+| **Monitoring** | Prometheus + Grafana | Observability | 15s scrape interval |
+| **Tracing** | OpenTelemetry | Distributed tracing | 100% sampling in dev, 1% in prod |
 
-| Componente | Descripción | Responsabilidad |
-|------------|-------------|-----------------|
-| **Notification API** | REST API para envío notificaciones | Request handling, validation, queuing |
-| **Template Engine** | Motor de plantillas multi-idioma | Template processing, personalization |
-| **Channel Processors** | Procesadores específicos por canal | Email, SMS, WhatsApp, Push delivery |
-| **Event Consumers** | Consumidores de eventos externos | Track&Trace, SITA event processing |
-| **Delivery Tracking** | Seguimiento de entregas | Status tracking, retry management |
-| **Audit & Logging** | Registro de operaciones | Delivery logs, compliance reporting |
-| **Template Management** | Gestión de plantillas | Template CRUD, versioning, approval |
+### Restricciones Técnicas
 
-#### Fuera del Alcance
+#### Limitaciones de Proveedores
 
-| Componente | Razón de Exclusión | Responsable |
-|------------|-------------------|-------------|
-| **External Providers** | Third-party services | SendGrid, Twilio, WhatsApp, Firebase |
-| **Content Creation** | Business content | Business teams, marketing |
-| **Event Generation** | Source events | Track&Trace, SITA Messaging services |
-| **User Preferences** | Notification preferences | User management in Identity System |
-| **Network Infrastructure** | Connectivity layer | Infrastructure team |
+| Proveedor | Restricción | Impacto | Mitigación |
+|-----------|-------------|---------|-------------|
+| **SendGrid** | 100 requests/second | Rate limiting | Request queuing, multiple API keys |
+| **Twilio** | 1 message/second por number | SMS throttling | Number pool rotation |
+| **WhatsApp** | Template pre-approval | Content restrictions | Template library management |
+| **FCM** | 10MB payload limit | Large content | Content optimization, image compression |
 
-## 3.3 Interfaces externas
+#### Requerimientos de Red
 
-### Actores Principales
-
-| Actor | Tipo | Descripción | Interacciones |
-|-------|------|-------------|---------------|
-| **Operations Manager** | Humano | Gestión de notificaciones operacionales | Template management, delivery monitoring |
-| **Customer Service Agent** | Humano | Envío de notificaciones manuales | Individual notifications, customer communication |
-| **System Administrator** | Humano | Administración del sistema | Configuration, monitoring, troubleshooting |
-| **Notification Recipients** | Humano | Destinatarios finales | Receive notifications, preference management |
-| **Corporate Services** | Sistema | Servicios internos generadores de eventos | Automated notification triggers |
-
-### Sistemas Externos
-
-| Sistema | Tipo | Protocolo | Propósito | Datos Intercambiados |
-|---------|------|-----------|-----------|---------------------|
-| **SendGrid** | Email Provider | REST API | Email delivery | Email content, recipient data, delivery status |
-| **Amazon SES** | Email Provider | REST API | Email delivery fallback | Email messages, bounce/complaint handling |
-| **Twilio** | SMS Provider | REST API | SMS delivery | SMS content, phone numbers, delivery receipts |
-| **WhatsApp Business API** | Messaging Provider | REST API | WhatsApp delivery | Template messages, media, delivery status |
-| **Firebase FCM** | Push Provider | REST API | Push notifications | Device tokens, push payloads, delivery stats |
-| **Track & Trace System** | Internal Service | Apache Kafka | Event-driven notifications | Operational events, flight updates, alerts |
-| **SITA Messaging** | Internal Service | Apache Kafka | Message status notifications | Message delivery status, errors, confirmations |
-| **Identity System** | Internal Service | OAuth2/OIDC | Authentication & user data | User tokens, profile data, permissions |
-| **Template Storage** | Internal Service | REST API | Template management | Template content, metadata, versions |
-
-### Interfaces de Datos
-
-#### Entrada de Datos
-
-| Interface | Fuente | Tipo de Datos | Frecuencia | Formato |
-|-----------|--------|---------------|------------|---------|
-| **Event Stream** | Track & Trace | Operational events | Real-time | Kafka messages (Avro) |
-| **Message Events** | SITA Messaging | Message status updates | Real-time | Kafka messages (JSON) |
+| Destino | Latencia Target | Bandwidth | Disponibilidad |
+|---------|----------------|-----------|----------------|
+| **External Providers** | < 2s timeout | 1 Mbps sustained | 99.9% uptime dependency |
+| **Internal Services** | < 500ms | 10 Mbps | 99.95% uptime |
+| **Database** | < 50ms | 100 Mbps | 99.99% uptime |
 | **API Requests** | Web/Mobile apps | Manual notifications | On-demand | REST API (JSON) |
 | **Bulk Requests** | Corporate systems | Batch notifications | Scheduled | REST API (JSON Array) |
 | **Template Updates** | Content management | Template changes | As needed | REST API (JSON) |

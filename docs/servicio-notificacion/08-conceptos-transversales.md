@@ -1,56 +1,331 @@
 # 8. Conceptos transversales
 
-- **Seguridad:** Autenticación <code>OAuth2</code> con <code>JWT</code>, autorización por roles y aislamiento multi-tenant.
-- **Observabilidad:** <b>Serilog</b> para logs estructurados, métricas y trazabilidad.
-- **Escalabilidad:** Despliegue horizontal en <b>AWS</b> y uso de <b>Kafka</b> para desacoplar procesos.
-- **Mantenibilidad:** Modularidad, pruebas automatizadas (<b>xUnit</b>), integración continua.
-- **Extensibilidad:** Integración de nuevos canales y proveedores mediante interfaces.
-- **Resiliencia:** Reintentos automáticos, tolerancia a fallos y recuperación ante errores.
-- **Cumplimiento:** Adaptación a normativas locales de mensajería y privacidad.
+Esta sección describe los conceptos, patrones y soluciones que abarcan múltiples componentes del sistema de notificaciones, proporcionando coherencia arquitectónica y operacional.
 
-> Nota: Las decisiones arquitectónicas clave están documentadas en los [ADRs comunes](../../adrs/README.md).
+## 8.1 Seguridad y Autenticación
 
-## 8.1 Seguridad
+### Modelo de Seguridad Multi-tenant
 
-La seguridad es un pilar fundamental del sistema y afecta a todos los componentes expuestos (APIs, colas, bases de datos). Se implementa mediante:
+El sistema implementa un modelo de seguridad robusta que garantiza el aislamiento entre tenants y la protección de datos sensibles.
 
-- **Autenticación OAuth2**: Todos los servicios expuestos requieren tokens JWT válidos, gestionados por un proveedor central (ver ADR-008).
-- **Control de acceso basado en roles (RBAC)**: Cada endpoint define permisos explícitos según el rol del usuario o sistema llamante.
-- **Rate limiting**: Se aplican límites de peticiones por cliente para prevenir abusos y ataques de denegación de servicio.
-- **Cifrado**: Toda la información sensible se cifra en tránsito (TLS) y en reposo (AES-256 en base de datos y backups).
+#### Autenticación y Autorización
 
-**Ejemplo de tabla de roles y permisos:**
+**OAuth 2.0 con JWT:**
 
-| Rol         | Permisos principales                |
-|-------------|-------------------------------------|
-| admin       | Gestión total de recursos           |
-| operador    | Consulta y operación limitada       |
-| sistema     | Acceso técnico a colas/eventos      |
-| auditor     | Solo lectura y trazabilidad         |
-
-Estas medidas garantizan la protección de la información y el cumplimiento de normativas, minimizando riesgos de acceso no autorizado o fuga de datos.
-
-## 8.2 Observabilidad
-
-La observabilidad permite monitorear y entender el comportamiento del sistema en tiempo real, abarcando desde APIs hasta procesadores y colas. Se implementa mediante:
-
-- **Logs centralizados**: Todos los servicios envían logs estructurados a un sistema central (ej. ELK, CloudWatch), siguiendo un formato común.
-- **Métricas**: Se exponen métricas técnicas y de negocio (ej. latencia, throughput, errores) vía endpoints Prometheus.
-- **Alertas**: Se configuran alertas automáticas ante umbrales críticos (ej. caídas, errores, saturación).
-- **Trazabilidad**: Cada evento relevante incluye un traceId propagado entre servicios para facilitar el análisis de flujos distribuidos.
-
-**Ejemplo de fragmento de log estructurado:**
+- Integración con el sistema de identidad corporativo
+- Scopes específicos para diferentes operaciones
+- Token refresh automático para servicios internos
 
 ```json
 {
-  "timestamp": "2025-07-31T10:00:00Z",
-  "level": "Error",
-  "service": "notificacion-api",
-  "traceId": "abc123",
-  "tenant": "cliente-x",
-  "mensaje": "Error al enviar correo",
-  "detalle": { "email": "user@dominio.com" }
+  "sub": "system:notification-processor",
+  "aud": "notification-api",
+  "scope": "notifications:send notifications:read",
+  "tenant": "talma-pe",
+  "roles": ["notification-sender"],
+  "exp": 1640995200
 }
+```
+
+#### Control de Acceso Granular
+
+| Rol | Permisos | Ámbito | Limitaciones |
+|-----|----------|--------|--------------|
+| **notification:admin** | CRUD templates, configuración | Global | Todos los tenants |
+| **notification:operator** | Envío, consulta estado | Por tenant | Solo su tenant |
+| **notification:reader** | Solo lectura | Por tenant | Métricas y logs |
+| **system:processor** | Procesamiento interno | Sistema | APIs internas |
+
+#### Cifrado y Protección de Datos
+
+- **En tránsito:** TLS 1.3 para todas las comunicaciones
+- **En reposo:** AES-256 para datos sensibles en DB
+- **Tokens:** Firmado JWT con RS256
+- **Secrets:** Gestión vía HashiCorp Vault o Azure Key Vault
+
+### Multi-tenancy y Aislamiento
+
+**Estrategia de Aislamiento:**
+- Schema separation por tenant en PostgreSQL
+- Filtrado automático en queries por tenantId
+- Storage isolation para attachments
+- Rate limiting independiente por tenant
+
+## 8.2 Observabilidad y Monitoreo
+
+### Structured Logging
+
+Implementación de logging estructurado consistente usando Serilog con enriquecimiento contextual.
+
+```csharp
+Log.Information("Notification {NotificationId} sent via {Channel} to {RecipientCount} recipients",
+    notificationId, channel, recipients.Count);
+```
+
+#### Niveles de Log Estándar
+
+| Nivel | Uso | Ejemplos |
+|-------|-----|----------|
+| **Trace** | Debugging detallado | Method entry/exit, variable values |
+| **Debug** | Información de desarrollo | SQL queries, cache hits/misses |
+| **Information** | Flujo normal del negocio | Notification sent, template rendered |
+| **Warning** | Situaciones recuperables | Rate limit approached, retry attempt |
+| **Error** | Errores que afectan funcionalidad | Provider API failure, validation error |
+| **Critical** | Errores que comprometen el sistema | Database connection lost, service down |
+
+### Métricas y KPIs
+
+**Métricas Técnicas:**
+
+# Request rate
+notification_requests_total{method="POST",status="200"}
+# Processing latency
+notification_processing_duration_seconds_histogram
+# Queue depth
+notification_queue_depth_gauge
+# Error rate
+notification_errors_total{channel="email",error_type="provider_timeout"}
+
+```
+
+**Métricas de Negocio:**
+
+- Delivery success rate por canal
+- Average delivery time
+- Template usage statistics
+- Cost per notification por provider
+
+### Distributed Tracing
+
+Implementación de OpenTelemetry para trazabilidad distribuida:
+
+```csharp
+using var activity = ActivitySource.StartActivity("ProcessNotification");
+activity?.SetTag("notification.id", notificationId);
+activity?.SetTag("notification.channel", channel);
+activity?.SetTag("tenant.id", tenantId);
+```
+
+## 8.3 Resilience y Error Handling
+
+### Patrones de Resilience
+
+#### Circuit Breaker Pattern
+
+Protección contra failures en cascada de providers externos:
+
+```csharp
+var circuitBreaker = Policy
+    .Handle<HttpRequestException>()
+    .CircuitBreakerAsync(5, TimeSpan.FromMinutes(1));
+```
+
+#### Retry with Exponential Backoff
+
+```csharp
+var retryPolicy = Policy
+    .Handle<TransientException>()
+    .WaitAndRetryAsync(
+        retryCount: 3,
+        sleepDurationProvider: retryAttempt =>
+            TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+    );
+```
+
+#### Timeout Policies
+
+| Operación | Timeout | Justificación |
+|-----------|---------|---------------|
+| **Provider API calls** | 30s | Balance entre reliability y responsiveness |
+| **Database operations** | 10s | Prevent connection pool exhaustion |
+| **Template rendering** | 5s | Complex templates shouldn't block processing |
+| **File uploads** | 2min | Large attachments in campaigns |
+
+### Error Classification
+
+```csharp
+public enum ErrorCategory
+{
+    Transient,      // Network timeout, temporary provider issue
+    Permanent,      // Invalid email, template not found
+    Configuration,  // Missing API key, invalid settings
+    Business        // User preferences, compliance violation
+}
+```
+
+## 8.4 Multi-tenancy Implementation
+
+### Data Isolation Strategy
+
+**Schema per Tenant:**
+```sql
+-- Each tenant gets isolated schema
+CREATE SCHEMA tenant_talma_pe;
+CREATE SCHEMA tenant_talma_ec;
+
+-- Automatic filtering in repositories
+SELECT * FROM notifications
+WHERE tenant_id = @currentTenantId;
+
+```
+
+### Configuration Management
+
+**Tenant-specific Settings:**
+
+```json
+{
+  "tenantId": "talma-pe",
+  "channels": {
+    "email": {
+      "provider": "sendgrid",
+      "apiKey": "vault://secrets/talma-pe/sendgrid",
+      "templates": {
+        "default": "peru-branding-template"
+      }
+    },
+    "sms": {
+      "provider": "twilio",
+      "phoneNumbers": ["+51900123456"]
+    }
+  },
+  "compliance": {
+    "gdpr": false,
+    "local_regulations": ["peru-data-protection-law"]
+  }
+}
+```
+
+## 8.5 Template Engine y Localization
+
+### Template Processing Pipeline
+
+```mermaid
+graph LR
+    A[Raw Template] --> B[Liquid Parser]
+    B --> C[Variable Substitution]
+    C --> D[Localization]
+    D --> E[Output Generation]
+
+    F[User Data] --> C
+
+    G[i18n Resources] --> D
+```
+
+### Internationalization Support
+
+**Template Structure:**
+
+```liquid
+
+{% assign greeting = 'email.greeting' | t: name: user.name %}
+{{ greeting }}
+
+{{ 'flight.status' | t: flight: flight_number, status: current_status }}
+```
+
+**Resource Files:**
+
+```json
+// es-PE.json
+{
+  "email.greeting": "Hola {{name}},",
+  "flight.status": "Tu vuelo {{flight}} está {{status}}"
+}
+
+// en-US.json
+{
+  "email.greeting": "Hello {{name}},",
+  "flight.status": "Your flight {{flight}} is {{status}}"
+
+}
+```
+
+## 8.6 Performance y Caching
+
+### Caching Strategy
+
+**Multi-level Caching:**
+
+```csharp
+// L1: In-memory cache for frequently accessed templates
+public async Task<Template> GetTemplateAsync(string templateId)
+{
+    return await _memoryCache.GetOrCreateAsync(templateId,
+        factory => _repository.GetTemplateAsync(templateId),
+        expiration: TimeSpan.FromMinutes(30));
+}
+
+
+// L2: Redis for rendered content
+public async Task<string> GetRenderedContentAsync(string cacheKey)
+{
+    return await _distributedCache.GetStringAsync(cacheKey);
+}
+```
+
+**Cache Invalidation:**
+
+- Template updates trigger cache eviction
+- Tenant configuration changes clear related caches
+
+### Rate Limiting
+
+**Adaptive Rate Limiting:**
+
+```csharp
+public class TenantRateLimiter
+{
+    private readonly Dictionary<string, int> _tenantLimits = new()
+    {
+        ["enterprise"] = 10000,  // requests per minute
+
+        ["standard"] = 1000,
+        ["basic"] = 100
+    };
+}
+```
+
+## 8.7 Deployment y Configuración
+
+### Configuration Management
+
+**Hierarchical Configuration:**
+
+```yaml
+# Base configuration
+logging:
+  level: Information
+
+# Environment-specific
+development:
+  logging:
+    level: Debug
+  providers:
+    email:
+      mock: true
+
+production:
+  providers:
+    email:
+      sendgrid:
+        api_key: ${SENDGRID_API_KEY}
+```
+
+### Health Checks<user@dominio.com>
+
+```csharp
+services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>("database")
+    .AddCheck<KafkaHealthCheck>("kafka")
+    .AddCheck<RedisHealthCheck>("cache")
+```
+
+Estos conceptos transversales aseguran que el sistema opere de manera consistente, segura y observable, proporcionando una base sólida para el crecimiento y la evolución futura.
+  "mensaje": "Error al enviar correo",
+  "detalle": { "email": "<user@dominio.com>" }
+}
+
 ```
 
 Esto facilita la detección proactiva de incidentes, el análisis de causa raíz y la mejora continua de la operación.

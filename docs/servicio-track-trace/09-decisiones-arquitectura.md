@@ -46,8 +46,493 @@ Necesidad de un almacén confiable y performante para eventos con soporte ACID y
 3. **Apache Kafka**: Stream processing platform
 4. **DynamoDB**: Base NoSQL managed
 
+### Justificación
+- **ACID compliance**: Transacciones consistentes para eventos críticos
+- **JSONB support**: Flexibilidad para esquemas de eventos evolutivos
+- **Performance**: Índices GIN para consultas JSONB eficientes
+- **Operaciones**: Expertise existente del equipo en PostgreSQL
+- **Costos**: Licencia open source vs soluciones comerciales
+- **Ecosystem**: Tooling maduro para backup, replicación, monitoring
+
+### Implementación
+```sql
+-- Optimized event store schema
+CREATE TABLE events (
+    id BIGSERIAL PRIMARY KEY,
+    stream_id VARCHAR(255) NOT NULL,
+    version BIGINT NOT NULL,
+    event_type VARCHAR(255) NOT NULL,
+    event_data JSONB NOT NULL,
+    metadata JSONB,
+    timestamp TIMESTAMPTZ DEFAULT NOW(),
+    tenant_id VARCHAR(50) NOT NULL,
+
+    CONSTRAINT events_stream_version_unique UNIQUE (stream_id, version)
+);
+
+-- Performance indexes
+CREATE INDEX CONCURRENTLY idx_events_stream_id ON events (stream_id);
+CREATE INDEX CONCURRENTLY idx_events_timestamp ON events (timestamp);
+CREATE INDEX CONCURRENTLY idx_events_type ON events (event_type);
+CREATE INDEX CONCURRENTLY idx_events_tenant ON events (tenant_id);
+
+-- JSONB indexes for event data queries
+CREATE INDEX CONCURRENTLY idx_events_data_gin ON events USING GIN (event_data);
+```
+
+### Consecuencias
+- **Positivas**: Confiabilidad, performance, conocimiento del equipo
+- **Negativas**: Complejidad para sharding futuro, gestión de crecimiento
+- **Mitigación**: Particionamento por fecha, archiving strategy, read replicas
+
+---
+
+## 9.3 ADR-003: CQRS con Read Models especializados
+
+**Estado**: Aceptado
+**Fecha**: 2024-01-25
+**Decidido por**: Equipo de Arquitectura
+
+### Contexto
+Optimización de consultas complejas y diferentes vistas de datos para casos de uso específicos como analytics y reporting.
+
+### Alternativas consideradas
+1. **Consultas directas al Event Store**: Sin read models
+2. **Vista materializada única**: Single read model genérico
+3. **Read models especializados**: Proyecciones por caso de uso
+4. **Elasticsearch**: Search engine como read store
+
 ### Decisión
-Adoptamos **PostgreSQL** con JSONB para almacenamiento de eventos.
+Implementamos **CQRS con read models especializados** usando PostgreSQL y Redis.
+
+### Justificación
+- **Performance**: Optimización específica por caso de uso
+- **Escalabilidad**: Read models independientes
+- **Flexibilidad**: Nuevas vistas sin impactar existentes
+- **Analytics**: Agregaciones pre-calculadas
+- **User Experience**: Respuestas instantáneas para consultas complejas
+
+### Implementación
+```csharp
+// Timeline read model para trazabilidad
+public class TimelineReadModel
+{
+    public string EntityId { get; set; }
+    public List<TimelineEvent> Events { get; set; }
+    public DateTime LastUpdated { get; set; }
+    public Dictionary<string, object> Aggregations { get; set; }
+}
+
+// Analytics read model para métricas
+public class AnalyticsReadModel
+{
+    public string Period { get; set; }
+    public int EventCount { get; set; }
+    public TimeSpan AverageProcessingTime { get; set; }
+    public Dictionary<string, int> EventTypeDistribution { get; set; }
+}
+
+// Projection engine
+public class ProjectionManager
+{
+    public async Task HandleEventAsync(IDomainEvent @event)
+    {
+        var projections = _projectionRegistry.GetProjectionsForEvent(@event.GetType());
+
+        foreach (var projection in projections)
+        {
+            await projection.HandleAsync(@event);
+            await _readModelStore.SaveAsync(projection);
+        }
+    }
+}
+```
+
+### Consecuencias
+- **Positivas**: Performance excelente, flexibilidad, escalabilidad
+- **Negativas**: Complejidad adicional, eventual consistency
+- **Mitigación**: Health checks de projections, rebuild automático
+
+---
+
+## 9.4 ADR-004: Apache Kafka para Event Streaming
+
+**Estado**: Aceptado
+**Fecha**: 2024-02-01
+**Decidido por**: Equipo de Arquitectura + Infraestructura
+
+### Contexto
+Integración con otros servicios corporativos y distribución de eventos para analytics en tiempo real.
+
+### Alternativas consideradas
+1. **HTTP webhooks**: Push directo a subscribers
+2. **Azure Service Bus**: Managed message broker
+3. **Apache Kafka**: Stream processing platform
+4. **Redis Streams**: Lightweight streaming
+5. **AWS EventBridge**: Serverless event bus
+
+### Decisión
+Adoptamos **Apache Kafka** como plataforma de event streaming.
+
+### Justificación
+- **Throughput**: Alto volumen de eventos (>100k/sec)
+- **Durabilidad**: Persistencia configurable de mensajes
+- **Ordering**: Garantías de orden por partition
+- **Ecosystem**: Kafka Connect, Streams, Schema Registry
+- **Multi-consumer**: Múltiples servicios pueden consumir eventos
+- **Replay**: Capacidad de reprocessar eventos históricos
+
+### Implementación
+```csharp
+// Event publisher configuration
+public class KafkaEventPublisher : IEventPublisher
+{
+    private readonly IProducer<string, byte[]> _producer;
+
+    public async Task PublishAsync<T>(T @event, string streamId) where T : IDomainEvent
+    {
+        var topic = GetTopicName<T>();
+        var key = GetPartitionKey(streamId);
+        var value = await _serializer.SerializeAsync(@event);
+
+        var message = new Message<string, byte[]>
+        {
+            Key = key,
+            Value = value,
+            Headers = CreateHeaders(@event)
+        };
+
+        var result = await _producer.ProduceAsync(topic, message);
+        _logger.LogInformation("Event published to {Topic} partition {Partition} offset {Offset}",
+            result.Topic, result.Partition.Value, result.Offset.Value);
+    }
+}
+
+// Topic configuration
+services.Configure<KafkaProducerConfig>(options =>
+{
+    options.BootstrapServers = "kafka-cluster:9092";
+    options.Acks = Acks.All;
+    options.Retries = 3;
+    options.EnableIdempotence = true;
+    options.CompressionType = CompressionType.Snappy;
+});
+```
+
+### Consecuencias
+- **Positivas**: Escalabilidad, durabilidad, ecosystem rico
+- **Negativas**: Complejidad operacional, latencia adicional
+- **Mitigación**: Managed Kafka service, monitoring avanzado
+
+---
+
+## 9.5 ADR-005: Redis para caching de Read Models
+
+**Estado**: Aceptado
+**Fecha**: 2024-02-05
+**Decidido por**: Equipo de Desarrollo
+
+### Contexto
+Optimización de latencia para consultas frecuentes y reducción de carga en base de datos principal.
+
+### Alternativas consideradas
+1. **Sin caching**: Consultas directas siempre
+2. **In-memory cache**: Caché en aplicación
+3. **Redis**: Distributed cache
+4. **Memcached**: Cache distribuido simple
+
+### Decisión
+Implementamos **Redis** como capa de caching distribuido.
+
+### Justificación
+- **Latencia**: Sub-millisecond response time
+- **Distribución**: Shared cache entre instancias
+- **Persistence**: Opcional para warm-up rápido
+- **Data structures**: Support para complejas estructuras
+- **Expiration**: TTL automático y manual
+- **Monitoring**: Métricas detalladas disponibles
+
+### Implementación
+```csharp
+public class CachedTimelineService : ITimelineService
+{
+    private readonly ITimelineService _inner;
+    private readonly IDistributedCache _distributedCache;
+
+    public async Task<TimelineView> GetTimelineAsync(string entityId)
+    {
+        var cacheKey = $"timeline:{entityId}";
+
+        return await _distributedCache.GetOrSetAsync(cacheKey,
+            async () => await _inner.GetTimelineAsync(entityId),
+            TimeSpan.FromMinutes(5));
+    }
+
+    public async Task InvalidateTimelineAsync(string entityId)
+    {
+        var cacheKey = $"timeline:{entityId}";
+        await _distributedCache.RemoveAsync(cacheKey);
+    }
+}
+
+// Cache configuration with Redis
+services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "redis-cluster:6379";
+    options.InstanceName = "TrackTrace";
+});
+
+// Cache policies
+services.Configure<CacheOptions>(options =>
+{
+    options.DefaultExpiration = TimeSpan.FromMinutes(10);
+    options.SlidingExpiration = TimeSpan.FromMinutes(2);
+    options.MaxCacheSize = "1GB";
+});
+```
+
+### Consecuencias
+- **Positivas**: Latencia ultra-baja, escalabilidad, offload de DB
+- **Negativas**: Complejidad adicional, gestión de invalidación
+- **Mitigación**: TTL automático, circuit breaker, fallback a DB
+
+---
+
+## 9.6 ADR-006: Multi-tenant schema separation
+
+**Estado**: Aceptado
+**Fecha**: 2024-02-10
+**Decidido por**: Equipo de Arquitectura + Security
+
+### Contexto
+Aislamiento completo de datos entre tenants para compliance y security, con diferentes niveles de servicio por cliente.
+
+### Alternativas consideradas
+1. **Single schema con tenant_id**: Row-level security
+2. **Schema per tenant**: Separación a nivel de schema
+3. **Database per tenant**: Base de datos dedicada por tenant
+4. **Service per tenant**: Instancia de servicio dedicada
+
+### Decisión
+Implementamos **Schema per tenant** en PostgreSQL con tenant context injection.
+
+### Justificación
+- **Aislamiento**: Separación física de datos garantizada
+- **Performance**: Índices y optimizaciones específicas por tenant
+- **Compliance**: Cumplimiento con regulaciones de aislamiento de datos
+- **Backup**: Estrategias diferenciadas por criticidad del cliente
+- **Scaling**: Facilita sharding futuro por tenant
+- **Cost-effectiveness**: Balance entre aislamiento y recursos
+
+### Implementación
+```sql
+-- Dynamic schema creation script
+CREATE SCHEMA IF NOT EXISTS tenant_${tenantId};
+
+-- Tenant-specific event table
+CREATE TABLE tenant_${tenantId}.events (
+    stream_id VARCHAR(255) NOT NULL,
+    version BIGINT NOT NULL,
+    event_type VARCHAR(255) NOT NULL,
+    event_data JSONB NOT NULL,
+    metadata JSONB,
+    timestamp TIMESTAMPTZ DEFAULT NOW(),
+    PRIMARY KEY (stream_id, version)
+);
+
+-- Tenant-specific read model tables
+CREATE TABLE tenant_${tenantId}.timeline_view (
+    entity_id VARCHAR(255) PRIMARY KEY,
+    timeline_data JSONB NOT NULL,
+    last_updated TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Optimized indexes per tenant
+CREATE INDEX idx_events_timestamp ON tenant_${tenantId}.events(timestamp);
+CREATE INDEX idx_events_type ON tenant_${tenantId}.events(event_type);
+CREATE INDEX idx_timeline_updated ON tenant_${tenantId}.timeline_view(last_updated);
+```
+
+```csharp
+// Tenant context injection
+public class TenantAwareDbContext : DbContext
+{
+    private readonly ITenantContext _tenantContext;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        var schema = $"tenant_{_tenantContext.TenantId}";
+
+        modelBuilder.Entity<Event>().ToTable("events", schema);
+        modelBuilder.Entity<TimelineView>().ToTable("timeline_view", schema);
+
+        base.OnModelCreating(modelBuilder);
+    }
+}
+
+// Tenant middleware
+public class TenantResolutionMiddleware
+{
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    {
+        var tenantId = ExtractTenantId(context);
+
+        if (string.IsNullOrEmpty(tenantId))
+        {
+            context.Response.StatusCode = 400;
+            await context.Response.WriteAsync("Tenant ID required");
+            return;
+        }
+
+        context.Items["TenantId"] = tenantId;
+        await next(context);
+    }
+}
+```
+
+### Consecuencias
+- **Positivas**: Aislamiento total, performance optimizada, compliance
+- **Negativas**: Gestión compleja de schemas, migraciones complejas
+- **Mitigación**: Automatización de setup, scripts de migración versionados
+
+---
+
+## 9.7 ADR-007: Observabilidad con OpenTelemetry
+
+**Estado**: Aceptado
+**Fecha**: 2024-02-15
+**Decidido por**: Equipo de Arquitectura + SRE
+
+### Contexto
+Necesidad de observabilidad completa en arquitectura distribuida con correlación de eventos entre servicios.
+
+### Alternativas consideradas
+1. **Application Insights**: Azure native monitoring
+2. **Datadog**: Comprehensive monitoring platform
+3. **OpenTelemetry + ELK**: Open source stack
+4. **Prometheus + Grafana**: Metrics-focused approach
+
+### Decisión
+Adoptamos **OpenTelemetry** con Jaeger, Prometheus y ELK stack.
+
+### Justificación
+- **Vendor neutrality**: Estándar abierto, sin lock-in
+- **Comprehensive**: Traces, metrics, logs unified
+- **Correlation**: Distributed tracing con correlation IDs
+- **Ecosystem**: Compatible con múltiples backends
+- **Future-proof**: Estándar en evolución de CNCF
+
+### Implementación
+```csharp
+// OpenTelemetry configuration
+services.AddOpenTelemetry()
+    .WithTracing(builder =>
+    {
+        builder
+            .AddSource("TrackTrace")
+            .SetSampler(new AlwaysOnSampler())
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddNpgsqlInstrumentation()
+            .AddJaegerExporter();
+    })
+    .WithMetrics(builder =>
+    {
+        builder
+            .AddMeter("TrackTrace")
+            .AddAspNetCoreInstrumentation()
+            .AddPrometheusExporter();
+    });
+
+// Custom activity source
+private static readonly ActivitySource ActivitySource = new("TrackTrace");
+
+public async Task<T> ProcessEventWithTracing<T>(IDomainEvent @event, Func<Task<T>> handler)
+{
+    using var activity = ActivitySource.StartActivity($"process-{@event.GetType().Name}");
+    activity?.SetTag("event.type", @event.GetType().Name);
+    activity?.SetTag("event.stream", @event.StreamId);
+    activity?.SetTag("tenant.id", @event.TenantId);
+
+    try
+    {
+        return await handler();
+    }
+    catch (Exception ex)
+    {
+        activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
+        throw;
+    }
+}
+```
+
+### Consecuencias
+- **Positivas**: Observabilidad completa, debugging eficiente, performance insights
+- **Negativas**: Overhead de instrumentación, complejidad de setup
+- **Mitigación**: Sampling inteligente, monitoring de overhead
+
+---
+
+## 9.8 Resumen de decisiones
+
+| ADR | Decisión | Impacto | Estado | Riesgo |
+|-----|----------|---------|---------|---------|
+| 001 | Event Sourcing | 🔴 Alto - Arquitectura fundamental | ✅ Implementado | Bajo |
+| 002 | PostgreSQL Event Store | 🔴 Alto - Storage principal | ✅ Implementado | Bajo |
+| 003 | CQRS Read Models | 🟡 Medio - Performance | ✅ Implementado | Bajo |
+| 004 | Kafka Streaming | 🟡 Medio - Integration | ✅ Implementado | Medio |
+| 005 | Redis Caching | 🟢 Bajo - Optimization | ✅ Implementado | Bajo |
+| 006 | Multi-tenant Schema | 🔴 Alto - Security/Compliance | ✅ Implementado | Medio |
+| 007 | OpenTelemetry | 🟡 Medio - Observability | 🚧 En progreso | Bajo |
+
+## 9.9 Decisiones pendientes
+
+### PND-001: Sharding strategy para escalamiento horizontal
+**Contexto**: Crecimiento proyectado requiere distribución más allá de single instance
+**Opciones bajo evaluación**:
+- Shard por tenant (isolation benefits)
+- Shard por tiempo (archiving natural)
+- Shard por hash de entity (distribución uniforme)
+**Criterios de decisión**: Volume projections, query patterns, operational complexity
+**Target decisión**: Q2 2024
+**Owner**: Equipo de Arquitectura
+
+### PND-002: Event archiving policy para retención a largo plazo
+**Contexto**: Balance entre compliance requirements y storage costs
+**Opciones bajo evaluación**:
+- Cold storage en S3 Glacier después de 2 años
+- Event compression con schema evolution
+- Event summarization para analytics históricos
+**Criterios de decisión**: Compliance requirements, query frequency, cost optimization
+**Target decisión**: Q3 2024
+**Owner**: Equipo de Arquitectura + Legal
+
+### PND-003: Schema evolution strategy para eventos
+**Contexto**: Manejo de cambios en esquemas de eventos sin breaking changes
+**Opciones bajo evaluación**:
+- Schema Registry con Avro/Protobuf
+- JSON Schema evolution con versioning
+- Event transformation pipelines
+**Criterios de decisión**: Breaking changes handling, performance impact, tooling
+**Target decisión**: Q2 2024
+**Owner**: Equipo de Desarrollo
+
+## 9.10 Lecciones aprendidas
+
+### Éxitos
+1. **Event Sourcing adoption**: Redujo tiempo de auditoría en 80%
+2. **PostgreSQL choice**: Performance mejor que esperado para workload OLTP/OLAP híbrido
+3. **CQRS implementation**: Query performance mejoró 10x vs approach naive
+
+### Desafíos
+1. **Learning curve**: Team ramping time fue 3 meses vs 1 mes estimado
+2. **Debugging complexity**: Nuevas herramientas requeridas para troubleshooting
+3. **Testing strategy**: Contract testing entre eventos más complejo que anticipado
+
+### Ajustes realizados
+1. **Projection rebuilds**: Implementación de rebuild incremental vs full rebuild
+2. **Cache invalidation**: Estrategia más granular que initial TTL-only approach
+3. **Tenant onboarding**: Automatización completa vs manual schema creation
 
 ### Justificación
 - **Familiaridad del equipo**: Conocimiento existente en PostgreSQL

@@ -98,6 +98,226 @@ El sistema de identidad es la piedra angular de la seguridad corporativa, propor
 |-------|------|-------------|---------------|
 | **System Administrator** | Humano | Administrador global del sistema | Configuración realms, políticas globales |
 | **Realm Administrator** | Humano | Administrador por país/tenant | Gestión usuarios, roles específicos |
+| **End User** | Humano | Usuario final del sistema | Login, profile management, password reset |
+| **API Gateway** | Sistema | Proxy de servicios corporativos | Token validation, user context |
+| **Corporate Services** | Sistema | Servicios de negocio | Authentication, authorization |
+| **External IdP** | Sistema | Proveedores de identidad externos | User federation, SSO |
+| **HRIS System** | Sistema | Sistema de recursos humanos | User provisioning, role sync |
+| **Monitoring System** | Sistema | Plataforma de observabilidad | Metrics, logs, health checks |
+
+### Canales de Comunicación
+
+#### Frontend Interfaces
+
+| Interface | Protocol | Port | Purpose | Security |
+|-----------|----------|------|---------|----------|
+| **Admin Console** | HTTPS | 8443 | Web-based administration | TLS 1.3, session auth |
+| **Account Console** | HTTPS | 8443 | User self-service portal | TLS 1.3, user auth |
+| **Login Forms** | HTTPS | 8443 | Authentication UI | TLS 1.3, CSRF protection |
+
+#### API Interfaces
+
+| Endpoint | Protocol | Purpose | Authentication | Rate Limit |
+|----------|----------|---------|---------------|------------|
+| **Admin REST API** | HTTPS/REST | Administrative operations | Bearer token | 100 req/min |
+| **User Account API** | HTTPS/REST | User self-service | Bearer token | 60 req/min |
+| **OpenID Connect** | HTTPS/JSON | Token endpoints | Client auth | 1000 req/min |
+| **SAML 2.0** | HTTPS/XML | Federation | SAML assertion | 500 req/min |
+
+#### Integration Interfaces
+
+| System | Protocol | Data Flow | Frequency | Format |
+|--------|----------|-----------|-----------|--------|
+| **LDAP Directory** | LDAP v3 | User import/sync | Real-time | LDAP attributes |
+| **Google Workspace** | SAML/OIDC | Federation | Per login | SAML/JWT |
+| **HRIS Database** | REST API | User provisioning | Daily batch | JSON |
+| **Audit System** | syslog/JSON | Event streaming | Real-time | Structured logs |
+
+## 3.4 Casos de uso principales
+
+### UC-IDN-01: Employee Authentication Flow
+
+```mermaid
+sequenceDiagram
+    participant U as Employee
+    participant B as Browser
+    participant G as API Gateway
+    participant I as Identity System
+    participant S as Corporate Service
+
+    U->>B: Access corporate application
+    B->>G: Request resource
+    G->>G: Check authorization
+    G->>B: Redirect to login
+    B->>I: Authentication request
+    I->>I: Display login form
+    U->>I: Provide credentials
+    I->>I: Validate credentials
+    I->>B: Return authorization code
+    B->>I: Exchange code for tokens
+    I->>B: Return access/ID tokens
+    B->>G: Request with access token
+    G->>I: Validate token
+    I->>G: Token valid + user claims
+    G->>S: Forward authenticated request
+    S->>G: Response
+    G->>B: Final response
+    B->>U: Show application
+```
+
+### UC-IDN-02: Service-to-Service Authentication
+
+```mermaid
+sequenceDiagram
+    participant S1 as Service A
+    participant I as Identity System
+    participant S2 as Service B
+
+    S1->>I: Request access token (client_credentials)
+    I->>I: Validate client credentials
+    I->>S1: Return access token (JWT)
+    S1->>S2: API call with Bearer token
+    S2->>I: Validate token (if needed)
+    I->>S2: Token validation response
+    S2->>S1: API response
+```
+
+### UC-IDN-03: External Identity Federation
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant B as Browser
+    participant I as Identity System
+    participant G as Google Workspace
+
+    U->>B: Access application
+    B->>I: Authentication request
+    I->>I: Show identity provider selection
+    U->>I: Select Google Workspace
+    I->>B: Redirect to Google
+    B->>G: Google authentication
+    G->>G: User authenticates
+    G->>B: SAML assertion
+    B->>I: Submit SAML assertion
+    I->>I: Validate and map user
+    I->>B: Return tokens to application
+```
+
+### UC-IDN-04: User Lifecycle Management
+
+```mermaid
+sequenceDiagram
+    participant HR as HR System
+    participant A as Admin
+    participant I as Identity System
+    participant U as User
+
+    HR->>A: New employee notification
+    A->>I: Create user account
+    I->>I: Generate temporary password
+    I->>U: Send welcome email
+    U->>I: First-time login + password change
+    I->>I: Update user status to active
+
+    Note over HR,U: Employee lifecycle...
+
+    HR->>A: Employee termination
+    A->>I: Disable user account
+    I->>I: Revoke all active sessions
+    I->>I: Mark account as disabled
+```
+
+## 3.5 Requisitos funcionales principales
+
+### Autenticación Multi-factor
+
+| Requirement ID | Descripción | Prioridad | Acceptance Criteria |
+|----------------|-------------|-----------|-------------------|
+| **REQ-AUTH-001** | MFA obligatorio para roles administrativos | Alta | Admin users must complete 2FA setup within 24h |
+| **REQ-AUTH-002** | TOTP support (Google Authenticator, Authy) | Alta | QR code setup, 6-digit code validation |
+| **REQ-AUTH-003** | WebAuthn/FIDO2 support for modern browsers | Media | Biometric authentication support |
+| **REQ-AUTH-004** | SMS backup para MFA recovery | Baja | SMS OTP when primary method fails |
+
+### Single Sign-On (SSO)
+
+| Requirement ID | Descripción | Prioridad | Acceptance Criteria |
+|----------------|-------------|-----------|-------------------|
+| **REQ-SSO-001** | Cross-service SSO within ecosystem | Alta | User logs in once, accesses all authorized services |
+| **REQ-SSO-002** | Session timeout configuration per realm | Alta | Configurable idle timeout (1-8 hours) |
+| **REQ-SSO-003** | Remember device functionality | Media | "Trust this device" for 30 days |
+| **REQ-SSO-004** | Concurrent session management | Media | Max 5 active sessions per user |
+
+### User Management
+
+| Requirement ID | Descripción | Prioridad | Acceptance Criteria |
+|----------------|-------------|-----------|-------------------|
+| **REQ-USER-001** | Self-service password reset | Alta | Email-based reset, security questions |
+| **REQ-USER-002** | Profile management por usuarios | Alta | Update contact info, preferences |
+| **REQ-USER-003** | Account lockout policies | Alta | Progressive lockout (3-5-10 failed attempts) |
+| **REQ-USER-004** | Bulk user import/export | Media | CSV/LDIF support, data validation |
+
+### Role-Based Access Control
+
+| Requirement ID | Descripción | Prioridad | Acceptance Criteria |
+|----------------|-------------|-----------|-------------------|
+| **REQ-RBAC-001** | Hierarchical role inheritance | Alta | Nested roles, permission inheritance |
+| **REQ-RBAC-002** | Fine-grained permissions | Alta | Resource-action level permissions |
+| **REQ-RBAC-003** | Dynamic role assignment | Media | Rule-based role assignment |
+| **REQ-RBAC-004** | Temporary role delegation | Baja | Time-limited role assignment |
+
+## 3.6 Requisitos no funcionales
+
+### Performance Requirements
+
+| Metric | Requirement | Measurement | Acceptance |
+|--------|-------------|-------------|------------|
+| **Authentication Latency** | p95 < 200ms | Login response time | 95% requests under 200ms |
+| **Token Validation** | p95 < 50ms | JWT validation time | 95% validations under 50ms |
+| **Concurrent Users** | 10,000 simultaneous | Active sessions | No performance degradation |
+| **Throughput** | 1,000 req/sec | Authentication requests | Sustainable load |
+
+### Availability Requirements
+
+| Aspect | Requirement | Measurement | Recovery |
+|--------|-------------|-------------|----------|
+| **System Uptime** | 99.9% availability | Monthly uptime | < 43 minutes downtime/month |
+| **Planned Maintenance** | < 4 hours/month | Scheduled maintenance | Off-peak hours only |
+| **Disaster Recovery** | RTO: 4 hours, RPO: 15 min | Recovery metrics | Cross-region failover |
+| **Backup Frequency** | Daily automated | Backup success rate | 100% backup success |
+
+### Security Requirements
+
+| Control | Requirement | Implementation | Validation |
+|---------|-------------|----------------|------------|
+| **Data Encryption** | AES-256 at rest, TLS 1.3 in transit | Database, file system, network | Regular security scans |
+| **Audit Logging** | Complete audit trail | All security events | Tamper-evident logs |
+| **Access Controls** | Principle of least privilege | Role-based permissions | Regular access review |
+| **Vulnerability Management** | CVSS 7+ patched within 72h | Automated scanning | Security dashboard |
+
+![Identity System Context](../../diagrams/identity_system.png)
+
+*Diagrama C4 - Contexto del Sistema de Identidad mostrando actores externos, sistemas integrados y fronteras del sistema.*
+
+## 3.7 Compliance y regulatory context
+
+### Data Protection Requirements
+
+| Regulation | Scope | Key Requirements | Implementation |
+|------------|-------|------------------|----------------|
+| **GDPR (EU)** | European users | Consent, data minimization, right to deletion | Consent management, data retention policies |
+| **LGPD (Brazil)** | Brazilian operations | Data processing lawfulness | Privacy by design |
+| **CCPA (California)** | California residents | Data transparency, opt-out rights | Privacy controls |
+| **Local Laws** | Peru, Ecuador, Colombia, Mexico | Data residency, local compliance | Regional deployment |
+
+### Industry Standards
+
+| Standard | Requirement | Implementation | Certification |
+|----------|-------------|----------------|---------------|
+| **ISO 27001** | Information Security Management | ISMS implementation | Annual audit |
+| **SOC 2 Type II** | Security controls | Control effectiveness | Quarterly assessment |
+| **NIST Framework** | Cybersecurity framework | Risk management | Self-assessment |
+| **OAuth 2.1** | Modern authorization | Security best practices | Compliance testing |
 | **HR Administrator** | Humano | Gestión de recursos humanos | Onboarding, offboarding usuarios |
 | **End User** | Humano | Usuario final del sistema | Login, profile management, password reset |
 | **Service Account** | Sistema | Cuentas para servicios/APIs | Service-to-service authentication |
