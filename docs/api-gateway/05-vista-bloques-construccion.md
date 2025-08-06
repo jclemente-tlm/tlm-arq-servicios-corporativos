@@ -208,6 +208,8 @@ public class DynamicConfigProcessor : BackgroundService
 - **Invalidación**: Inteligente
 
 Este diseño modular permite escalabilidad horizontal y maintainability del sistema.
+
+```csharp
 {
     Task<HttpResponseMessage> RouteAsync(HttpContext context);
     Task<bool> AuthenticateAsync(HttpContext context);

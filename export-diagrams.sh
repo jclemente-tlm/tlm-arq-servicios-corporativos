@@ -1,3 +1,3 @@
 #! /bin/bash
 
-node ./diagrams/export-diagrams.js http://localhost:8090/workspace/diagrams png ./diagrams
+node ./export-diagrams.js http://localhost:8090/workspace/diagrams png ./diagrams/servicios-corporativos

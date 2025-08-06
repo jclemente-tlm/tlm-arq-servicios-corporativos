@@ -52,7 +52,7 @@ sequenceDiagram
 
 ### Aspectos Notables
 
-- **Respuesta inmediata:** API responde en <100ms con acknowledgment
+- **Respuesta inmediata:** API responde en `< 100ms` con acknowledgment
 - **Procesamiento asíncrono:** Desacopla ingesta de entrega
 - **Idempotencia:** Cada request incluye messageId para deduplicación
 - **Observabilidad:** Cada paso genera telemetría para tracking

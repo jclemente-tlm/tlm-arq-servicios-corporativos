@@ -237,7 +237,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 : US law que regulates telemarketing calls, auto-dialed calls, prerecorded calls, text messages, y fax advertisements.
 
 **Template Variable**
-: Placeholder en notification templates que se reemplaza con actual data durante rendering process (ej: {{user.name}}, {{flight.number}}).
+: Placeholder en notification templates que se reemplaza con actual data durante rendering process (ej: `{{user.name}}`, `{{flight.number}}`).
 
 **Throughput**
 : Measure de cantidad de work performed o transactions processed per unit time, metric clave para system performance.
@@ -350,16 +350,19 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 ## Referencias Técnicas
 
 ### Notification Standards
+
 - **RFC 5321**: Simple Mail Transfer Protocol
 - **RFC 6376**: DomainKeys Identified Mail (DKIM) Signatures
 - **RFC 7208**: Sender Policy Framework (SPF) for Authorizing Use of Domains in Email
 
 ### Security Standards
+
 - **RFC 6749**: OAuth 2.0 Authorization Framework
 - **RFC 7519**: JSON Web Token (JWT)
 - **RFC 8551**: Secure/Multipurpose Internet Mail Extensions (S/MIME) Version 4.0
 
 ### Message Queue Standards
+
 - **AMQP**: Advanced Message Queuing Protocol
 - **Event Bus Protocol**: Protocolos estándar para event streaming agnóstico
 - **CloudEvents**: Specification for describing event data in common formats

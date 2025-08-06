@@ -48,7 +48,6 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 
 #### Notification Processor
 
-
 **Propósito/Responsabilidad:**
 
 - Consumo de eventos del bus de mensajes
@@ -65,7 +64,6 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 **Tecnología:** .NET 8 Worker Services, Abstracción de Bus de Eventos
 
 **Ubicación:** `/src/Notification.Processor/`
-
 
 #### Motor de Plantillas
 
@@ -134,7 +132,6 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 }
 ```
 
-
 ## 5.2 Notification API Service - Nivel 2 (Whitebox)
 
 ### Controladores Principales
@@ -187,7 +184,6 @@ public class WebhookController : ControllerBase
 }
 ```
 
-
 ### Servicios de Aplicación
 
 #### Notification Service
@@ -195,7 +191,6 @@ public class WebhookController : ControllerBase
 - **Responsabilidad:** Validación, enriquecimiento y encolado de notificaciones
 - **Dependencias:** Servicio de Templates, Servicio de Validación, Event Publisher
 - **Patrones:** CQRS para separación read/write operations
-
 
 #### Validation Service
 
@@ -209,7 +204,6 @@ public class WebhookController : ControllerBase
 
 #### Email Processor
 
-
 ```csharp
 public class EmailProcessor : IChannelProcessor
 {
@@ -219,7 +213,6 @@ public class EmailProcessor : IChannelProcessor
     // Bounce/complaint processing
 }
 ```
-
 
 #### SMS Processor
 
@@ -233,7 +226,6 @@ public class SmsProcessor : IChannelProcessor
 }
 ```
 
-
 #### WhatsApp Processor
 
 ```csharp
@@ -245,7 +237,6 @@ public class WhatsAppProcessor : IChannelProcessor
     // Conversation tracking
 }
 ```
-
 
 #### Push Notification Processor
 
@@ -283,7 +274,6 @@ public class NotificationEventHandler : IEventHandler<NotificationRequested>
 
 #### Razor Template Processor
 
-
 ```csharp
 public interface ITemplateProcessor
 {
@@ -302,10 +292,9 @@ public interface ITemplateProcessor
 
 ### Personalization Features
 
-
 #### Dynamic Content
 
-- **Merge Fields:** {{user.firstName}}, {{order.total}}
+- **Merge Fields:** `{{user.firstName}}`, `{{order.total}}`
 - **Conditional Logic:** if/else statements
 - **Loops:** Para contenido repetitivo
 - **Formatters:** Fechas, números, monedas
@@ -316,7 +305,6 @@ public interface ITemplateProcessor
 - **Traffic Splitting:** Configurable por tenant
 - **Metrics Collection:** Open rates, click rates
 - **Statistical Significance:** Automated test conclusions
-
 
 ## 5.5 Delivery Orchestrator - Nivel 2 (Whitebox)
 
@@ -409,13 +397,11 @@ public class SesProvider : IEmailProvider
 
 ### SMS Providers
 
-
 #### Twilio Integration
 
 - **Features:** Global SMS, short codes, long codes
 - **Compliance:** Carrier filtering, opt-out management
 - **Analytics:** Delivery rates por país/carrier
-
 
 #### AWS SNS Integration
 
@@ -426,7 +412,6 @@ public class SesProvider : IEmailProvider
 ### Provider Selection Strategy
 
 #### Load Balancing
-
 
 ```yaml
 Provider Priority Matrix:

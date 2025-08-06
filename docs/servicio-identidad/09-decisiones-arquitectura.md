@@ -136,8 +136,6 @@ Realms:
 
 ### Justificación
 
-
-
 #### Portabilidad y Vendor Independence
 
 - **Cloud Agnostic:** Funciona en cualquier plataforma de containers
@@ -146,9 +144,7 @@ Realms:
 - **Standard Protocols:** OAuth2, OIDC, SAML - ampliamente soportados
 - **Container-first:** Deploy en Kubernetes, Docker Swarm, o ECS
 
-
 #### Zero Custom Development
-
 
 - **Out-of-the-box Features:** Todo lo requerido está incluido
 - **Configuration-only:** Solo archivos YAML y environment variables
@@ -257,7 +253,6 @@ spec:
 | **Fecha** | 2024-01-20 |
 | **Decidido por** | Security Team + Engineering Lead |
 | **Relacionado con** | ADR-001 (Keycloak), ADR-004 (Token Caching) |
-
 
 ### Contexto
 
@@ -471,8 +466,6 @@ public class TenantResolver
 
 #### Compliance
 
-
-
 - **Data residency:** Complete data isolation per country
 - **Audit trails:** Independent audit logs per jurisdiction
 - **Local administration:** Country-specific admin privileges
@@ -480,16 +473,12 @@ public class TenantResolver
 
 #### Operational
 
-
-
 - **Independent configuration:** Separate authentication policies
 - **Custom branding:** Country-specific themes and localization
 - **Isolated failures:** Issues in one realm don't affect others
 - **Scalable management:** Dedicated administrators per country
 
-
 #### Security
-
 
 - **Blast radius limitation:** Security incidents contained per realm
 - **Independent credentials:** No cross-tenant credential sharing
@@ -498,7 +487,6 @@ public class TenantResolver
 - **Isolated integrations:** Different LDAP/AD per country
 
 ### Consecuencias
-
 
 #### Positivas
 
@@ -515,7 +503,6 @@ public class TenantResolver
 - ❌ **Cross-tenant queries:** Complex reporting across realms
 - ❌ **Configuration drift:** Potential inconsistencies
 
-
 #### Mitigaciones
 
 - 🔧 **Automation:** Terraform modules for realm provisioning
@@ -526,7 +513,6 @@ public class TenantResolver
 ---
 
 ## ADR-004: Redis Cluster para Token Validation Caching
-
 
 | Campo | Valor |
 |-------|-------|
@@ -540,7 +526,7 @@ public class TenantResolver
 Initial performance testing reveló:
 
 - **JWT validation:** 45-60ms per token (RSA signature verification)
-- **Target latency:** <10ms for token validation
+- **Target latency:** `<10ms` for token validation
 - **Peak load:** 10,000 validations/second
 - **Availability requirement:** 99.9% uptime
 
@@ -672,7 +658,6 @@ Redis Cluster:
 
 #### Performance Impact
 
-
 - **Latency improvement:** 60ms → 7ms (88% reduction)
 
 - **Throughput increase:** 10x higher req/sec capacity
@@ -681,14 +666,12 @@ Redis Cluster:
 
 #### Reliability
 
-
 - **High availability:** Redis Cluster automatic failover
 - **Data persistence:** AOF + RDB backup strategies
 - **Graceful degradation:** Fallback to direct validation
 - **Monitoring:** Comprehensive CloudWatch metrics
 
 ### Consecuencias
-
 
 #### Positivas
 
@@ -872,7 +855,6 @@ public class PostgreSQLEventStore : IEventStore
 }
 ```
 
-
 ### Real-time Event Processing
 
 ```csharp
@@ -932,7 +914,6 @@ public class SecurityEventProcessor
 
 #### Operational Benefits
 
-
 - **System debugging:** Event replay for troubleshooting
 - **Business analytics:** User behavior analysis
 - **Performance monitoring:** System usage patterns
@@ -947,7 +928,6 @@ public class SecurityEventProcessor
 - ✅ **Security enhancement:** Real-time threat detection
 - ✅ **Forensic capabilities:** Complete investigation data
 - ✅ **System reliability:** Event replay for debugging
-
 
 #### Negativas
 
@@ -965,9 +945,7 @@ public class SecurityEventProcessor
 - 🔧 **CQRS pattern:** Separate read models for queries
 - 🔧 **Async processing:** Non-blocking event append operations
 
-
 ---
-
 
 ## Resumen de Decisiones
 
@@ -984,7 +962,6 @@ public class SecurityEventProcessor
 
 ### Dependency Graph
 
-
 ```mermaid
 graph TD
     ADR001[ADR-001: Keycloak] --> ADR002[ADR-002: JWT Tokens]
@@ -996,9 +973,7 @@ graph TD
     ADR003 --> ADR005
 ```
 
-
 *[INSERTAR AQUÍ: Diagrama C4 - ADR Implementation Overview]*
-
 
 ## Referencias
 
@@ -1006,7 +981,6 @@ graph TD
 
 - [Architecture Decision Records (ADRs)](https://adr.github.io/)
 - [Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
-
 
 ### Implementation References
 
@@ -1021,7 +995,6 @@ graph TD
 - [ISO 27001 Information Security](https://www.iso.org/isoiec-27001-information-security.html)
 
 ### Contexto
-
 
 Requerimientos regulatorios exigen trazabilidad completa de eventos de seguridad.
 

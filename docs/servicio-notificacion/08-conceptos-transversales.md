@@ -79,12 +79,19 @@ Log.Information("Notification {NotificationId} sent via {Channel} to {RecipientC
 **Métricas Técnicas:**
 
 # Request rate
+
 notification_requests_total{method="POST",status="200"}
+
 # Processing latency
+
 notification_processing_duration_seconds_histogram
+
 # Queue depth
+
 notification_queue_depth_gauge
+
 # Error rate
+
 notification_errors_total{channel="email",error_type="provider_timeout"}
 
 ```
@@ -159,6 +166,7 @@ public enum ErrorCategory
 ### Data Isolation Strategy
 
 **Schema per Tenant:**
+
 ```sql
 -- Each tenant gets isolated schema
 CREATE SCHEMA tenant_talma_pe;
@@ -313,7 +321,7 @@ production:
         api_key: ${SENDGRID_API_KEY}
 ```
 
-### Health Checks<user@dominio.com>
+### Health Checks `<user@dominio.com>`
 
 ```csharp
 services.AddHealthChecks()

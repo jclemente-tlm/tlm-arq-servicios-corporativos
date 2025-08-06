@@ -7,12 +7,14 @@
 **Concepto**: Todos los cambios de estado se capturan como eventos inmutables, garantizando auditabilidad completa y permitiendo reconstrucción de estado en cualquier momento.
 
 **Implementación**:
+
 - **Event Store**: Almacén inmutable de eventos como única fuente de verdad
 - **Snapshots**: Optimización para reconstrucción rápida de estado
 - **Event versioning**: Manejo de evolución de esquemas de eventos
 - **Temporal queries**: Consultas de estado en puntos específicos del tiempo
 
 **Ventajas específicas para Track & Trace**:
+
 - Auditoría completa requerida por regulaciones
 - Análisis temporal de patrones operacionales
 - Capacidad de replay para debugging
@@ -21,11 +23,13 @@
 ### 8.1.2 CQRS (Command Query Responsibility Segregation)
 
 **Separación de responsabilidades**:
+
 - **Command side**: Escritura de eventos, validaciones de negocio
 - **Query side**: Lectura optimizada desde read models especializados
 - **Event handlers**: Sincronización asíncrona entre ambos lados
 
 **Read models especializados**:
+
 - Timeline views para trazabilidad
 - Aggregated views para dashboards
 - Search indexes para consultas complejas
@@ -36,6 +40,7 @@
 ### 8.2.1 Autenticación y autorización
 
 **OAuth2 + JWT**:
+
 ```csharp
 public class TrackTraceAuthenticationOptions
 {
@@ -77,6 +82,7 @@ public class AuthorizationPolicies
 ### 8.2.2 Tenant Isolation
 
 **Data Isolation Strategy**:
+
 - **Tenant-per-schema**: Esquemas separados por tenant en PostgreSQL
 - **Row-level security**: Filtros automáticos por tenant_id
 - **Event stream partitioning**: Streams aislados por tenant
@@ -117,11 +123,13 @@ public class TenantContextMiddleware
 ### 8.2.3 Data Protection y Compliance
 
 **Encryption at Rest**:
+
 - Event payloads encriptados con claves por tenant
 - PII data tokenization
 - Key rotation policies
 
 **GDPR/Data Privacy Compliance**:
+
 ```csharp
 public class GdprComplianceService
 {
@@ -166,6 +174,7 @@ public class GdprComplianceService
 ### 8.3.1 Event-driven communication
 
 **Event Publishing**:
+
 ```csharp
 public interface IEventPublisher
 {
@@ -207,6 +216,7 @@ public class KafkaEventPublisher : IEventPublisher
 ```
 
 **Event Consumption**:
+
 ```csharp
 public class EventConsumerService : BackgroundService
 {
@@ -254,6 +264,7 @@ public class EventConsumerService : BackgroundService
 ### 8.3.2 API Integration Patterns
 
 **Circuit Breaker Pattern**:
+
 ```csharp
 public class ExternalServiceClient
 {
@@ -280,6 +291,7 @@ public class CircuitBreakerConfiguration
 ```
 
 **Retry Policies**:
+
 ```csharp
 public class RetryPolicyConfiguration
 {
@@ -307,6 +319,7 @@ public class RetryPolicyConfiguration
 ### 8.4.1 Event Store Design
 
 **Schema Design**:
+
 ```sql
 -- Events table optimized for append operations
 CREATE TABLE events (
@@ -344,6 +357,7 @@ CREATE TABLE snapshots (
 ```
 
 **Repository Pattern Implementation**:
+
 ```csharp
 public class PostgreSqlEventStore : IEventStore
 {
@@ -414,6 +428,7 @@ public class PostgreSqlEventStore : IEventStore
 ### 8.4.2 Read Model Management
 
 **Projection Engine**:
+
 ```csharp
 public class ProjectionEngine
 {
@@ -492,6 +507,7 @@ public class TimelineProjection : IProjection
 ### 8.5.1 Context Management
 
 **User Context Service**:
+
 ```csharp
 public interface IUserContext
 {
@@ -520,6 +536,7 @@ public class HttpUserContext : IUserContext
 ### 8.5.2 Audit Trail
 
 **Audit Event Capture**:
+
 ```csharp
 public class AuditEventInterceptor : IInterceptor
 {
@@ -560,6 +577,7 @@ public async Task<TimelineView> GetTimelineAsync(string entityId)
 ### 8.6.1 Configuration Management
 
 **Hierarchical Configuration**:
+
 ```csharp
 public class TrackTraceConfiguration
 {
@@ -659,6 +677,7 @@ public class ConfigurationService
 ### 8.7.1 Multi-language Support
 
 **Resource Management**:
+
 ```csharp
 public class LocalizedMessageService
 {
@@ -713,13 +732,9 @@ public class TimezoneService
     }
 }
 ```
-{
-    var tenantId = GetTenantFromClaims();
-    return await _queryHandler.Handle(new GetTimelineQuery(entityId, tenantId));
-}
-```
 
 **Políticas de autorización**:
+
 - **TrackTraceRead**: Lectura de datos de trazabilidad
 - **TrackTraceWrite**: Creación de eventos de seguimiento
 - **TrackTraceAdmin**: Gestión de configuraciones y analytics
@@ -728,11 +743,13 @@ public class TimezoneService
 ### 8.2.2 Protección de datos
 
 **Cifrado**:
+
 - **En tránsito**: TLS 1.3 para todas las comunicaciones
 - **En reposo**: AES-256 para datos sensibles en Event Store
 - **Claves**: Rotación automática cada 90 días
 
 **Data masking**:
+
 ```csharp
 public class EventDataMasker
 {
@@ -748,6 +765,7 @@ public class EventDataMasker
 ```
 
 **Compliance**:
+
 - **GDPR**: Right to be forgotten implementado via event compensation
 - **SOX**: Inmutabilidad de registros financieros
 - **Audit trails**: Logs tamper-proof con digital signatures
@@ -806,6 +824,7 @@ public class TenantConfigurationService
 ### 8.4.1 Structured logging
 
 **Serilog configuration**:
+
 ```csharp
 Log.Logger = new LoggerConfiguration()
     .Enrich.WithProperty("Service", "TrackTrace")
@@ -821,6 +840,7 @@ Log.Logger = new LoggerConfiguration()
 ```
 
 **Contexto de eventos**:
+
 ```csharp
 public class EventLoggingContext
 {
@@ -843,6 +863,7 @@ using (LogContext.PushProperty("EntityId", @event.EntityId))
 ### 8.4.2 Métricas y telemetría
 
 **Custom metrics**:
+
 ```csharp
 public class TrackTraceMetrics
 {
@@ -871,6 +892,7 @@ public class TrackTraceMetrics
 ```
 
 **Distributed tracing**:
+
 ```csharp
 public class EventHandler
 {
@@ -894,6 +916,7 @@ public class EventHandler
 ### 8.5.1 Estrategias de cache
 
 **Niveles de cache**:
+
 1. **L1 (In-memory)**: Cache local para hot data
 2. **L2 (Redis)**: Cache distribuido para read models
 3. **L3 (CDN)**: Cache de edge para datos públicos
@@ -933,6 +956,7 @@ public class CachedTimelineService
 ### 8.5.2 Particionado y sharding
 
 **Event store partitioning**:
+
 ```sql
 -- Partition by tenant and time for optimal query performance
 CREATE TABLE events (
@@ -1035,6 +1059,7 @@ public class EventStoreCircuitBreaker
 ### 8.7.1 Test strategies
 
 **Event sourcing tests**:
+
 ```csharp
 public class EventStoreTests
 {
@@ -1067,6 +1092,7 @@ public class EventStoreTests
 ```
 
 **Integration tests**:
+
 ```csharp
 public class TimelineIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -1089,6 +1115,7 @@ public class TimelineIntegrationTests : IClassFixture<WebApplicationFactory<Prog
 ```
 
 **Contract Tests**:
+
 ```csharp
 public class EventContractTests
 {
