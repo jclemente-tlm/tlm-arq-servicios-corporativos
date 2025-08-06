@@ -575,7 +575,7 @@ Configuration:
 Access:
   - Domain: identity-staging.talma.pe
   - Authentication: staging accounts
-  - Rate Limiting: relaxed
+  - Limitación de Velocidad: relaxed
 ```
 
 ### Production Environment
@@ -625,7 +625,7 @@ Configuration:
 Access:
   - Domain: identity.talma.pe
   - CDN: CloudFront with WAF
-  - Rate Limiting: strict
+  - Limitación de Velocidad: strict
   - DDoS Protection: AWS Shield Advanced
 ```
 
@@ -745,7 +745,7 @@ Log Aggregation:
     - /rds/aurora/postgresql
 
   Log Structure:
-    Format: JSON structured logging
+    Format: JSON registro estructurado
     Fields:
       - timestamp
       - level (ERROR, WARN, INFO, DEBUG)
@@ -872,7 +872,7 @@ Audit Logs:
   - Access: Read-only with approval workflow
 ```
 
-### Distributed Tracing
+### Trazado Distribuido
 ```yaml
 Jaeger Implementation:
   - Sampling: 1% of requests
@@ -937,7 +937,7 @@ GitHub Actions Workflow:
     - Production deployment (manual approval)
 ```
 
-### Configuration Management
+### Gestión de Configuración
 ```yaml
 GitOps Approach:
   - Infrastructure: Terraform in separate repo
@@ -1016,6 +1016,6 @@ Security Controls:
 
 ## Referencias
 - [Keycloak Production Guide](https://www.keycloak.org/server/configuration-production)
-- [Kubernetes Security Best Practices](https://kubernetes.io/docs/concepts/security/)
+- [Kubernetes Security Mejores Prácticas](https://kubernetes.io/docs/concepts/security/)
 - [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/)
 - [Arc42 Deployment View](https://docs.arc42.org/section-7/)

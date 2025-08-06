@@ -1114,5 +1114,5 @@ esac
 - [Event Sourcing Patterns](https://martinfowler.com/eaaDev/EventSourcing.html)
 - [CQRS Journey](https://docs.microsoft.com/en-us/previous-versions/msp-n-p/jj554200(v=pandp.10))
 - [.NET Application Architecture Guides](https://docs.microsoft.com/en-us/dotnet/architecture/)
-- [Kubernetes Best Practices](https://kubernetes.io/docs/concepts/configuration/overview/)
-- [Docker Security Best Practices](https://docs.docker.com/develop/security-best-practices/)
+- [Kubernetes Mejores Prácticas](https://kubernetes.io/docs/concepts/configuration/overview/)
+- [Docker Security Mejores Prácticas](https://docs.docker.com/develop/security-best-practices/)

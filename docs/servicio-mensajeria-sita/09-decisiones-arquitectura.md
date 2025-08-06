@@ -131,7 +131,7 @@ Implementamos **Hybrid Pool**: Connection pooling + tenant isolation cuando nece
 - **Performance**: Reutilización eficiente de conexiones
 - **Isolation**: Aislamiento para tenants críticos
 - **Resource Optimization**: Uso eficiente de recursos de red
-- **High Availability**: Failover automático entre conexiones
+- **High Disponibilidad**: Failover automático entre conexiones
 
 ---
 
@@ -142,7 +142,7 @@ Implementamos **Hybrid Pool**: Connection pooling + tenant isolation cuando nece
 **Decidido por**: Data Team + Compliance
 
 ### Contexto
-Mensajes SITA deben ser almacenados para auditoría, compliance y troubleshooting. Volumen alto requiere estrategia de storage eficiente.
+Mensajes SITA deben ser almacenados para auditoría, compliance y resolución de problemas. Volumen alto requiere estrategia de storage eficiente.
 
 ### Alternativas consideradas
 1. **PostgreSQL Only**: Almacenamiento relacional únicamente
@@ -161,7 +161,7 @@ Adoptamos **PostgreSQL with Partitioning** + **S3 for Archival**.
 
 ---
 
-## 9.6 ADR-006: Error Handling and Retry Strategy
+## 9.6 ADR-006: Manejo de Errores and Retry Strategy
 
 **Estado**: Aceptado
 **Fecha**: 2024-02-05

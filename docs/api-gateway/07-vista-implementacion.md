@@ -818,14 +818,14 @@ scrape_configs:
         target_label: __metrics_path__
         regex: (.+)
 
-alerting:
+alertas:
   alertmanagers:
     - static_configs:
         - targets:
           - alertmanager:9093
 ```
 
-### 7.5.2 Alerting rules
+### 7.5.2 Alertas rules
 
 ```yaml
 # monitoring/prometheus/api-gateway-alerts.yml

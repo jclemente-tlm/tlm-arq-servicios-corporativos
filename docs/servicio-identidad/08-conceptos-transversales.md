@@ -2,7 +2,7 @@
 
 Esta sección describe los aspectos arquitectónicos que afectan múltiples bloques de construcción del **Sistema de Identidad**, proporcionando soluciones coherentes a preocupaciones recurrentes en todo el sistema.
 
-*[INSERTAR AQUÍ: Diagrama C4 - Cross-cutting Concerns del Sistema de Identidad]*
+*[INSERTAR AQUÍ: Diagrama C4 - Conceptos Transversales del Sistema de Identidad]*
 
 ## 8.1 Seguridad
 
@@ -264,7 +264,7 @@ public class TenantConfigurationService
 
 ## 8.3 Observabilidad y Telemetría
 
-### Structured Logging con Contexto Completo
+### Registro Estructurado con Contexto Completo
 ```csharp
 // Rich logging with structured data
 public class IdentityAuditLogger
@@ -358,7 +358,7 @@ public class IdentityMetricsCollector
 }
 ```
 
-### Distributed Tracing con OpenTelemetry
+### Trazado Distribuido con OpenTelemetry
 ```csharp
 // OpenTelemetry configuration
 public void ConfigureServices(IServiceCollection services)
@@ -423,7 +423,7 @@ public class UserProvisioningService
 
 ## 8.4 Resilencia y Manejo de Errores
 
-### Circuit Breaker Pattern para External Services
+### Patrón Circuit Breaker para External Services
 ```csharp
 // Resilient Keycloak client
 public class ResilientKeycloakClient
@@ -623,7 +623,7 @@ public class DataRetentionService
 }
 ```
 
-*[INSERTAR AQUÍ: Diagrama C4 - Cross-cutting Concerns Implementation]*
+*[INSERTAR AQUÍ: Diagrama C4 - Conceptos Transversales Implementation]*
 
 ## 8.6 Performance y Caching
 
@@ -715,23 +715,23 @@ public class OptimizedDbContext : DbContext
 
 - [OWASP Application Security Verification Standard](https://owasp.org/www-project-application-security-verification-standard/)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
-- [OAuth 2.0 Security Best Practices](https://tools.ietf.org/html/draft-ietf-oauth-security-topics)
+- [OAuth 2.0 Security Mejores Prácticas](https://tools.ietf.org/html/draft-ietf-oauth-security-topics)
 
 ### Observability
 
 - [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Structured Logging Best Practices](https://stackify.com/what-is-structured-logging-and-why-developers-need-it/)
-- [Distributed Tracing in .NET](https://docs.microsoft.com/en-us/dotnet/core/diagnostics/distributed-tracing)
+- [Registro Estructurado Mejores Prácticas](https://stackify.com/what-is-structured-logging-and-why-developers-need-it/)
+- [Trazado Distribuido in .NET](https://docs.microsoft.com/en-us/dotnet/core/diagnostics/distributed-tracing)
 
-### Resilience Patterns
+### Patrones de Resiliencia
 
 - [Polly Library Documentation](https://github.com/App-vNext/Polly)
-- [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
+- [Patrón Circuit Breaker](https://martinfowler.com/bliki/CircuitBreaker.html)
 - [Bulkhead Pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/bulkhead)
 
 ### Architecture References
 
-- [Arc42 Cross-cutting Concerns Template](https://docs.arc42.org/section-8/)
+- [Arc42 Conceptos Transversales Template](https://docs.arc42.org/section-8/)
 - [Microsoft .NET Application Architecture Guides](https://docs.microsoft.com/en-us/dotnet/architecture/)
 - **Jitter:** Randomización para evitar thundering herd
 - **Circuit Breaker:** Fail-fast ante servicios degradados
@@ -771,7 +771,7 @@ Database Connections:
   IdleTimeout: 300s
 ```
 
-### Load Balancing
+### Balanceador de Carga
 - **Round Robin:** Distribución equitativa
 - **Health-based:** Exclusión de nodos degradados
 - **Geographic:** Routing por proximidad
@@ -901,7 +901,7 @@ public async Task AuthenticateUser_ValidCredentials_ReturnsJwtToken()
 - **Endurance Testing:** Estabilidad a largo plazo
 
 ## Referencias
-- [OAuth2 Security Best Practices](https://tools.ietf.org/html/draft-ietf-oauth-security-topics)
+- [OAuth2 Security Mejores Prácticas](https://tools.ietf.org/html/draft-ietf-oauth-security-topics)
 - [Multi-Tenant SaaS Architecture](https://aws.amazon.com/blogs/apn/building-a-multi-tenant-saas-solution-using-aws-serverless-services/)
 - [Observability Patterns](https://microservices.io/patterns/observability/)
 - [Arc42 Cross-cutting Concepts](https://docs.arc42.org/section-8/)

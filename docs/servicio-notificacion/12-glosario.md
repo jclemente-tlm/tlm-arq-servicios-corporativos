@@ -27,7 +27,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 : Estrategia de retry que incrementa exponencialmente el tiempo de espera entre reintentos (1s, 2s, 4s, 8s...) para evitar thundering herd y reducir carga en servicios failing.
 
 **Procesamiento por Lotes** (Batch Processing)
-: Procesamiento de múltiples elementos agrupados para optimizar throughput y reducir overhead. Usado en campañas de email y notificaciones masivas.
+: Procesamiento de múltiples elementos agrupados para optimizar capacidad de procesamiento y reducir overhead. Usado en campañas de email y notificaciones masivas.
 
 **Despliegue Azul-Verde** (Blue-Green Deployment)
 : Estrategia de despliegue que mantiene dos ambientes idénticos (azul y verde) permitiendo cambios instantáneos y rollbacks seguros.
@@ -53,7 +53,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 : Patrón arquitectónico que organiza código en capas concéntricas (Entities, Use Cases, Interface Adapters, Frameworks) con dependencies pointing inward.
 
 **Consumer Group**
-: Grupo de consumers Kafka que procesan mensajes de un topic en paralelo, con automatic load balancing y fault tolerance.
+: Grupo de consumers Kafka que procesan mensajes de un topic en paralelo, con automatic balanceador de carga y fault tolerance.
 
 **Consumer Lag**
 : Diferencia entre offset de último mensaje producido y último mensaje consumido en una partición Kafka, indicador crítico de performance.
@@ -110,7 +110,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 **Health Check**
 : Endpoint que reporta el estado operacional de un service, usado por load balancers y monitoring systems para traffic routing.
 
-**High Availability (HA)**
+**High Disponibilidad (HA)**
 : Diseño de sistemas para minimizar downtime mediante redundancy, failover mechanisms, y elimination de single points of failure.
 
 **Horizontal Scaling**
@@ -146,10 +146,10 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 : Template language desarrollado por Shopify, usado para dynamic content generation con syntax segura y features como filters y control flow.
 
 **Load Balancer**
-: Component que distribuye incoming requests entre múltiples instances de un service para optimizar resource utilization y availability.
+: Component que distribuye incoming requests entre múltiples instances de un service para optimizar resource utilization y disponibilidad.
 
 **Logging**
-: Práctica de recording events y activities del sistema para debugging, monitoring, audit, y troubleshooting.
+: Práctica de recording events y activities del sistema para debugging, monitoring, audit, y resolución de problemas.
 
 ## M
 
@@ -160,7 +160,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 : Architectural pattern que estructura applications como collection de loosely coupled, independently deployable services.
 
 **Multi-Provider Strategy**
-: Approach que usa múltiples external providers para el mismo service (email, SMS) para redundancy y cost optimization.
+: Approach que usa múltiples proveedores externos para el mismo service (email, SMS) para redundancy y cost optimization.
 
 **Multi-Tenancy**
 : Architecture donde single instance de software sirve múltiples tenants con data isolation y customization per tenant.
@@ -196,7 +196,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 : External service API usado para actual message delivery (SendGrid para email, Twilio para SMS, FCM para push).
 
 **Push Notification**
-: Messages enviados directamente a user devices (mobile apps, web browsers) que aparecen como alerts o notifications.
+: Messages enviados directamente a user devices (aplicaciones móviles, web browsers) que aparecen como alerts o notifications.
 
 ## Q
 
@@ -208,7 +208,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 
 ## R
 
-**Rate Limiting**
+**Limitación de Velocidad**
 : Technique para controlling número de requests que client puede hacer en specific time period, protecting against abuse y overload.
 
 **Redis**
@@ -223,7 +223,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 ## S
 
 **SLA (Service Level Agreement)**
-: Formal agreement que define expected level de service, incluyendo availability, performance, y support metrics.
+: Formal agreement que define expected level de service, incluyendo disponibilidad, performance, y support metrics.
 
 **SMS (Short Message Service)**
 : Text messaging service component de mobile communication systems, usado para short notifications y alerts.
@@ -239,7 +239,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 **Template Variable**
 : Placeholder en notification templates que se reemplaza con actual data durante rendering process (ej: `{{user.name}}`, `{{flight.number}}`).
 
-**Throughput**
+**Capacidad de procesamiento**
 : Measure de cantidad de work performed o transactions processed per unit time, metric clave para system performance.
 
 **Throttling**
@@ -275,7 +275,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 
 | Acrónimo | Significado Completo | Contexto |
 |----------|---------------------|----------|
-| **ALB** | Application Load Balancer | AWS load balancing service |
+| **ALB** | Application Load Balancer | AWS balanceador de carga service |
 | **API** | Application Programming Interface | Interface para communication entre systems |
 | **AWS** | Amazon Web Services | Cloud platform provider |
 | **CD** | Continuous Deployment | Automated deployment practices |
@@ -431,7 +431,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 
 ## R
 
-**Rate Limiting**: Técnica para controlar la frecuencia de solicitudes para prevenir abuso.
+**Limitación de Velocidad**: Técnica para controlar la frecuencia de solicitudes para prevenir abuso.
 
 **RBAC**: Control de acceso basado en roles para autorización granular.
 
@@ -457,7 +457,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 
 **SQS**: Simple Queue Service - Servicio de colas de AWS.
 
-**Structured Logging**: Práctica de generar logs en formato estructurado para mejor análisis.
+**Registro Estructurado**: Práctica de generar logs en formato estructurado para mejor análisis.
 
 ## T
 
@@ -465,7 +465,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 
 **Tenant**: Cliente o organización individual en un sistema multi-tenant.
 
-**Throughput**: Cantidad de transacciones o operaciones procesadas por unidad de tiempo.
+**Capacidad de procesamiento**: Cantidad de transacciones o operaciones procesadas por unidad de tiempo.
 
 **TLS**: Transport Layer Security - Protocolo criptográfico para comunicaciones seguras.
 

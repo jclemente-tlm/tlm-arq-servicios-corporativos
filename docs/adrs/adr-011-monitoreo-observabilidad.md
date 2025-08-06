@@ -8,7 +8,7 @@ Aceptada – Julio 2025
 
 ## 🗺️ CONTEXTO
 
-Se requiere monitoreo centralizado y observabilidad de todos los servicios y `microservicios` para garantizar disponibilidad, detectar incidentes y facilitar troubleshooting.
+Se requiere monitoreo centralizado y observabilidad de todos los servicios y `microservicios` para garantizar disponibilidad, detectar incidentes y facilitar resolución de problemas.
 
 Las alternativas evaluadas fueron:
 

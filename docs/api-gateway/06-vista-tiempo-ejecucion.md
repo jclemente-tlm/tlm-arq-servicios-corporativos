@@ -12,7 +12,7 @@ sequenceDiagram
     participant Service as Target Service
     participant Redis as Redis Cache
 
-    Client->>Gateway: 1. Request con JWT token
+    Client->>Gateway: 1. Request con token JWT
     Gateway->>Gateway: 2. Extraer token del header
     Gateway->>Redis: 3. Verificar token en cache
 
@@ -25,7 +25,7 @@ sequenceDiagram
     end
 
     Gateway->>Gateway: 7. Resolver contexto tenant
-    Gateway->>Gateway: 8. Aplicar rate limiting
+    Gateway->>Gateway: 8. Aplicar limitación de velocidad
     Gateway->>Gateway: 9. Selección de ruta
     Gateway->>Service: 10. Reenviar request con headers
     Service->>Gateway: 11. Response
@@ -34,7 +34,7 @@ sequenceDiagram
 
 **Descripción del flujo**:
 
-1. Cliente envía request con JWT token en Authorization header
+1. Cliente envía request con token JWT en Authorization header
 2. Gateway extrae token del header Authorization
 3. Verifica si token está en cache de Redis
 4-6. Validación de token (cache hit o validación contra Identity Service)
@@ -44,7 +44,7 @@ sequenceDiagram
 10. Forwarding de request con headers enriquecidos (X-Tenant-ID, X-User-ID)
 11-12. Retorno de response con headers de rate limiting
 
-### 6.1.2 Verificación de salud y circuit breaker
+### 6.1.2 Health check y circuit breaker
 
 ```mermaid
 sequenceDiagram
@@ -109,7 +109,7 @@ sequenceDiagram
     Gateway1->>Client: 429 Too Many Requests
 ```
 
-**Algoritmo de rate limiting**:
+**Algoritmo de limitación de velocidad**:
 
 - **Sliding window**: Ventana deslizante de 1 minuto
 - **Estado compartido**: Redis para sincronización entre instancias

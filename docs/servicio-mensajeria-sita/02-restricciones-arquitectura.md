@@ -19,8 +19,8 @@ El **Sistema de Mensajería SITA** debe operar dentro de restricciones técnicas
 |------|-------------|---------------|-------------------|
 | **Contenedorización** | Despliegue obligatorio en contenedores Docker | Estandarización DevOps, portabilidad | Orquestación Docker + Kubernetes |
 | **Base de Datos** | PostgreSQL como RDBMS principal | Experiencia del equipo, requisitos cumplimiento | PostgreSQL 15+ con replicación |
-| **Tiempo Ejecución** | .NET 8 LTS como plataforma principal | Estandarización corporativa, soporte empresarial | APIs Web ASP.NET Core |
-| **Colas Mensajes** | Event Bus agnóstico para streaming mensajes | Alto rendimiento, capacidades event sourcing | Cluster Event Bus con particionado |
+| **Entorno de Ejecución** | .NET 8 LTS como plataforma principal | Estandarización corporativa, soporte empresarial | APIs Web ASP.NET Core |
+| **Colas de Mensajes** | Bus de eventos agnóstico para transmisión de mensajes | Alto rendimiento, capacidades de abastecimiento de eventos | Cluster de bus de eventos con particionado |
 | **Registro** | Serilog para logging estructurado | Observabilidad, resolución problemas | Logging JSON estructurado |
 
 ### Integración y Conectividad
@@ -30,17 +30,17 @@ El **Sistema de Mensajería SITA** debe operar dentro de restricciones técnicas
 | **Red SITA** | SITATEX sobre X.25/IP | Soporte protocolo legacy | Adaptador puente protocolo |
 | **Aerolíneas Partner** | AFTN/CIDIN | Mensajería estándar industria | Gateway multi-protocolo |
 | **Sistemas Aeropuerto** | Varios (SOAP, REST, MQ) | Integración heterogénea | Patrón Enterprise Service Bus |
-| **Track & Trace** | APIs REST internas | Entrega evento tiempo real | Clientes HTTP asíncronos |
+| **Track & Trace** | APIs REST internas | Entrega de eventos en tiempo real | Clientes HTTP asíncronos |
 | **Sistemas Gubernamentales** | Canales seguros (VPN/TLS) | Cumplimiento seguridad | Túneles cifrados, certificados |
 
 ### Performance y Capacidad
 
 | Métrica | Restricción | Justificación | Arquitectura Requerida |
 |---------|-------------|---------------|------------------------|
-| **Capacidad Procesamiento Mensajes** | 10,000 mensajes/hora pico | Operaciones aeroportuarias críticas | Procesamiento asíncrono, basado en colas |
-| **Latencia** | < 30 segundos extremo a extremo | Tiempo crítico para operaciones vuelo | Caché en memoria, enrutamiento optimizado |
-| **Disponibilidad** | 99.95% tiempo actividad | Operaciones 24/7, impacto en vuelos | Clustering activo-pasivo |
-| **Tamaño Mensaje** | Hasta 32KB por mensaje SITA | Limitación protocolo SITATEX | Fragmentación mensaje, compresión |
+| **Capacidad de Procesamiento de Mensajes** | 10,000 mensajes/hora pico | Operaciones aeroportuarias críticas | Procesamiento asíncrono, basado en colas |
+| **Latencia** | < 30 segundos extremo a extremo | Tiempo crítico para operaciones de vuelo | Caché en memoria, enrutamiento optimizado |
+| **Disponibilidad** | 99.95% tiempo de actividad | Operaciones 24/7, impacto en vuelos | Agrupación activo-pasivo |
+| **Tamaño de Mensaje** | Hasta 32KB por mensaje SITA | Limitación de protocolo SITATEX | Fragmentación de mensaje, compresión |
 
 ## 2.2 Restricciones organizacionales
 
@@ -48,7 +48,7 @@ El **Sistema de Mensajería SITA** debe operar dentro de restricciones técnicas
 
 | Área | Restricción | Autoridad | Implementación Requerida |
 |------|-------------|-----------|--------------------------|
-| **Aviation Security** | ICAO Annex 17 compliance | International Civil Aviation Organization | Security controls, audit trails |
+| **Aviation Security** | ICAO Annex 17 compliance | International Civil Aviation Organization | Security controls, trazas de auditoría |
 | **Data Privacy** | GDPR compliance en operaciones EU | European Data Protection Authorities | Data anonymization, consent management |
 | **Financial Controls** | SOX compliance para data financiera | Corporate audit requirements | Access controls, change management |
 | **Local Regulations** | Compliance con regulaciones por país | Aviation authorities per country | Country-specific adapters |
@@ -66,7 +66,7 @@ El **Sistema de Mensajería SITA** debe operar dentro de restricciones técnicas
 
 | Área | Restricción | Justificación | Implementación |
 |------|-------------|---------------|----------------|
-| **24/7 Operations** | Soporte continuo requerido | Operaciones aeroportuarias críticas | Monitoring, alerting, runbooks |
+| **24/7 Operations** | Soporte continuo requerido | Operaciones aeroportuarias críticas | Monitoring, alertas, runbooks |
 | **Change Windows** | Mantenimiento solo en horarios específicos | Minimizar impacto operacional | Blue-green deployments |
 | **Support Model** | L1/L2/L3 support structure | Escalation procedures defined | Operational dashboards, documentation |
 | **Disaster Recovery** | RTO: 4 horas, RPO: 15 minutos | Business continuity requirements | Cross-region replication |
@@ -98,7 +98,7 @@ El **Sistema de Mensajería SITA** debe operar dentro de restricciones técnicas
 | **Application Metrics** | Prometheus + Grafana | Performance monitoring | Custom metrics, dashboards |
 | **Logging** | ELK Stack (Elasticsearch, Logstash, Kibana) | Centralized logging | Structured logs, retention |
 | **Tracing** | OpenTelemetry + Jaeger | Distributed tracing | Request correlation |
-| **Health Checks** | ASP.NET Core Health Checks | Service availability | /health endpoints |
+| **Health Checks** | ASP.NET Core Health Checks | Service disponibilidad | /health endpoints |
 
 ## 2.4 Restricciones específicas SITA
 
@@ -109,7 +109,7 @@ El **Sistema de Mensajería SITA** debe operar dentro de restricciones técnicas
 | **Network Access** | Conexión dedicada SITA requerida | Línea dedicada, no internet público |
 | **Addressing Scheme** | AFTN addresses format | 8-character ICAO location codes |
 | **Message Priority** | Priority levels (SS, DD, FF, GG) | Routing based on message urgency |
-| **Error Handling** | SITA-specific error codes | Standard SITA error reporting |
+| **Manejo de Errores** | SITA-specific error codes | Standard SITA error reporting |
 
 ### Message Format Compliance
 
@@ -135,10 +135,10 @@ El **Sistema de Mensajería SITA** debe operar dentro de restricciones técnicas
 | Restricción | Decisión de Diseño | Rationale |
 |-------------|-------------------|-----------|
 | **Legacy Protocol Support** | Adapter Pattern implementation | Isolation of legacy complexity |
-| **High Availability** | Active-Passive clustering | Meet 99.95% uptime requirement |
+| **High Disponibilidad** | Active-Passive clustering | Meet 99.95% uptime requirement |
 | **Multi-tenant** | Database per tenant strategy | Data isolation and compliance |
 | **Message Validation** | Pipeline pattern with validators | Extensible validation chain |
-| **Error Handling** | Circuit breaker pattern | Resilience for external dependencies |
+| **Manejo de Errores** | Circuit breaker pattern | Resilience for external dependencies |
 
 ### Trade-offs Aceptados
 

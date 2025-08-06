@@ -4,7 +4,7 @@ Esta sección describe la descomposición estática del **Sistema de Identidad**
 
 *[INSERTAR AQUÍ: Diagrama C4 - Container Level del Sistema de Identidad]*
 
-## 5.1 Sistema de Identidad - Nivel 1 (Whitebox)
+## 5.1 Sistema de Identidad - Nivel 1 (Caja Blanca)
 
 ### Motivación de la Descomposición
 
@@ -119,7 +119,7 @@ El sistema se estructura siguiendo los principios de arquitectura de microservic
 }
 ```
 
-## 5.2 Keycloak Core - Nivel 2 (Whitebox)
+## 5.2 Keycloak Core - Nivel 2 (Caja Blanca)
 
 ### Arquitectura Multi-Realm
 
@@ -238,7 +238,7 @@ public class LdapUserStorageProvider implements UserStorageProvider {
 </saml2:Assertion>
 ```
 
-## 5.3 Identity Management API - Nivel 2 (Whitebox)
+## 5.3 Identity Management API - Nivel 2 (Caja Blanca)
 
 ### Controllers y Endpoints
 
@@ -399,7 +399,7 @@ public class UserProvisioningService : IUserProvisioningService
 }
 ```
 
-## 5.4 Token Validation Service - Nivel 2 (Whitebox)
+## 5.4 Token Validation Service - Nivel 2 (Caja Blanca)
 
 ### High-Performance JWT Validation
 
@@ -500,7 +500,7 @@ public class KeyProvider : IKeyProvider
 }
 ```
 
-## 5.5 Audit & Compliance Service - Nivel 2 (Whitebox)
+## 5.5 Audit & Compliance Service - Nivel 2 (Caja Blanca)
 
 ### Event Sourcing Implementation
 
@@ -735,7 +735,7 @@ CREATE TABLE identity_audit_log (
 
 ### Architecture References
 
-- [Arc42 Building Blocks Template](https://docs.arc42.org/section-5/)
+- [Arc42 Componentes de Construcción Template](https://docs.arc42.org/section-5/)
 - [C4 Model for Software Architecture](https://c4model.com/)
 - [Microservices Patterns](https://microservices.io/patterns/)
 
@@ -754,7 +754,7 @@ token=<access_token>&
 token_type_hint=access_token
 ```
 
-## 5.5 Audit & Compliance Service - Nivel 2 (Whitebox)
+## 5.5 Audit & Compliance Service - Nivel 2 (Caja Blanca)
 
 ### Event Collectors
 
@@ -833,4 +833,4 @@ Integrations:
 - [Keycloak Architecture Guide](https://www.keycloak.org/docs/latest/server_development/)
 - [OAuth2/OIDC Specifications](https://oauth.net/2/)
 - [NIST Digital Identity Guidelines](https://pages.nist.gov/800-63-3/)
-- [Arc42 Building Blocks](https://docs.arc42.org/section-5/)
+- [Arc42 Componentes de Construcción](https://docs.arc42.org/section-5/)

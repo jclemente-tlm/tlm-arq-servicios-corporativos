@@ -28,7 +28,7 @@ El **Sistema de Identidad** debe cumplir con restricciones técnicas, de segurid
 | Métrica | Restricción | Justificación | Arquitectura Requerida |
 |---------|-------------|---------------|------------------------|
 | **Usuarios Concurrentes** | 10,000 sesiones simultáneas | Operaciones pico, multi-tenant | Clustering, optimización de sesiones |
-| **Authentication Latency** | p95 < 100ms | User experience crítica | In-memory caching, optimized queries |
+| **Latencia de Autenticación** | p95 < 100ms | Experiencia de usuario crítica | Caché en memoria, consultas optimizadas |
 | **Validación de Token** | p95 < 50ms | Rendimiento de API | Caché de validación de firmas JWT |
 | **Base de Datos de Usuarios** | 50,000 usuarios por realm | Capacidad por país/tenant | Particionado de base de datos, indexación |
 
@@ -36,9 +36,9 @@ El **Sistema de Identidad** debe cumplir con restricciones técnicas, de segurid
 
 | Sistema | Protocolo | Restricción | Implementación |
 |---------|-----------|-------------|----------------|
-| **API Gateway** | OIDC Client | Validación de token por request | Introspección JWT, validación de claims |
-| **Servicios Corporativos** | OAuth2 flows | Autenticación servicio-a-servicio | Client credentials, acceso con alcance |
-| **IdPs Externos** | SAML/OIDC federation | Cumplimiento de estándares | Adaptadores de protocolo, mapeo de atributos |
+| **API Gateway** | OIDC Client | Validación de token por solicitud | Introspección JWT, validación de claims |
+| **Servicios Corporativos** | Flujos OAuth2 | Autenticación servicio-a-servicio | Credenciales de cliente, acceso con alcance |
+| **IdPs Externos** | Federación SAML/OIDC | Cumplimiento de estándares | Adaptadores de protocolo, mapeo de atributos |
 | **Directorios LDAP** | LDAP v3 | Integración solo lectura | Federación de usuarios, estrategias de sincronización |
 
 ## 2.2 Restricciones de seguridad
@@ -48,7 +48,7 @@ El **Sistema de Identidad** debe cumplir con restricciones técnicas, de segurid
 | Requisito | Estándar | Alcance | Implementación |
 |-------------|----------|-------|----------------|
 | **Cumplimiento GDPR** | Regulación UE 2016/679 | Datos de usuarios UE | Gestión de consentimiento, minimización de datos, derecho al olvido |
-| **Cumplimiento SOX** | Sarbanes-Oxley Act | Datos financieros | Controles de acceso, segregación de deberes, audit trails |
+| **Cumplimiento SOX** | Sarbanes-Oxley Act | Datos financieros | Controles de acceso, segregación de deberes, trazas de auditoría |
 | **ISO 27001** | Estándar internacional | Gestión de seguridad | SGSI, evaluaciones de riesgo, controles de seguridad |
 | **Regulaciones Locales** | Leyes por país | Datos por jurisdicción | Residencia de datos, políticas específicas por país |
 | **SOX Compliance** | Sarbanes-Oxley Act | Financial controls | Audit trails, segregation of duties, access controls |
@@ -182,7 +182,7 @@ El **Sistema de Identidad** debe cumplir con restricciones técnicas, de segurid
 | **Penetration Testing** | Quarterly | External assessment | Remediation tracking |
 | **Security Audits** | Annual | SOC 2 Type II | Compliance reporting |
 | **Code Security** | Static analysis | SonarQube gates | CI/CD integration |
-| **SOX Compliance** | Sarbanes-Oxley Act | Financial access controls | Segregation of duties, audit trails, access reviews |
+| **SOX Compliance** | Sarbanes-Oxley Act | Financial access controls | Segregation of duties, trazas de auditoría, access reviews |
 | **ISO 27001** | Information Security | Security management | Risk assessment, security controls, continuous monitoring |
 | **Local Privacy Laws** | Per country regulations | Regional compliance | Country-specific privacy configurations |
 
@@ -190,9 +190,9 @@ El **Sistema de Identidad** debe cumplir con restricciones técnicas, de segurid
 
 | Control | Requirement | Implementation | Validation |
 |---------|-------------|----------------|------------|
-| **Multi-Factor Authentication** | MFA para roles críticos | TOTP, SMS, Email | Policy enforcement, bypass monitoring |
+| **Autenticación Multi-Factor** | MFA para roles críticos | TOTP, SMS, Email | Policy enforcement, bypass monitoring |
 | **Password Policies** | Complexity, rotation, history | Keycloak password policies | Policy compliance reporting |
-| **Session Management** | Timeout, concurrent session limits | Keycloak session configuration | Session monitoring, force logout |
+| **Gestión de Sesiones** | Timeout, concurrent session limits | Keycloak session configuration | Session monitoring, force logout |
 | **Account Lockout** | Brute force protection | Failed attempt thresholds | Automated lockout, manual unlock |
 | **Privileged Access** | Enhanced security for admin roles | Additional MFA, approval workflows | PAM integration, activity monitoring |
 
@@ -220,7 +220,7 @@ El **Sistema de Identidad** debe cumplir con restricciones técnicas, de segurid
 
 | Area | Constraint | Justification | Implementation |
 |------|------------|---------------|----------------|
-| **24/7 Availability** | Continuous operation required | Global operations, multiple timezones | Monitoring, alerting, on-call procedures |
+| **24/7 Disponibilidad** | Continuous operation required | Global operations, multiple timezones | Monitoring, alertas, on-call procedures |
 | **Backup and Recovery** | RPO: 15 min, RTO: 4 hours | Business continuity | Automated backups, disaster recovery testing |
 | **Change Management** | Controlled deployment process | Security, stability | Blue-green deployments, rollback procedures |
 | **Audit Requirements** | Complete audit trail | Compliance, security investigations | Comprehensive event logging |
@@ -241,11 +241,11 @@ El **Sistema de Identidad** debe cumplir con restricciones técnicas, de segurid
 | Categoría | Standard | Tool/Framework | Enforcement |
 |-----------|----------|----------------|-------------|
 | **Container Orchestration** | Kubernetes | Helm charts | GitOps deployment |
-| **Configuration Management** | GitOps approach | ArgoCD, Flux | Version controlled configs |
+| **Gestión de Configuración** | GitOps approach | ArgoCD, Flux | Version controlled configs |
 | **Secret Management** | External secret stores | External Secrets Operator | No secrets in configs |
 | **Monitoring** | Prometheus/Grafana stack | Keycloak metrics | SLA monitoring |
 
-### High Availability Design
+### High Disponibilidad Design
 
 | Component | HA Requirement | Implementation | Testing |
 |-----------|----------------|----------------|---------|
@@ -297,7 +297,7 @@ El **Sistema de Identidad** debe cumplir con restricciones técnicas, de segurid
 | Constraint | Design Decision | Trade-off | Mitigation |
 |------------|----------------|-----------|------------|
 | **Multi-tenant Isolation** | Separate Keycloak realms | Management complexity | Automation tools |
-| **High Availability** | Clustered deployment | Infrastructure cost | Managed services |
+| **High Disponibilidad** | Clustered deployment | Infrastructure cost | Managed services |
 | **Security Compliance** | Enhanced authentication flows | User experience friction | UX optimization |
 | **Integration Standards** | Standard protocols only | Limited flexibility | Protocol adapters |
 
@@ -323,7 +323,7 @@ El **Sistema de Identidad** debe cumplir con restricciones técnicas, de segurid
 
 ### Keycloak Documentation
 - [Keycloak Server Installation Guide](https://www.keycloak.org/docs/latest/server_installation/)
-- [Keycloak High Availability Guide](https://www.keycloak.org/docs/latest/server_installation/#_clustering)
+- [Keycloak High Disponibilidad Guide](https://www.keycloak.org/docs/latest/server_installation/#_clustering)
 - [Keycloak Security Hardening](https://www.keycloak.org/docs/latest/server_installation/#_hardening)
 
 ### Security Standards
@@ -339,5 +339,5 @@ El **Sistema de Identidad** debe cumplir con restricciones técnicas, de segurid
 
 ### Infrastructure and Deployment
 - [Kubernetes Documentation](https://kubernetes.io/docs/)
-- [PostgreSQL High Availability](https://www.postgresql.org/docs/current/high-availability.html)
+- [PostgreSQL High Disponibilidad](https://www.postgresql.org/docs/current/high-disponibilidad.html)
 - [Redis Clustering](https://redis.io/docs/manual/scaling/)

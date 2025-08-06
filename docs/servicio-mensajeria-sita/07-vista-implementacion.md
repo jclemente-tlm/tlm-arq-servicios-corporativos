@@ -266,7 +266,7 @@ resource "aws_rds_cluster" "sita_messaging_db" {
   master_username       = "sita_user"
   manage_master_user_password = true
 
-  # High availability for critical SITA operations
+  # High disponibilidad for critical SITA operations
   availability_zones = ["us-west-2a", "us-west-2b", "us-west-2c"]
 
   backup_retention_period = 14

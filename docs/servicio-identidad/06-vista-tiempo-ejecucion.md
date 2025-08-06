@@ -8,7 +8,7 @@ Esta sección describe los escenarios dinámicos más importantes del **Sistema 
 
 ### Descripción
 
-Flujo completo de autenticación de usuario corporativo con multi-factor authentication, incluyendo validaciones de seguridad y audit trail completo.
+Flujo completo de autenticación de usuario corporativo con autenticación multi-factor, incluyendo validaciones de seguridad y audit trail completo.
 
 ### Participantes
 
@@ -62,7 +62,7 @@ sequenceDiagram
     KC->>KC: 11. Validar credenciales contra LDAP/DB
     KC->>AuditSvc: 12. LOG: LOGIN_ATTEMPT (successful)
 
-    Note over User,NotifSvc: Segunda fase: Multi-Factor Authentication
+    Note over User,NotifSvc: Segunda fase: Autenticación Multi-Factor
 
     KC->>Browser: 13. Render MFA challenge form
     Browser->>User: 14. Solicitar código TOTP
@@ -114,7 +114,7 @@ sequenceDiagram
 | **Steps 27-29:** Token validation | < 10ms | gRPC call + cache hit | Token service metrics |
 | **Total Flow:** Complete authentication | < 2 seconds | End-to-end user experience | Synthetic monitoring |
 
-### Error Handling y Resilencia
+### Manejo de Errores y Resilencia
 
 | Error Scenario | Response | Recovery Action |
 |----------------|----------|-----------------|
@@ -410,7 +410,7 @@ public async Task<IActionResult> BulkProvisionUsers([FromBody] BulkProvisionRequ
 }
 ```
 
-## 6.5 Escenario: Token Refresh y Session Management
+## 6.5 Escenario: Token Refresh y Gestión de Sesiones
 
 ### Descripción
 
@@ -454,7 +454,7 @@ sequenceDiagram
     end
 ```
 
-### Session Management Policies
+### Gestión de Sesiones Policies
 
 | Policy | Configuration | Enforcement |
 |--------|---------------|-------------|
@@ -689,7 +689,7 @@ sequenceDiagram
 - **Session cleanup:** Async para no bloquear logout
 - **Event propagation:** < 5 segundos para todos los servicios
 
-## 6.6 Escenario: Multi-Factor Authentication (MFA)
+## 6.6 Escenario: Autenticación Multi-Factor (MFA)
 
 ### Descripción
 Flujo de autenticación de segundo factor utilizando TOTP o SMS.
@@ -748,7 +748,7 @@ sequenceDiagram
     Kafka->>SIEM: 5. Real-time security monitoring
 
     Note over ComplianceDB: GDPR: 6 years retention
-    Note over SIEM: Real-time alerting
+    Note over SIEM: Real-time alertas
 ```
 
 ### Audit Event Types
@@ -760,5 +760,5 @@ sequenceDiagram
 ## Referencias
 - [OAuth2 Flow Specifications](https://tools.ietf.org/html/rfc6749)
 - [Keycloak Event SPI Documentation](https://www.keycloak.org/docs/latest/server_development/#_events)
-- [JWT Best Practices](https://tools.ietf.org/html/rfc8725)
+- [JWT Mejores Prácticas](https://tools.ietf.org/html/rfc8725)
 - [Arc42 Runtime View](https://docs.arc42.org/section-6/)

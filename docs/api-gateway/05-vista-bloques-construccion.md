@@ -9,26 +9,26 @@ Esta sección describe la estructura interna del API Gateway basada en los compo
                     │        API Gateway (YARP)          │
                     │                                     │
 ┌─────────────┐     │ ┌─────────────────────────────────┐ │     ┌─────────────┐
-│ Aplicaciones │────▶│ │     Security Middleware         │ │────▶│  Identity   │
+│ Aplicaciones │────▶│ │     Middleware de Seguridad     │ │────▶│  Identity   │
 │   Cliente    │     │ └─────────────────────────────────┘ │     │  Service    │
 └─────────────┘     │ ┌─────────────────────────────────┐ │     └─────────────┘
-                    │ │   Tenant Resolution Middleware  │ │
+                    │ │   Middleware de Resolución Tenant │ │
                     │ └─────────────────────────────────┘ │
                     │ ┌─────────────────────────────────┐ │     ┌─────────────┐
-                    │ │   Rate Limiting Middleware      │ │────▶│Notification │
+                    │ │   Middleware de Limitación Velocidad │ │────▶│Notification │
                     │ └─────────────────────────────────┘ │     │  Service    │
                     │ ┌─────────────────────────────────┐ │     └─────────────┘
-                    │ │  Data Processing Middleware     │ │
+                    │ │  Middleware de Procesamiento Datos │ │
                     │ └─────────────────────────────────┘ │     ┌─────────────┐
                     │ ┌─────────────────────────────────┐ │────▶│ Track &     │
-                    │ │      Resilience Handler         │ │     │ Trace       │
+                    │ │      Manejador de Resistencia   │ │     │ Trace       │
                     │ └─────────────────────────────────┘ │     └─────────────┘
                     └─────────────────────────────────────┘
 ```
 
 ## Componentes Principales
 
-### 🛡️ Security Middleware
+### 🛡️ Middleware de Seguridad
 
 **Tecnología**: ASP.NET Core Middleware
 
@@ -44,10 +44,10 @@ public class SecurityMiddleware
 {
     public async Task InvokeAsync(HttpContext context)
     {
-        // 1. Extract JWT token
-        // 2. Validate with Keycloak
-        // 3. Set user claims
-        // 4. Continue pipeline
+        // 1. Extraer token JWT
+        // 2. Validar con Keycloak
+        // 3. Establecer claims de usuario
+        // 4. Continuar pipeline
     }
 }
 ```
@@ -62,7 +62,7 @@ public class SecurityMiddleware
 - Resolver configuración específica del tenant
 - Establecer contexto para downstream services
 
-### ⚡ Rate Limiting Middleware
+### ⚡ Limitación de Velocidad Middleware
 
 **Tecnología**: ASP.NET Core Middleware
 
@@ -100,7 +100,7 @@ var retryPolicy = Policy
 
 **Métricas recolectadas**:
 
-- Request throughput por tenant
+- Request capacidad de procesamiento por tenant
 - Latencia por endpoint
 - Rate de errores
 - Estado de circuit breaker
@@ -131,7 +131,7 @@ var retryPolicy = Policy
 El pipeline de middleware sigue este orden optimizado:
 
 ```
-Request  ──▶ Security      ──▶ Tenant        ──▶ Rate Limiting ──▶
+Request  ──▶ Security      ──▶ Tenant        ──▶ Limitación de Velocidad ──▶
          ──▶ Processing    ──▶ Resilience   ──▶ Downstream    ──▶ Response
 ```
 
@@ -139,7 +139,7 @@ Request  ──▶ Security      ──▶ Tenant        ──▶ Rate Limiting
 
 1. **Security Middleware**: Valida autenticación
 2. **Tenant Resolution**: Identifica contexto del tenant
-3. **Rate Limiting**: Aplica límites específicos
+3. **Limitación de Velocidad**: Aplica límites específicos
 4. **Data Processing**: Valida y transforma request
 5. **Resilience Handler**: Aplica políticas de resiliencia
 6. **Downstream Service**: Enruta al servicio final
@@ -231,7 +231,7 @@ public interface IRoutingConfiguration
 
 ### 5.3.1 YARP Reverse Proxy Engine
 
-**Responsabilidad**: Motor principal de proxy reverso que maneja el enrutamiento y load balancing.
+**Responsabilidad**: Motor principal de proxy reverso que maneja el enrutamiento y balanceador de carga.
 
 ```csharp
 // Configuración de YARP
@@ -356,7 +356,7 @@ public class AuthenticationMiddleware
 }
 ```
 
-### 5.3.3 Rate Limiting & Throttling
+### 5.3.3 Limitación de Velocidad & Throttling
 
 **Responsabilidad**: Control de tráfico para prevenir abuse y garantizar fair usage.
 
@@ -482,7 +482,7 @@ public class HealthMonitoringService : IHostedService
 
 ### 5.3.5 Observability Pipeline
 
-**Responsabilidad**: Logging estructurado, métricas y distributed tracing para monitoreo y troubleshooting.
+**Responsabilidad**: Logging estructurado, métricas y trazado distribuido para monitoreo y resolución de problemas.
 
 ```csharp
 public class ObservabilityMiddleware
@@ -572,7 +572,7 @@ public class TenantContextEnricher
 }
 ```
 
-### 5.4.2 Configuration Management
+### 5.4.2 Gestión de Configuración
 
 ```csharp
 public class DynamicConfigurationProvider : IConfigurationProvider

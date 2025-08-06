@@ -95,5 +95,5 @@ Se define **[Keycloak](https://www.keycloak.org/)** como estándar de autenticac
 
 - [OAuth2 RFC6749](https://datatracker.ietf.org/doc/html/rfc6749)
 - [JWT RFC7519](https://datatracker.ietf.org/doc/html/rfc7519)
-- [Best Practices OAuth2](https://oauth.net/2/grant-types/client-credentials/)
+- [Mejores Prácticas OAuth2](https://oauth.net/2/grant-types/client-credentials/)
 - [Arc42: Decisiones de arquitectura](https://arc42.org/decision/)

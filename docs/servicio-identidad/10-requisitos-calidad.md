@@ -92,7 +92,7 @@ public class IdentityServiceScalingPolicy
 ### 10.2.1 Service Level Agreements (SLA)
 
 ```yaml
-Availability Targets:
+Disponibilidad Targets:
   Production SLA: 99.95%
     - Downtime Allowance: 21.9 minutes/month
     - Measurement: 5-minute intervals
@@ -110,7 +110,7 @@ Error Rate Targets:
   Client Errors (4xx): < 2% (excluding 401/403)
 ```
 
-### 10.2.2 High Availability Architecture
+### 10.2.2 High Disponibilidad Architecture
 
 ```yaml
 Multi-AZ Deployment:
@@ -133,7 +133,7 @@ Database Redundancy:
     - Replica: us-west-2 (read-only)
     - Backup: Daily snapshots + WAL shipping
 
-Load Balancing:
+Balanceador de Carga:
   Application Load Balancer:
     - Health Checks: /health/ready (10s interval)
     - Failure Threshold: 3 consecutive failures
@@ -201,7 +201,7 @@ Account Lockout:
   IP-based Lockout: 10 failures from same IP (1 hour)
   CAPTCHA Trigger: After 3 failed attempts
 
-Session Management:
+Gestión de Sesiones:
   Session Timeout: 8 hours inactivity
   Max Concurrent Sessions: 5 per user
   Session Invalidation: On password change
@@ -229,7 +229,7 @@ Permission Model:
   Time-Based: Temporary permissions with expiration
   Approval Workflow: For sensitive permissions
 
-Multi-Factor Authentication:
+Autenticación Multi-Factor:
   Enforcement: Required for all admin accounts
   Methods: TOTP, SMS, email, hardware tokens
   Backup Codes: 10 single-use codes
@@ -301,7 +301,7 @@ Admin Interface:
   Export Functionality: CSV, JSON, PDF formats
 
 Self-Service Capabilities:
-  Password Reset: 24/7 availability
+  Password Reset: 24/7 disponibilidad
   Profile Updates: Real-time validation
   MFA Setup: Guided wizard
   Access Requests: Workflow integration
@@ -349,7 +349,7 @@ Metrics Collection:
   Custom Metrics:
     - Tenant-specific usage patterns
     - Security event frequency
-    - Compliance audit trails
+    - Compliance trazas de auditoría
     - Cost per transaction
 ```
 
@@ -367,7 +367,7 @@ Deployment Requirements:
     - Staging: Production-identical environment
     - Production: Multi-AZ, full redundancy
 
-Monitoring and Alerting:
+Monitoring and Alertas:
   Response Time SLA:
     - Warning: P95 > 500ms
     - Critical: P95 > 1s
@@ -376,7 +376,7 @@ Monitoring and Alerting:
     - Warning: > 0.5% error rate
     - Critical: > 1% error rate
 
-  Availability SLA:
+  Disponibilidad SLA:
     - Warning: Health check failures
     - Critical: Service unavailable
 
@@ -431,7 +431,7 @@ Performance Testing:
 Pipeline Quality Gates:
   Code Quality:
     - SonarQube Quality Gate: Pass
-    - Technical Debt: < 1 day remediation
+    - Deuda Técnica: < 1 day remediation
     - Duplicated Code: < 5%
     - Maintainability Rating: A
 
@@ -487,7 +487,7 @@ Data Exchange Formats:
   CSV: Bulk data operations
   Protocol Buffers: High-performance scenarios
 
-Error Handling:
+Manejo de Errores:
   Standard HTTP Status Codes: RFC 7231 compliance
   Error Response Format: Problem Details (RFC 7807)
   Retry Logic: Exponential backoff
@@ -499,7 +499,7 @@ Error Handling:
 ## Referencias
 
 ### Standards and Frameworks
-- [ISO/IEC 25010 - Systems and software Quality Requirements and Evaluation](https://www.iso.org/standard/35733.html)
+- [ISO/IEC 25010 - Systems and software Requisitos de Calidad and Evaluation](https://www.iso.org/standard/35733.html)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
 - [OWASP Application Security Verification Standard](https://owasp.org/www-project-application-security-verification-standard/)
 
@@ -519,7 +519,7 @@ Error Handling:
 
 - **Password Policy:** Mínimo 12 caracteres, complejidad alta
 - **MFA Enforcement:** Obligatorio para roles administrativos
-- **Session Management:** Timeout automático, concurrent session limits
+- **Gestión de Sesiones:** Timeout automático, concurrent session limits
 - **Brute Force Protection:** Lockout tras 5 intentos fallidos
 
 ### Data Protection
@@ -535,7 +535,7 @@ Encryption Standards:
 ### Compliance Requirements
 
 - **GDPR:** Data minimization, consent management, right to erasure
-- **SOX:** Financial controls, change management, audit trails
+- **SOX:** Financial controls, change management, trazas de auditoría
 - **CCPA:** California privacy rights
 - **LGPD:** Brazilian data protection law
 
@@ -571,10 +571,10 @@ Growth Projections:
 - **Deployment:** Zero-downtime deployments
 - **Configuration:** Hot-reload para cambios no críticos
 - **Monitoring:** Comprehensive observability stack
-- **Troubleshooting:** Centralized logging y distributed tracing
+- **Resolución de problemas:** Centralized logging y trazado distribuido
 
 ## Referencias
 
 - [ISO/IEC 25010 Quality Model](https://iso25000.com/index.php/en/iso-iec-25000-standards/iso-iec-25010)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
-- [Arc42 Quality Requirements](https://docs.arc42.org/section-10/)
+- [Arc42 Requisitos de Calidad](https://docs.arc42.org/section-10/)

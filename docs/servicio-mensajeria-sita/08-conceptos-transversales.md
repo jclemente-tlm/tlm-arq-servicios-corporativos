@@ -60,7 +60,7 @@ _logger.LogInformation("SITA message sent successfully", new
 - **Regional Performance**: Latencia por nodo SITA regional
 - **Tenant Usage**: Volumen de mensajes por tenant y tipo
 
-### 8.3.3 Distributed Tracing
+### 8.3.3 Trazado Distribuido
 - **Correlation IDs**: Seguimiento end-to-end desde API hasta SITA
 - **SITA Transaction Tracing**: Correlación con acknowledgments SITA
 - **Performance Monitoring**: Latencia de cada hop en el flujo
@@ -95,7 +95,7 @@ public enum SitaErrorCategory
 
 ### 8.5.1 Connection Management
 - **Connection Pooling**: Pool de conexiones SITA por destino
-- **Load Balancing**: Distribución entre múltiples nodos SITA
+- **Balanceador de Carga**: Distribución entre múltiples nodos SITA
 - **Adaptive Timeouts**: Timeouts dinámicos basados en latencia histórica
 - **Resource Throttling**: Control de uso de recursos por tenant
 
@@ -160,7 +160,7 @@ public class SitaAuditEvent
 - **Validation Pipelines**: Validación en múltiples niveles
 - **Content Filtering**: Filtrado de contenido sensible en logs
 
-## 8.8 Configuration Management
+## 8.8 Gestión de Configuración
 
 ### 8.8.1 Environment-specific Settings
 - **SITA Endpoints**: Configuración de nodos SITA por ambiente
@@ -178,4 +178,4 @@ public class SitaAuditEvent
 - **Runtime Updates**: Cambios de configuración sin restart
 - **A/B Testing**: Configuraciones experimentales
 - **Circuit Breaker Thresholds**: Ajuste dinámico de umbrales
-- **Rate Limiting**: Límites configurables por tenant y operación
+- **Limitación de Velocidad**: Límites configurables por tenant y operación

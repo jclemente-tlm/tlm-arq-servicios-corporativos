@@ -20,7 +20,7 @@ Este directorio contiene las decisiones arquitectónicas que aplican de forma tr
 - [ADR-009: Uso de PostgreSQL como base de datos estándar](./adr-009-postgresql-standard.md)
 - [ADR-010: Logging estructurado con Serilog](./adr-010-logging-serilog.md)
 - [ADR-011: Monitoreo y observabilidad centralizada](./adr-011-monitoreo-observabilidad.md)
-- [ADR-012: Gestión de trazas distribuidas (Distributed Tracing)](./adr-012-tracing-distribuido.md)
+- [ADR-012: Gestión de trazas distribuidas (Trazado Distribuido)](./adr-012-tracing-distribuido.md)
 - [ADR-013: Estrategia de versionado de APIs](./adr-013-versionado-apis.md)
 - [ADR-014: Automatización de despliegues (CI/CD) con GitHub Actions](./adr-014-ci-cd-github-actions.md)
 - [ADR-015: Estandarización de Infraestructura como Código (IaC) con Terraform](./adr-015-iac-terraform.md)

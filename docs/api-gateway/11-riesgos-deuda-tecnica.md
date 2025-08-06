@@ -90,7 +90,7 @@ public class RiskMitigationService
 | ID | Riesgo | Probabilidad | Impacto | Severidad | Mitigación |
 |----|--------|--------------|---------|-----------|------------|
 | **RO-01** | Configuración incorrecta de routing | Media | Alto | ⚠️ Alto | Validación automática, tests de integración, blue-green |
-| **RO-02** | Saturación de Redis para rate limiting | Media | Medio | 🟡 Medio | Clustering, monitoreo, fallback local |
+| **RO-02** | Saturación de Redis para limitación de velocidad | Media | Medio | 🟡 Medio | Clustering, monitoreo, fallback local |
 | **RO-03** | Pérdida de conectividad con Identity Service | Baja | Alto | ⚠️ Alto | Cache local, degradación elegante, verificaciones de salud |
 | **RO-04** | Logs excesivos que afectan rendimiento | Alta | Bajo | 🟢 Bajo | Filtrado inteligente, sampling, archiving |
 | **RO-05** | Desincronización entre instancias | Media | Medio | 🟡 Medio | Configuración centralizada, versionado |
@@ -185,7 +185,7 @@ public class ServicioMitigacionSeguridad
                 _logger.LogWarning("Potential DDoS attack detected from {ClientId}", clientId);
                 _metrics.Counter("ddos_attacks_detected_total").Add(1);
 
-                // Aplicar rate limiting agresivo
+                // Aplicar limitación de velocidad agresivo
                 if (requests.Count > _options.BlockingThreshold)
                 {
                     context.Response.StatusCode = 429;
@@ -452,7 +452,7 @@ contingency_plans:
       - "Increased local cache usage"
 
     immediate_response:
-      - trigger: "Activate local rate limiting"
+      - trigger: "Activate local limitación de velocidad"
         timeout: "10 seconds"
       - trigger: "Scale Redis backup cluster"
         timeout: "5 minutes"

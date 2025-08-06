@@ -11,8 +11,8 @@ Propuesta – Agosto 2025
 Con la arquitectura distribuida de 5 microservicios corporativos (API Gateway, Identity, Notification, Track & Trace, SITA Messaging), se necesita implementar un stack completo de observabilidad para:
 
 - **Monitoring**: Visibilidad del rendimiento y disponibilidad de servicios
-- **Alerting**: Notificación proactiva de problemas y degradación
-- **Troubleshooting**: Capacidad de diagnosticar problemas rápidamente
+- **Alertas**: Notificación proactiva de problemas y degradación
+- **Resolución de problemas**: Capacidad de diagnosticar problemas rápidamente
 - **Capacity Planning**: Datos para decisiones de escalamiento
 
 ### Problemas Actuales
@@ -98,7 +98,7 @@ Se implementará un stack de observabilidad con las siguientes tecnologías:
 
 ### Fase 2: Logging Centralizado (1-2 semanas)
 
-#### Structured Logging
+#### Registro Estructurado
 ```csharp
 // Formato estándar con Serilog
 {
@@ -143,15 +143,15 @@ Se implementará un stack de observabilidad con las siguientes tecnologías:
 ## 📊 MÉTRICAS OBJETIVO
 
 ### SLIs (Service Level Indicators)
-- **Availability**: 99.9% uptime por servicio
+- **Disponibilidad**: 99.9% uptime por servicio
 - **Latency**: P95 < 500ms para APIs críticas
 - **Error Rate**: < 1% error rate en condiciones normales
-- **Throughput**: Capacidad de procesar cargas pico
+- **Capacidad de procesamiento**: Capacidad de procesar cargas pico
 
 ### KPIs de Negocio
 - **Notification Delivery Rate**: >95% entrega exitosa
 - **Track & Trace Processing Time**: <30 segundos promedio
-- **SITA Message Generation**: <2 minutos tiempo promedio
+- **SITA Generación de Mensajes**: <2 minutos tiempo promedio
 - **API Gateway Response Time**: P99 < 1 segundo
 
 ---
@@ -161,7 +161,7 @@ Se implementará un stack de observabilidad con las siguientes tecnologías:
 ### Técnicos
 ✅ **Detección proactiva** de problemas antes que afecten usuarios
 ✅ **MTTR reducido** de 60 minutos a <15 minutos
-✅ **Troubleshooting eficiente** con logs correlacionados
+✅ **Resolución de problemas eficiente** con logs correlacionados
 ✅ **Capacity planning** basado en datos reales
 
 ### Operacionales
@@ -224,7 +224,7 @@ Se implementará un stack de observabilidad con las siguientes tecnologías:
 
 ## 🔗 REFERENCIAS
 
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/)
+- [Prometheus Mejores Prácticas](https://prometheus.io/docs/practices/)
 - [Grafana Dashboard Design](https://grafana.com/docs/grafana/latest/best-practices/)
 - [The Four Golden Signals](https://sre.google/sre-book/monitoring-distributed-systems/)
 - [.NET Observability Guide](https://docs.microsoft.com/en-us/dotnet/core/diagnostics/)

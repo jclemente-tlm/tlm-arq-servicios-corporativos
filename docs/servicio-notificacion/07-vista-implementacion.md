@@ -298,7 +298,7 @@ Prometheus Metrics:
 ### Logging Strategy
 
 ```yaml
-Structured Logging:
+Registro Estructurado:
   Format: JSON with correlation IDs
   Fields:
     - timestamp
@@ -320,7 +320,7 @@ Log Levels:
   - FATAL: Service unavailable
 ```
 
-### Distributed Tracing
+### Trazado Distribuido
 
 ```yaml
 Jaeger Configuration:
@@ -367,7 +367,7 @@ GitHub Actions Workflow:
     - Smoke tests
 ```
 
-### Configuration Management
+### Gestión de Configuración
 
 ```yaml
 Environment Configuration:
@@ -479,7 +479,7 @@ Recovery Point Objectives:
 
 ## Referencias
 
-- [Kubernetes Best Practices](https://kubernetes.io/docs/concepts/configuration/overview/)
+- [Kubernetes Mejores Prácticas](https://kubernetes.io/docs/concepts/configuration/overview/)
 - [Microservices Deployment Patterns](https://microservices.io/patterns/deployment/)
 - [Event Bus agnóstico Operations](https://kafka.apache.org/documentation/#operations)
 - [Arc42 Deployment View](https://docs.arc42.org/section-7/)

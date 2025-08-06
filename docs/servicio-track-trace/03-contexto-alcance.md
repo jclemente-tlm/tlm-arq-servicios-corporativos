@@ -31,7 +31,7 @@ El sistema de track & trace actúa como el sistema nervioso de las operaciones, 
 |----------|-------------|-------------------|
 | **Visibilidad Operacional** | Transparencia completa de operaciones | 100% event capture, < 5 sec latency |
 | **Trazabilidad Completa** | Auditoría completa de eventos críticos | 7 años retención, 99.999% durabilidad |
-| **Decisiones Informadas** | Datos en tiempo real para operaciones | < 200ms query response, real-time dashboards |
+| **Decisiones Informadas** | Datos en tiempo real para operaciones | < 200ms query response, dashboards en tiempo real |
 | **Cumplimiento Regulatorio** | Cumplimiento auditoría y regulaciones | 100% audit trail, regulatory compliance |
 | **Integración Sin Interrupciones** | Conexión de sistemas heterogéneos | Event-driven integration, API standardization |
 
@@ -69,7 +69,7 @@ El sistema de track & trace actúa como el sistema nervioso de las operaciones, 
                       ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                   CONSUMIDORES Y DASHBOARDS                     │
-│  [Operations Dashboard] [Mobile Apps] [Notification System]   │
+│  [Operations Dashboard] [Aplicaciones Móviles] [Notification System]   │
 │  [SITA Messaging] [Reporting Tools] [External Partners]       │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -159,9 +159,9 @@ El sistema de track & trace actúa como el sistema nervioso de las operaciones, 
 | **Real-time Tracking** | Seguimiento en tiempo real de operaciones | Operations, management | Alta |
 | **Event Sourcing** | Almacenamiento immutable de eventos | Sistema, auditoría | Alta |
 | **Query & Analytics** | Consultas complejas y análisis | Analysts, operations | Alta |
-| **Real-time Dashboards** | Visualización en tiempo real | Operations controllers | Media |
+| **Dashboards en Tiempo Real** | Visualización en tiempo real | Operations controllers | Media |
 | **Alert Generation** | Detección automática de anomalías | Operations, management | Media |
-| **Historical Analysis** | Análisis de tendencias históricas | Management, analysts | Media |
+| **Análisis Histórico** | Análisis de tendencias históricas | Management, analysts | Media |
 | **Audit Trail** | Trazabilidad completa para auditoría | Compliance officers | Media |
 | **Data Export** | Exportación para sistemas externos | BI teams, partners | Baja |
 | **Event Replay** | Reproducción de eventos históricos | Development, debugging | Baja |
@@ -292,7 +292,7 @@ Postcondición: Anomalía identificada y comunicada
 | Atributo | Métrica | Objetivo | Medición |
 |----------|---------|--------|----------|
 | **Data Durability** | Event loss rate | < 0.0001% | Data integrity checks |
-| **System Availability** | Service uptime | 99.95% | Health monitoring |
+| **System Disponibilidad** | Service uptime | 99.95% | Health monitoring |
 | **Event Ordering** | Out-of-order events | < 0.01% | Sequence validation |
 | **Recovery Time** | MTTR | < 1 hour | Incident response |
 
@@ -312,7 +312,7 @@ Postcondición: Anomalía identificada y comunicada
 | **Data Completeness** | Missing events | < 0.1% | Completeness checks |
 | **Data Accuracy** | Incorrect events | < 0.01% | Validation rules |
 | **Schema Compliance** | Format violations | Zero tolerance | Schema validation |
-| **Event Correlation** | Orphaned events | < 0.1% | Relationship validation |
+| **Correlación de Eventos** | Orphaned events | < 0.1% | Relationship validation |
 
 ## Referencias
 

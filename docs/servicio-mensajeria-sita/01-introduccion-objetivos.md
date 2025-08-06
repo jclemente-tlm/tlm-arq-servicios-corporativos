@@ -17,9 +17,9 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 | Componente | Propósito | Tecnología |
 |------------|-----------|------------|
 | **Procesador de Eventos** | Consume eventos del Track & Trace, aplica reglas de negocio | .NET 8 Background Services |
-| **Generador de Mensajes** | Transforma eventos en mensajes SITA según plantillas | Template Engine (Liquid), Business Rules |
-| **Motor de Entrega** | Entrega confiable a partners SITA vía múltiples protocolos | SFTP, HTTP/S, File Transfer |
-| **Gestor de Configuración** | Gestión de plantillas, mapeos y configuración por partner | Dynamic Configuration Platform |
+| **Generador de Mensajes** | Transforma eventos en mensajes SITA según plantillas | Motor de Plantillas (Liquid), Reglas de Negocio |
+| **Motor de Entrega** | Entrega confiable a partners SITA vía múltiples protocolos | SFTP, HTTP/S, Transferencia de Archivos |
+| **Gestor de Configuración** | Gestión de plantillas, mapeos y configuración por partner | Plataforma de Configuración Dinámica |
 
 ### Requisitos Funcionales Principales
 
@@ -34,7 +34,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 | **RF-SITA-07** | **Validación de Formato** | Validación de mensajes SITA según estándares IATA antes del envío |
 | **RF-SITA-08** | **Auditoría y Cumplimiento** | Seguimiento completo para auditorías y cumplimiento regulatorio |
 | **RF-SITA-09** | **Soporte Multi-tenant** | Soporte para múltiples aeropuertos/países con configuración independiente |
-| **RF-SITA-10** | **Monitoreo Tiempo Real** | Paneles para monitoreo de entregas y estado de partners |
+| **RF-SITA-10** | **Monitoreo en Tiempo Real** | Paneles para monitoreo de entregas y estado de partners |
 
 ### Tipos de Mensajes SITA Soportados
 
@@ -152,7 +152,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 
 | Issue Type | L1 Support | L2 Support | L3 Support | External |
 |------------|------------|------------|------------|----------|
-| **Delivery Failures** | DevOps Team | Development Team | System Architect | Partner Technical |
+| **Delivery Failures** | Equipo DevOps | Development Team | System Architect | Partner Technical |
 | **Format Issues** | Operations | SITA Specialist | Technical Lead | SITA Certification |
 | **Partner Problems** | Account Manager | Technical Support | Solution Architect | Partner Management |
-| **Compliance Issues** | Compliance Officer | Legal Team | Executive Leadership | Regulatory Authority |
+| **Compliance Issues** | Compliance Officer | Equipo Legal | Executive Leadership | Regulatory Authority |

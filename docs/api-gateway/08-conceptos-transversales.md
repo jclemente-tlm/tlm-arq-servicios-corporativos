@@ -26,7 +26,7 @@ public void ConfigureServices(IServiceCollection services)
                 NameClaimType = "sub"
             };
 
-            // Cache de validación de tokens
+            // Caché de validación de tokens
             options.Events = new JwtBearerEvents
             {
                 OnTokenValidated = async context =>

@@ -437,7 +437,7 @@ public class SitaMessageFailedEvent : IntegrationEvent
 - Circuit breaker para SITA connections
 - Retry policies con exponential backoff
 - Dead letter queue para mensajes fallidos
-- Audit trail completo para troubleshooting
+- Audit trail completo para resolución de problemas
 
 ### 5.7.2 Performance
 

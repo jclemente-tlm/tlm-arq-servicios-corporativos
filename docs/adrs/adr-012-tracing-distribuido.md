@@ -1,4 +1,4 @@
-# ADR-012: Gestión de trazas distribuidas ([Distributed Tracing](https://opentelemetry.io/docs/concepts/distributed-tracing/))
+# ADR-012: Gestión de trazas distribuidas ([Trazado Distribuido](https://opentelemetry.io/docs/concepts/distributed-tracing/))
 
 ## ✅ ESTADO
 

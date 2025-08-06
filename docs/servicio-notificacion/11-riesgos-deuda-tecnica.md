@@ -63,7 +63,7 @@ Escenario 1 - Outage Regional:
   Impact: Crítico - Email channel unavailable
   Duration: 2-6 horas
 
-Escenario 2 - API Rate Limiting:
+Escenario 2 - API Limitación de Velocidad:
   Trigger: Traffic spike excede limits de todos los providers
   Affected Providers: Twilio + Amazon SNS (SMS)
   Probability: Media (25% durante campaigns)
@@ -179,7 +179,7 @@ Operational Metrics:
   Partition Count: Approaching broker limits
   Replication Factor: Impact on performance
 
-Alerting Thresholds:
+Alertas Thresholds:
   Warning: Any metric > 70%
   Critical: Any metric > 85%
   Emergency: Producer throttling activated
@@ -474,7 +474,7 @@ Q4 2024 - Operational Excellence:
   Monitoring Enhancement:
     - Business metrics dashboard
     - SLI/SLO tracking
-    - Advanced alerting rules
+    - Advanced alertas rules
 
   Documentation:
     - Complete API documentation
@@ -485,7 +485,7 @@ Q4 2024 - Operational Excellence:
 ### 11.6.3 Debt Metrics and Tracking
 
 ```yaml
-Technical Debt Metrics:
+Deuda Técnica Metrics:
   Code Quality:
     - SonarQube Debt Ratio: < 3%
     - Cyclomatic Complexity: < 8 average
@@ -520,7 +520,7 @@ Risk Monitoring Dashboard:
   Infrastructure Health:
     - Kafka cluster performance
     - Database connection health
-    - Provider API availability
+    - Provider API disponibilidad
     - Resource utilization trends
 
   Security Posture:
@@ -571,9 +571,9 @@ Communication Plan:
 - [ISO 31000 Risk Management](https://www.iso.org/iso-31000-risk-management.html)
 - [COSO Enterprise Risk Management](https://www.coso.org/Pages/erm.aspx)
 
-### Technical Debt Management
-- [Managing Technical Debt](https://martinfowler.com/articles/is-quality-worth-cost.html)
-- [Continuous Delivery and Technical Debt](https://continuousdelivery.com/foundations/technical-debt/)
+### Deuda Técnica Management
+- [Managing Deuda Técnica](https://martinfowler.com/articles/is-quality-worth-cost.html)
+- [Continuous Delivery and Deuda Técnica](https://continuousdelivery.com/foundations/technical-debt/)
   - Data masking en logs
   - Cifrado de campos sensibles
   - Auditoría de accesos
@@ -636,8 +636,8 @@ Communication Plan:
 
 #### DT-004: Logging inconsistente
 - **Descripción**: Diferentes formatos de log entre componentes
-- **Impacto**: Dificultad en troubleshooting y observabilidad
-- **Plan de resolución**: Estandarización con Serilog structured logging
+- **Impacto**: Dificultad en resolución de problemas y observabilidad
+- **Plan de resolución**: Estandarización con Serilog registro estructurado
 - **Prioridad**: Media
 - **Estimación**: 1 sprint
 

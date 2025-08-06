@@ -64,7 +64,7 @@ public class DynamicRouteConfigProvider : IProxyConfigProvider
 **Positivas**:
 - Desarrollo e integración más rápidos
 - Configuración dinámica sin downtime
-- Mejor debugging y troubleshooting
+- Mejor debugging y resolución de problemas
 - Reutilización de middleware existente de ASP.NET Core
 
 **Negativas**:
@@ -72,7 +72,7 @@ public class DynamicRouteConfigProvider : IProxyConfigProvider
 - Dependencia del ecosistema Microsoft
 - Potencial overhead por estar basado en .NET
 
-## 9.2 ADR-002: Implementación de rate limiting distribuido
+## 9.2 ADR-002: Implementación de limitación de velocidad distribuido
 
 **Estado**: Aceptado
 **Fecha**: 2024-01-20
@@ -80,11 +80,11 @@ public class DynamicRouteConfigProvider : IProxyConfigProvider
 
 ### Contexto y problema
 
-El API Gateway debe proteger los servicios backend contra abuso y garantizar QoS mediante rate limiting. En un entorno distribuido con múltiples instancias del gateway, necesitamos:
+El API Gateway debe proteger los servicios backend contra abuso y garantizar QoS mediante limitación de velocidad. En un entorno distribuido con múltiples instancias del gateway, necesitamos:
 - Rate limiting consistente entre instancias
 - Baja latencia en la verificación de límites
 - Capacidad de configuración por cliente/tenant
-- Resistencia a fallos del sistema de rate limiting
+- Resistencia a fallos del sistema de limitación de velocidad
 
 ### Alternativas consideradas
 
@@ -106,7 +106,7 @@ El API Gateway debe proteger los servicios backend contra abuso y garantizar QoS
 
 ### Decisión
 
-Implementamos **rate limiting distribuido con Redis** usando algoritmo sliding window con fallback local:
+Implementamos **limitación de velocidad distribuido con Redis** usando algoritmo sliding window con fallback local:
 
 ```csharp
 public class DistributedRateLimiter : IRateLimiter
@@ -299,7 +299,7 @@ public class AdaptiveCircuitBreaker : ICircuitBreaker
 **Positivas**:
 - Prevención efectiva de fallos en cascada
 - Recuperación automática de servicios
-- Métricas detalladas para troubleshooting
+- Métricas detalladas para resolución de problemas
 - Configuración adaptativa por tipo de error
 
 **Negativas**:

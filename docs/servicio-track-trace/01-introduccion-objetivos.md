@@ -12,36 +12,36 @@ El sistema de Track & Trace actúa como el sistema nervioso central para el trac
 
 | Componente | Propósito | Tecnología |
 |------------|-----------|------------|
-| **Track & Trace API** | Ingesta de eventos y consultas de tracking | ASP.NET Core 8, PostgreSQL |
-| **Event Processor** | Procesamiento asíncrono y correlación de eventos | Background Services, Reliable Messaging |
-| **Query Engine** | Optimización de consultas complejas | PostgreSQL, Redis Cache |
-| **Dashboard API** | Métricas y visualizaciones para dashboards | ASP.NET Core 8, Aggregated Views |
+| **API de Track & Trace** | Ingesta de eventos y consultas de seguimiento | ASP.NET Core 8, PostgreSQL |
+| **Procesador de Eventos** | Procesamiento asíncrono y correlación de eventos | Background Services, Reliable Messaging |
+| **Motor de Consultas** | Optimización de consultas complejas | PostgreSQL, Redis Cache |
+| **API de Dashboard** | Métricas y visualizaciones para dashboards | ASP.NET Core 8, Aggregated Views |
 
 ### Requisitos Funcionales Principales
 
 | ID | Requisito | Descripción Detallada |
 |----|-----------|-----------------------|
-| **RF-TT-01** | **Ingesta de Eventos** | Captura eventos de múltiples fuentes con high-throughput (10K events/sec) |
+| **RF-TT-01** | **Ingesta de Eventos** | Captura eventos de múltiples fuentes con high-capacidad de procesamiento (10K events/sec) |
 | **RF-TT-02** | **Trazabilidad End-to-End** | Seguimiento completo de procesos multi-sistema con correlation IDs |
 | **RF-TT-03** | **Consultas Optimizadas** | CQRS para separar comandos de queries, índices optimizados |
 | **RF-TT-04** | **Multi-tenant Tracking** | Aislamiento completo de datos por tenant/país |
-| **RF-TT-05** | **Real-time Dashboards** | APIs para dashboards en tiempo real con métricas agregadas |
-| **RF-TT-06** | **Event Correlation** | Correlación automática de eventos relacionados por clave empresarial |
-| **RF-TT-07** | **Historical Analysis** | Consultas históricas con agregaciones y filtros complejos |
-| **RF-TT-08** | **Audit Compliance** | Inmutabilidad de eventos, audit trail completo |
-| **RF-TT-09** | **Integration with SITA** | Publicación de eventos críticos para procesamiento SITA |
-| **RF-TT-10** | **Alerting & Monitoring** | Detección de patrones anómalos y alertas proactivas |
+| **RF-TT-05** | **Dashboards en Tiempo Real** | APIs para dashboards en tiempo real con métricas agregadas |
+| **RF-TT-06** | **Correlación de Eventos** | Correlación automática de eventos relacionados por clave empresarial |
+| **RF-TT-07** | **Análisis Histórico** | Consultas históricas con agregaciones y filtros complejos |
+| **RF-TT-08** | **Cumplimiento de Auditoría** | Inmutabilidad de eventos, rastro de auditoría completo |
+| **RF-TT-09** | **Integración con SITA** | Publicación de eventos críticos para procesamiento SITA |
+| **RF-TT-10** | **Alertas y Monitoreo** | Detección de patrones anómalos y alertas proactivas |
 
 ### Requisitos No Funcionales
 
 | Categoría | Requisito | Target | Medición |
 |-----------|-----------|--------|----------|
-| **Rendimiento** | Event ingestion throughput | 10,000 events/second | Load testing continuo |
-| **Rendimiento** | Query response time | p95 < 150ms | APM monitoring |
-| **Availability** | System uptime | 99.9% | SLA monitoring |
-| **Escalabilidad** | Data growth support | 100M events/month | Rendimiento de base de datos |
-| **Retention** | Historical data retention | 7 años configurable | Automated archiving |
-| **Recovery** | RTO/RPO objectives | RTO < 5 min, RPO < 30 sec | Disaster recovery testing |
+| **Rendimiento** | Capacidad de ingesta de eventos | 10,000 eventos/segundo | Pruebas de carga continuas |
+| **Rendimiento** | Tiempo de respuesta de consultas | p95 < 150ms | Monitoreo APM |
+| **Disponibilidad** | Tiempo de actividad del sistema | 99.9% | Monitoreo de SLA |
+| **Escalabilidad** | Soporte de crecimiento de datos | 100M eventos/mes | Rendimiento de base de datos |
+| **Retención** | Retención de datos históricos | 7 años configurable | Archivado automatizado |
+| **Recuperación** | Objetivos RTO/RPO | RTO < 5 min, RPO < 30 seg | Pruebas de recuperación ante desastres |
 
 ### Dominios de Eventos Soportados
 
@@ -71,7 +71,7 @@ El sistema de Track & Trace actúa como el sistema nervioso central para el trac
 | **Observability** | Visibilidad completa del pipeline de eventos | 100% events traced |
 | **Maintainability** | Fácil evolución de esquemas de eventos | Schema evolution sin downtime |
 | **Cost Efficiency** | Optimización de storage y compute | < $100/million events |
-| **Compliance** | Audit trail y data lineage completos | 100% audit compliance |
+| **Compliance** | Audit trail y data lineage completos | 100% cumplimiento de auditoría |
 
 ### Atributos de Calidad Específicos
 
@@ -90,7 +90,7 @@ El sistema de Track & Trace actúa como el sistema nervioso central para el trac
 |-----|----------|-------------------|--------------|
 | **Gerente de Operaciones** | Ops Team | Monitoreo operacional, KPIs de negocio | Real-time visibility, accurate tracking |
 | **Analistas de Datos** | Analytics Team | Inteligencia empresarial, reporting | Rich query capabilities, historical data |
-| **Compliance Officers** | Legal Team | Auditorías, regulatory compliance | Complete audit trails, data lineage |
+| **Compliance Officers** | Equipo Legal | Auditorías, regulatory compliance | Complete trazas de auditoría, data lineage |
 | **System Integrators** | Dev Teams | Integración con sistemas upstream | Simple APIs, reliable ingestion |
 | **Arquitecto de Software** | jclemente-tlm | Decisiones técnicas, evolución del sistema | Scalable design, performance optimization |
 
@@ -121,8 +121,8 @@ El sistema de Track & Trace actúa como el sistema nervioso central para el trac
 | **Operaciones** | Real-time | Dashboards, alerts | System status, KPIs empresariales |
 | **Analistas de Datos** | Daily | Reports, APIs | Data quality, rendimiento de consultas |
 | **Compliance** | Monthly | Audit reports | Compliance metrics, audit findings |
-| **Arquitectos** | Weekly | Technical reviews | Métricas de rendimiento, technical debt |
-| **Integrators** | On-demand | Documentation, support | API changes, troubleshooting |
+| **Arquitectos** | Weekly | Technical reviews | Métricas de rendimiento, deuda técnica |
+| **Integrators** | On-demand | Documentation, support | API changes, resolución de problemas |
 
 ### Requisitos de Comunicación
 
@@ -132,4 +132,4 @@ El sistema de Track & Trace actúa como el sistema nervioso central para el trac
 | **Reportes de Rendimiento** | Email reports | PDF/HTML | Weekly |
 | **Incident Notifications** | Slack/PagerDuty | Structured alerts | Immediate |
 | **Architecture Changes** | ADRs, documentation | Markdown | As needed |
-| **Compliance Reports** | Formal documents | PDF reports | Quarterly |
+| **Reportes de Cumplimiento** | Formal documents | PDF reports | Quarterly |

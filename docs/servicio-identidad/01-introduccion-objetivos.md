@@ -7,19 +7,19 @@ El **Sistema de Identidad** es la plataforma centralizada de autenticación, aut
 ### Propósito del Sistema
 
 El sistema de identidad actúa como la autoridad central de confianza para todos los servicios corporativos, proporcionando:
-- **Single Sign-On (SSO)** para experiencia unificada de usuario
+- **Inicio de Sesión Único (SSO)** para experiencia unificada de usuario
 - **Federación de identidades** con proveedores externos
 - **Gestión de ciclo de vida** de usuarios y roles
-- **Compliance y auditoría** de accesos y autorizaciones
+- **Cumplimiento y auditoría** de accesos y autorizaciones
 
 ### Arquitectura del Sistema
 
 | Componente | Propósito | Tecnología Base |
 |------------|-----------|-----------------|
-| **Keycloak Server** | Identity Provider central | Keycloak 23+, PostgreSQL |
-| **Admin Console** | Gestión de realms, usuarios y roles | Keycloak Admin UI |
-| **Identity API** | APIs programáticas para integración | Keycloak REST APIs |
-| **Federation Connectors** | Integración con IdPs externos | LDAP, SAML, OIDC |
+| **Servidor Keycloak** | Proveedor de identidad central | Keycloak 23+, PostgreSQL |
+| **Consola de Administración** | Gestión de realms, usuarios y roles | Keycloak Interfaz de Administración |
+| **API de Identidad** | APIs programáticas para integración | Keycloak REST APIs |
+| **Conectores de Federación** | Integración con IdPs externos | LDAP, SAML, OIDC |
 
 ### Requisitos Funcionales Principales
 
@@ -29,12 +29,12 @@ El sistema de identidad actúa como la autoridad central de confianza para todos
 | **RF-ID-02** | **OAuth2/OIDC Compliance** | Soporte completo OAuth2, OIDC con flows estándar |
 | **RF-ID-03** | **JWT Token Management** | Generación, validación y refresh de JWT tokens |
 | **RF-ID-04** | **Role-Based Access Control** | RBAC granular con roles específicos por tenant |
-| **RF-ID-05** | **Federation Support** | Integración con Google Workspace, Microsoft AD, LDAP |
-| **RF-ID-06** | **User Lifecycle Management** | CRUD completo de usuarios, activación, desactivación |
-| **RF-ID-07** | **Session Management** | Control de sesiones, timeout, concurrent sessions |
-| **RF-ID-08** | **Multi-Factor Authentication** | MFA con TOTP, SMS, email para roles críticos |
-| **RF-ID-09** | **Audit & Compliance** | Logging completo de eventos de autenticación/autorización |
-| **RF-ID-10** | **Self-Service Portal** | Portal para usuarios (password reset, profile management) |
+| **RF-ID-05** | **Soporte de Federación** | Integración con Google Workspace, Microsoft AD, LDAP |
+| **RF-ID-06** | **Gestión de Ciclo de Vida de Usuario** | CRUD completo de usuarios, activación, desactivación |
+| **RF-ID-07** | **Gestión de Sesiones** | Control de sesiones, timeout, sesiones concurrentes |
+| **RF-ID-08** | **Autenticación Multi-Factor** | MFA con TOTP, SMS, email para roles críticos |
+| **RF-ID-09** | **Auditoría y Cumplimiento** | Registro completo de eventos de autenticación/autorización |
+| **RF-ID-10** | **Portal de Autoservicio** | Portal para usuarios (restablecimiento de contraseña, gestión de perfil) |
 
 ### Modelo Multi-Tenant
 
@@ -90,7 +90,7 @@ El sistema de identidad actúa como la autoridad central de confianza para todos
 
 - **Excelencia Operacional:** Disponibilidad 24/7, monitoreo
 - **Automatización:** Despliegue automatizado, escalado
-- **Rendimiento:** Latencia baja, throughput alto
+- **Rendimiento:** Latencia baja, capacidad de procesamiento alto
 - **Recuperación ante Desastres:** Procedimientos de backup y recovery
 
 ## 1.3 Objetivos de Calidad
@@ -104,7 +104,7 @@ El sistema de identidad actúa como la autoridad central de confianza para todos
 | **Rendimiento** | 🟡 Alto | Baja latencia en autenticación | < 200ms login, < 100ms token validation |
 | **Usabilidad** | 🟡 Alto | Experiencia de usuario fluida | < 3 clicks for common tasks, user satisfaction > 4.5/5 |
 | **Escalabilidad** | 🟡 Alto | Soporte de crecimiento organizacional | Support 50K+ users, linear performance scaling |
-| **Cumplimiento** | 🔴 Crítico | Cumplimiento regulatorio | 100% audit compliance, GDPR data rights |
+| **Cumplimiento** | 🔴 Crítico | Cumplimiento regulatorio | 100% cumplimiento de auditoría, GDPR data rights |
 | **Mantenibilidad** | 🟢 Medio | Facilidad de evolución | < 2 hours for minor changes, automated testing |
 | **Interoperabilidad** | 🟡 Alto | Integración con sistemas externos | Standard protocols (OIDC, SAML), API-first |
 
@@ -143,7 +143,7 @@ Sistema de Identidad - Calidad
     │   ├── Latencia de autenticación < 200ms
     │   ├── Validación de token < 100ms
     │   └── Redirección SSO < 300ms
-    ├── Throughput
+    ├── Capacidad de procesamiento
     │   ├── Usuarios concurrentes > 10K
     │   ├── Requests de auth > 1K/sec
     │   └── Generación de tokens > 5K/sec
@@ -304,7 +304,7 @@ Transitions:
 ## Referencias
 
 - [Keycloak Documentation](https://www.keycloak.org/documentation)
-- [OAuth 2.1 Security Best Practices](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics)
+- [OAuth 2.1 Security Mejores Prácticas](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics)
 - [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
 - [NIST Digital Identity Guidelines](https://pages.nist.gov/800-63-3/)
 - [GDPR Compliance for Identity Systems](https://gdpr.eu/compliance/)
@@ -327,7 +327,7 @@ Transitions:
 | Prioridad | Objetivo | Escenario | Métrica Objetivo |
 |-----------|----------|-----------|------------------|
 | **1** | **Security** | Autenticación robusta, tokens seguros | Zero security breaches |
-| **2** | **Availability** | Servicio siempre disponible para autenticación | 99.9% uptime |
+| **2** | **Disponibilidad** | Servicio siempre disponible para autenticación | 99.9% uptime |
 | **3** | **Performance** | Validación rápida de tokens | p95 < 50ms |
 
 ### Objetivos Secundarios
@@ -335,7 +335,7 @@ Transitions:
 | Objetivo | Descripción | Métrica |
 |----------|-------------|---------|
 | **Usability** | Experiencia de usuario fluida, SSO efectivo | < 3 clicks to access |
-| **Compliance** | Cumplimiento GDPR, SOX, regulaciones locales | 100% audit compliance |
+| **Compliance** | Cumplimiento GDPR, SOX, regulaciones locales | 100% cumplimiento de auditoría |
 | **Scalability** | Soporte para crecimiento de usuarios | Linear scaling |
 | **Maintainability** | Gestión simple de usuarios y roles | Self-service > 80% |
 
@@ -345,7 +345,7 @@ Transitions:
 |----------|------------|----------------|--------------|
 | **Token Security** | Tokens criptográficamente seguros | RSA-256, short TTL, rotation | Security testing |
 | **Session Integrity** | Sesiones no comprometibles | Secure cookies, CSRF protection | Penetration testing |
-| **Identity Federation** | Integración confiable con IdPs externos | Standard protocols, error handling | Integration testing |
+| **Identity Federation** | Integración confiable con IdPs externos | Standard protocols, manejo de errores | Integration testing |
 | **Audit Completeness** | Registro completo de eventos de seguridad | Structured logging, SIEM integration | Audit verification |
 
 ## 1.3 Partes interesadas
@@ -354,11 +354,11 @@ Transitions:
 
 | Rol | Contacto | Responsabilidades | Expectativas |
 |-----|----------|-------------------|--------------|
-| **CISO (Chief Information Security Officer)** | Security Team | Políticas de seguridad, compliance | Robust security, zero breaches |
+| **CISO (Chief Information Security Officer)** | Equipo de Seguridad | Políticas de seguridad, compliance | Robust security, zero breaches |
 | **HR Directors** | HR Teams | User lifecycle, organizational changes | Easy user management, accurate roles |
 | **IT Directors** | IT Management | Technical standards, infrastructure | Reliable service, scalable solution |
-| **Compliance Officers** | Legal/Audit | Regulatory compliance, audit preparation | Complete audit trails, policy compliance |
-| **Operations Managers** | Operations Teams | Day-to-day user access, productivity | Fast authentication, minimal downtime |
+| **Compliance Officers** | Legal/Audit | Regulatory compliance, audit preparation | Complete trazas de auditoría, policy compliance |
+| **Operations Managers** | Equipos Operacionales | Day-to-day user access, productivity | Fast authentication, minimal downtime |
 
 ### Administradores del Sistema
 
@@ -378,7 +378,7 @@ Transitions:
 | **Notification System** | OIDC Client | Client Credentials | Service-to-service auth |
 | **Track & Trace** | OIDC Client | Authorization Code | User context in events |
 | **SITA Messaging** | OIDC Client | Client Credentials | Background service auth |
-| **Web Applications** | OIDC Client | Authorization Code + PKCE | User session management |
+| **Web Applications** | OIDC Client | Authorization Code + PKCE | User gestión de sesiones |
 | **Mobile Applications** | OIDC Client | Authorization Code + PKCE | Mobile-optimized flows |
 
 ### Proveedores de Identidad Externos

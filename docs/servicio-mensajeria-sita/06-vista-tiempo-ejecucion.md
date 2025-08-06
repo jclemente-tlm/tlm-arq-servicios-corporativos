@@ -229,7 +229,7 @@ public class RetryPolicy
 - **Load balancing**: Round-robin con health-based routing
 - **Monitoring**: Connection health metrics y alertas
 
-### 6.3.2 Circuit Breaker Pattern
+### 6.3.2 Patrón Circuit Breaker
 - **Estados**: Closed, Open, Half-Open
 - **Thresholds**: 50% error rate en 1 minuto
 - **Recovery**: Gradual re-enabling con test requests
@@ -249,7 +249,7 @@ public class RetryPolicy
 
 ## 6.4 Performance characteristics
 
-### 6.4.1 Throughput
+### 6.4.1 Capacidad de procesamiento
 - **Messages/second**: 1,000 mensajes salientes por instancia
 - **Batch processing**: 100 mensajes por batch para efficiency
 - **Concurrent connections**: 10 conexiones SITA simultáneas

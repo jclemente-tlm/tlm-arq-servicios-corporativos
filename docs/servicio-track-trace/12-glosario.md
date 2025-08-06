@@ -208,7 +208,7 @@ Diccionario completo de términos técnicos y de negocio utilizados en el **Sist
 
 **Timeline**: Vista cronológica de eventos relacionados con una entidad específica.
 
-**Throughput**: Número de operaciones o eventos procesados por unidad de tiempo.
+**Capacidad de procesamiento**: Número de operaciones o eventos procesados por unidad de tiempo.
 
 **Tombstone**: Marcador especial que indica eliminación lógica de datos en sistemas inmutables.
 
@@ -270,7 +270,7 @@ Diccionario completo de términos técnicos y de negocio utilizados en el **Sist
 
 ## Métricas y KPIs
 
-**Availability**: Porcentaje de tiempo que el sistema está operacional y accesible.
+**Disponibilidad**: Porcentaje de tiempo que el sistema está operacional y accesible.
 
 **Error Rate**: Porcentaje de operaciones que resultan en error.
 
@@ -286,7 +286,7 @@ Diccionario completo de términos técnicos y de negocio utilizados en el **Sist
 
 **Service Level Agreement (SLA)**: Compromiso formal de nivel de servicio entre proveedor y cliente.
 
-**Throughput**: Número de operaciones procesadas por unidad de tiempo.
+**Capacidad de procesamiento**: Número de operaciones procesadas por unidad de tiempo.
 
 **Uptime**: Tiempo durante el cual el sistema está funcionando y disponible.
 
@@ -317,7 +317,7 @@ Este glosario sirve como referencia central para todo el equipo, facilitando com
 
 **Event Bus**: Infrastructure component que maneja la publicación y distribución de eventos entre diferentes componentes y servicios.
 
-**Event Correlation**: Proceso de asociar eventos relacionados basándose en identificadores de negocio o relaciones causales.
+**Correlación de Eventos**: Proceso de asociar eventos relacionados basándose en identificadores de negocio o relaciones causales.
 
 **Event Handler**: Componente que procesa eventos específicos para actualizar read models, enviar notificaciones o ejecutar side effects.
 
@@ -347,7 +347,7 @@ Este glosario sirve como referencia central para todo el equipo, facilitando com
 
 ## H
 
-**High Availability (HA)**: Característica del sistema que garantiza disponibilidad continua mediante redundancia y failover automático.
+**High Disponibilidad (HA)**: Característica del sistema que garantiza disponibilidad continua mediante redundancia y failover automático.
 
 **Historical Query**: Consulta que permite examinar el estado del sistema en cualquier punto temporal pasado, posible gracias a Event Sourcing.
 
@@ -381,7 +381,7 @@ Este glosario sirve como referencia central para todo el equipo, facilitando com
 
 **Legal Hold**: Estado especial donde ciertos datos no pueden ser eliminados debido a investigaciones legales o requirements regulatorios.
 
-**Load Balancing**: Distribución de carga entre múltiples instancias de la aplicación para optimizar performance y disponibilidad.
+**Balanceador de Carga**: Distribución de carga entre múltiples instancias de la aplicación para optimizar performance y disponibilidad.
 
 ## M
 
@@ -409,7 +409,7 @@ Este glosario sirve como referencia central para todo el equipo, facilitando com
 
 **Partition Key**: Clave utilizada para distribuir eventos across multiple partitions, típicamente tenant ID o entity ID para locality.
 
-**Performance Monitoring**: Supervisión continua de métricas de performance como latency, throughput, y resource utilization.
+**Performance Monitoring**: Supervisión continua de métricas de performance como latency, capacidad de procesamiento, y resource utilization.
 
 **Point-in-Time Recovery**: Capacidad de restaurar el sistema a cualquier momento específico en el pasado usando el event log.
 
@@ -447,7 +447,7 @@ Este glosario sirve como referencia central para todo el equipo, facilitando com
 
 **Sequence Number**: Número que indica el orden de eventos dentro de un stream específico, usado para optimistic concurrency control.
 
-**Service Level Agreement (SLA)**: Contrato que define niveles esperados de performance, availability, y otros metrics de calidad.
+**Service Level Agreement (SLA)**: Contrato que define niveles esperados de performance, disponibilidad, y otros metrics de calidad.
 
 **Snapshot**: Estado consolidado de un aggregate en un punto específico en el tiempo, usado para optimizar rebuilding de grandes streams.
 
@@ -461,7 +461,7 @@ Este glosario sirve como referencia central para todo el equipo, facilitando com
 
 **Tenant Isolation**: Garantía de que los datos de diferentes organizaciones están completamente separados y protegidos.
 
-**Throughput**: Medida de cuántas operaciones puede procesar el sistema por unidad de tiempo.
+**Capacidad de procesamiento**: Medida de cuántas operaciones puede procesar el sistema por unidad de tiempo.
 
 **Timeline View**: Read model que presenta eventos en orden cronológico para seguimiento visual de la evolución de una entidad.
 
@@ -532,7 +532,7 @@ Este glosario sirve como referencia central para todo el equipo, facilitando com
 
 ### Compliance and Security
 - [GDPR Compliance Guide](https://gdpr.eu/) - Official GDPR Resource
-- [OAuth 2.0 Security Best Practices](https://tools.ietf.org/html/draft-ietf-oauth-security-topics) - IETF RFC
+- [OAuth 2.0 Security Mejores Prácticas](https://tools.ietf.org/html/draft-ietf-oauth-security-topics) - IETF RFC
 
 **Event Bus**: Plataforma de messaging para manejo de eventos en tiempo real.
 
@@ -592,7 +592,7 @@ Este glosario sirve como referencia central para todo el equipo, facilitando com
 
 **Operational Tracking**: Capacidad de seguimiento completo de actividades y cambios en procesos de negocio.
 
-**Event Correlation**: Proceso de relacionar eventos que forman parte del mismo proceso de negocio.
+**Correlación de Eventos**: Proceso de relacionar eventos que forman parte del mismo proceso de negocio.
 
 **Audit Trail**: Rastro completo e inmutable de todas las actividades del sistema para propósitos de auditoría.
 

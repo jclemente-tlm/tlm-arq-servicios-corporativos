@@ -1,8 +1,8 @@
-# 5. Vista de bloques de construcción
+# 5. Vista de Componentes de Construcción
 
 Esta sección describe la descomposición estática del sistema de notificaciones en sus componentes principales, siguiendo un enfoque jerárquico desde la vista general hasta los detalles de la implementación.
 
-## 5.1 Sistema de Notificaciones - Nivel 1 (Whitebox)
+## 5.1 Sistema de Notificaciones - Nivel 1 (Caja Blanca)
 
 **🏗️ Diagrama de Arquitectura General**
 *[INSERTAR AQUÍ: Diagrama C4 - Container Level del Sistema de Notificaciones]*
@@ -16,7 +16,7 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 - **Mantenibilidad:** Módulos cohesivos con bajo acoplamiento
 - **Testabilidad:** Interfaces bien definidas para testing
 
-### Bloques de Construcción Principales
+### Componentes de Construcción Principales
 
 | Componente | Responsabilidad | Tecnología | Interfaces |
 |------------|-----------------|------------|------------|
@@ -46,7 +46,7 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 
 **Ubicación:** `/src/Notification.Api/`
 
-#### Notification Processor
+#### Procesador de Notificaciones
 
 **Propósito/Responsabilidad:**
 
@@ -132,7 +132,7 @@ El sistema se estructura siguiendo los principios de Clean Architecture y Domain
 }
 ```
 
-## 5.2 Notification API Service - Nivel 2 (Whitebox)
+## 5.2 Notification API Service - Nivel 2 (Caja Blanca)
 
 ### Controladores Principales
 
@@ -195,10 +195,10 @@ public class WebhookController : ControllerBase
 #### Validation Service
 
 - **Responsabilidad:** Validación de destinatarios, contenido y compliance
-- **Características:** Anti-spam, GDPR compliance, rate limiting
+- **Características:** Anti-spam, GDPR compliance, limitación de velocidad
 - **Reglas:** Configurable per tenant/channel
 
-## 5.3 Channel Processing Engine - Nivel 2 (Whitebox)
+## 5.3 Channel Processing Engine - Nivel 2 (Caja Blanca)
 
 ### Procesadores por Canal
 
@@ -268,7 +268,7 @@ public class NotificationEventHandler : IEventHandler<NotificationRequested>
 
 ```
 
-## 5.4 Template & Personalization Service - Nivel 2 (Whitebox)
+## 5.4 Template & Personalization Service - Nivel 2 (Caja Blanca)
 
 ### Template Engine
 
@@ -306,7 +306,7 @@ public interface ITemplateProcessor
 - **Metrics Collection:** Open rates, click rates
 - **Statistical Significance:** Automated test conclusions
 
-## 5.5 Delivery Orchestrator - Nivel 2 (Whitebox)
+## 5.5 Delivery Orchestrator - Nivel 2 (Caja Blanca)
 
 ### Job Management
 
@@ -332,9 +332,9 @@ public class NotificationDeliveryJob
 - **Batch Processing:** Off-peak bulk notifications
 - **Cleanup Jobs:** Old notification cleanup
 - **Analytics Jobs:** Daily/weekly reporting
-- **Health Checks:** Provider availability monitoring
+- **Health Checks:** Provider disponibilidad monitoring
 
-### Resilience Patterns
+### Patrones de Resiliencia
 
 #### Circuit Breaker
 
@@ -360,7 +360,7 @@ Retry Configuration:
   JitterEnabled: true
 ```
 
-## 5.6 Provider Integration Layer - Nivel 2 (Whitebox)
+## 5.6 Provider Integration Layer - Nivel 2 (Caja Blanca)
 
 ### Email Providers
 
@@ -411,7 +411,7 @@ public class SesProvider : IEmailProvider
 
 ### Provider Selection Strategy
 
-#### Load Balancing
+#### Balanceador de Carga
 
 ```yaml
 Provider Priority Matrix:
@@ -446,7 +446,7 @@ Required Services:
 ### Downstream Integrations
 
 ```yaml
-External Providers:
+Proveedores Externos:
   Email: [SendGrid, AWS SES, Mailgun]
   SMS: [Twilio, AWS SNS, MessageBird]
   WhatsApp: [WhatsApp Business API]
@@ -575,6 +575,6 @@ public abstract class TenantRepository<T> : IRepository<T> where T : ITenantEnti
 ## Referencias
 
 - [Notification System Design Patterns](https://microservices.io/patterns/data/event-driven-architecture.html)
-- [Multi-channel Communication Best Practices](https://aws.amazon.com/blogs/messaging-and-targeting/)
+- [Multi-channel Communication Mejores Prácticas](https://aws.amazon.com/blogs/messaging-and-targeting/)
 - [Template Engine Performance Guidelines](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor)
-- [Arc42 Building Blocks](https://docs.arc42.org/section-5/)
+- [Arc42 Componentes de Construcción](https://docs.arc42.org/section-5/)

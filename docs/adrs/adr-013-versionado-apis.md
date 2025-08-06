@@ -76,7 +76,7 @@ Se adopta el versionado en `path` (por ejemplo, `/v1/`) como estrategia estánda
 
 ## 📚 REFERENCIAS
 
-- [REST API Versioning Best Practices](https://restfulapi.net/versioning/)
+- [REST API Versioning Mejores Prácticas](https://restfulapi.net/versioning/)
 - [OpenAPI Specification – Versioning](https://swagger.io/docs/specification/api-host-and-base-path/)
 - [ADR-004: API Gateway con YARP](./adr-004-api-gateway-yarp.md)
 - [ADR-008: Autenticaciones](./adr-008-autenticaciones.md)

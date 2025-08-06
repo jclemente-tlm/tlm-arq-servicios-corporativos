@@ -27,7 +27,7 @@ Cliente ──▶ Security ──▶ Tenant ──▶ Rate Limit ──▶ Resil
 |------------|------------|-----------|
 | **Security Middleware** | ASP.NET Core | Autenticación JWT/OAuth2 |
 | **Tenant Resolution** | ASP.NET Core | Identifica tenant (país) |
-| **Rate Limiting** | ASP.NET Core | Control de tráfico |
+| **Limitación de Velocidad** | ASP.NET Core | Control de tráfico |
 | **Resilience Handler** | Polly | Circuit breakers, retries |
 | **Health Checks** | ASP.NET Core | Monitoreo de salud |
 | **Metrics Collector** | Prometheus.NET | Recolección de métricas |
@@ -62,7 +62,7 @@ Cada tenant tiene:
 ### Métricas Clave
 
 - **Latencia P95**: < 100ms
-- **Throughput**: > 5,000 RPS por instancia
+- **Capacidad de procesamiento**: > 5,000 RPS por instancia
 - **Disponibilidad**: 99.9% SLA
 - **Error Rate**: < 0.1%
 

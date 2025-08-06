@@ -154,7 +154,7 @@ Growth Indicators:
   Transaction Volume: > 50% quarterly
   Data Size Growth: > 100% annually
 
-Alerting Strategy:
+Alertas Strategy:
   Warning Level: Any threshold > 70%
   Critical Level: Any threshold > 90%
   Escalation: Automatic to DBA team
@@ -219,7 +219,7 @@ Failure Scenarios:
 #### Arquitectura de Resilencia
 
 ```yaml
-Circuit Breaker Pattern:
+Patrón Circuit Breaker:
   Failure Threshold: 50% error rate over 1 minute
   Open State Duration: 30 seconds
   Half-Open State: 10 test requests
@@ -416,13 +416,13 @@ Q3-Q4 2024 - Platform Modernization:
   Observability Enhancement:
     - Distributed tracing implementation
     - Advanced monitoring dashboards
-    - Automated alerting refinement
+    - Automated alertas refinement
 ```
 
 ### 11.5.3 Debt Metrics and Tracking
 
 ```yaml
-Technical Debt Metrics:
+Deuda Técnica Metrics:
   Code Quality:
     - Sonar Debt Ratio: < 5%
     - Cyclomatic Complexity: < 10 average
@@ -457,7 +457,7 @@ Risk Monitoring Dashboard:
   Technical Health:
     - System Performance: Real-time SLA tracking
     - Error Rates: Service-level error monitoring
-    - Dependency Health: External service availability
+    - Dependency Health: External service disponibilidad
     - Capacity Utilization: Resource usage trending
 
   Security Posture:
@@ -468,7 +468,7 @@ Risk Monitoring Dashboard:
 
   Business Impact:
     - User Experience: Login success rates
-    - Service Availability: Multi-region status
+    - Service Disponibilidad: Multi-region status
     - Cost Efficiency: Resource utilization ratios
     - Growth Scalability: Capacity planning metrics
 ```
@@ -508,10 +508,10 @@ Communication Plan:
 - [ISO 31000 Risk Management Guidelines](https://www.iso.org/iso-31000-risk-management.html)
 - [COSO Enterprise Risk Management Framework](https://www.coso.org/Pages/erm.aspx)
 
-### Technical Debt Management
-- [Managing Technical Debt](https://martinfowler.com/articles/is-quality-worth-cost.html)
-- [Technical Debt Quadrant](https://martinfowler.com/bliki/TechnicalDebtQuadrant.html)
-- [Continuous Delivery and Technical Debt](https://continuousdelivery.com/foundations/technical-debt/)
+### Deuda Técnica Management
+- [Managing Deuda Técnica](https://martinfowler.com/articles/is-quality-worth-cost.html)
+- [Deuda Técnica Quadrant](https://martinfowler.com/bliki/TechnicalDebtQuadrant.html)
+- [Continuous Delivery and Deuda Técnica](https://continuousdelivery.com/foundations/technical-debt/)
 **Mitigación:**
 - Auditorías regulares de compliance
 - Automatización de controles de privacidad
@@ -539,7 +539,7 @@ Communication Plan:
 - Wrappers para abstraer complejidad legacy
 - Timeline: 6 meses
 
-### Configuration Management
+### Gestión de Configuración
 **Descripción:** Configuraciones manuales sin versionado completo
 **Impacto:** Riesgo de inconsistencias entre entornos
 **Plan de Resolución:**
@@ -553,7 +553,7 @@ Communication Plan:
 **Impacto:** Detección tardía de problemas business-critical
 **Plan de Resolución:**
 - Implementación de business metrics dashboard
-- Alerting proactivo basado en tendencias
+- Alertas proactivo basado en tendencias
 - SLI/SLO definition para métricas clave
 - Timeline: 2 meses
 
@@ -588,10 +588,10 @@ Technical Risk Metrics:
   - Performance Degradation Events: < 5/month
 ```
 
-### Technical Debt Tracking
+### Deuda Técnica Tracking
 ```yaml
 Code Quality Metrics:
-  - Technical Debt Ratio: < 5% (SonarQube)
+  - Deuda Técnica Ratio: < 5% (SonarQube)
   - Test Coverage: > 80%
   - Code Duplication: < 3%
   - Security Vulnerabilities: Zero high/critical
@@ -599,5 +599,5 @@ Code Quality Metrics:
 
 ## Referencias
 - [NIST Risk Management Framework](https://csrc.nist.gov/projects/risk-management/about-rmf)
-- [Technical Debt Assessment Tools](https://www.sonarqube.org/)
-- [Arc42 Risks and Technical Debt](https://docs.arc42.org/section-11/)
+- [Deuda Técnica Assessment Tools](https://www.sonarqube.org/)
+- [Arc42 Risks and Deuda Técnica](https://docs.arc42.org/section-11/)

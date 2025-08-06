@@ -15,9 +15,9 @@
 |---------|---------------|---------------|--------|
 | **[API Gateway](api-gateway/)** | Arquitectura YARP, middleware, resiliencia | [API Docs](api/api-gateway.md) | ✅ Documentado |
 | **[Sistema de Identidad](servicio-identidad/)** | Keycloak, OAuth2, multi-tenancy | [API Docs](api/identity-api.md) | ✅ Documentado |
-| **[Notificaciones](notification-system/)** | Multicanal, templates, programación | [API Docs](api/notification-api.md) | 📋 Pendiente |
-| **[Track & Trace](track-and-trace/)** | CQRS, eventos, trazabilidad | [API Docs](api/track-trace-api.md) | 📋 Pendiente |
-| **[SITA Messaging](sita-messaging/)** | Generación archivos, partners | [Integration Docs](sita-messaging/partners.md) | 📋 Pendiente |
+| **[Notificaciones](servicio-notificacion/)** | Multicanal, plantillas, programación | [API Docs](api/notification-api.md) | ✅ Documentado |
+| **[Track & Trace](servicio-track-trace/)** | CQRS, eventos, trazabilidad | [API Docs](api/track-trace-api.md) | ✅ Documentado |
+| **[SITA Messaging](servicio-mensajeria-sita/)** | Generación archivos, partners | [Integration Docs](servicio-mensajeria-sita/partners.md) | ✅ Documentado |
 
 ## 📊 Diagramas de Arquitectura
 
@@ -29,14 +29,14 @@
 
 ### Vistas de Despliegue
 - **[Infraestructura AWS](../diagrams/notification_system_deployment.png)** - Despliegue en contenedores
-- **[Health Monitoring](../diagrams/health_monitoring.png)** - Health checks y circuit breakers
-- **[Distributed Tracing](../diagrams/distributed_tracing.png)** - Trazabilidad entre servicios
+- **[Monitoreo de Estado](../diagrams/health_monitoring.png)** - Verificaciones de estado y cortocircuitos
+- **[Rastreo Distribuido](../diagrams/distributed_tracing.png)** - Trazabilidad entre servicios
 
 ## 🔒 Seguridad y Compliance
 
 ### Documentación de Seguridad
 - **[Estrategia de Seguridad](security/)** - OAuth2, JWT, cifrado, RBAC
-- **[Compliance](compliance/)** - Auditoría, GDPR, regulaciones aeroportuarias
+- **[Cumplimiento](compliance/)** - Auditoría, GDPR, regulaciones aeroportuarias
 - **[Incident Response](incident-response/)** - Procedimientos de respuesta a incidentes
 
 ## 🛠️ Guías Operacionales
@@ -61,7 +61,7 @@
 ### Desarrollo
 - **[Development Workflow](processes/development-workflow.md)** - GitFlow, PR, code review
 - **[Change Management](processes/change-management.md)** - Gestión de cambios
-- **[Configuration Management](configuration/)** - Configuración dinámica
+- **[Gestión de Configuración](configuration/)** - Configuración dinámica
 
 ---
 

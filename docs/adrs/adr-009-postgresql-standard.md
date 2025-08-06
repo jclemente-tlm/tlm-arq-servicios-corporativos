@@ -21,7 +21,7 @@ Las alternativas evaluadas fueron:
 
 | Criterio                                    | PostgreSQL | MySQL/MariaDB | SQL Server | Oracle |
 |---------------------------------------------|------------|--------------|------------|--------|
-| Agnosticismo/Portabilidad                   | ✅ Totalmente agnóstico (`open source`, multi-cloud) | ✅ Totalmente agnóstico (`open source`, multi-cloud) | ❌ Dependiente de proveedor (licencia propietaria) | ❌ Dependiente de proveedor (licencia propietaria) |
+| Agnosticismo/Portabilidad                   | ✅ Totalmente agnóstico (open source, multi-cloud) | ✅ Totalmente agnóstico (open source, multi-cloud) | ❌ Dependiente de proveedor (licencia propietaria) | ❌ Dependiente de proveedor (licencia propietaria) |
 | Gestión operativa                           | Gestionada por el equipo o proveedor cloud | Gestionada por el equipo o proveedor cloud | Gestionada por proveedor | Gestionada por proveedor |
 | Multi-tenant / Multi-país                   | Sí (esquemas, RLS, particionamiento) | Sí (limitado) | Sí (limitado) | Sí (limitado) |
 | Alta disponibilidad y replicación           | Sí (nativo, streaming, logical, multi-región) | Sí (nativo, menos flexible) | Sí (AlwaysOn, licencias) | Sí (RAC, DataGuard, licencias) |
@@ -31,7 +31,7 @@ Las alternativas evaluadas fueron:
 | Latencia                                    | Baja | Baja | Baja | Baja |
 | Seguridad/Compliance                        | Alta (RLS, cifrado, auditoría, certificaciones cloud) | Media | Alta | Alta |
 | Cumplimiento normativo (GDPR, PCI, etc.)    | Depende de despliegue | Depende de despliegue | Certificaciones enterprise | Certificaciones enterprise |
-| Costos totales (licencia, soporte, HA)      | Bajo (`open source`) + operación | Bajo (`open source`) + operación | Alto (licencia, soporte, HA) | Muy alto (licencia, soporte, HA) |
+| Costos totales (licencia, soporte, HA)      | Bajo (open source) + operación | Bajo (open source) + operación | Alto (licencia, soporte, HA) | Muy alto (licencia, soporte, HA) |
 | Licenciamiento                              | OSS | OSS | Propietario | Propietario |
 | Extensibilidad/Flexibilidad                 | Muy alta (PostGIS, TimescaleDB, extensiones) | Media | Baja | Media |
 | Interoperabilidad y conectores              | Muy alta (drivers, ORMs, cloud, ETL) | Alta | Alta | Alta |
@@ -46,8 +46,8 @@ Las alternativas evaluadas fueron:
 
 | Solución        | Costo mensual base* | Licenciamiento | Infraestructura propia |
 |-----------------|---------------------|----------------|-----------------------|
-| `PostgreSQL`      | ~US$0 (`open source`) | No             | ~US$20/mes (VM pequeña) opcional |
-| `MySQL/MariaDB`   | ~US$0 (`open source`) | No             | ~US$20/mes (VM pequeña) opcional |
+| `PostgreSQL`      | ~US$0 (open source) | No             | ~US$20/mes (VM pequeña) opcional |
+| `MySQL/MariaDB`   | ~US$0 (open source) | No             | ~US$20/mes (VM pequeña) opcional |
 | `SQL Server`      | ~US$200/mes         | Sí             | ~US$20/mes (VM pequeña) opcional |
 | `Oracle`          | ~US$350/mes         | Sí             | ~US$20/mes (VM pequeña) opcional |
 

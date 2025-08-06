@@ -161,7 +161,7 @@
 : Número de mensajes actualmente esperando en una cola para ser procesados.
 
 **QoS** (Quality of Service)
-: Medida de rendimiento de un servicio de red, especialmente en términos de latencia, throughput y confiabilidad.
+: Medida de rendimiento de un servicio de red, especialmente en términos de latencia, capacidad de procesamiento y confiabilidad.
 
 ## R
 
@@ -196,7 +196,7 @@
 **Tenant**
 : Entidad organizacional (cliente, empresa, división) que comparte una instancia de software multi-tenant con aislamiento de datos.
 
-**Throughput**
+**Capacidad de procesamiento**
 : Cantidad de trabajo realizado por unidad de tiempo, típicamente medido en transacciones por segundo.
 
 **TLS** (Transport Layer Security)

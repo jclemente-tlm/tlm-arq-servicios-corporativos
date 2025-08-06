@@ -1,6 +1,6 @@
 # 1. Introducción y objetivos
 
-El **Sistema de Notificaciones** es una plataforma distribuida multi-tenant y multi-país diseñada para el envío de mensajes por múltiples canales de comunicación. Forma parte de la arquitectura de servicios corporativos de Talma y proporciona capacidades empresariales para notificaciones transaccionales, promocionales y de alerta con garantías de entrega y observabilidad completa.
+El **Sistema de Notificaciones** es una plataforma distribuida multi-tenant y multi-país diseñada para el envío de mensajes por múltiples canales de comunicación. Forma parte de la arquitectura de servicios corporativos de Talma, operando en Perú, Ecuador, Colombia y México, y proporciona capacidades empresariales para notificaciones transaccionales, promocionales y de alerta con garantías de entrega y observabilidad completa.
 
 ## 1.1 Descripción general de los requisitos
 
@@ -42,18 +42,18 @@ El sistema permite a las aplicaciones corporativas enviar notificaciones a usuar
 | **RF-NOT-05** | **Preferencias de Usuario** | Opt-in/opt-out, horarios permitidos, límites de frecuencia |
 | **RF-NOT-06** | **Reintentos Inteligentes** | Backoff exponencial con cola de mensajes fallidos para fallos persistentes |
 | **RF-NOT-07** | **Aislamiento Multi-tenant** | Completa separación de datos y configuración por tenant/país |
-| **RF-NOT-08** | **Rastro de Auditoría** | Seguimiento completo del ciclo de vida de notificaciones |
-| **RF-NOT-09** | **Limitación de Velocidad** | Control de velocidad de envío por canal y tipo de notificación |
+| **RF-NOT-08** | **Trazabilidad de Auditoría** | Seguimiento completo del ciclo de vida de notificaciones |
+| **RF-NOT-09** | **Control de Velocidad** | Limitación de velocidad de envío por canal y tipo de notificación |
 | **RF-NOT-10** | **Integración Webhook** | Callbacks para estado de entrega y eventos del sistema |
 
 ### Requisitos No Funcionales
 
 | Categoría | Requisito | Target | Medición |
 |-----------|-----------|--------|----------|
-| **Rendimiento** | Throughput de ingesta | 50,000 notifications/min | Pruebas de carga continuo |
+| **Rendimiento** | Capacidad de procesamiento | 50,000 notificaciones/min | Pruebas de carga continuas |
 | **Rendimiento** | Latencia de API | p95 < 200ms | Monitoreo APM |
 | **Disponibilidad** | Tiempo de actividad del sistema | 99.9% | Monitoreo SLA |
-| **Escalabilidad** | Auto-escalado | Escalado horizontal en 2 min | Métricas de contenedores |
+| **Escalabilidad** | Escalado automático | Escalado horizontal en 2 min | Métricas de contenedores |
 | **Confiabilidad** | Tasa de entrega | 99.9% entrega exitosa | Métricas empresariales |
 | **Seguridad** | Cifrado de datos | AES-256 en reposo, TLS en tránsito | Auditorías de seguridad |
 
@@ -95,36 +95,36 @@ El sistema permite a las aplicaciones corporativas enviar notificaciones a usuar
 | **Arquitecto de Software** | jclemente-tlm | Decisiones técnicas, patrones, ADRs | Diseño escalable, arquitectura mantenible |
 | **Equipo de Desarrollo** | Dev Team | Implementación, testing, debugging | Requisitos claros, documentación técnica |
 | **DevOps/SRE** | SRE Team | Despliegue, monitoreo, respuesta a incidentes | Despliegues confiables, alertas accionables |
-| **Equipo de Seguridad** | Security Team | Cumplimiento, auditoría, evaluación de vulnerabilidades | Seguridad por diseño, rastros de auditoría |
+| **Equipo de Seguridad** | Equipo de Seguridad | Cumplimiento, auditoría, evaluación de vulnerabilidades | Seguridad por diseño, rastros de auditoría |
 
 ### Stakeholders Secundarios
 
 | Rol | Contacto | Interés | Comunicación |
 |-----|----------|---------|--------------|
-| **Marketing Teams** | Marketing Depts | Campañas promocionales, segmentación | API documentation, best practices |
-| **Customer Support** | Support Teams | Troubleshooting delivery issues | Runbooks operacionales, dashboards |
-| **Legal/Compliance** | Legal Team | Regulatory compliance, data privacy | Compliance reports, audit trails |
-| **Finance** | Finance Team | Cost control, budget planning | Cost reporting, optimization metrics |
-| **External Providers** | Email/SMS/WhatsApp providers | Integration, SLAs, billing | Especificaciones técnicas, SLA monitoring |
+| **Equipos de Marketing** | Departamentos de Marketing | Campañas promocionales, segmentación | Documentación de API, mejores prácticas |
+| **Soporte al Cliente** | Equipos de Soporte | Resolución de problemas de entrega | Runbooks operacionales, dashboards |
+| **Legal/Cumplimiento** | Equipo Legal | Cumplimiento regulatorio, privacidad de datos | Reportes de cumplimiento, trazas de auditoría |
+| **Finanzas** | Equipo de Finanzas | Control de costos, planificación presupuestaria | Reportes de costos, métricas de optimización |
+| **Proveedores Externos** | Proveedores Email/SMS/WhatsApp | Integración, SLAs, facturación | Especificaciones técnicas, monitoreo de SLA |
 
 ### Usuarios Finales
 
 | Tipo de Usuario | Descripción | Herramientas | Expectativas |
 |-----------------|-------------|--------------|--------------|
-| **Desarrolladores API** | Integran con Notification API | REST clients, SDKs | Simple integration, comprehensive docs |
-| **Marketing Users** | Configuran campañas promocionales | Admin UI, dashboards | Easy campaign setup, delivery insights |
-| **Operations Teams** | Monitorean sistema de notificaciones | Grafana, alerting | Real-time visibility, actionable alerts |
-| **End Recipients** | Reciben notificaciones en dispositivos | Email clients, mobile apps | Timely delivery, preference management |
+| **Desarrolladores API** | Integran con Notification API | Clientes REST, SDKs | Integración simple, documentación completa |
+| **Usuarios de Marketing** | Configuran campañas promocionales | Interfaz de administración, dashboards | Configuración fácil de campañas, insights de entrega |
+| **Equipos Operacionales** | Monitorean sistema de notificaciones | Grafana, alertas | Visibilidad en tiempo real, alertas accionables |
+| **Destinatarios Finales** | Reciben notificaciones en dispositivos | Clientes de email, aplicaciones móviles | Entrega oportuna, gestión de preferencias |
 
 ### Matriz de Comunicación
 
 | Stakeholder | Frecuencia | Canal | Contenido |
 |-------------|------------|-------|-----------|
-| **Product Owner** | Semanal | Sprint reviews, Jira | Features completed, blockers, next priorities |
-| **Arquitecto** | Bi-semanal | ADR reviews, tech talks | Architecture decisions, deuda técnica |
-| **DevOps** | Diario | Dashboards, Slack alerts | System health, performance metrics |
-| **Security** | Mensual | Security reports | Vulnerability assessments, compliance status |
-| **Legal** | Trimestral | Compliance reports | GDPR compliance, audit findings |
+| **Product Owner** | Semanal | Revisiones de sprint, Jira | Funcionalidades completadas, bloqueos, próximas prioridades |
+| **Arquitecto** | Bi-semanal | Revisiones de ADR, charlas técnicas | Decisiones de arquitectura, deuda técnica |
+| **DevOps** | Diario | Dashboards, alertas Slack | Salud del sistema, métricas de rendimiento |
+| **Seguridad** | Mensual | Reportes de seguridad | Evaluaciones de vulnerabilidades, estado de cumplimiento |
+| **Legal** | Trimestral | Reportes de cumplimiento | Cumplimiento GDPR, hallazgos de auditoría |
 
 ## 1.4 Resumen Ejecutivo
 

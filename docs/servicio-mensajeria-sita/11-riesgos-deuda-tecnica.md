@@ -37,7 +37,7 @@
 **Estrategias de mitigación**:
 
 - **Automatización**: PKI automation con HashiCorp Vault
-- **Monitoreo**: Certificate expiration alerting (30/7/1 días)
+- **Monitoreo**: Certificate expiration alertas (30/7/1 días)
 - **Autoservicio**: Portal para tenant certificate management
 - **Respaldo**: Certificate backup y recovery procedures
 
@@ -166,7 +166,7 @@
 
 **Severidad**: Media
 **Esfuerzo de resolución**: 60 horas
-**Impacto**: Troubleshooting dificultoso
+**Impacto**: Resolución de problemas dificultoso
 
 **Descripción**: Logs inconsistentes, métricas no correlacionadas
 
@@ -294,7 +294,7 @@
 
 **Tracking metrics**:
 - Technical debt ratio: current = 18%
-- Target technical debt ratio: < 15%
+- Target deuda técnica ratio: < 15%
 - Velocity impact: 15% slowdown due to debt
 
 ## Referencias

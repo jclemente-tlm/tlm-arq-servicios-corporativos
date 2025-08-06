@@ -10,7 +10,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 |-------------|-------------|---------------|----------------|
 | **CQRS Pattern** | Separación Command/Query obligatoria | Optimización lectura vs escritura, escalabilidad | Comandos para ingestión, queries para consulta |
 | **Event Sourcing** | Almacenamiento basado en eventos | Auditabilidad completa, reconstrucción de estado | Event store como fuente de verdad |
-| **Message Queue** | Event Bus para event streaming | High throughput, durabilidad, replay capability | Event topics por tipo de evento |
+| **Message Queue** | Event Bus para event streaming | Alta capacidad de procesamiento, durabilidad, replay capability | Event topics por tipo de evento |
 | **Read Models** | Vistas materializadas para consultas | Rendimiento de consultas complejas | PostgreSQL para read models |
 
 ### Stack Tecnológico Mandatorio
@@ -18,11 +18,11 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 | Componente | Tecnología Requerida | Versión Mínima | Justificación |
 |------------|---------------------|----------------|---------------|
 | **Runtime** | .NET 8 LTS | 8.0+ | Standardización corporativa, rendimiento |
-| **Event Store** | PostgreSQL/SNS+SQS/RabbitMQ | 15+/Latest | Event streaming, high availability |
-| **Read Database** | PostgreSQL | 15+ | Complex queries, JSON support, analytics |
-| **Cache Layer** | Redis | 7.0+ | Rendimiento de consultas, real-time dashboards |
-| **Time Series DB** | InfluxDB | 2.7+ | Metrics storage, time-based analytics |
-| **Search Engine** | Elasticsearch | 8.0+ | Full-text search, log aggregation |
+| **Event Store** | PostgreSQL/SNS+SQS/RabbitMQ | 15+/Latest | Event streaming, alta disponibilidad |
+| **Read Database** | PostgreSQL | 15+ | Consultas complejas, soporte JSON, analítica |
+| **Cache Layer** | Redis | 7.0+ | Rendimiento de consultas, dashboards en tiempo real |
+| **Base de Datos de Series Temporales** | InfluxDB | 2.7+ | Almacenamiento de métricas, analítica basada en tiempo |
+| **Motor de Búsqueda** | Elasticsearch | 8.0+ | Búsqueda de texto completo, agregación de registros |
 
 ### Rendimiento y Capacidad
 
@@ -49,7 +49,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 
 | Aspecto | Restricción | Justificación | Implementación |
 |---------|-------------|---------------|----------------|
-| **Uptime Target** | 99.95% availability | Critical operational visibility | Active-active clustering |
+| **Uptime Target** | 99.95% disponibilidad | Critical operational visibility | Active-active clustering |
 | **Data Durability** | 99.999999999% (11 9's) | Event data cannot be lost | Event replication, backup strategies |
 | **Disaster Recovery** | RTO: 1 hour, RPO: 5 minutes | Continuidad empresarial | Cross-region replication |
 | **Event Replay** | Support for historical replay | Data recovery, debugging | Event retention, offset management |
@@ -81,7 +81,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 | **Eventos Operacionales** | 7 años | Auditoría, investigaciones | Archive storage, retrieval capability |
 | **Eventos de Seguridad** | 10 años | Compliance, forense | Immutable storage, encryption |
 | **Métricas de Performance** | 2 años | Análisis operacional | Time-series compression |
-| **Logs de Sistema** | 1 año | Troubleshooting, debugging | Log rotation, archival |
+| **Logs de Sistema** | 1 año | Resolución de problemas, debugging | Log rotation, archival |
 
 ### Auditoría y Compliance
 
@@ -99,7 +99,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 | Jurisdicción | Requerimiento | Implementación | Verificación de Cumplimiento |
 |-------------|-------------|----------------|------------------|
 | **European Union** | GDPR data protection | Data residency, encryption | Privacy compliance audits |
-| **United States** | SOX financial controls | Access controls, audit trails | Financial audit compliance |
+| **United States** | SOX financial controls | Access controls, trazas de auditoría | Financial cumplimiento de auditoría |
 | **Latin America** | Local data protection laws | Country-specific configurations | Regional compliance reviews |
 | **Aviation Authorities** | Operational data retention | Industry-specific requirements | Aviation compliance audits |
 
@@ -190,7 +190,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 | **Metrics** | Prometheus + Grafana | Performance monitoring | Custom metrics, dashboards |
 | **Logging** | ELK Stack | Centralized logging | Structured JSON logs |
 | **Tracing** | OpenTelemetry + Jaeger | Distributed tracing | Request correlation |
-| **Health Checks** | ASP.NET Core Health Checks | Service availability | Health endpoints |
+| **Health Checks** | ASP.NET Core Health Checks | Service disponibilidad | Health endpoints |
 
 ### Métricas Empresariales
 
@@ -208,7 +208,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 | Restricción | Decisión de Diseño | Compromiso | Mitigación |
 |------------|----------------|-----------|------------|
 | **CQRS Requirement** | Separate read/write models | Eventual consistency | Event-driven synchronization |
-| **High Throughput** | Event streaming architecture | Complexity increase | Managed Event service |
+| **High Capacidad de procesamiento** | Event streaming architecture | Complexity increase | Managed Event service |
 | **Real-time Requirements** | In-memory caching | Memory overhead | Cache optimization |
 | **Long-term Retention** | Tiered storage strategy | Storage costs | Automated lifecycle policies |
 
@@ -216,7 +216,7 @@ El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operac
 
 | Capa | Elección Tecnológica | Factor de Restricción | Alternativa Considerada |
 |-------|-------------------|-------------------|----------------------|
-| **Event Store** | PostgreSQL/SNS+SQS/RabbitMQ | Throughput, durability | EventStore (complexity), AWS Kinesis (vendor lock) |
+| **Event Store** | PostgreSQL/SNS+SQS/RabbitMQ | Capacidad de procesamiento, durability | EventStore (complexity), AWS Kinesis (vendor lock) |
 | **Read Database** | PostgreSQL | Query complexity, JSON support | MongoDB (consistency), ClickHouse (operational complexity) |
 | **Time Series** | InfluxDB | Time-based analytics | Prometheus (query language), TimescaleDB (licensing) |
 | **Search** | Elasticsearch | Full-text search, analytics | Solr (maintenance), Amazon OpenSearch (vendor dependency) |

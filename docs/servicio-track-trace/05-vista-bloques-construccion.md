@@ -1,6 +1,6 @@
 # 5. Vista de bloques de construcción
 
-## 5.1 Sistema Track & Trace - Nivel 1 (Whitebox)
+## 5.1 Sistema Track & Trace - Nivel 1 (Caja Blanca)
 
 ### Responsabilidad
 Sistema de trazabilidad operacional que captura, procesa y analiza eventos empresariales en tiempo real utilizando arquitectura CQRS + Event Sourcing para proporcionar visibilidad completa de operaciones críticas.
@@ -37,7 +37,7 @@ Sistema de trazabilidad operacional que captura, procesa y analiza eventos empre
 - **Tecnología:** Complex Event Processing (CEP) con Apache Flink
 - **Interfaz:** Push notifications + webhook callbacks
 
-## 5.2 Capa de Ingesta de Eventos - Nivel 2 (Whitebox)
+## 5.2 Capa de Ingesta de Eventos - Nivel 2 (Caja Blanca)
 
 ### Conectores de Entrada
 
@@ -72,7 +72,7 @@ public class CorporateServicesConnector : IEventConnector
 #### Conector de Sistemas Externos
 - **ERP Integration:** SAP, Oracle events via REST/SOAP
 - **Legacy Mainframe:** IBM MQ message parsing
-- **Mobile Apps:** Real-time event streaming via WebSockets
+- **Aplicaciones Móviles:** Real-time event streaming via WebSockets
 - **IoT Devices:** Sensor data via MQTT protocol
 
 ### Motor de Normalización de Eventos
@@ -105,7 +105,7 @@ public class CorporateServicesConnector : IEventConnector
 - **Validation:** Real-time schema validation
 - **Documentation:** Auto-generated from schemas
 
-## 5.3 Servicio de Procesamiento de Comandos - Nivel 2 (Whitebox)
+## 5.3 Servicio de Procesamiento de Comandos - Nivel 2 (Caja Blanca)
 
 ### CQRS Implementation
 
@@ -158,7 +158,7 @@ public class FlightOperationSaga : ISaga<FlightDepartureEvent>
 - **Cargo Operations:** Acceptance → Loading → Transport → Delivery
 - **Maintenance Cycle:** Inspection → Repair → Testing → Certification
 
-## 5.4 Event Store - Nivel 2 (Whitebox)
+## 5.4 Event Store - Nivel 2 (Caja Blanca)
 
 ### Event Store Agnóstico
 
@@ -237,7 +237,7 @@ CREATE TABLE events_by_entity (
 - **Materialized Views:** Pre-computed aggregations
 - **TTL Management:** Automatic data expiration
 
-## 5.5 Motor de Modelos de Lectura - Nivel 2 (Whitebox)
+## 5.5 Motor de Modelos de Lectura - Nivel 2 (Caja Blanca)
 
 ### Almacenes de Datos Especializados
 
@@ -283,7 +283,7 @@ CREATE MEASUREMENT operational_kpis (
     time TIMESTAMP,
     airport TAG,
     terminal TAG,
-    throughput FIELD,
+    capacidad de procesamiento FIELD,
     average_wait_time FIELD,
     security_queue_length FIELD
 );
@@ -350,7 +350,7 @@ public class FlightStatusProjectionHandler : IEventHandler<FlightEvent>
 }
 ```
 
-## 5.6 Servicio de Analytics y Reportes - Nivel 2 (Whitebox)
+## 5.6 Servicio de Analytics y Reportes - Nivel 2 (Caja Blanca)
 
 ### Motor de Analytics en Tiempo Real
 
@@ -435,12 +435,12 @@ public class OperationalAnomalyDetector
         // Statistical analysis for outlier detection
         // Pattern recognition for unusual sequences
         // Machine learning for behavior anomalies
-        // Real-time scoring and alerting
+        // Real-time scoring and alertas
     }
 }
 ```
 
-## 5.7 Motor de Notificaciones - Nivel 2 (Whitebox)
+## 5.7 Motor de Notificaciones - Nivel 2 (Caja Blanca)
 
 ### Coincidencia de Patrones de Eventos
 
@@ -518,7 +518,7 @@ Escalation Rules:
 ```yaml
 Event Producers:
   - SITA Messaging: Flight operational data
-  - Mobile Apps: Passenger self-service events
+  - Aplicaciones Móviles: Passenger self-service events
   - Ground Systems: Baggage, cargo, maintenance
   - External APIs: Weather, traffic, delays
   - IoT Sensors: Location, temperature, weight
@@ -530,7 +530,7 @@ Event Consumers:
   - Business Intelligence: Analytics and reporting
   - Customer Service: Real-time passenger assistance
   - Operations Control: Flight management
-  - Mobile Apps: Passenger notifications
+  - Aplicaciones Móviles: Passenger notifications
   - Partner Systems: Codeshare, alliances
 ```
 

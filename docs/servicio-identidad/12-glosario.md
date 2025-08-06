@@ -60,7 +60,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 **Data Residency**
 : Requerimiento legal/regulatorio que especifica la ubicación geográfica donde pueden almacenarse datos específicos, crítico para compliance multi-país.
 
-**Distributed Tracing**
+**Trazado Distribuido**
 : Técnica para rastrear requests a través de múltiples servicios en un sistema distribuido, implementada con OpenTelemetry.
 
 ## E
@@ -127,7 +127,7 @@ Este glosario define los términos técnicos, conceptos y acrónimos utilizados 
 
 ## M
 
-**MFA (Multi-Factor Authentication)**
+**MFA (Autenticación Multi-Factor)**
 : Método de autenticación que requiere múltiples factores de verificación (algo que sabes, tienes, eres).
 
 **Microservices**

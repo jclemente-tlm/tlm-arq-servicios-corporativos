@@ -77,14 +77,14 @@ El sistema de mensajería SITA actúa como el puente de comunicación con la ind
 
 | Componente | Descripción | Responsabilidad |
 |------------|-------------|-----------------|
-| **Message Generation API** | REST APIs para generación mensajes | Message creation, validation, queuing |
+| **Generación de Mensajes API** | REST APIs para generación mensajes | Message creation, validation, queuing |
 | **Template Engine** | Motor de plantillas SITA | Type B format, multi-language, customization |
-| **SITATEX Gateway** | Interface con red SITA | Protocol compliance, transmission, error handling |
+| **SITATEX Gateway** | Interface con red SITA | Protocol compliance, transmission, manejo de errores |
 | **Message Tracking** | Seguimiento de mensajes | Delivery status, confirmations, retries |
 | **Event Integration** | Integración con sistemas internos | Event consumption, status publishing |
 | **Compliance Engine** | Validación estándares SITA/ICAO | Format validation, protocol compliance |
-| **Audit & Logging** | Trazabilidad completa | Message logs, audit trails, reporting |
-| **Configuration Management** | Gestión de configuraciones | Templates, addresses, routing rules |
+| **Audit & Logging** | Trazabilidad completa | Message logs, trazas de auditoría, reporting |
+| **Gestión de Configuración** | Gestión de configuraciones | Templates, addresses, routing rules |
 
 #### Fuera del Alcance
 
@@ -130,7 +130,7 @@ El sistema de mensajería SITA actúa como el puente de comunicación con la ind
 |-----------|--------|---------------|------------|---------|
 | **Operational Events** | Track & Trace | Flight/operation events | Real-time | Event Bus messages (Avro) |
 | **Manual Requests** | Operations staff | Ad-hoc messages | On-demand | REST API (JSON) |
-| **Batch Operations** | Scheduled systems | Bulk message generation | Scheduled | REST API (JSON array) |
+| **Batch Operations** | Scheduled systems | Bulk generación de mensajes | Scheduled | REST API (JSON array) |
 | **Template Updates** | Content management | Message templates | As needed | REST API (JSON) |
 | **Configuration Changes** | Admin systems | System configuration | As needed | Configuration APIs |
 
@@ -151,14 +151,14 @@ El sistema de mensajería SITA actúa como el puente de comunicación con la ind
 
 | Función | Descripción | Usuarios Objetivo | Prioridad |
 |---------|-------------|-------------------|-----------|
-| **Automatic Message Generation** | Generación automática basada en eventos | Sistema automático | Alta |
-| **Template Management** | Gestión de plantillas Type B | System administrators | Alta |
+| **Automatic Generación de Mensajes** | Generación automática basada en eventos | Sistema automático | Alta |
+| **Gestión de Plantillas** | Gestión de plantillas Type B | System administrators | Alta |
 | **SITATEX Transmission** | Envío a través de red SITA | Sistema automático | Alta |
 | **Message Tracking** | Seguimiento de entrega | Operations, administrators | Alta |
 | **Manual Message Sending** | Envío manual para casos especiales | Operations coordinators | Media |
 | **Multi-language Support** | Plantillas en múltiples idiomas | International operations | Media |
 | **Delivery Confirmation** | Confirmación de entrega | Operations monitoring | Media |
-| **Error Handling & Retry** | Manejo de errores y reintentos | Sistema automático | Media |
+| **Manejo de Errores & Retry** | Manejo de errores y reintentos | Sistema automático | Media |
 | **Compliance Validation** | Validación estándares SITA/ICAO | Compliance officers | Baja |
 | **Audit & Reporting** | Reportes y auditoría | Management, compliance | Baja |
 
@@ -217,7 +217,7 @@ Postcondición: Mensaje manual enviado exitosamente
 Actor: System Administrator
 Precondición: Admin autenticado con permisos de configuración
 Flujo Principal:
-1. Admin accede a template management
+1. Admin accede a gestión de plantillas
 2. Admin selecciona tipo de mensaje SITA
 3. Admin modifica template Type B
 4. Sistema valida sintaxis y compliance
@@ -284,7 +284,7 @@ Postcondición: Estado de mensajes monitoreado y gestionado
 | Atributo | Métrica | Target | Medición |
 |----------|---------|--------|----------|
 | **Message Delivery Rate** | Successful transmissions | 99.9% | SITA network confirmations |
-| **System Availability** | Service uptime | 99.95% | Health monitoring |
+| **System Disponibilidad** | Service uptime | 99.95% | Health monitoring |
 | **Format Compliance** | SITA standard adherence | 100% | Validation checks |
 | **Delivery Confirmation** | Confirmed delivery rate | 95% | Network acknowledgments |
 
@@ -292,9 +292,9 @@ Postcondición: Estado de mensajes monitoreado y gestionado
 
 | Atributo | Métrica | Target | Medición |
 |----------|---------|--------|----------|
-| **Message Generation Time** | Template to message | < 2 seconds | Processing time |
+| **Generación de Mensajes Time** | Template to message | < 2 seconds | Processing time |
 | **Transmission Latency** | Send to network delivery | < 30 seconds | End-to-end monitoring |
-| **Throughput** | Messages per hour | 10,000 messages/hour | Load testing |
+| **Capacidad de procesamiento** | Messages per hour | 10,000 messages/hour | Load testing |
 | **Template Processing** | Template render time | < 1 second | Performance profiling |
 
 ### Compliance

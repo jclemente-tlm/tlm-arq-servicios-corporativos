@@ -204,7 +204,7 @@ public class ProviderSelector
 El sistema de notificaciones requiere un message broker que soporte:
 
 - **Cloud agnostic:** Portabilidad entre AWS, Azure, GCP
-- **Alto throughput:** 1M+ mensajes/día
+- **Alto capacidad de procesamiento:** 1M+ mensajes/día
 - **Durabilidad:** Retención configurable para auditoria
 - **Paralelismo:** Processing concurrente por múltiples consumers
 - **Ordering:** Garantías de orden por tenant/usuario
@@ -553,7 +553,7 @@ MigrationStrategy:
 - ✅ **Simplicidad operacional:** Una tecnología menos que administrar
 - ✅ **Durabilidad garantizada:** ACID transactions, backup incluido
 - ✅ **Cost effectiveness:** No costos adicionales de queue service
-- ✅ **Debugging simplicity:** SQL queries para troubleshooting
+- ✅ **Debugging simplicity:** SQL queries para resolución de problemas
 - ✅ **Migration ready:** Clear path para evolución futura
 
 #### Negativas

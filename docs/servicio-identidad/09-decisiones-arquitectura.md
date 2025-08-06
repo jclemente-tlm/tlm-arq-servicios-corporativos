@@ -251,7 +251,7 @@ spec:
 
 | **Estado** | ✅ Aprobado |
 | **Fecha** | 2024-01-20 |
-| **Decidido por** | Security Team + Engineering Lead |
+| **Decidido por** | Equipo de Seguridad + Engineering Lead |
 | **Relacionado con** | ADR-001 (Keycloak), ADR-004 (Token Caching) |
 
 ### Contexto
@@ -528,7 +528,7 @@ Initial performance testing reveló:
 - **JWT validation:** 45-60ms per token (RSA signature verification)
 - **Target latency:** `<10ms` for token validation
 - **Peak load:** 10,000 validations/second
-- **Availability requirement:** 99.9% uptime
+- **Disponibilidad requirement:** 99.9% uptime
 
 ### Problema
 
@@ -660,13 +660,13 @@ Redis Cluster:
 
 - **Latency improvement:** 60ms → 7ms (88% reduction)
 
-- **Throughput increase:** 10x higher req/sec capacity
+- **Capacidad de procesamiento increase:** 10x higher req/sec capacity
 - **CPU savings:** 70% reduction in validation CPU usage
 - **Cost optimization:** Smaller instance types needed
 
 #### Reliability
 
-- **High availability:** Redis Cluster automatic failover
+- **High disponibilidad:** Redis Cluster automatic failover
 - **Data persistence:** AOF + RDB backup strategies
 - **Graceful degradation:** Fallback to direct validation
 - **Monitoring:** Comprehensive CloudWatch metrics
@@ -678,7 +678,7 @@ Redis Cluster:
 - ✅ **Dramatic performance improvement:** Sub-10ms validation
 - ✅ **Cost optimization:** Reduced compute requirements
 - ✅ **Scalability:** Handles peak loads efficiently
-- ✅ **High availability:** Cluster resilience
+- ✅ **High disponibilidad:** Cluster resilience
 
 #### Negativas
 
@@ -690,7 +690,7 @@ Redis Cluster:
 #### Mitigaciones
 
 - 🔧 **Fallback logic:** Direct validation when cache unavailable
-- 🔧 **Health checks:** Proactive cache health monitoring
+- 🔧 **Health checks:** Proactive cache monitoreo de salud
 - 🔧 **Automated scaling:** Auto-scaling based on memory usage
 - 🔧 **Runbooks:** Detailed operational procedures
 
@@ -886,7 +886,7 @@ public class SecurityEventProcessor
         });
 
 
-        // Update real-time dashboards
+        // Update dashboards en tiempo real
         await UpdateSecurityDashboardAsync(@event);
     }
 }
@@ -914,7 +914,7 @@ public class SecurityEventProcessor
 
 #### Operational Benefits
 
-- **System debugging:** Event replay for troubleshooting
+- **System debugging:** Event replay for resolución de problemas
 - **Business analytics:** User behavior analysis
 - **Performance monitoring:** System usage patterns
 - **Data recovery:** State reconstruction from events
@@ -980,12 +980,12 @@ graph TD
 ### ADR Format
 
 - [Architecture Decision Records (ADRs)](https://adr.github.io/)
-- [Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
+- [Documenting Decisiones de Arquitectura](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
 
 ### Implementation References
 
 - [Keycloak Documentation](https://www.keycloak.org/documentation)
-- [JWT Best Practices](https://tools.ietf.org/html/rfc8725)
+- [JWT Mejores Prácticas](https://tools.ietf.org/html/rfc8725)
 - [Event Sourcing Pattern](https://martinfowler.com/eaaDev/EventSourcing.html)
 
 ### Compliance Standards
@@ -1029,5 +1029,5 @@ Implementar Event Sourcing con Event Store agnóstico para audit trail.
 
 - [Architecture Decision Records](https://adr.github.io/)
 - [Keycloak Architecture Guide](https://www.keycloak.org/docs/latest/server_development/)
-- [JWT Best Practices](https://tools.ietf.org/html/rfc8725)
-- [Arc42 Architecture Decisions](https://docs.arc42.org/section-9/)
+- [JWT Mejores Prácticas](https://tools.ietf.org/html/rfc8725)
+- [Arc42 Decisiones de Arquitectura](https://docs.arc42.org/section-9/)

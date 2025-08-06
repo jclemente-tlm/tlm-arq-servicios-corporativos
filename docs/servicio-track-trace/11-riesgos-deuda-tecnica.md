@@ -69,7 +69,7 @@ ALTER SYSTEM SET effective_cache_size = '24GB';
 | **Probabilidad** | Media (40%) |
 | **Impacto** | Crítico |
 | **Risk Score** | 🔴 **16 (Alto)** |
-| **Owner** | Security Team |
+| **Owner** | Equipo de Seguridad |
 
 **Descripción detallada:**
 Fallo en la implementación de tenant isolation podría permitir acceso cross-tenant a datos sensibles, violando compliance regulatorio y confianza del cliente.
@@ -327,7 +327,7 @@ public class ReliableEventPublisher : IEventPublisher
 | **Probabilidad** | Media (50%) |
 | **Impacto** | Medio |
 | **Risk Score** | 🟡 **10 (Medio)** |
-| **Owner** | DevOps Team |
+| **Owner** | Equipo DevOps |
 
 **Descripción**: Dependencias en servicios externos (Keycloak, Event Bus managed service, monitoring tools) pueden causar indisponibilidad.
 
@@ -493,7 +493,7 @@ public class EventContractTests
 
 #### DT-003: Monitoring and Observability Gaps
 
-**Descripción**: Métricas business-level insuficientes y alerting reactivo en lugar de predictivo.
+**Descripción**: Métricas business-level insuficientes y alertas reactivo en lugar de predictivo.
 **Impacto**: Medio - Debugging difficulties
 **Esfuerzo estimado**: 1.5 sprints
 **Prioridad**: P2
@@ -507,7 +507,7 @@ public class EventContractTests
 **Esfuerzo estimado**: 1 sprint
 **Prioridad**: P3
 
-#### DT-005: Configuration Management Complexity
+#### DT-005: Gestión de Configuración Complexity
 
 **Descripción**: Configuración dispersa en múltiples archivos sin validación central.
 **Impacto**: Medio - Operational overhead
@@ -548,7 +548,7 @@ risk_escalation:
 
 ### 11.3.2 Mitigation Budget Allocation
 
-**Technical Debt Budget** (20% of sprint capacity):
+**Deuda Técnica Budget** (20% of sprint capacity):
 
 - 50% - High impact debt remediation
 - 30% - Infrastructure improvements
@@ -577,7 +577,7 @@ risk_escalation:
 - Production incident reduction: 50% year-over-year
 - Developer satisfaction score: > 8/10
 
-## 11.4 Monitoring y alerting de riesgos
+## 11.4 Monitoring y alertas de riesgos
 
 ### 11.4.1 Early Warning Indicators
 
@@ -629,7 +629,7 @@ compliance_indicators:
 
 ### 11.4.2 Automated Risk Response
 
-**Technical Debt Thresholds**:
+**Deuda Técnica Thresholds**:
 
 - **Complexity increase** > 15% en 1 sprint → Mandatory refactoring
 - **Coverage decrease** > 5% → Block deployment
@@ -666,7 +666,7 @@ compliance_indicators:
 - Developer experience enhancements
 - Monitoring and observability
 
-### 11.5.2 Planned Technical Debt Sprints (2024)
+### 11.5.2 Planned Deuda Técnica Sprints (2024)
 
 - **Sprint 24.6**: Event versioning standardization
 - **Sprint 24.8**: Projection engine refactoring
@@ -769,7 +769,7 @@ public class EventStorePerformanceMonitor
             });
         }
 
-        // Predictive alerting based on trends
+        // Predictive alertas based on trends
         var growthRate = await CalculateEventGrowthRateAsync();
         if (growthRate > 0.3) // 30% weekly growth
         {
@@ -1066,11 +1066,11 @@ public class ReadModelSynchronizationService
 
 | Campo | Valor |
 |-------|-------|
-| **Categoría** | Integration/Availability |
+| **Categoría** | Integration/Disponibilidad |
 | **Probabilidad** | Media (50%) |
 | **Impacto** | Alto |
 | **Risk Score** | 🟡 **10 (Medio)** |
-| **Owner** | DevOps Team + Integration Team |
+| **Owner** | Equipo DevOps + Integration Team |
 
 **Sistemas de dependencia críticos:**
 
@@ -1106,7 +1106,7 @@ Fallback Strategies:
 
   Authentication:
     - Cached JWT tokens with extended TTL
-    - Emergency admin access with multi-factor authentication
+    - Emergency admin access with autenticación multi-factor
     - Read-only mode when identity service unavailable
 
   External_Data:
@@ -1125,7 +1125,7 @@ Fallback Strategies:
 | **Probabilidad** | Alta (70%) |
 | **Impacto** | Crítico |
 | **Risk Score** | 🔴 **21 (Alto)** |
-| **Owner** | Legal Team + Privacy Officer |
+| **Owner** | Equipo Legal + Privacy Officer |
 
 **Regulaciones aplicables:**
 
@@ -1339,7 +1339,7 @@ public class TechnicalDebtMetrics
   - Herramientas especializadas de debugging
   - Event replay capabilities
   - Correlation IDs consistentes
-  - Dashboards específicos para troubleshooting
+  - Dashboards específicos para resolución de problemas
 
 #### RO-003: Compliance y auditoría
 
@@ -1402,7 +1402,7 @@ public class TechnicalDebtMetrics
 
 - **Descripción**: Componentes legacy con logging text-based
 - **Impacto**: Dificultad en observability y debugging
-- **Plan de resolución**: Migración gradual a structured logging
+- **Plan de resolución**: Migración gradual a registro estructurado
 - **Prioridad**: Baja
 - **Estimación**: 1 sprint
 
@@ -1434,9 +1434,9 @@ public class TechnicalDebtMetrics
 | DT-001 | Arquitectura | Alta | Sprint 24.4 | Backend Team | 📅 Planificado |
 | RT-003 | Performance | Alta | Sprint 24.5 | Infrastructure Team | 📅 Planificado |
 | DT-002 | Event versioning | Media | Sprint 24.6 | Backend Team | 📋 Backlog |
-| DT-007 | IaC | Media | Sprint 24.7 | DevOps Team | 📋 Backlog |
+| DT-007 | IaC | Media | Sprint 24.7 | Equipo DevOps | 📋 Backlog |
 | DT-003 | Snapshots | Media | Sprint 24.8 | Backend Team | 📋 Backlog |
-| DT-008 | Monitoring | Media | Sprint 24.9 | DevOps Team | 📋 Backlog |
+| DT-008 | Monitoring | Media | Sprint 24.9 | Equipo DevOps | 📋 Backlog |
 | DT-004 | Refactoring | Baja | Sprint 24.10 | Backend Team | 📋 Backlog |
 | DT-006 | Logging | Baja | Sprint 24.11 | Backend Team | 📋 Backlog |
 
@@ -1527,7 +1527,7 @@ public class TechnicalDebtMetrics
 - Developer experience enhancements
 - Monitoring and observability
 
-### 11.5.2 Planned Technical Debt Sprints (Q2 2024)
+### 11.5.2 Planned Deuda Técnica Sprints (Q2 2024)
 
 - **Sprint 24.6**: Event versioning standardization
 - **Sprint 24.8**: Projection engine refactoring

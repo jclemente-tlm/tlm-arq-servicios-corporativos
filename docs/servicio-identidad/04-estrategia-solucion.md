@@ -244,23 +244,23 @@ public class ExternalIdPCircuitBreaker
 | **Authentication Latency** | p95 < 200ms | Local token validation, cached user data | Redis caching, JVM optimization |
 | **Token Validation** | p95 < 50ms | JWT signature validation, no database hits | Local JWT validation, RSA caching |
 | **Concurrent Sessions** | 10,000 users | Stateless design, clustering | Keycloak clustering, session sharing |
-| **Throughput** | 1,000 auth/sec | Optimized database queries, connection pooling | PostgreSQL tuning, prepared statements |
+| **Capacidad de procesamiento** | 1,000 auth/sec | Optimized database queries, connection pooling | PostgreSQL tuning, prepared statements |
 
 ### Security Strategy
 
 | Control | Implementation | Technology | Monitoring |
 |---------|----------------|------------|------------|
-| **Multi-Factor Authentication** | TOTP + WebAuthn + SMS | Keycloak MFA | Failed attempts tracking |
+| **Autenticación Multi-Factor** | TOTP + WebAuthn + SMS | Keycloak MFA | Failed attempts tracking |
 | **Token Security** | RS256 signatures, short TTL | JWT with RSA keys | Token validation metrics |
 | **Data Encryption** | AES-256 at rest, TLS 1.3 in transit | PostgreSQL encryption, NGINX SSL | Certificate monitoring |
 | **Audit Logging** | Complete user actions trail | Structured logging | SIEM integration |
 
-### Availability Strategy
+### Disponibilidad Strategy
 
 | Requirement | Target | Implementation | Recovery |
 |-------------|--------|----------------|----------|
 | **System Uptime** | 99.9% | Multi-AZ deployment, health checks | Automated failover |
-| **Database Availability** | 99.95% | PostgreSQL streaming replication | Point-in-time recovery |
+| **Database Disponibilidad** | 99.95% | PostgreSQL streaming replication | Point-in-time recovery |
 | **Disaster Recovery** | RTO: 4h, RPO: 15min | Cross-region backups | Documented procedures |
 | **Maintenance Windows** | < 4h/month | Rolling updates, blue-green deployment | Zero-downtime deployments |
 
@@ -281,7 +281,7 @@ public class ExternalIdPCircuitBreaker
 |--------|----------|-----------|-------------|
 | **Configuration as Code** | Terraform + Ansible | Infrastructure immutability | CI/CD pipelines |
 | **Realm Configuration** | JSON exports, version control | Change tracking, rollback capability | Git workflows |
-| **Secret Management** | Vault integration | Security best practices | Policy enforcement |
+| **Secret Management** | Vault integration | Security mejores prácticas | Policy enforcement |
 | **Documentation** | Arc42 + ADRs | Knowledge management | Mandatory reviews |
 
 ### Integration Strategy
@@ -304,9 +304,9 @@ public class ExternalIdPCircuitBreaker
 - **Week 4**: Keycloak deployment, basic realm configuration
 
 **Success Criteria**:
-- Keycloak instance running with high availability
+- Keycloak instance running with high disponibilidad
 - Database replication configured
-- Monitoring and alerting operational
+- Monitoring and alertas operational
 
 #### Phase 2: Core Realm Configuration (6 weeks)
 
@@ -403,7 +403,7 @@ Migration Strategy:
 |--------|----------|--------|-------------|
 | **Authentication Success Rate** | N/A | 99.5% | Daily monitoring |
 | **Average Login Time** | N/A | < 2 seconds | User experience metrics |
-| **System Availability** | N/A | 99.9% | Uptime monitoring |
+| **System Disponibilidad** | N/A | 99.9% | Uptime monitoring |
 | **Security Incidents** | N/A | Zero breaches | Security dashboard |
 | **User Satisfaction** | N/A | > 90% | Quarterly surveys |
 |-----------|---------|---------------|----------------|
@@ -486,14 +486,14 @@ Migration Strategy:
 | **Transport** | TLS encryption | TLS 1.3, certificate management | SSL/TLS scanning |
 | **Application** | Authentication & authorization | OAuth2/OIDC, RBAC | Security audits |
 | **Data** | Encryption at rest | Database encryption, encrypted volumes | Encryption verification |
-| **Audit** | Comprehensive logging | Security events, audit trails | Log analysis |
+| **Audit** | Comprehensive logging | Security events, trazas de auditoría | Log analysis |
 
 ### Compliance Framework
 
 | Regulation | Requirements | Implementation | Verification |
 |------------|--------------|----------------|--------------|
 | **GDPR** | Data protection, consent | Data minimization, consent management | Privacy audits |
-| **SOX** | Financial controls | Access controls, audit trails | Financial audits |
+| **SOX** | Financial controls | Access controls, trazas de auditoría | Financial audits |
 | **ISO 27001** | Security management | Security policies, risk management | Certification audits |
 | **Local Laws** | Regional compliance | Country-specific configurations | Legal reviews |
 
@@ -512,14 +512,14 @@ Migration Strategy:
 
 | Integration Type | Pattern | Protocol | Use Case |
 |------------------|---------|----------|----------|
-| **Client Authentication** | Token-based | OAuth2/OIDC | Web/mobile apps |
+| **Client Authentication** | Token-based | OAuth2/OIDC | Web/aplicaciones móviles |
 | **Service-to-Service** | Mutual authentication | mTLS + OAuth2 | Microservices |
 | **External Federation** | Identity federation | SAML/OIDC | Enterprise IdPs |
 | **Legacy Systems** | Directory integration | LDAP | Existing user stores |
 
 ### API Strategy
 
-| API Type | Exposure | Authentication | Rate Limiting |
+| API Type | Exposure | Authentication | Limitación de Velocidad |
 |----------|----------|----------------|---------------|
 | **Admin APIs** | Internal only | Admin tokens | High limits |
 | **User APIs** | Public with auth | User tokens | Standard limits |
@@ -574,11 +574,11 @@ Migration Strategy:
 | **Connection Pooling** | HikariCP configuration | 30% latency reduction |
 | **Query Optimization** | Database indexing | 50% query performance |
 | **Caching Strategy** | Redis + Infinispan | 70% cache hit rate |
-| **JVM Tuning** | G1GC, heap sizing | 20% throughput increase |
+| **JVM Tuning** | G1GC, heap sizing | 20% capacidad de procesamiento increase |
 
 ### Monitoring Strategy
 
-| Monitoring Level | Tools | Metrics | Alerting |
+| Monitoring Level | Tools | Metrics | Alertas |
 |------------------|-------|---------|----------|
 | **Infrastructure** | Prometheus, Node Exporter | CPU, memory, disk | Resource exhaustion |
 | **Application** | Keycloak metrics | Authentication rate, errors | Performance degradation |
@@ -589,13 +589,13 @@ Migration Strategy:
 
 ### Keycloak Architecture
 
-- [Keycloak High Availability Guide](https://www.keycloak.org/docs/latest/server_installation/#_clustering)
+- [Keycloak High Disponibilidad Guide](https://www.keycloak.org/docs/latest/server_installation/#_clustering)
 - [Keycloak Performance Tuning](https://www.keycloak.org/docs/latest/server_installation/#_performance)
 - [Keycloak Custom Extensions](https://www.keycloak.org/docs/latest/server_development/)
 
 ### Security Standards
 
-- [OAuth 2.0 Security Best Practices](https://tools.ietf.org/html/draft-ietf-oauth-security-topics-16)
+- [OAuth 2.0 Security Mejores Prácticas](https://tools.ietf.org/html/draft-ietf-oauth-security-topics-16)
 - [OpenID Connect Security Considerations](https://openid.net/specs/openid-connect-core-1_0.html#Security)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
 

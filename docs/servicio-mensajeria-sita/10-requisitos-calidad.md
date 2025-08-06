@@ -10,7 +10,7 @@ Calidad del Servicio SITA Messaging
 │   └── Integridad de mensajes: 100% delivery guarantee
 ├── Rendimiento (Peso: 8/10)
 │   ├── Latencia: < 500ms end-to-end
-│   ├── Throughput: 10,000 msg/min
+│   ├── Capacidad de procesamiento: 10,000 msg/min
 │   └── Tiempo de conexión: < 2s
 ├── Seguridad (Peso: 9/10)
 │   ├── Autenticación: X.509 certificates
@@ -140,7 +140,7 @@ Calidad del Servicio SITA Messaging
 | Métrica | Objetivo | Medición | Frecuencia |
 |---------|----------|----------|------------|
 | End-to-end Latency | < 500ms (P95) | APM tools | Real-time |
-| Message Throughput | 10,000 msg/min | Counter metrics | Continuo |
+| Message Capacidad de procesamiento | 10,000 msg/min | Counter metrics | Continuo |
 | Connection Establishment | < 2 segundos | Network monitoring | Por conexión |
 | CPU Utilization | < 70% average | Infrastructure metrics | Continuo |
 | Memory Usage | < 80% allocated | Memory profiling | Continuo |
@@ -232,7 +232,7 @@ Calidad del Servicio SITA Messaging
 - Suspicious activity alerts
 - Compliance audit status
 
-### 10.5.2 Alerting automático
+### 10.5.2 Alertas automático
 
 **Alertas críticas** (PagerDuty notification):
 - SITA connection failures
@@ -267,4 +267,4 @@ Calidad del Servicio SITA Messaging
 - Stakeholder communication summary
 
 ## Referencias
-- [Arc42 Quality Requirements](https://docs.arc42.org/section-10/)
+- [Arc42 Requisitos de Calidad](https://docs.arc42.org/section-10/)

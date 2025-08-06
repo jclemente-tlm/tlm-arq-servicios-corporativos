@@ -6,7 +6,7 @@ Este capítulo define los atributos de calidad específicos del **Sistema de Not
 
 ## 10.1 Rendimiento y Eficiencia
 
-### 10.1.1 Objetivos de Latencia y Throughput
+### 10.1.1 Objetivos de Latencia y Rendimiento
 
 | Operación | Objetivo P50 | Objetivo P95 | Objetivo P99 | SLA Crítico |
 |-----------|------------|------------|------------|-------------|
@@ -18,7 +18,7 @@ Este capítulo define los atributos de calidad específicos del **Sistema de Not
 | **Notificación Push** | 1s | 5s | 10s | < 30s |
 | **Entrega WhatsApp** | 10s | 1min | 3min | < 5min |
 
-### 10.1.2 Capacidad y Throughput
+### 10.1.2 Capacidad y Rendimiento
 
 ```yaml
 Requisitos de Capacidad:
@@ -42,7 +42,7 @@ Requisitos de Capacidad:
     - Degradación Gradual: Por encima del 80% de capacidad
     - Procesamiento de Cola: Sin pérdida de mensajes durante picos
 
-Benchmarks de Rendimiento:
+Puntos de Referencia de Rendimiento:
   Utilización de Recursos:
     - Uso de CPU: < 60% normal, < 80% pico
     - Uso de Memoria: < 70% normal, < 85% pico
@@ -94,7 +94,7 @@ public class NotificationServiceScalingPolicy
 ### 10.2.1 Acuerdos de Nivel de Servicio (SLA)
 
 ```yaml
-Availability SLA:
+Disponibilidad SLA:
   Overall System: 99.9%
     - Downtime Allowance: 43.2 minutes/month
     - Measurement Window: 5-minute intervals
@@ -119,7 +119,7 @@ Error Rate Targets:
   Template Rendering Errors: < 0.1%
 ```
 
-### 10.2.2 High Availability Architecture
+### 10.2.2 High Disponibilidad Architecture
 
 ```yaml
 Multi-AZ Deployment:
@@ -132,14 +132,14 @@ Multi-AZ Deployment:
     - AZ-2a: 1 API instance, 1 processor (standby)
     - Database: Read replica for disaster recovery
 
-Load Balancing:
+Balanceador de Carga:
   Application Load Balancer:
     - Health Check: /health/ready (30s interval)
     - Unhealthy Threshold: 3 consecutive failures
     - Healthy Threshold: 2 consecutive successes
     - Target Response: HTTP 200 within 5s
 
-  Database Load Balancing:
+  Database Balanceador de Carga:
     - Operaciones de Escritura: Solo instancia primaria
     - Read Operations: Read replicas (round-robin)
     - Connection Pooling: PgBouncer (100 connections/pool)
@@ -172,12 +172,12 @@ Recovery Procedures:
       - Impacto: < 5 minutos de degradación del servicio
 
     Regional Failure:
-      - Detection: Multi-region health monitoring
+      - Detection: Multi-region monitoreo de salud
       - Response: Manual DNS failover to secondary region
       - Impact: 15-30 minutes service interruption
 
     Provider Outage:
-      - Detection: Provider API health monitoring
+      - Detection: Provider API monitoreo de salud
       - Response: Automatic failover to secondary provider
       - Impact: 1-2 minutes delay in processing
 ```
@@ -290,13 +290,13 @@ RESTful API Standards:
     - OpenAPI 3.0 specification
     - Interactive API documentation (Swagger UI)
     - Code examples in multiple languages
-    - Postman collection availability
+    - Postman collection disponibilidad
 
   Developer Experience:
     - API versioning strategy (v1, v2)
     - Backward compatibility guarantees
     - Rate limiting with clear headers
-    - Comprehensive error messages with troubleshooting guides
+    - Comprehensive error messages with resolución de problemas guides
 
 Response Time Targets:
   - GET operations: < 100ms (P95)
@@ -305,7 +305,7 @@ Response Time Targets:
   - Status checks: < 50ms (P95)
 ```
 
-### 10.4.2 Template Management UX
+### 10.4.2 Gestión de Plantillas UX
 
 ```yaml
 Template Editor:
@@ -338,7 +338,7 @@ Business User Experience:
   Training and Support:
     - Video tutorials for common tasks
     - In-app help and tooltips
-    - Template best practices guide
+    - Template mejores prácticas guide
     - Support ticket integration
 ```
 
@@ -372,18 +372,18 @@ Metrics Collection:
   Technical Metrics:
     - API response times and error rates
     - Queue depths and processing rates
-    - Provider performance and availability
+    - Provider performance and disponibilidad
     - Resource utilization (CPU, memory, disk)
     - Database performance metrics
 
   SLI/SLO Tracking:
-    - Availability percentage
+    - Disponibilidad percentage
     - Error rate percentage
     - Response time percentiles
-    - Throughput rates
+    - Capacidad de procesamiento rates
 ```
 
-### 10.5.2 Monitoring and Alerting
+### 10.5.2 Monitoring and Alertas
 
 ```yaml
 Critical Alerts (Immediate Response):
@@ -454,7 +454,7 @@ CI/CD Pipeline Quality Gates:
   Code Quality:
     - SonarQube Quality Gate: Pass
     - Code Coverage: > 90%
-    - Technical Debt: < 2 days
+    - Deuda Técnica: < 2 days
     - Duplicated Code: < 3%
 
   Security:
@@ -509,7 +509,7 @@ API Standards:
     - OpenAPI 3.0 specification
     - JSON request/response format
     - Standard HTTP status codes
-    - Consistent error handling
+    - Consistent manejo de errores
 
   Webhook Support:
     - Event-driven notifications
@@ -540,9 +540,9 @@ Message Queue Integration:
 ## Referencias
 
 ### Quality Standards
-- [ISO/IEC 25010 - Systems and software Quality Requirements](https://www.iso.org/standard/35733.html)
+- [ISO/IEC 25010 - Systems and software Requisitos de Calidad](https://www.iso.org/standard/35733.html)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
-- [SRE Best Practices](https://sre.google/sre-book/table-of-contents/)
+- [SRE Mejores Prácticas](https://sre.google/sre-book/table-of-contents/)
 
 ### Compliance and Regulations
 - [GDPR Official Text](https://gdpr.eu/tag/gdpr/)
@@ -594,7 +594,7 @@ Message Queue Integration:
 | Atributo | Criticidad | Escenario Principal | Métrica Objetivo |
 |----------|------------|-------------------|-----------------|
 | Disponibilidad | Alta | Failover automático | 99.9% uptime |
-| Performance | Alta | Procesamiento de picos | < 200ms API, 10K/min throughput |
+| Performance | Alta | Procesamiento de picos | < 200ms API, 10K/min capacidad de procesamiento |
 | Seguridad | Crítica | Protección datos PII | 0 brechas, Compliance GDPR |
 | Fiabilidad | Alta | Entrega garantizada | 99.99% delivery rate |
 | Mantenibilidad | Media | Despliegues sin downtime | < 5 min deployment |

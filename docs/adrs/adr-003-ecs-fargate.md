@@ -20,7 +20,7 @@ Las alternativas evaluadas fueron:
 | Criterio                | ECS Fargate         | EC2 gestionado         |
 |------------------------|---------------------|------------------------|
 | Agnosticismo           | ❌ Dependiente de proveedor (lock-in `AWS`)  | ❌ Dependiente de proveedor (cloud lock-in, portable) |
-| Gestión operativa      | Gestionada por proveedor | Gestionada por proveedor         |
+| Gestión operacional      | Gestionada por proveedor | Gestionada por proveedor         |
 | Multi-tenant / Multi-país | Sí | Sí |
 | Alta disponibilidad    | Garantizada         | Requiere configuración |
 | Escalabilidad          | Automática          | Manual                 |

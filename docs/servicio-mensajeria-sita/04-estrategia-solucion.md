@@ -75,11 +75,11 @@ Mensaje SITA → Formato Canónico → Eventos Internos → Sistemas Objetivo
 
 ## 4.5 Estrategia de Performance
 
-### Throughput Targets
+### Capacidad de procesamiento Targets
 - **Messages/Second:** 10,000 mensajes tipo promedio
 - **Peak Load:** 50,000 mensajes durante eventos (mal tiempo, etc.)
 - **Latency:** < 100ms para mensajes críticos
-- **Availability:** 99.9% (8.76 horas downtime/año máximo)
+- **Disponibilidad:** 99.9% (8.76 horas downtime/año máximo)
 
 ### Optimization Techniques
 - **Connection Pooling:** Reutilización de conexiones SITA

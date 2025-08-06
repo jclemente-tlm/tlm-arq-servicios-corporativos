@@ -6,15 +6,15 @@ El **Sistema de Track & Trace** maneja eventos críticos operacionales que requi
 
 ## 10.1 Árbol de atributos de calidad
 
-### 10.1.1 Disponibilidad (Availability) - Criticidad: ALTA
+### 10.1.1 Disponibilidad (Disponibilidad) - Criticidad: ALTA
 
 El sistema debe mantener disponibilidad continua para capturar eventos críticos operacionales 24/7/365.
 
 **Objetivos específicos**:
-- **System Uptime**: 99.95% availability (4.38 horas/año máximo downtime)
-- **Event Ingestion**: 99.99% availability para ingesta de eventos críticos
-- **Query Service**: 99.9% availability para consultas operacionales
-- **Dashboard APIs**: 99.95% availability durante horarios operacionales
+- **System Uptime**: 99.95% disponibilidad (4.38 horas/año máximo downtime)
+- **Event Ingestion**: 99.99% disponibilidad para ingesta de eventos críticos
+- **Query Service**: 99.9% disponibilidad para consultas operacionales
+- **Dashboard APIs**: 99.95% disponibilidad durante horarios operacionales
 
 **Métricas de medición**:
 
@@ -28,7 +28,7 @@ El sistema debe mantener disponibilidad continua para capturar eventos críticos
 **Estrategias de implementación**:
 
 ```yaml
-High Availability Architecture:
+High Disponibilidad Architecture:
   Database:
     - PostgreSQL Primary-Replica setup
     - Read replicas in multiple AZs
@@ -42,7 +42,7 @@ High Availability Architecture:
     - Graceful degradation for non-critical features
 
   Infrastructure:
-    - Load balancers with health monitoring
+    - Load balancers with monitoreo de salud
     - Cross-region disaster recovery
     - Automated backup verification
 ### 10.1.2 Rendimiento (Performance) - Criticidad: ALTA
@@ -57,7 +57,7 @@ El sistema debe mantener latencias ultra-bajas para responder a eventos crítico
 
 **Métricas de medición**:
 
-| Operación | P50 Target | P95 Target | P99 Target | Throughput |
+| Operación | P50 Target | P95 Target | P99 Target | Capacidad de procesamiento |
 |-----------|------------|------------|------------|------------|
 | **Event Write** | < 5ms | < 10ms | < 25ms | > 10,000 ops/sec |
 | **Timeline Read** | < 25ms | < 100ms | < 200ms | > 5,000 ops/sec |
@@ -377,7 +377,7 @@ Facilidad de modificación, debugging y evolución del sistema.
 | Aspecto | Target | Measurement | Developer Experience |
 |---------|--------|-------------|---------------------|
 | **Cyclomatic Complexity** | < 10 per method | Static analysis | Code review quality |
-| **Technical Debt** | < 5% of development time | Time tracking | Refactoring frequency |
+| **Deuda Técnica** | < 5% of development time | Time tracking | Refactoring frequency |
 | **Documentation Coverage** | > 90% | Documentation tools | Developer onboarding time |
 | **Build Success Rate** | > 98% | CI/CD metrics | Developer productivity |
 
@@ -522,7 +522,7 @@ Scenario: Cross-Tenant Access Attempt
 
 ```yaml
 slis:
-  availability:
+  disponibilidad:
     name: "Service Uptime"
     metric: "up"
     target: 99.95
@@ -535,7 +535,7 @@ slis:
     target_p99: 0.2
     measurement_window: "5m"
 
-  throughput:
+  capacidad de procesamiento:
     name: "Event Processing Rate"
     metric: "events_processed_per_second"
     target: 5000
@@ -558,12 +558,12 @@ slis:
 
 | SLO | Target | Measurement Period | Error Budget |
 |-----|--------|-------------------|--------------|
-| **API Availability** | 99.9% | 30 days | 43.2 minutes |
+| **API Disponibilidad** | 99.9% | 30 days | 43.2 minutes |
 | **Event Ingestion Success** | 99.95% | 7 days | 10.08 minutes |
 | **Query Response Time** | 95% < 100ms | 24 hours | 5% slow requests |
 | **Data Consistency** | 99.99% | 7 days | 1.008 minutes inconsistency |
 
-### 10.3.3 Alerting Strategy
+### 10.3.3 Alertas Strategy
 
 **Critical Alerts (Page immediately)**:
 ```yaml
@@ -717,7 +717,7 @@ security_testing:
 - Incident response procedures
 - Risk assessment and management
 
-**SOC 2 Type II - Security and Availability**:
+**SOC 2 Type II - Security and Disponibilidad**:
 - Control environment documentation
 - System monitoring and logging
 - Change management processes
@@ -734,7 +734,7 @@ security_testing:
 | Estándar | Requisito | Métrica | Target | Measurement |
 |----------|-----------|---------|---------|-------------|
 | **ISO 27001** | Audit Trail | Coverage % | 100% | Automated monitoring |
-| **SOC 2** | Availability | Uptime % | 99.9% | SLA tracking |
+| **SOC 2** | Disponibilidad | Uptime % | 99.9% | SLA tracking |
 | **GDPR** | Data Retention | Compliance % | 100% | Policy enforcement |
 | **Industry** | Incident Response | MTTR | < 4 hours | Incident tracking |
 
@@ -766,7 +766,7 @@ certification_process:
 **Resumen de atributos de calidad críticos**:
 
 1. **Disponibilidad**: 99.95% uptime con failover automático en < 30 segundos
-2. **Rendimiento**: < 100ms P95 para queries, > 10K events/sec throughput
+2. **Rendimiento**: < 100ms P95 para queries, > 10K events/sec capacidad de procesamiento
 3. **Escalabilidad**: Auto-scaling hasta 50 instancias, soporte 1M eventos/hora
 4. **Confiabilidad**: Zero data loss, < 0.01% error rate, strong consistency
 5. **Seguridad**: Multi-tenant isolation, encryption, 100% audit coverage
@@ -801,7 +801,7 @@ public class EventStoreCircuitBreaker
 
 ### 10.1.2 Performance - Criticidad: ALTA
 
-Rendimiento optimizado para high-throughput event ingestion y consultas operacionales en tiempo real.
+Rendimiento optimizado para high-capacidad de procesamiento event ingestion y consultas operacionales en tiempo real.
 
 **Latencia de escritura (Event Ingestion)**:
 
@@ -809,7 +809,7 @@ Rendimiento optimizado para high-throughput event ingestion y consultas operacio
 |-----------|-----|-----|-----|---------------|
 | **Single Event Append** | < 10ms | < 25ms | < 50ms | 10,000 events/sec |
 | **Batch Event Append** | < 50ms | < 100ms | < 200ms | 50,000 events/batch |
-| **Event Correlation** | < 15ms | < 30ms | < 75ms | Real-time processing |
+| **Correlación de Eventos** | < 15ms | < 30ms | < 75ms | Real-time processing |
 | **Stream Validation** | < 5ms | < 10ms | < 20ms | Per event validation |
 
 **Latencia de lectura (Query Performance)**:
@@ -818,10 +818,10 @@ Rendimiento optimizado para high-throughput event ingestion y consultas operacio
 |------------|-----|-----|-----|----------------|
 | **Timeline Queries** | < 50ms | < 100ms | < 200ms | Redis cache, 15 min TTL |
 | **Analytics Queries** | < 200ms | < 500ms | < 1s | Materialized views |
-| **Real-time Dashboards** | < 100ms | < 150ms | < 300ms | In-memory cache |
+| **Dashboards en Tiempo Real** | < 100ms | < 150ms | < 300ms | In-memory cache |
 | **Historical Searches** | < 500ms | < 1s | < 2s | Indexed queries |
 
-**Throughput requirements**:
+**Capacidad de procesamiento requirements**:
 
 ```yaml
 Event Ingestion Targets:
@@ -830,7 +830,7 @@ Event Ingestion Targets:
   Batch Processing: 100,000 events/minute
   Concurrent Streams: 5,000 active streams
 
-Query Throughput:
+Query Capacidad de procesamiento:
   Real-time Queries: 2,000 requests/second
   Dashboard APIs: 1,000 requests/second
   Analytics Queries: 500 requests/second
@@ -846,7 +846,7 @@ public class OptimizedEventStore
     private readonly IConnectionPool _connectionPool;
     private readonly PreparedStatementCache _statementCache;
 
-    // Batch processing for high throughput
+    // Batch processing for high capacidad de procesamiento
     public async Task<BatchResult> AppendEventsAsync(IEnumerable<Event> events)
     {
         const int batchSize = 1000;
@@ -974,7 +974,7 @@ Garantías de consistencia para audit trail y compliance regulatorio.
 | Data Type | Consistency Level | Guarantee | Implementation |
 |-----------|-------------------|-----------|----------------|
 | **Event Append** | Strong consistency | Immediate read after write | PostgreSQL ACID transactions |
-| **Event Correlation** | Causal consistency | Related events ordered | Vector clocks, happens-before |
+| **Correlación de Eventos** | Causal consistency | Related events ordered | Vector clocks, happens-before |
 | **Read Models** | Eventual consistency | < 5 seconds propagation | Event-driven projections |
 | **Cross-tenant** | Isolation | Complete tenant separation | Row-level security (RLS) |
 
@@ -1245,7 +1245,7 @@ public class ComplianceAuditService
 **Artefacto**: Event Store y read models
 **Entorno**: Carga alta concentrada
 **Respuesta**: Auto-scaling de instancias + cache warming
-**Medida**: Latencia P95 se mantiene < 100ms, throughput sostenido
+**Medida**: Latencia P95 se mantiene < 100ms, capacidad de procesamiento sostenido
 
 ### 10.2.3 Escenario de Consistency
 
@@ -1323,13 +1323,13 @@ public class ComplianceAuditService
 - Audit trail integrity: Verified
 - SLA compliance: Monitored continuously
 
-## 10.5 Monitoring y Alerting
+## 10.5 Monitoring y Alertas
 
 ### 10.5.1 SLIs (Service Level Indicators)
 
 ```yaml
 slis:
-  availability:
+  disponibilidad:
     metric: uptime_percentage
     target: 99.9
     measurement_window: 30d
@@ -1339,7 +1339,7 @@ slis:
     target: 100ms
     measurement_window: 5m
 
-  throughput:
+  capacidad de procesamiento:
     metric: events_processed_per_second
     target: 5000
     measurement_window: 1m
@@ -1350,7 +1350,7 @@ slis:
     measurement_window: 5m
 ```
 
-### 10.5.2 Alerting Rules
+### 10.5.2 Alertas Rules
 
 **Critical Alerts**:
 - Event Store unavailable > 1 minute

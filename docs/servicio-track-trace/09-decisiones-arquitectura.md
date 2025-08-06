@@ -387,7 +387,7 @@ public async Task<T> ProcessEventWithTracing<T>(IDomainEvent @event, Func<Task<T
 
 ### Desafíos
 1. **Learning curve**: Team ramping time fue 3 meses vs 1 mes estimado
-2. **Debugging complexity**: Nuevas herramientas requeridas para troubleshooting
+2. **Debugging complexity**: Nuevas herramientas requeridas para resolución de problemas
 3. **Testing strategy**: Contract testing entre eventos más complejo que anticipado
 
 ### Ajustes realizados
@@ -468,13 +468,13 @@ public class TimelineReadModel : ITimelineQueries
 **Decidido por**: Equipo de Arquitectura
 
 ### Contexto
-Necesidad de streaming de eventos hacia read models y sistemas externos con alta throughput y durabilidad, con flexibilidad para escalar según volumen operacional.
+Necesidad de streaming de eventos hacia read models y sistemas externos con alta capacidad de procesamiento y durabilidad, con flexibilidad para escalar según volumen operacional.
 
 ### Alternativas consideradas
 1. **PostgreSQL**: Inicio simple, ACID compliance, expertise del equipo
 2. **SNS+SQS**: Escalabilidad managed AWS, integración nativa
 3. **RabbitMQ/Amazon MQ**: Event streaming robusto, patrones messaging complejos
-4. **Event Bus (Kafka)**: Alto throughput, ecosistema maduro (para volúmenes muy altos)
+4. **Event Bus (Kafka)**: Alto capacidad de procesamiento, ecosistema maduro (para volúmenes muy altos)
 
 ### Decisión
 Adoptamos **Event Store agnóstico basado en volumen** con abstracción IEventStore.

@@ -27,7 +27,7 @@ Esta sección define las restricciones técnicas, organizacionales y operacional
 | Métrica | Requisito | Justificación |
 |---------|-----------|---------------|
 | **Latencia P95** | < 100ms | Experiencia de usuario |
-| **Throughput** | > 5,000 RPS | Carga esperada |
+| **Rendimiento** | > 5,000 RPS | Carga esperada |
 | **Utilización CPU** | < 70% promedio | Planificación de capacidad |
 | **Disponibilidad** | 99.9% | SLA empresarial |
 
@@ -44,7 +44,7 @@ Esta sección define las restricciones técnicas, organizacionales y operacional
 
 - **Arquitectura zero trust** - Todo request debe ser autenticado
 - **Implementación RBAC** - Roles definidos por tenant
-- **Audit logging** completo para compliance
+- **Registro de auditoría** completo para cumplimiento
 - **Cifrado de datos** en tránsito y reposo
 
 ## 2.3 Restricciones Operacionales
@@ -98,7 +98,7 @@ El API Gateway **SOLO** puede enrutar a estos servicios:
 |---------|-------------|----------------|----------|
 | **Configuración Dinámica** | Recarga en caliente sin reinicio | Proveedores de configuración | Validación de cambios, capacidad de rollback |
 | **Versionado de Rutas** | Soporte para versionado de API | Enrutamiento basado en header/path | Pruebas de compatibilidad de versiones |
-| **Load Balancing** | Soporte para múltiples algoritmos | Round-robin, menos conexiones | Enrutamiento basado en salud |
+| **Balanceador de Carga** | Soporte para múltiples algoritmos | Round-robin, menos conexiones | Enrutamiento basado en salud |
 | **Transformaciones** | Modificación de request/response | Manipulación de headers, reescritura de paths | Validación de transformaciones |
 
 ### Health Checks y Monitoreo
@@ -126,7 +126,7 @@ El API Gateway **SOLO** puede enrutar a estos servicios:
 | Control | Requisito | Implementación | Validación |
 |---------|-----------|----------------|------------|
 | **Validación de Tokens** | Verificación de firma JWT | Validación de clave pública de Keycloak | Introspección de tokens, verificación de firma |
-| **Rate Limiting** | Límites por cliente y globales | Protección DDoS, uso justo | Contadores basados en Redis, ventanas deslizantes |
+| **Limitación de Velocidad** | Límites por cliente y globales | Protección DDoS, uso justo | Contadores basados en Redis, ventanas deslizantes |
 | **Lista de IPs Permitidas** | Restricciones de IP origen | Capa adicional de seguridad | Rangos de IP configurables por tenant |
 | **Validación de Requests** | Sanitización de entrada | Endurecimiento de seguridad | Validación de esquemas, filtrado de entrada |
 
@@ -204,7 +204,7 @@ El API Gateway **SOLO** puede enrutar a estos servicios:
 | **Disponibilidad** | 99.9% uptime | Agregación de health checks | Respuesta a incidentes |
 | **Tiempo de Respuesta** | p95 < 200ms | Percentiles de latencia | Optimización de rendimiento |
 | **Tasa de Errores** | < 0.1% | Monitoreo de ratio de errores | Análisis de causa raíz |
-| **Throughput** | 50k req/min | Seguimiento de tasa de requests | Planificación de capacidad |
+| **Capacidad de procesamiento** | 50k req/min | Seguimiento de tasa de requests | Planificación de capacidad |
 
 ## 2.9 Limitaciones Conocidas
 
@@ -243,7 +243,7 @@ El API Gateway **SOLO** puede enrutar a estos servicios:
 
 - [YARP Documentation](https://microsoft.github.io/reverse-proxy/)
 - [YARP Configuration](https://microsoft.github.io/reverse-proxy/articles/config-files.html)
-- [YARP Load Balancing](https://microsoft.github.io/reverse-proxy/articles/load-balancing.html)
+- [YARP Balanceador de Carga](https://microsoft.github.io/reverse-proxy/articles/load-balancing.html)
 
 ### AWS Services
 

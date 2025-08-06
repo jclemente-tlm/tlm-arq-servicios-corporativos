@@ -2,7 +2,7 @@
 
 ## A
 
-**API Gateway**: Punto de entrada único que gestiona todas las peticiones de clientes hacia los microservicios backend, proporcionando funcionalidades como routing, autenticación, rate limiting y monitoreo.
+**API Gateway**: Punto de entrada único que gestiona todas las peticiones de clientes hacia los microservicios backend, proporcionando funcionalidades como routing, autenticación, limitación de velocidad y monitoreo.
 
 **Auto-scaling**: Capacidad de ajustar automáticamente la cantidad de recursos computacionales (instancias, contenedores) basándose en la demanda actual del sistema.
 
@@ -128,7 +128,7 @@
 
 ## R
 
-**Rate Limiting**: Técnica para controlar la cantidad de requests que un cliente puede hacer en un período de tiempo.
+**Limitación de Velocidad**: Técnica para controlar la cantidad de requests que un cliente puede hacer en un período de tiempo.
 
 **Redis**: Almacén de estructura de datos en memoria usado como base de datos, cache y message broker.
 
@@ -150,13 +150,13 @@
 
 **SLA**: Service Level Agreement, compromiso formal sobre el nivel de servicio que se proporcionará.
 
-**Sliding Window**: Algoritmo para rate limiting que mantiene un contador de requests en una ventana de tiempo móvil.
+**Sliding Window**: Algoritmo para limitación de velocidad que mantiene un contador de requests en una ventana de tiempo móvil.
 
 ## T
 
 **Tenant**: En sistemas multi-tenant, organización o cliente que usa el sistema de forma aislada de otros tenants.
 
-**Throughput**: Número de requests o transacciones que un sistema puede manejar por unidad de tiempo.
+**Capacidad de procesamiento**: Número de requests o transacciones que un sistema puede manejar por unidad de tiempo.
 
 **TLS**: Transport Layer Security, protocolo criptográfico para proporcionar seguridad en comunicaciones de red.
 

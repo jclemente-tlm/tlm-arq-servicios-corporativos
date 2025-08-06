@@ -30,21 +30,21 @@ sequenceDiagram
     participant DB as Base de Datos
 
     App->>Gateway: 1. POST /notifications/send
-    Gateway->>Gateway: 2. Validate JWT token
-    Gateway->>API: 3. Forward request
+    Gateway->>Gateway: 2. Validar token JWT
+    Gateway->>API: 3. Reenviar solicitud
 
-    API->>API: 4. Validate payload & template
-    API->>DB: 5. Store notification record
-    API->>Kafka: 6. Publish notification event
+    API->>API: 4. Validar payload y plantilla
+    API->>DB: 5. Almacenar registro de notificación
+    API->>Kafka: 6. Publicar evento de notificación
     API->>App: 7. HTTP 202 Accepted {messageId}
 
     Note over Kafka,Processor: Procesamiento Asíncrono
-    Kafka->>Processor: 8. Consume notification event
-    Processor->>Processor: 9. Render template with data
+    Kafka->>Processor: 8. Consumir evento de notificación
+    Processor->>Processor: 9. Renderizar plantilla con datos
     Processor->>Provider: 10. Send via provider API
-    Provider->>Processor: 11. Delivery receipt
-    Processor->>DB: 12. Update delivery status
-    Processor->>Kafka: 13. Publish status event
+    Provider->>Processor: 11. Recibo de entrega
+    Processor->>DB: 12. Actualizar estado de entrega
+    Processor->>Kafka: 13. Publicar evento de estado
 
     Note over Processor,App: Webhook Opcional
     Processor->>App: 14. Webhook callback (if configured)
@@ -64,7 +64,7 @@ sequenceDiagram
 | **API Response Time** | p95 < 100ms | APM monitoring |
 | **Event Processing** | < 500ms | Custom metrics |
 | **End-to-End Delivery** | < 30s (transactional) | Business metrics |
-| **Throughput** | 10K req/min per instance | Load testing |
+| **Capacidad de procesamiento** | 10K req/min per instance | Load testing |
 
 ## 6.2 Escenario: Procesamiento de Eventos Track & Trace
 
@@ -112,7 +112,7 @@ sequenceDiagram
 
 ### Descripción
 
-Procesamiento optimizado para envío masivo de notificaciones promocionales con rate limiting y batch processing.
+Procesamiento optimizado para envío masivo de notificaciones promocionales con limitación de velocidad y batch processing.
 
 ### Flujo de Batch Processing
 
@@ -138,11 +138,11 @@ flowchart TD
 ### Optimizaciones Aplicadas
 
 - **Chunking:** División en lotes de 100-1000 recipients
-- **Rate Limiting:** Respeto a límites de providers
+- **Limitación de Velocidad:** Respeto a límites de providers
 - **Batch APIs:** Uso de APIs batch cuando están disponibles
 - **Circuit Breaker:** Protección contra failures de providers
 
-## 6.4 Escenario: Error Handling y Retry
+## 6.4 Escenario: Manejo de Errores y Retry
 
 ### Descripción
 
@@ -199,7 +199,7 @@ graph LR
     E --> H[Log Aggregation]
 
     F --> I[Performance Insights]
-    G --> J[Alerting]
+    G --> J[Alertas]
     H --> K[Error Analysis]
 ```
 
@@ -208,10 +208,10 @@ graph LR
 - **Request Rate:** Notifications per second by channel
 - **Error Rate:** Failed notifications percentage
 - **Latency:** p50, p95, p99 processing times
-- **Provider Health:** External API availability
+- **Provider Health:** External API disponibilidad
 - **Queue Depth:** Backlog size by priority
 
-Cada escenario incluye puntos de instrumentación específicos para troubleshooting y optimización continua.
+Cada escenario incluye puntos de instrumentación específicos para resolución de problemas y optimización continua.
 
 ## 6.2 Escenario: Procesamiento Bulk de Notificaciones
 
@@ -437,8 +437,8 @@ sequenceDiagram
 ## Referencias
 
 - [Message Queue Patterns](https://www.enterpriseintegrationpatterns.com/patterns/messaging/)
-- [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
-- [Email Deliverability Best Practices](https://sendgrid.com/blog/email-deliverability-best-practices/)
+- [Patrón Circuit Breaker](https://martinfowler.com/bliki/CircuitBreaker.html)
+- [Email Deliverability Mejores Prácticas](https://sendgrid.com/blog/email-deliverability-best-practices/)
 - [Arc42 Runtime View](https://docs.arc42.org/section-6/)
     S->>S3: Adjunta archivos (si aplica)
     S->>K: Publica evento de envío

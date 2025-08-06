@@ -17,17 +17,18 @@ El sistema se integra con el ecosistema corporativo para proporcionar comunicaci
 
 | Actor | Descripción | Interacciones Principales |
 |-------|-------------|---------------------------|
-| **Aplicaciones Corporativas** | Sistemas que requieren envío de notificaciones | Envío de requests vía API REST |
-| **Usuarios Finales** | Destinatarios de las notificaciones | Recepción por Email, SMS, WhatsApp, Push |
+| **Aplicaciones Corporativas** | Sistemas empresariales que requieren envío de notificaciones | Envío de solicitudes vía API REST |
+| **Usuarios Finales** | Clientes, empleados y stakeholders corporativos | Recepción por Email, SMS, WhatsApp, Push |
+| **Sistemas de Terceros** | Proveedores, partners y sistemas externos | Integración vía API y webhooks |
 | **Administradores del Sistema** | Gestores de configuración y monitoreo | Configuración de templates, canales, monitoring |
 
 #### Usuarios Secundarios
 
 | Actor | Descripción | Interacciones |
 |-------|-------------|---------------|
-| **Marketing Teams** | Equipos de marketing regional | Configuración de campañas promocionales |
-| **Operations Teams** | Equipos operacionales | Monitoreo de entregas, troubleshooting |
-| **Compliance Officers** | Responsables de cumplimiento | Audit de entregas, gestión de opt-outs |
+| **Equipos de Marketing** | Equipos de marketing regional por país | Configuración de campañas promocionales |
+| **Equipos Operacionales** | Equipos operacionales aeroportuarios | Monitoreo de entregas, resolución de problemas |
+| **Oficiales de Cumplimiento** | Responsables de cumplimiento regulatorio | Auditoría de entregas, gestión de opt-outs |
 
 ### Interfaces de Dominio
 
@@ -36,7 +37,7 @@ El sistema se integra con el ecosistema corporativo para proporcionar comunicaci
 | Origen | Interface | Tipo de Datos | Propósito |
 |--------|-----------|---------------|-----------|
 | **Aplicaciones Corporativas** | REST API `/notifications` | JSON notification requests | Solicitudes de envío |
-| **Sistema de Templates** | Template Management API | Template definitions | Gestión de plantillas |
+| **Sistema de Templates** | Gestión de Plantillas API | Template definitions | Gestión de plantillas |
 | **Admin Console** | Configuration API | Configuration data | Gestión de configuraciones |
 | **Webhook Providers** | Callback endpoints | Delivery status | Status de entrega |
 
@@ -53,13 +54,31 @@ El sistema se integra con el ecosistema corporativo para proporcionar comunicaci
 
 ### Objetivos de Negocio
 
-| Prioridad | Objetivo | KPI | Target |
-|-----------|----------|-----|--------|
-| **Alta** | **Confiabilidad de Entrega** | Tasa de Éxito de Entrega | > 99.5% |
-| **Alta** | **Tiempo de Respuesta** | Tiempo de Respuesta API p95 | < 200ms |
-| **Media** | **Escalabilidad** | Manejo de Carga Pico | 50K notificaciones/min |
-| **Media** | **Cumplimiento** | Procesamiento de Opt-out | < 1 hora |
-| **Baja** | **Eficiencia de Costo** | Costo por Notificación | < $0.05 |
+| Prioridad | Objetivo | KPI | Target | Contexto Empresarial |
+|-----------|----------|-----|--------|----------------------|
+| **Alta** | **Confiabilidad de Entrega** | Tasa de Éxito de Entrega | > 99.5% | Crítico para notificaciones transaccionales |
+| **Alta** | **Tiempo de Respuesta** | Tiempo de Respuesta API p95 | < 200ms | Notificaciones en tiempo real |
+| **Media** | **Escalabilidad** | Manejo de Carga Pico | 50K notificaciones/min | Picos durante campañas y eventos |
+| **Media** | **Cumplimiento** | Procesamiento de Opt-out | < 1 hora | Cumplimiento GDPR y regulaciones locales |
+| **Baja** | **Eficiencia de Costo** | Costo por Notificación | < $0.05 | Optimización de costos operacionales |
+
+### Casos de Uso Empresariales
+
+#### Notificaciones Transaccionales
+- **Confirmaciones**: Confirmación de transacciones, reservas y procesos
+- **Alertas del sistema**: Notificaciones automáticas sobre cambios de estado
+- **Recordatorios**: Notificaciones programadas para eventos importantes
+- **Alertas de seguridad**: Comunicaciones críticas y de emergencia
+
+#### Notificaciones Operacionales
+- **Personal corporativo**: Cambios organizacionales, alertas operacionales
+- **Coordinación de servicios**: Comunicación entre equipos y departamentos
+- **Proveedores y partners**: Notificaciones sobre procesos y requerimientos
+
+#### Notificaciones Comerciales
+- **Campañas de marketing**: Promociones, ofertas y comunicaciones comerciales
+- **Programas de fidelidad**: Actualizaciones de beneficios y recompensas
+- **Encuestas de satisfacción**: Feedback y evaluación de servicios
 
 ## 3.2 Contexto técnico
 
@@ -124,7 +143,7 @@ graph LR
 
 | Componente | Tecnología | Propósito | Configuración |
 |------------|------------|-----------|---------------|
-| **API Gateway** | YARP (ASP.NET Core) | Routing y rate limiting | Load balancing, timeout 30s |
+| **API Gateway** | YARP (ASP.NET Core) | Routing y limitación de velocidad | Load balancing, timeout 30s |
 | **Message Broker** | Event Bus agnóstico | Event streaming | Retention 7 days, 3 replicas |
 | **Database** | PostgreSQL | Data persistence | Multi-tenant schema design |
 | **Cache** | Redis | Response caching | TTL 300s, cluster mode |
@@ -147,7 +166,7 @@ graph LR
 
 | Destino | Latencia Target | Bandwidth | Disponibilidad |
 |---------|----------------|-----------|----------------|
-| **External Providers** | < 2s timeout | 1 Mbps sustained | 99.9% uptime dependency |
+| **Proveedores Externos** | < 2s timeout | 1 Mbps sustained | 99.9% uptime dependency |
 | **Internal Services** | < 500ms | 10 Mbps | 99.95% uptime |
 | **Database** | < 50ms | 100 Mbps | 99.99% uptime |
 | **API Requests** | Web/Mobile apps | Manual notifications | On-demand | REST API (JSON) |
@@ -173,7 +192,7 @@ graph LR
 |---------|-------------|-------------------|-----------|
 | **Multi-channel Delivery** | Envío Email, SMS, WhatsApp, Push | Todos los usuarios | Alta |
 | **Event-driven Notifications** | Automatización basada en eventos | Sistemas internos | Alta |
-| **Template Management** | Gestión centralizada de plantillas | Content managers | Alta |
+| **Gestión de Plantillas** | Gestión centralizada de plantillas | Content managers | Alta |
 | **Delivery Tracking** | Seguimiento estado entregas | Operations, customer service | Alta |
 | **Retry & Fallback** | Reintentos automáticos y canales alternativos | Sistema automático | Media |
 | **Personalization** | Contenido personalizado por usuario/contexto | End users | Media |

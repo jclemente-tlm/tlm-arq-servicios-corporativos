@@ -30,9 +30,9 @@ El sistema de identidad es la piedra angular de la seguridad corporativa, propor
 |----------|-------------|-------------------|
 | **Seguridad Centralizada** | Punto único de autenticación y autorización | Cero violaciones de seguridad, 100% cumplimiento auditoría |
 | **Experiencia de Usuario** | SSO transparente para aplicaciones corporativas | < 3 clics para acceso, 95% satisfacción usuario |
-| **Eficiencia Operativa** | Automatización de gestión de usuarios | 80% autoservicio, tiempo incorporación < 15 min |
+| **Eficiencia Operacional** | Automatización de gestión de usuarios | 80% autoservicio, tiempo incorporación < 15 min |
 | **Cumplimiento Regulatorio** | Cumplimiento GDPR, SOX, regulaciones locales | 100% éxito auditoría, cero violaciones |
-| **Escalabilidad Multi-tenant** | Soporte crecimiento por países | Escalamiento lineal, aislamiento tenant |
+| **Escalabilidad Multi-tenant** | Soporte crecimiento por países | Escalado lineal, aislamiento tenant |
 
 ## 3.2 Contexto técnico
 
@@ -112,7 +112,7 @@ El sistema de identidad es la piedra angular de la seguridad corporativa, propor
 | Interface | Protocol | Port | Purpose | Security |
 |-----------|----------|------|---------|----------|
 | **Admin Console** | HTTPS | 8443 | Web-based administration | TLS 1.3, session auth |
-| **Account Console** | HTTPS | 8443 | User self-service portal | TLS 1.3, user auth |
+| **Account Console** | HTTPS | 8443 | User portal de autoservicio | TLS 1.3, user auth |
 | **Login Forms** | HTTPS | 8443 | Authentication UI | TLS 1.3, CSRF protection |
 
 #### API Interfaces
@@ -204,7 +204,7 @@ sequenceDiagram
     I->>B: Return tokens to application
 ```
 
-### UC-IDN-04: User Lifecycle Management
+### UC-IDN-04: Gestión de Ciclo de Vida de Usuario
 
 ```mermaid
 sequenceDiagram
@@ -246,7 +246,7 @@ sequenceDiagram
 | **REQ-SSO-001** | Cross-service SSO within ecosystem | Alta | User logs in once, accesses all authorized services |
 | **REQ-SSO-002** | Session timeout configuration per realm | Alta | Configurable idle timeout (1-8 hours) |
 | **REQ-SSO-003** | Remember device functionality | Media | "Trust this device" for 30 days |
-| **REQ-SSO-004** | Concurrent session management | Media | Max 5 active sessions per user |
+| **REQ-SSO-004** | Concurrent gestión de sesiones | Media | Max 5 active sessions per user |
 
 ### User Management
 
@@ -275,13 +275,13 @@ sequenceDiagram
 | **Authentication Latency** | p95 < 200ms | Login response time | 95% requests under 200ms |
 | **Token Validation** | p95 < 50ms | JWT validation time | 95% validations under 50ms |
 | **Concurrent Users** | 10,000 simultaneous | Active sessions | No performance degradation |
-| **Throughput** | 1,000 req/sec | Authentication requests | Sustainable load |
+| **Capacidad de procesamiento** | 1,000 req/sec | Authentication requests | Sustainable load |
 
-### Availability Requirements
+### Disponibilidad Requirements
 
 | Aspect | Requirement | Measurement | Recovery |
 |--------|-------------|-------------|----------|
-| **System Uptime** | 99.9% availability | Monthly uptime | < 43 minutes downtime/month |
+| **System Uptime** | 99.9% disponibilidad | Monthly uptime | < 43 minutes downtime/month |
 | **Planned Maintenance** | < 4 hours/month | Scheduled maintenance | Off-peak hours only |
 | **Disaster Recovery** | RTO: 4 hours, RPO: 15 min | Recovery metrics | Cross-region failover |
 | **Backup Frequency** | Daily automated | Backup success rate | 100% backup success |
@@ -317,7 +317,7 @@ sequenceDiagram
 | **ISO 27001** | Information Security Management | ISMS implementation | Annual audit |
 | **SOC 2 Type II** | Security controls | Control effectiveness | Quarterly assessment |
 | **NIST Framework** | Cybersecurity framework | Risk management | Self-assessment |
-| **OAuth 2.1** | Modern authorization | Security best practices | Compliance testing |
+| **OAuth 2.1** | Modern authorization | Security mejores prácticas | Compliance testing |
 | **HR Administrator** | Humano | Gestión de recursos humanos | Onboarding, offboarding usuarios |
 | **End User** | Humano | Usuario final del sistema | Login, profile management, password reset |
 | **Service Account** | Sistema | Cuentas para servicios/APIs | Service-to-service authentication |
@@ -364,10 +364,10 @@ sequenceDiagram
 | **Single Sign-On (SSO)** | Acceso unificado a aplicaciones | End users | Alta |
 | **Role-Based Access Control** | Autorización granular basada en roles | Administradores, end users | Alta |
 | **Identity Federation** | Integración con IdPs externos | Usuarios federados | Alta |
-| **User Lifecycle Management** | CRUD completo de usuarios | HR administrators | Media |
-| **Self-Service Portal** | Gestión autónoma de perfiles | End users | Media |
-| **Multi-Factor Authentication** | Seguridad adicional para roles críticos | Usuarios privilegiados | Media |
-| **Session Management** | Control de sesiones y timeouts | Todos los usuarios | Media |
+| **Gestión de Ciclo de Vida de Usuario** | CRUD completo de usuarios | HR administrators | Media |
+| **Portal de Autoservicio** | Gestión autónoma de perfiles | End users | Media |
+| **Autenticación Multi-Factor** | Seguridad adicional para roles críticos | Usuarios privilegiados | Media |
+| **Gestión de Sesiones** | Control de sesiones y timeouts | Todos los usuarios | Media |
 | **Audit & Compliance** | Logging y reportes de seguridad | Compliance officers | Baja |
 
 ### Funcionalidades Excluidas
@@ -458,7 +458,7 @@ Postcondición: Service-to-service communication autorizada
 | **Authentication Latency** | Response time | p95 < 100ms | APM monitoring |
 | **Token Validation** | Validation time | p95 < 50ms | API monitoring |
 | **Concurrent Users** | Simultaneous sessions | 10,000 users | Load testing |
-| **Throughput** | Authentications/second | 1,000 auth/sec | Performance testing |
+| **Capacidad de procesamiento** | Authentications/second | 1,000 auth/sec | Performance testing |
 
 ### Security
 
@@ -469,11 +469,11 @@ Postcondición: Service-to-service communication autorizada
 | **Failed Login Attempts** | Brute force attacks | < 0.1% success rate | Authentication monitoring |
 | **Audit Completeness** | Events logged | 100% coverage | Audit verification |
 
-### Availability
+### Disponibilidad
 
 | Atributo | Métrica | Target | Medición |
 |----------|---------|--------|----------|
-| **System Uptime** | Service availability | 99.9% | Health monitoring |
+| **System Uptime** | Service disponibilidad | 99.9% | Health monitoring |
 | **Recovery Time** | RTO | < 4 hours | Disaster recovery testing |
 | **Data Loss** | RPO | < 15 minutes | Backup validation |
 | **Mean Time to Recovery** | MTTR | < 30 minutes | Incident response |

@@ -24,7 +24,7 @@ Las alternativas evaluadas fueron:
 | Criterio                | YARP (.NET)        | AWS API Gateway   | NGINX/Traefik    | Ocelot | Kong | KrakenD |
 |------------------------|--------------------|-------------------|------------------|--------|------|---------|
 | Agnosticismo           | ✅ Totalmente agnóstico (`open source`, multi-cloud) | ❌ Dependiente de proveedor (`AWS`) | ✅ Totalmente agnóstico (`open source`, multi-cloud) | ✅ Totalmente agnóstico (`open source`, multi-cloud) | ✅ Totalmente agnóstico (`open source`, multi-cloud) | ✅ Totalmente agnóstico (`open source`, multi-cloud) |
-| Gestión operativa      | Gestionada por el equipo     | Gestionada por proveedor        | Gestionada por el equipo   | Gestionada por el equipo | Gestionada por el equipo | Gestionada por el equipo |
+| Gestión operacional      | Gestionada por el equipo     | Gestionada por proveedor        | Gestionada por el equipo   | Gestionada por el equipo | Gestionada por el equipo | Gestionada por el equipo |
 | Multi-tenant / Multi-país | Sí | Sí | Sí | Sí | Sí | Sí |
 | Alta disponibilidad    | Requiere configuración | Garantizada      | Requiere configuración | Requiere configuración | Requiere configuración | Requiere configuración |
 | Escalabilidad          | Alta               | Alta             | Alta             | Media | Alta | Alta |

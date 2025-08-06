@@ -32,8 +32,8 @@ El sistema implementa un modelo de seguridad robusta que garantiza el aislamient
 | Rol | Permisos | Ámbito | Limitaciones |
 |-----|----------|--------|--------------|
 | **notification:admin** | CRUD plantillas, configuración | Global | Todos los tenants |
-| **notification:operator** | Envío, consulta estado | Por tenant | Solo su tenant |
-| **notification:reader** | Solo lectura | Por tenant | Métricas y logs |
+| **notification:operator** | Envío, consulta de estado | Por tenant | Solo su tenant |
+| **notification:reader** | Solo lectura | Por tenant | Métricas y registros |
 | **system:processor** | Procesamiento interno | Sistema | APIs internas |
 
 #### Cifrado y Protección de Datos
@@ -41,7 +41,7 @@ El sistema implementa un modelo de seguridad robusta que garantiza el aislamient
 - **En tránsito:** TLS 1.3 para todas las comunicaciones
 - **En reposo:** AES-256 para datos sensibles en BD
 - **Tokens:** Firmado JWT con RS256
-- **Secretos:** Gestión vía HashiCorp Vault o Azure Key Vault
+- **Secretos:** Gestión mediante HashiCorp Vault o Azure Key Vault
 
 ### Multi-tenancy y Aislamiento
 
@@ -49,30 +49,30 @@ El sistema implementa un modelo de seguridad robusta que garantiza el aislamient
 
 - Separación de esquema por tenant en PostgreSQL
 - Filtrado automático en consultas por tenantId
-- Storage isolation para attachments
-- Rate limiting independiente por tenant
+- Aislamiento de almacenamiento para adjuntos
+- Limitación de velocidad independiente por tenant
 
 ## 8.2 Observabilidad y Monitoreo
 
-### Structured Logging
+### Registro Estructurado
 
-Implementación de logging estructurado consistente usando Serilog con enriquecimiento contextual.
+Implementación de registro estructurado consistente usando Serilog con enriquecimiento contextual.
 
 ```csharp
 Log.Information("Notification {NotificationId} sent via {Channel} to {RecipientCount} recipients",
     notificationId, channel, recipients.Count);
 ```
 
-#### Niveles de Log Estándar
+#### Niveles de Registro Estándar
 
 | Nivel | Uso | Ejemplos |
 |-------|-----|----------|
-| **Trace** | Debugging detallado | Method entry/exit, variable values |
-| **Debug** | Información de desarrollo | SQL queries, cache hits/misses |
-| **Information** | Flujo normal del negocio | Notification sent, template rendered |
-| **Warning** | Situaciones recuperables | Rate limit approached, retry attempt |
-| **Error** | Errores que afectan funcionalidad | Provider API failure, validation error |
-| **Critical** | Errores que comprometen el sistema | Database connection lost, service down |
+| **Trace** | Depuración detallada | Entrada/salida de métodos, valores de variables |
+| **Debug** | Información de desarrollo | Consultas SQL, aciertos/fallos de caché |
+| **Information** | Flujo normal del negocio | Notificación enviada, plantilla renderizada |
+| **Warning** | Situaciones recuperables | Límite de velocidad alcanzado, intento de reintento |
+| **Error** | Errores que afectan funcionalidad | Fallo de API del proveedor, error de validación |
+| **Critical** | Errores que comprometen el sistema | Conexión de base de datos perdida, servicio caído |
 
 ### Métricas y KPIs
 
@@ -98,12 +98,12 @@ notification_errors_total{channel="email",error_type="provider_timeout"}
 
 **Métricas de Negocio:**
 
-- Delivery success rate por canal
-- Average delivery time
-- Template usage statistics
-- Cost per notification por provider
+- Tasa de éxito de entrega por canal
+- Tiempo promedio de entrega
+- Estadísticas de uso de plantillas
+- Costo por notificación por proveedor
 
-### Distributed Tracing
+### Trazado Distribuido
 
 Implementación de OpenTelemetry para trazabilidad distribuida:
 
@@ -114,13 +114,13 @@ activity?.SetTag("notification.channel", channel);
 activity?.SetTag("tenant.id", tenantId);
 ```
 
-## 8.3 Resilience y Error Handling
+## 8.3 Resiliencia y Manejo de Errores
 
-### Patrones de Resilience
+### Patrones de Resiliencia
 
-#### Circuit Breaker Pattern
+#### Patrón Circuit Breaker
 
-Protección contra failures en cascada de providers externos:
+Protección contra fallos en cascada de proveedores externos:
 
 ```csharp
 var circuitBreaker = Policy
@@ -128,7 +128,7 @@ var circuitBreaker = Policy
     .CircuitBreakerAsync(5, TimeSpan.FromMinutes(1));
 ```
 
-#### Retry with Exponential Backoff
+#### Reintentos con Backoff Exponencial
 
 ```csharp
 var retryPolicy = Policy
@@ -140,14 +140,14 @@ var retryPolicy = Policy
     );
 ```
 
-#### Timeout Policies
+#### Políticas de Timeout
 
 | Operación | Timeout | Justificación |
 |-----------|---------|---------------|
-| **Provider API calls** | 30s | Balance entre reliability y responsiveness |
-| **Database operations** | 10s | Prevent connection pool exhaustion |
-| **Template rendering** | 5s | Complex templates shouldn't block processing |
-| **File uploads** | 2min | Large attachments in campaigns |
+| **Llamadas API de proveedor** | 30s | Balance entre confiabilidad y capacidad de respuesta |
+| **Operaciones de base de datos** | 10s | Prevenir agotamiento del pool de conexiones |
+| **Renderizado de plantillas** | 5s | Las plantillas complejas no deben bloquear el procesamiento |
+| **Carga de archivos** | 2min | Adjuntos grandes en campañas |
 
 ### Error Classification
 
@@ -178,7 +178,7 @@ WHERE tenant_id = @currentTenantId;
 
 ```
 
-### Configuration Management
+### Gestión de Configuración
 
 **Tenant-specific Settings:**
 
@@ -278,9 +278,9 @@ public async Task<string> GetRenderedContentAsync(string cacheKey)
 - Template updates trigger cache eviction
 - Tenant configuration changes clear related caches
 
-### Rate Limiting
+### Limitación de Velocidad
 
-**Adaptive Rate Limiting:**
+**Adaptive Limitación de Velocidad:**
 
 ```csharp
 public class TenantRateLimiter
@@ -297,7 +297,7 @@ public class TenantRateLimiter
 
 ## 8.7 Deployment y Configuración
 
-### Configuration Management
+### Gestión de Configuración
 
 **Hierarchical Configuration:**
 

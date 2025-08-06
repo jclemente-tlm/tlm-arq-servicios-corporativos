@@ -20,7 +20,7 @@ Las alternativas evaluadas fueron:
 | Criterio                | SNS + SQS (AWS) | RabbitMQ gestionado | RabbitMQ auto-gestionado |
 |------------------------|-----------------|---------------------|--------------------------|
 | Agnosticismo           | ❌ Dependiente de proveedor (lock-in AWS) | ❌ Dependiente de proveedor (cloud lock-in, portable) | ✅ Totalmente agnóstico (multi-cloud, on-premises) |
-| Gestión operativa      | Gestionada por proveedor      | Gestionada por proveedor          | Gestionada por el equipo           |
+| Gestión operacional      | Gestionada por proveedor      | Gestionada por proveedor          | Gestionada por el equipo           |
 | Multi-tenant / Multi-país | Sí | Sí | Sí |
 | Alta disponibilidad    | Garantizada     | Requiere configuración | Requiere configuración |
 | Escalabilidad          | Automática      | Manual/limitada     | Manual                   |

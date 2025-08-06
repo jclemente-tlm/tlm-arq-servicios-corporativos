@@ -27,8 +27,8 @@
 
 **Beneficios:**
 
-- **Escalabilidad Automática:** Auto-scaling basado en métricas de CPU/memoria
-- **Alta Disponibilidad:** Despliegue multi-AZ con verificaciones de salud
+- **Escalabilidad Automática:** Escalado automático basado en métricas de CPU/memoria
+- **Alta Disponibilidad:** Despliegue multi-AZ con verificaciones de estado
 - **Operación Simplificada:** Sin gestión de servidores subyacentes
 - **Optimización de Costos:** Modelo de pago por uso con capacidad reservada
 
@@ -42,10 +42,10 @@ Request → Security → Tenant → RateLimit → Transform → CircuitBreaker �
 
 **Implementación:**
 
-- **Security Middleware:** Validación JWT, extracción de claims
-- **Tenant Middleware:** Resolución de contexto multi-tenant (realm)
-- **Rate Limiting:** Cuotas por tenant (realm), por usuario
-- **Transformation:** Mapeo de datos de solicitud/respuesta
+- **Middleware de Seguridad:** Validación JWT, extracción de claims
+- **Middleware de Tenant:** Resolución de contexto multi-tenant (realm)
+- **Limitación de Velocidad:** Cuotas por tenant (realm), por usuario
+- **Transformación:** Mapeo de datos de solicitud/respuesta
 - **Circuit Breaker:** Aislamiento de fallas con Polly
 
 ### Patrón 2: Configuración como Código
@@ -69,10 +69,10 @@ Request → Correlation ID → Structured Logs → Metrics → Tracing → Dashb
 
 **Implementación:**
 
-- **Correlation IDs:** UUID propagado en headers
-- **Structured Logging:** Formato JSON con Serilog
-- **Custom Metrics:** Métricas compatibles con Prometheus
-- **Verificaciones de Salud:** Verificaciones de salud estilo Kubernetes
+- **IDs de Correlación:** UUID propagado en headers
+- **Registro Estructurado:** Formato JSON con Serilog
+- **Métricas Personalizadas:** Métricas compatibles con Prometheus
+- **Health Checks:** Health checks estilo Kubernetes
 
 ## 4.3 Enfoque Multi-Tenant (Multi-Realm)
 
@@ -102,7 +102,7 @@ public class TenantContext
 |-------|------------|----------------|
 | **Nivel de Solicitud** | Inyección de contexto tenant (realm) | Claims JWT, headers |
 | **Configuración** | Configuraciones por tenant (realm) | Configuración dinámica por tenant/realm |
-| **Rate Limiting** | Cuotas aisladas | Buckets separados por tenant/realm |
+| **Limitación de Velocidad** | Cuotas aisladas | Buckets separados por tenant/realm |
 | **Enrutamiento** | Enrutamiento consciente de tenant | Enrutamiento basado en reglas por realm |
 | **Monitoreo** | Métricas separadas | Etiquetas por tenant/realm |
 
@@ -180,7 +180,7 @@ public class TenantResolutionMiddleware
 | **Autenticación** | OAuth2 + JWT | Validación de tokens, verificación de expiración |
 | **Autorización** | RBAC + Claims | Control de acceso basado en roles por realm |
 | **Validación de Entrada** | Validación de esquema | Validación de especificación OpenAPI |
-| **Rate Limiting** | Gestión de cuotas | Algoritmo token bucket por tenant/realm |
+| **Limitación de Velocidad** | Gestión de cuotas | Algoritmo token bucket por tenant/realm |
 | **Auditoría** | Registro de acceso | Logs estructurados con correlación + contexto tenant |
 
 ### Cabeceras de Seguridad

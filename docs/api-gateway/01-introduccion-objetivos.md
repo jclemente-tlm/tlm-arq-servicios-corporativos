@@ -11,20 +11,20 @@ El **Enterprise API Gateway** es el punto de entrada centralizado para toda la p
 Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una arquitectura que permita:
 
 - **Operaciones multi-tenant** para Perú, Ecuador, Colombia y México
-- **Escalabilidad** para manejar el crecimiento del tráfico aéreo
-- **Seguridad** robusta para proteger datos sensibles operacionales
-- **Integración** con sistemas aeroportuarios y regulatorios locales
+- **Escalabilidad** para manejar el crecimiento del tráfico empresarial
+- **Seguridad** robusta para proteger datos sensibles corporativos
+- **Integración** con sistemas empresariales y regulatorios locales
 
 ### Capacidades Principales
 
 | Capacidad | Descripción | Valor de Negocio |
 |-----------|-------------|------------------|
-| **Single Point of Entry** | Punto único de acceso a todos los servicios | Simplifica integración de clientes |
-| **Multi-tenant Security** | Aislamiento seguro por país/tenant | Cumplimiento regulatorio |
-| **Intelligent Routing** | Enrutamiento dinámico basado en reglas | Flexibilidad operacional |
-| **Resilience Patterns** | Circuit breakers, retries, timeouts | Alta disponibilidad |
-| **Observability** | Métricas, logs y tracing distribuido | Operaciones proactivas |
-| **Rate Limiting** | Control de tráfico por tenant y API | Protección de recursos |
+| **Punto Único de Entrada** | Punto único de acceso a todos los servicios | Simplifica integración de clientes |
+| **Seguridad Multi-tenant** | Aislamiento seguro por país/tenant | Cumplimiento regulatorio |
+| **Enrutamiento Inteligente** | Enrutamiento dinámico basado en reglas | Flexibilidad operacional |
+| **Patrones de Resiliencia** | Circuit breakers, reintentos, timeouts | Alta disponibilidad |
+| **Observabilidad** | Métricas, registros y trazado distribuido | Operaciones proactivas |
+| **Limitación de Velocidad** | Control de tráfico por tenant y API | Protección de recursos |
 
 ### Requisitos Funcionales Principales
 
@@ -33,21 +33,21 @@ Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una 
 | **RF-GW-01** | **Proxy Reverso** | Enrutamiento transparente hacia servicios backend |
 | **RF-GW-02** | **Autenticación Centralizada** | Validación OAuth2/JWT con Keycloak |
 | **RF-GW-03** | **Multi-tenant Routing** | Enrutamiento basado en tenant (país) |
-| **RF-GW-04** | **Rate Limiting** | Límites configurables por tenant y endpoint |
-| **RF-GW-05** | **Health Monitoring** | Monitoreo de salud de servicios downstream |
+| **RF-GW-04** | **Limitación de Velocidad** | Límites configurables por tenant y endpoint |
+| **RF-GW-05** | **Monitoreo de Salud** | Monitoreo de salud de servicios downstream |
 | **RF-GW-06** | **Request/Response Transformation** | Modificación de headers y payloads |
 | **RF-GW-07** | **Circuit Breaker** | Protección contra failures en cascada |
-| **RF-GW-08** | **Load Balancing** | Distribución de carga entre instancias |
+| **RF-GW-08** | **Balanceador de Carga** | Distribución de carga entre instancias |
 | **RF-GW-09** | **Audit Logging** | Registro completo de requests y responses |
-| **RF-GW-10** | **Configuration Management** | Configuración dinámica sin downtime |
+| **RF-GW-10** | **Gestión de Configuración** | Configuración dinámica sin downtime |
 
 ### Requisitos No Funcionales
 
 | Categoría | Requisito | Target | Medición |
 |-----------|-----------|--------|----------|
 | **Rendimiento** | Latencia de proxy | p95 < 50ms | APM monitoring |
-| **Rendimiento** | Throughput | > 10,000 RPS por instancia | Pruebas de carga |
-| **Availability** | Tiempo de actividad | 99.95% | Monitoreo de SLA |
+| **Rendimiento** | Capacidad de procesamiento | > 10,000 RPS por instancia | Pruebas de carga |
+| **Disponibilidad** | Tiempo de actividad | 99.95% | Monitoreo de SLA |
 | **Scalability** | Escalado horizontal | Escalado automático en < 2 min | Métricas de contenedores |
 | **Security** | Validación de tokens | < 5ms por request | Métricas de seguridad |
 | **Confiabilidad** | Tasa de errores | < 0.1% | Métricas empresariales |
@@ -79,7 +79,7 @@ Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una 
 |-----|----------|-------------------|--------------|
 | **Arquitecto de Plataforma** | jclemente-tlm | Decisiones arquitectónicas, patrones | Diseño escalable, rendimiento |
 | **Equipo DevOps/SRE** | SRE Team | Deployment, monitoring, incidents | Despliegues confiables, observabilidad |
-| **Equipo de Seguridad** | Security Team | Autenticación, autorización, compliance | Diseño seguro, capacidades de auditoría |
+| **Equipo de Seguridad** | Equipo de Seguridad | Autenticación, autorización, compliance | Diseño seguro, capacidades de auditoría |
 | **Equipos de Aplicación** | Dev Teams | Integración con servicios backend | APIs consistentes, documentación clara |
 
 ### Stakeholders Secundarios
@@ -87,7 +87,7 @@ Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una 
 | Rol | Contacto | Interés | Comunicación |
 |-----|----------|---------|--------------|
 | **Equipos de Operaciones** | Ops Teams | Monitoreo de servicios downstream | Dashboards, alertas |
-| **Oficiales de Cumplimiento** | Legal Team | Cumplimiento regulatorio, audit trails | Reportes de cumplimiento |
+| **Oficiales de Cumplimiento** | Equipo Legal | Cumplimiento regulatorio, trazas de auditoría | Reportes de cumplimiento |
 | **Integradores Externos** | Partners | Acceso a APIs corporativas | Documentación de API, SLAs |
 | **Usuarios Finales** | Various | Rendimiento y disponibilidad de aplicaciones | Operación transparente |
 
@@ -98,7 +98,7 @@ Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una 
 | **Aplicaciones Web** | Frontend | Apps corporativas por país | Respuesta rápida, alta disponibilidad |
 | **Aplicaciones Móviles** | Frontend | Apps móviles iOS/Android | Uso eficiente de API, soporte offline |
 | **Sistemas de Terceros** | External | Sistemas de partners y proveedores | APIs estables, documentación clara |
-| **Herramientas Internas** | Internal | Herramientas administrativas | Acceso seguro, audit trails |
+| **Herramientas Internas** | Internal | Herramientas administrativas | Acceso seguro, trazas de auditoría |
 
 ## 1.4 Arquitectura de Referencia
 
@@ -133,7 +133,7 @@ Como empresa líder en servicios aeroportuarios multi-país, Talma requiere una 
 - Circuit breakers y retry policies
 - Health checks y service discovery
 - Request/response logging y metrics
-- Multi-tenant configuration management
+- Multi-tenant gestión de configuración
 
 ### Fuera del Alcance
 

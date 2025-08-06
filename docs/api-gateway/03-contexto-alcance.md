@@ -47,7 +47,7 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 ┌─────────────────────────────────────────────────────────────────┐
 │                    DOWNSTREAM MICROSERVICES                    │
 │  [Identity] [Notification] [Track&Trace] [SITA Messaging]     │
-│  [Reporting] [Configuration] [Health Monitoring]              │
+│  [Reporting] [Configuration] [Health Check]                   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -59,8 +59,8 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 | **Reverse Proxy** | YARP (Yet Another Reverse Proxy) | Microsoft supported, flexible |
 | **Authentication** | OAuth2 + JWT | Estándar de la industria |
 | **Protocol** | HTTP/2, HTTPS only | Security, rendimiento |
-| **Load Balancing** | Round-robin con health checks | Confiabilidad |
-| **Rate Limiting** | Control de tráfico per tenant | Protección de recursos |
+| **Balanceador de Carga** | Round-robin con health checks | Confiabilidad |
+| **Limitación de Velocidad** | Control de tráfico per tenant | Protección de recursos |
 | **Circuit Breaker** | Framework Polly | Tolerancia a fallos |
 | **Observability** | OpenTelemetry + Prometheus | Standards compliance |
 
@@ -92,17 +92,17 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 - **Request Routing:** Enrutamiento inteligente basado en URL patterns y headers
 - **Authentication:** Validación de JWT tokens y extracción de claims de usuario
 - **Authorization:** Control de acceso basado en roles (RBAC) y contexto tenant
-- **Rate Limiting:** Control de tráfico por tenant, usuario y endpoint específico
+- **Limitación de Velocidad:** Control de tráfico por tenant, usuario y endpoint específico
 - **Circuit Breaking:** Protección contra cascadas de fallos en servicios downstream
-- **Load Balancing:** Distribución de carga entre múltiples instancias de servicios
+- **Balanceador de Carga:** Distribución de carga entre múltiples instancias de servicios
 
-#### Cross-cutting Concerns
+#### Conceptos Transversales
 
-- **Observability:** Logging estructurado, métricas de rendimiento, distributed tracing
+- **Observability:** Logging estructurado, métricas de rendimiento, trazado distribuido
 - **Security:** TLS termination, HTTPS enforcement, security headers injection
 - **Configuration:** Gestión dinámica de configuración sin downtime
-- **Health Monitoring:** Health checks proactivos de servicios downstream
-- **Error Handling:** Transformación de errores y standardización de responses
+- **Monitoreo de Salud:** Health checks proactivos de servicios downstream
+- **Manejo de Errores:** Transformación de errores y standardización de responses
 
 ### Responsabilidades Excluidas
 
@@ -131,7 +131,7 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 |-------|------|-------------|---------------------------|
 | **Usuarios de Aplicaciones Web** | Humano | Usuarios finales de aplicaciones web corporativas | Navegación web, consumo de APIs |
 | **Usuarios de Aplicaciones Móviles** | Humano | Usuarios de aplicaciones móviles iOS/Android | Uso de apps móviles, sincronización |
-| **Administradores del Sistema** | Humano | Administradores del gateway y infraestructura | Configuración, monitoreo, troubleshooting |
+| **Administradores del Sistema** | Humano | Administradores del gateway y infraestructura | Configuración, monitoreo, resolución de problemas |
 | **Socios Externos** | Sistema/Humano | Socios externos con integración API | Llamadas automatizadas, intercambio de datos |
 | **Aplicaciones Cliente** | Sistema | Aplicaciones frontend (SPAs, mobile) | Llamadas REST API, flujos de autenticación |
 | **Servicios Downstream** | Sistema | Microservicios internos corporativos | Proxy de APIs, health checks |

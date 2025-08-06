@@ -263,7 +263,7 @@ public class EventConsumerService : BackgroundService
 
 ### 8.3.2 API Integration Patterns
 
-**Circuit Breaker Pattern**:
+**Patrón Circuit Breaker**:
 
 ```csharp
 public class ExternalServiceClient
@@ -574,7 +574,7 @@ public async Task<TimelineView> GetTimelineAsync(string entityId)
 
 ## 8.6 Configuración
 
-### 8.6.1 Configuration Management
+### 8.6.1 Gestión de Configuración
 
 **Hierarchical Configuration**:
 
@@ -1217,7 +1217,7 @@ public class ScenarioBuilder
 
 ### 8.10.1 Logging Structure
 
-**Structured Logging Configuration**:
+**Registro Estructurado Configuration**:
 
 ```csharp
 public static class LoggingExtensions
@@ -1353,7 +1353,7 @@ public class ProjectionHealthCheck : IHealthCheck
 }
 ```
 
-### 8.10.4 Distributed Tracing
+### 8.10.4 Trazado Distribuido
 
 **OpenTelemetry Integration**:
 
@@ -1414,7 +1414,7 @@ public class EventHandlerTracing
 3. **Seguridad**: Multi-tenant con JWT, autorización granular y cumplimiento normativo
 4. **Comunicación**: Event-driven architecture con Event Bus y patrones de resiliencia
 5. **Persistencia**: Event Store optimizado con PostgreSQL y proyecciones especializadas
-6. **Observabilidad**: Logging estructurado, métricas detalladas y distributed tracing
+6. **Observabilidad**: Logging estructurado, métricas detalladas y trazado distribuido
 7. **Testing**: Estrategia completa desde unit tests hasta contract testing
 8. **Configuración**: Gestión jerárquica con validación y configuración por ambiente
 

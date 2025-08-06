@@ -22,7 +22,7 @@
 - 🟦 **PostgreSQL**: Simplicidad operacional, transacciones ACID, expertise del equipo
 - 🟦 **Amazon SNS + SQS**: Escalabilidad managed, integración AWS nativa
 - 🟦 **RabbitMQ / Amazon MQ**: Event streaming robusto, patrones de messaging complejos
-- 🟦 **Event Bus (Kafka)**: Alto throughput, ecosistema maduro (para volúmenes muy altos)
+- 🟦 **Event Bus (Kafka)**: Alto capacidad de procesamiento, ecosistema maduro (para volúmenes muy altos)
 
 **Umbrales de decisión**:
 
@@ -106,10 +106,10 @@
 
 ### Observabilidad
 
-- **Distributed Tracing**: OpenTelemetry con trace correlation
+- **Trazado Distribuido**: OpenTelemetry con trace correlation
 - **Metrics Collection**: Prometheus + custom business metrics
-- **Structured Logging**: Serilog con correlation IDs
-- **Health Monitoring**: Health checks + circuit breakers
+- **Registro Estructurado**: Serilog con correlation IDs
+- **Monitoreo de Salud**: Health checks + circuit breakers
 
 ## 4.7 Migración y compatibilidad
 

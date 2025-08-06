@@ -357,7 +357,7 @@ groups:
       summary: "Circuit breaker opened for service {{ $labels.service }}"
       description: "Service {{ $labels.service }} circuit breaker has been open for more than 1 minute"
 
-  # Rate Limiting
+  # Limitación de Velocidad
   - alert: HighRateLimitHitRate
     expr: rate(api_gateway_rate_limit_exceeded_total[5m]) / rate(api_gateway_requests_total[5m]) > 0.1
     for: 5m
