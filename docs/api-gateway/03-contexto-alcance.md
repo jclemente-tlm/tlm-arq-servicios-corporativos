@@ -2,6 +2,10 @@
 
 ## 3.1 Contexto del Negocio
 
+![Servicios Corporativos - Vista de Contexto](/diagrams/servicios-corporativos/corporate_services.png)
+
+*Figura 3.1: Vista de contexto de los Servicios Corporativos mostrando la interacción entre sistemas y actores externos*
+
 El API Gateway de Servicios Corporativos actúa como el punto de entrada unificado para todas las aplicaciones cliente, proporcionando un intermediario inteligente que gestiona la autenticación, autorización, enrutamiento y observabilidad de las comunicaciones entre sistemas externos e internos.
 
 ![API Gateway Context](/diagrams/servicios-corporativos/api_gateway.png)

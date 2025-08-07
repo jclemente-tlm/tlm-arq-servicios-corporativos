@@ -2,6 +2,10 @@
 
 ## 5.1 Sistema Track & Trace - Nivel 1 (Caja Blanca)
 
+![Sistema Track & Trace - Vista General](/diagrams/servicios-corporativos/track_and_trace_system.png)
+
+*Figura 5.1: Vista de contenedores del Sistema Track & Trace mostrando la separación entre Tracking API y Event Processor*
+
 ### Responsabilidad
 Sistema de trazabilidad operacional que captura, procesa y analiza eventos empresariales en tiempo real utilizando arquitectura CQRS + Event Sourcing para proporcionar visibilidad completa de operaciones críticas.
 

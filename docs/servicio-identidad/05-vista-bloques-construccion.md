@@ -2,7 +2,9 @@
 
 Esta sección describe la descomposición estática del **Sistema de Identidad** en sus componentes principales, siguiendo un enfoque jerárquico desde la vista general hasta los detalles de implementación específicos de Keycloak.
 
-*[INSERTAR AQUÍ: Diagrama C4 - Container Level del Sistema de Identidad]*
+![Sistema de Identidad - Vista General](/diagrams/servicios-corporativos/identity_system.png)
+
+*Figura 5.1: Vista de contenedores del Sistema de Identidad basado en Keycloak con componentes de soporte*
 
 ## 5.1 Sistema de Identidad - Nivel 1 (Caja Blanca)
 

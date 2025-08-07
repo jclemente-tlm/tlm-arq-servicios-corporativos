@@ -2,6 +2,10 @@
 
 ## 5.1 Descripción general del sistema
 
+![Sistema SITA Messaging - Vista General](/diagrams/servicios-corporativos/sita_messaging_system.png)
+
+*Figura 5.1: Vista de contenedores del Sistema SITA Messaging mostrando la separación entre Event Processor y Message Sender*
+
 El Servicio SITA Messaging está diseñado como un adaptador especializado que facilita la comunicación entre los servicios corporativos internos y la red global de mensajería SITA, utilizada principalmente en la industria aeronáutica.
 
 ### 5.1.1 Arquitectura de capas

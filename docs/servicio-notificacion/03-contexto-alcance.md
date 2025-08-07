@@ -9,7 +9,9 @@ El **Sistema de Notificaciones** actúa como la plataforma centralizada de comun
 El sistema se integra con el ecosistema corporativo para proporcionar comunicaciones confiables y trazables:
 
 **🎯 Diagrama de Contexto de Negocio**
-*[INSERTAR AQUÍ: Diagrama C4 - Context Level]*
+![Servicios Corporativos - Vista de Contexto](/diagrams/servicios-corporativos/corporate_services.png)
+
+*Figura 3.1: Vista de contexto de los Servicios Corporativos mostrando la interacción entre sistemas y actores externos*
 
 ### Actores del Sistema
 

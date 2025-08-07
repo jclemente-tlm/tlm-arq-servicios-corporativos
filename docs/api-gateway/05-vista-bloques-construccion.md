@@ -4,27 +4,9 @@ Esta sección describe la estructura interna del API Gateway basada en los compo
 
 ## Arquitectura General
 
-```
-                    ┌─────────────────────────────────────┐
-                    │        API Gateway (YARP)          │
-                    │                                     │
-┌─────────────┐     │ ┌─────────────────────────────────┐ │     ┌─────────────┐
-│ Aplicaciones │────▶│ │     Middleware de Seguridad     │ │────▶│  Identity   │
-│   Cliente    │     │ └─────────────────────────────────┘ │     │  Service    │
-└─────────────┘     │ ┌─────────────────────────────────┐ │     └─────────────┘
-                    │ │   Middleware de Resolución Tenant │ │
-                    │ └─────────────────────────────────┘ │
-                    │ ┌─────────────────────────────────┐ │     ┌─────────────┐
-                    │ │   Middleware de Limitación Velocidad │ │────▶│Notification │
-                    │ └─────────────────────────────────┘ │     │  Service    │
-                    │ ┌─────────────────────────────────┐ │     └─────────────┘
-                    │ │  Middleware de Procesamiento Datos │ │
-                    │ └─────────────────────────────────┘ │     ┌─────────────┐
-                    │ ┌─────────────────────────────────┐ │────▶│ Track &     │
-                    │ │      Manejador de Resistencia   │ │     │ Trace       │
-                    │ └─────────────────────────────────┘ │     └─────────────┘
-                    └─────────────────────────────────────┘
-```
+![API Gateway - Vista General](/diagrams/servicios-corporativos/api_gateway.png)
+
+*Figura 5.1: Vista de contenedores del API Gateway mostrando el pipeline de middleware y enrutamiento a servicios downstream*
 
 ## Componentes Principales
 

@@ -1,5 +1,11 @@
 # 3. Contexto y alcance del sistema
 
+## 3.1 Contexto de negocio
+
+![Servicios Corporativos - Vista de Contexto](/diagrams/servicios-corporativos/corporate_services.png)
+
+*Figura 3.1: Vista de contexto de los Servicios Corporativos mostrando la interacción entre sistemas y actores externos*
+
 El **Sistema de Track & Trace** es la plataforma centralizada de trazabilidad operacional que captura, procesa y proporciona visibilidad en tiempo real de todos los eventos críticos en las operaciones aeroportuarias y de aviación.
 
 ## 3.1 Contexto empresarial

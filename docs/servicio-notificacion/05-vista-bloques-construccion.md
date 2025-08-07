@@ -5,7 +5,10 @@ Esta sección describe la descomposición estática del sistema de notificacione
 ## 5.1 Sistema de Notificaciones - Nivel 1 (Caja Blanca)
 
 **🏗️ Diagrama de Arquitectura General**
-*[INSERTAR AQUÍ: Diagrama C4 - Container Level del Sistema de Notificaciones]*
+
+![Sistema de Notificación - Vista General](/diagrams/servicios-corporativos/notification_system.png)
+
+*Figura 5.1: Vista de contenedores del Sistema de Notificación mostrando la separación entre API y Procesador*
 
 ### Motivación de la Descomposición
 

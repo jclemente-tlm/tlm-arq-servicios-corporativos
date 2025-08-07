@@ -1,8 +1,12 @@
 # 3. Contexto y alcance del sistema
 
-El **Sistema de Identidad** actúa como la autoridad central de autenticación y autorización para todo el ecosistema de servicios corporativos, proporcionando Single Sign-On (SSO) y gestión de identidades multi-tenant.
-
 ## 3.1 Contexto de negocio
+
+![Servicios Corporativos - Vista de Contexto](/diagrams/servicios-corporativos/corporate_services.png)
+
+*Figura 3.1: Vista de contexto de los Servicios Corporativos mostrando la interacción entre sistemas y actores externos*
+
+El **Sistema de Identidad** actúa como la autoridad central de autenticación y autorización para todo el ecosistema de servicios corporativos, proporcionando Single Sign-On (SSO) y gestión de identidades multi-tenant.
 
 ### Propósito del Sistema
 

@@ -1,8 +1,12 @@
 # 3. Contexto y alcance del sistema
 
-El **Sistema de Mensajería SITA** es la plataforma especializada para generación, transmisión y gestión de mensajes aeronáuticos usando protocolos SITA SITATEX, conectando operaciones aeroportuarias con la red global de aviación.
-
 ## 3.1 Contexto de negocio
+
+![Servicios Corporativos - Vista de Contexto](/diagrams/servicios-corporativos/corporate_services.png)
+
+*Figura 3.1: Vista de contexto de los Servicios Corporativos mostrando la interacción entre sistemas y actores externos*
+
+El **Sistema de Mensajería SITA** es la plataforma especializada para generación, transmisión y gestión de mensajes aeronáuticos usando protocolos SITA SITATEX, conectando operaciones aeroportuarias con la red global de aviación.
 
 ### Propósito del Sistema
 
