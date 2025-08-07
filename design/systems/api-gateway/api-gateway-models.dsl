@@ -9,34 +9,34 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
 
         // Componente de seguridad unificado
         securityMiddleware = component "Security Middleware" {
-            technology "ASP.NET Core Middleware"
-            description "Autenticación y autorización con JWT/OAuth2"
+            technology "ASP.NET Core Middleware, JWT"
+            description "Valida tokens JWT y aplica políticas de autorización por tenant y rol"
             tags "Middleware" "Security" "001 - Fase 1"
         }
 
         tenantResolutionMiddleware = component "Tenant Resolution Middleware" {
             technology "ASP.NET Core Middleware"
-            description "Identifica y resuelve contexto de tenant"
+            description "Extrae y valida contexto de tenant desde headers o claims JWT"
             tags "Middleware" "001 - Fase 1"
         }
 
         rateLimitingMiddleware = component "Rate Limiting Middleware" {
-            technology "ASP.NET Core Middleware"
-            description "Limitación de velocidad con políticas por tenant"
+            technology "ASP.NET Core Middleware, Redis"
+            description "Aplica límites de velocidad diferenciados por tenant y endpoint"
             tags "Middleware" "001 - Fase 1"
         }
 
         // Componente de resiliencia unificado
         resilienceHandler = component "Resilience Handler" {
             technology "Polly"
-            description "Circuit breakers, retries y timeouts"
+            description "Implementa circuit breakers y reintentos para llamadas downstream"
             tags "Middleware" "Resilience" "001 - Fase 1"
         }
 
         // Componente de procesamiento de datos unificado
         dataProcessingMiddleware = component "Data Processing Middleware" {
             technology "ASP.NET Core Middleware, JSON Schema"
-            description "Validación de esquemas y transformación de datos"
+            description "Valida esquemas de entrada y transforma payloads según versión API"
             tags "Middleware" "Processing" "001 - Fase 1"
         }
 
@@ -50,26 +50,26 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
         // Componentes de observabilidad
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
-            description "Monitoreo de salud de servicios downstream"
+            description "Monitorea salud del gateway y servicios downstream corporativos"
             tags "Observability" "001 - Fase 1"
         }
 
         metricsCollector = component "Metrics Collector" {
             technology "Prometheus.NET"
-            description "Recolección de métricas de performance y uso"
+            description "Recolecta métricas de latencia, throughput y errores por tenant"
             tags "Observability" "001 - Fase 1"
         }
 
         structuredLogger = component "Structured Logger" {
             technology "Serilog"
-            description "Logging estructurado con correlación de requests"
+            description "Registra eventos con correlación de requests y contexto de tenant"
             tags "Observability" "001 - Fase 1"
         }
 
         // Configuración dinámica
         dynamicConfigProcessor = component "Dynamic Configuration Processor" {
-            technology "C#, FluentValidation, HttpClient"
-            description "Polling de configuración con hot reload"
+            technology "C#, .NET 8, HttpClient"
+            description "Actualiza configuración de routing y políticas sin reinicio"
             tags "Configuration Events" "Feature Flags" "001 - Fase 1"
         }
     }

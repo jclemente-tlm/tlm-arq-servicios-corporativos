@@ -52,26 +52,26 @@ trackAndTrace = softwareSystem "Track & Trace System" {
         }
 
         trackingIngestService = component "Tracking Ingest Service" {
-            technology "C#"
-            description "Procesa y valida eventos de tracking"
+            technology "C#, .NET 8, EF Core"
+            description "Valida, enriquece y persiste eventos de tracking por tenant"
             tags "Service" "Command" "001 - Fase 1"
         }
 
         trackingQueryService = component "Tracking Query Service" {
-            technology "C#"
-            description "Orquesta operaciones de consulta complejas"
+            technology "C#, .NET 8, EF Core"
+            description "Ejecuta consultas de estado y historial con filtros por tenant"
             tags "Service" "Query" "001 - Fase 1"
         }
 
         reliableEventPublisher = component "Reliable Event Publisher" {
-            technology "C#, IReliableMessagePublisher"
-            description "Publicación confiable con outbox pattern"
+            technology "C#, .NET 8, PostgreSQL"
+            description "Publica eventos a downstream con garantía transaccional"
             tags "Messaging" "001 - Fase 1"
         }
 
         trackingRepository = component "Tracking Repository" {
-            technology "C#, EF Core"
-            description "Acceso unificado a datos de tracking"
+            technology "C#, .NET 8, EF Core"
+            description "Gestiona persistencia de eventos y consultas de estado"
             tags "EF Core" "001 - Fase 1"
         }
 
@@ -111,32 +111,32 @@ trackAndTrace = softwareSystem "Track & Trace System" {
         tags "CSharp" "001 - Fase 1"
 
         reliableEventConsumer = component "Reliable Event Consumer" {
-            technology "C#, IReliableMessageConsumer"
-            description "Consumer confiable con retry automático"
+            technology "C#, .NET 8, PostgreSQL"
+            description "Consume eventos con retry automático y manejo de errores"
             tags "Messaging" "001 - Fase 1"
         }
 
         trackingEventHandler = component "Tracking Event Handler" {
-            technology "C#"
-            description "Handler principal para eventos de tracking"
+            technology "C#, .NET 8"
+            description "Deserializa y valida formato de eventos recibidos"
             tags "Event Handler" "001 - Fase 1"
         }
 
         trackingProcessingService = component "Tracking Processing Service" {
-            technology "C#"
-            description "Lógica de negocio para procesamiento de eventos"
+            technology "C#, .NET 8"
+            description "Enriquece eventos con datos de contexto y reglas de negocio"
             tags "Business Logic" "001 - Fase 1"
         }
 
         trackingEventRepository = component "Tracking Event Repository" {
-            technology "C#, EF Core"
-            description "Persiste eventos crudos y enriquecidos"
+            technology "C#, .NET 8, EF Core"
+            description "Persiste eventos procesados y mantiene historial de cambios"
             tags "EF Core" "001 - Fase 1"
         }
 
         reliableDownstreamPublisher = component "Reliable Downstream Publisher" {
-            technology "C#, IReliableMessagePublisher"
-            description "Publica eventos a sistemas downstream"
+            technology "C#, .NET 8, PostgreSQL"
+            description "Publica eventos procesados a sistemas downstream con garantía de entrega"
             tags "Messaging" "001 - Fase 1"
         }
 
@@ -167,7 +167,7 @@ trackAndTrace = softwareSystem "Track & Trace System" {
     }
 
     trackingDashboard = container "Tracking Dashboard" {
-        description "Interfaz web reactiva para visualización en tiempo real del estado de tracking y análisis de eventos."
+        description "Dashboard web para consulta de estado y análisis de eventos en tiempo real"
         technology "React, TypeScript"
         tags "Web App" "001 - Fase 1"
 

@@ -55,19 +55,19 @@ sitaMessaging = softwareSystem "SITA Messaging" {
 
         eventConsumer = component "Event Consumer" {
             technology "C#, .NET 8"
-            description "Consume eventos desde cola PostgreSQL"
+            description "Consume y deserializa eventos de Track & Trace desde cola PostgreSQL"
             tags "Event Processing" "001 - Fase 1"
         }
 
         eventOrchestrator = component "Event Orchestrator" {
             technology "C#, .NET 8"
-            description "Orquesta generación y registro de mensajes"
+            description "Coordina generación de archivos SITA y registro de mensajes para envío"
             tags "Event Orchestration" "001 - Fase 1"
         }
 
         sitaFileGenerator = component "SITA File Generator" {
             technology "C#, .NET 8"
-            description "Genera archivos SITA según templates"
+            description "Genera archivos SITA aplicando templates específicos por partner"
             tags "File Generation" "001 - Fase 1"
         }
 
@@ -106,21 +106,21 @@ sitaMessaging = softwareSystem "SITA Messaging" {
         tags "CSharp" "Background Service" "001 - Fase 1"
 
         fileFetcher = component "File Fetcher" {
-            technology "C#, .NET 8"
-            description "Recupera archivos SITA desde storage"
-            tags "File Management" "001 - Fase 1"
+            technology "C#, .NET 8, S3 SDK"
+            description "Obtiene archivos SITA generados desde storage para envío a partners"
+            tags "File Retrieval" "001 - Fase 1"
         }
 
         partnerSender = component "Partner Sender" {
-            technology "C#, .NET 8, HttpClient"
-            description "Envía archivos a partners SITA externos"
-            tags "External Communication" "001 - Fase 1"
+            technology "C#, .NET 8, SFTP Client"
+            description "Transmite archivos SITA a partners externos vía SFTP/HTTP"
+            tags "Partner Integration" "001 - Fase 1"
         }
 
         deliveryTracker = component "Delivery Tracker" {
             technology "C#, .NET 8"
-            description "Rastrea confirmaciones de entrega"
-            tags "Tracking" "001 - Fase 1"
+            description "Registra confirmaciones de entrega y actualiza estado de mensajes"
+            tags "Delivery Tracking" "001 - Fase 1"
         }
 
         configManager = component "Configuration Manager" {

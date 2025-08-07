@@ -64,20 +64,20 @@ notification = softwareSystem "Notification System" {
         }
 
         requestValidator = component "Request Validator" {
-            technology "FluentValidation"
-            description "Validación de estructura y reglas de negocio"
+            technology "C#, FluentValidation"
+            description "Valida formato JSON, límites de tamaño y reglas por tenant"
             tags "Validation" "001 - Fase 1"
         }
 
         messagePublisher = component "Message Publisher" {
-            technology "Reliable Messaging"
-            description "Publisher con outbox pattern"
+            technology "C#, .NET 8, PostgreSQL"
+            description "Publica mensajes a cola con garantía de entrega (outbox pattern)"
             tags "Messaging" "001 - Fase 1"
         }
 
         attachmentService = component "Attachment Service" {
-            technology "C# Business Logic"
-            description "Lógica de negocio para gestión de archivos"
+            technology "C#, .NET 8, S3 SDK"
+            description "Coordina subida, validación y almacenamiento de archivos adjuntos"
             tags "Business Logic" "001 - Fase 1"
         }
 
@@ -123,26 +123,26 @@ notification = softwareSystem "Notification System" {
         tags "Processor" "001 - Fase 1"
 
         messageConsumer = component "Message Consumer" {
-            technology "Reliable Messaging"
-            description "Consumer con retry y dead letter queue"
+            technology "C#, .NET 8, PostgreSQL"
+            description "Consume mensajes con retry automático y manejo de errores"
             tags "Messaging" "001 - Fase 1"
         }
 
         orchestratorService = component "Orchestrator Service" {
-            technology "C# Business Logic"
-            description "Orquesta el flujo de notificaciones"
+            technology "C#, .NET 8"
+            description "Decide canal de envío, coordina template engine y delega a handlers"
             tags "Business Logic" "001 - Fase 1"
         }
 
         templateEngine = component "Template Engine" {
-            technology "Liquid Templates"
-            description "Motor de plantillas con i18n"
+            technology "C#, Liquid Templates"
+            description "Renderiza plantillas con soporte i18n y variables dinámicas"
             tags "Templates" "001 - Fase 1"
         }
 
         schedulerService = component "Scheduler Service" {
-            technology "Quartz.NET"
-            description "Programación de notificaciones diferidas"
+            technology "C#, Quartz.NET"
+            description "Programa y ejecuta notificaciones diferidas según fecha/hora"
             tags "Scheduling" "001 - Fase 1"
         }
 
@@ -153,33 +153,33 @@ notification = softwareSystem "Notification System" {
         }
 
         attachmentFetcher = component "Attachment Fetcher" {
-            technology "C# Attachment Retrieval"
-            description "Obtiene archivos adjuntos desde storage para procesamiento de notificaciones"
+            technology "C#, .NET 8, S3 SDK"
+            description "Obtiene archivos adjuntos y metadatos para envío de notificaciones"
             tags "Attachment Retrieval" "001 - Fase 1"
         }
 
         // Channel Handlers
         emailHandler = component "Email Handler" {
-            technology "Email Provider Client"
-            description "Handler especializado para emails"
+            technology "C#, SMTP Client"
+            description "Envía emails con soporte para adjuntos y HTML"
             tags "Email" "Handler" "001 - Fase 1"
         }
 
         smsHandler = component "SMS Handler" {
-            technology "SMS Provider Client"
-            description "Handler especializado para SMS"
+            technology "C#, SMS API Client"
+            description "Envía SMS con validación de formato y límites"
             tags "SMS" "Handler" "001 - Fase 1"
         }
 
         whatsappHandler = component "WhatsApp Handler" {
-            technology "WhatsApp Business API"
-            description "Handler especializado para WhatsApp"
+            technology "C#, WhatsApp Business API"
+            description "Envía mensajes WhatsApp con soporte para adjuntos"
             tags "WhatsApp" "Handler" "001 - Fase 1"
         }
 
         pushHandler = component "Push Handler" {
-            technology "Push Notification Service"
-            description "Handler especializado para push notifications"
+            technology "C#, Push Service SDK"
+            description "Envía push notifications a dispositivos móviles"
             tags "Push" "Handler" "001 - Fase 1"
         }
 
@@ -255,8 +255,7 @@ notification = softwareSystem "Notification System" {
     // Attachment Fetcher - Solo handlers que necesitan adjuntos
     processor.emailHandler -> processor.attachmentFetcher "Obtiene adjuntos para email" "C#" "001 - Fase 1"
     processor.whatsappHandler -> processor.attachmentFetcher "Obtiene adjuntos para WhatsApp" "C#" "001 - Fase 1"
-    processor.attachmentFetcher -> attachmentStorage "Obtiene archivos adjuntos" "S3 API" "001 - Fase 1"
-    processor.attachmentFetcher -> notificationDatabase.attachmentMetadataTable "Consulta metadatos de adjuntos" "PostgreSQL" "001 - Fase 1"
+    processor.attachmentFetcher -> attachmentStorage "Obtiene archivos con metadatos embebidos" "S3 API" "001 - Fase 1"
     processor.notificationRepository -> notificationDatabase.messagesTable "Accede a datos de notificaciones" "PostgreSQL" "001 - Fase 1"
 
     // Channel Handlers
