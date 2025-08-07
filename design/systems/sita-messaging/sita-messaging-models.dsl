@@ -65,9 +65,15 @@ sitaMessaging = softwareSystem "SITA Messaging" {
             tags "Event Orchestration" "001 - Fase 1"
         }
 
+        templateEngine = component "Template Engine" {
+            technology "C#, .NET 8, Scriban"
+            description "Carga y procesa plantillas SITA específicas por partner y tipo de mensaje"
+            tags "Template Processing" "001 - Fase 1"
+        }
+
         sitaFileGenerator = component "SITA File Generator" {
             technology "C#, .NET 8"
-            description "Genera archivos SITA aplicando templates específicos por partner"
+            description "Genera archivos SITA finales usando plantillas procesadas"
             tags "File Generation" "001 - Fase 1"
         }
 
@@ -104,6 +110,12 @@ sitaMessaging = softwareSystem "SITA Messaging" {
         technology "C#, .NET 8, Background Service"
         description "Envía archivos SITA generados a partners externos"
         tags "CSharp" "Background Service" "001 - Fase 1"
+
+        sendingWorker = component "Sending Worker" {
+            technology "C#, .NET 8, Quartz.NET"
+            description "Orquesta envío programado de archivos SITA a partners externos"
+            tags "Worker Service" "Scheduling" "001 - Fase 1"
+        }
 
         fileFetcher = component "File Fetcher" {
             technology "C#, .NET 8, S3 SDK"
@@ -156,27 +168,31 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     // Event Processor - Flujo principal
     eventProcessor.eventConsumer -> sitaMessagingDatabase.eventsQueue "Consume eventos de Track & Trace" "PostgreSQL" "001 - Fase 1"
     eventProcessor.eventConsumer -> eventProcessor.eventOrchestrator "Delega eventos para procesamiento" "In-Memory" "001 - Fase 1"
-    eventProcessor.eventOrchestrator -> eventProcessor.sitaFileGenerator "Solicita generación de archivo SITA" "In-Memory" "001 - Fase 1"
-    eventProcessor.eventOrchestrator -> sitaMessagingDatabase.deliveryLog "Registra mensaje para envío posterior" "PostgreSQL" "001 - Fase 1"
-    eventProcessor.sitaFileGenerator -> sitaMessagingDatabase.templates "Lee templates SITA" "PostgreSQL" "001 - Fase 1"
+    eventProcessor.eventOrchestrator -> eventProcessor.templateEngine "Solicita procesamiento de plantilla" "In-Memory" "001 - Fase 1"
+    eventProcessor.templateEngine -> sitaMessagingDatabase.templates "Lee templates SITA por partner" "PostgreSQL" "001 - Fase 1"
+    eventProcessor.templateEngine -> eventProcessor.sitaFileGenerator "Entrega plantilla procesada" "In-Memory" "001 - Fase 1"
     eventProcessor.sitaFileGenerator -> fileStorage "Almacena archivos SITA generados" "S3-Compatible API" "001 - Fase 1"
+    eventProcessor.eventOrchestrator -> sitaMessagingDatabase.deliveryLog "Registra mensaje para envío posterior" "PostgreSQL" "001 - Fase 1"
 
     // Event Processor - Uso de configuración (vía DI, no acceso directo)
     // Nota: Componentes reciben IConfigurationService por constructor
-    eventProcessor.sitaFileGenerator -> sitaMessagingDatabase.configuration "Lee configuración de templates por tenant" "PostgreSQL" "001 - Fase 1"
+    # eventProcessor.sitaFileGenerator -> sitaMessagingDatabase.configuration "Lee configuración de templates por tenant" "PostgreSQL" "001 - Fase 1"
     eventProcessor.eventOrchestrator -> sitaMessagingDatabase.configuration "Lee reglas de procesamiento por tenant" "PostgreSQL" "001 - Fase 1"
 
-    // Sender - Flujo principal
-    sender.fileFetcher -> fileStorage "Recupera archivos SITA" "S3-Compatible API" "001 - Fase 1"
-    sender.fileFetcher -> sender.partnerSender "Entrega archivos para envío" "In-Memory" "001 - Fase 1"
+    // Sender - Flujo principal orquestado por sendingWorker
+    sender.sendingWorker -> sitaMessagingDatabase.deliveryLog "Consulta archivos pendientes de envío" "PostgreSQL" "001 - Fase 1"
+    sender.sendingWorker -> sender.fileFetcher "Solicita descarga de archivos específicos" "In-Memory" "001 - Fase 1"
+    sender.fileFetcher -> fileStorage "Recupera archivos SITA desde storage" "S3-Compatible API" "001 - Fase 1"
+    sender.sendingWorker -> sender.partnerSender "Coordina envío de archivos" "In-Memory" "001 - Fase 1"
     sender.partnerSender -> airlines "Envía archivos a aerolíneas" "HTTPS/Email" "001 - Fase 1"
     sender.partnerSender -> descartes "Envía archivos a Descartes" "HTTPS/FTP" "001 - Fase 1"
+    sender.sendingWorker -> sender.deliveryTracker "Coordina actualización de estado" "In-Memory" "001 - Fase 1"
     sender.deliveryTracker -> sitaMessagingDatabase.deliveryLog "Actualiza estado de entregas" "PostgreSQL" "001 - Fase 1"
 
     // Sender - Uso de configuración (vía DI, no acceso directo)
     // Nota: Componentes reciben IConfigurationService por constructor
-    sender.partnerSender -> sitaMessagingDatabase.configuration "Lee credenciales y configuración partners" "PostgreSQL" "001 - Fase 1"
-    sender.deliveryTracker -> sitaMessagingDatabase.configuration "Lee configuración de tracking" "PostgreSQL" "001 - Fase 1"
+    # sender.partnerSender -> sitaMessagingDatabase.configuration "Lee credenciales y configuración partners" "PostgreSQL" "001 - Fase 1"
+    # sender.deliveryTracker -> sitaMessagingDatabase.configuration "Lee configuración de tracking" "PostgreSQL" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - CONFIGURACIÓN
@@ -199,12 +215,14 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     // Logging estructurado
     eventProcessor.eventConsumer -> eventProcessor.structuredLogger "Registra procesamiento de eventos" "Serilog" "001 - Fase 1"
     eventProcessor.eventOrchestrator -> eventProcessor.structuredLogger "Registra orquestación y transacciones" "Serilog" "001 - Fase 1"
+    eventProcessor.templateEngine -> eventProcessor.structuredLogger "Registra procesamiento de plantillas" "Serilog" "001 - Fase 1"
     eventProcessor.sitaFileGenerator -> eventProcessor.structuredLogger "Registra generación de archivos" "Serilog" "001 - Fase 1"
     eventProcessor.healthCheck -> eventProcessor.structuredLogger "Registra health checks" "Serilog" "001 - Fase 1"
 
     // Métricas
     eventProcessor.eventConsumer -> eventProcessor.metricsCollector "Publica métricas de eventos" "Prometheus" "001 - Fase 1"
     eventProcessor.eventOrchestrator -> eventProcessor.metricsCollector "Publica métricas de orquestación" "Prometheus" "001 - Fase 1"
+    eventProcessor.templateEngine -> eventProcessor.metricsCollector "Publica métricas de templates" "Prometheus" "001 - Fase 1"
     eventProcessor.sitaFileGenerator -> eventProcessor.metricsCollector "Publica métricas de generación" "Prometheus" "001 - Fase 1"
     eventProcessor.healthCheck -> eventProcessor.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
 
@@ -217,12 +235,14 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     sender.healthCheck -> fileStorage "Verifica conectividad storage" "S3-Compatible API" "001 - Fase 1"
 
     // Logging estructurado
+    sender.sendingWorker -> sender.structuredLogger "Registra orquestación de envíos" "Serilog" "001 - Fase 1"
     sender.fileFetcher -> sender.structuredLogger "Registra descarga de archivos" "Serilog" "001 - Fase 1"
     sender.partnerSender -> sender.structuredLogger "Registra envíos a partners" "Serilog" "001 - Fase 1"
     sender.deliveryTracker -> sender.structuredLogger "Registra confirmaciones de entrega" "Serilog" "001 - Fase 1"
     sender.healthCheck -> sender.structuredLogger "Registra health checks" "Serilog" "001 - Fase 1"
 
     // Métricas
+    sender.sendingWorker -> sender.metricsCollector "Publica métricas de scheduling" "Prometheus" "001 - Fase 1"
     sender.fileFetcher -> sender.metricsCollector "Publica métricas de descarga" "Prometheus" "001 - Fase 1"
     sender.partnerSender -> sender.metricsCollector "Publica métricas de envío" "Prometheus" "001 - Fase 1"
     sender.deliveryTracker -> sender.metricsCollector "Publica métricas de tracking" "Prometheus" "001 - Fase 1"

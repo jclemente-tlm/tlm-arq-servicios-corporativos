@@ -248,10 +248,10 @@ notification = softwareSystem "Notification System" {
     processor.orchestratorService -> processor.templateEngine "Renderiza plantillas" "C#" "001 - Fase 1"
     processor.orchestratorService -> processor.schedulerService "Programa notificaciones diferidas" "C#" "001 - Fase 1"
     processor.schedulerService -> processor.notificationRepository "Consulta notificaciones pendientes" "Entity Framework" "001 - Fase 1"
-    processor.schedulerService -> processor.notificationRepository "Marca como listas para envío" "Entity Framework" "001 - Fase 1"
+    # processor.schedulerService -> processor.notificationRepository "Marca como listas para envío" "Entity Framework" "001 - Fase 1"
     processor.schedulerService -> notificationDatabase.messagesTable "Crea mensajes desde notificaciones programadas" "PostgreSQL" "001 - Fase 1"
     processor.templateEngine -> notificationDatabase.templatesTable "Lee plantillas" "PostgreSQL" "001 - Fase 1"
-    
+
     // Attachment Fetcher - Solo handlers que necesitan adjuntos
     processor.emailHandler -> processor.attachmentFetcher "Obtiene adjuntos para email" "C#" "001 - Fase 1"
     processor.whatsappHandler -> processor.attachmentFetcher "Obtiene adjuntos para WhatsApp" "C#" "001 - Fase 1"
