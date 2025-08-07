@@ -152,10 +152,10 @@ notification = softwareSystem "Notification System" {
             tags "Data Access" "001 - Fase 1"
         }
 
-        fileFetcher = component "File Fetcher" {
-            technology "C# File Retrieval"
+        attachmentFetcher = component "Attachment Fetcher" {
+            technology "C# Attachment Retrieval"
             description "Obtiene archivos adjuntos desde storage para procesamiento de notificaciones"
-            tags "File Retrieval" "001 - Fase 1"
+            tags "Attachment Retrieval" "001 - Fase 1"
         }
 
         // Channel Handlers
@@ -251,8 +251,12 @@ notification = softwareSystem "Notification System" {
     processor.schedulerService -> processor.notificationRepository "Marca como listas para envío" "Entity Framework" "001 - Fase 1"
     processor.schedulerService -> notificationDatabase.messagesTable "Crea mensajes desde notificaciones programadas" "PostgreSQL" "001 - Fase 1"
     processor.templateEngine -> notificationDatabase.templatesTable "Lee plantillas" "PostgreSQL" "001 - Fase 1"
-    processor.templateEngine -> processor.fileFetcher "Solicita archivos adjuntos" "C#" "001 - Fase 1"
-    processor.fileFetcher -> attachmentStorage "Obtiene archivos adjuntos" "S3 API" "001 - Fase 1"
+    
+    // Attachment Fetcher - Solo handlers que necesitan adjuntos
+    processor.emailHandler -> processor.attachmentFetcher "Obtiene adjuntos para email" "C#" "001 - Fase 1"
+    processor.whatsappHandler -> processor.attachmentFetcher "Obtiene adjuntos para WhatsApp" "C#" "001 - Fase 1"
+    processor.attachmentFetcher -> attachmentStorage "Obtiene archivos adjuntos" "S3 API" "001 - Fase 1"
+    processor.attachmentFetcher -> notificationDatabase.attachmentMetadataTable "Consulta metadatos de adjuntos" "PostgreSQL" "001 - Fase 1"
     processor.notificationRepository -> notificationDatabase.messagesTable "Accede a datos de notificaciones" "PostgreSQL" "001 - Fase 1"
 
     // Channel Handlers
