@@ -1,52 +1,22 @@
 # 9. Decisiones de arquitectura
 
-## 9.1 ADR-001: Selección de YARP como proxy reverso
+## 9.1 Decisiones principales
 
-**Estado**: Aceptado
-**Fecha**: 2024-01-15
-**Decisores**: Equipo de Arquitectura, Equipo DevOps
+| ADR | Decisión | Estado | Justificación |
+|-----|----------|--------|---------------|
+| **ADR-001** | YARP como proxy | Aceptado | Integración .NET nativa |
+| **ADR-002** | Redis rate limiting | Aceptado | Escalabilidad |
+| **ADR-003** | JWT + OAuth2 | Aceptado | Estándar industria |
+| **ADR-004** | Multi-tenant realms | Aceptado | Aislamiento |
 
-### Contexto y problema
+## 9.2 Alternativas evaluadas
 
-Necesitamos un proxy reverso de alto rendimiento para el API Gateway que pueda:
-- Manejar routing dinámico a múltiples servicios
-- Soportar configuración en tiempo real
-- Integrarse nativamente con .NET 8
-- Proporcionar capacidades de balanceo de carga
-- Ser extensible para funcionalidades personalizadas
-
-### Alternativas consideradas
-
-1. **NGINX**
-   - ✅ Muy maduro y ampliamente usado
-   - ✅ Excelente rendimiento
-   - ❌ Configuración estática mediante archivos
-   - ❌ Requiere recargas para cambios de configuración
-   - ❌ No integrado con .NET ecosystem
-
-2. **Envoy Proxy**
-   - ✅ Arquitectura cloud-native
-   - ✅ Configuración dinámica via xDS APIs
-   - ✅ Excelentes capacidades de observabilidad
-   - ❌ Curva de aprendizaje empinada
-   - ❌ Overhead adicional para servicios simples
-
-3. **YARP (Yet Another Reverse Proxy)**
-   - ✅ Integración nativa con .NET
-   - ✅ Configuración dinámica
-   - ✅ Extensibilidad mediante middleware
-   - ✅ Soporte oficial de Microsoft
-   - ❌ Relativamente nuevo (menor ecosistema)
-
-### Decisión
-
-Seleccionamos **YARP** como solución de proxy reverso por las siguientes razones:
-
-```csharp
-// Ejemplo de configuración dinámica con YARP
-public class DynamicRouteConfigProvider : IProxyConfigProvider
-{
-    public IProxyConfig GetConfig() => _config;
+| Componente | Alternativas | Selección | Razón |
+|------------|-------------|-----------|--------|
+| **Proxy** | NGINX, Envoy, YARP | YARP | .NET nativo |
+| **Rate Limiting** | In-memory, Redis, Database | Redis | Distribuido |
+| **Auth** | Custom, Auth0, Keycloak | Keycloak | Control total |
+| **Observabilidad** | Custom, Datadog, Grafana | Grafana Stack | Agnóstico |
 
     public void UpdateRoutes(IEnumerable<RouteConfig> routes)
     {

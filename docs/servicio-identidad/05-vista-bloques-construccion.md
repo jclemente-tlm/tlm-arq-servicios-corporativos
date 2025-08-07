@@ -1,10 +1,26 @@
 # 5. Vista de bloques de construcción
 
-Esta sección describe la descomposición estática del **Sistema de Identidad** en sus componentes principales, siguiendo un enfoque jerárquico desde la vista general hasta los detalles de implementación específicos de Keycloak.
-
 ![Sistema de Identidad - Vista General](/diagrams/servicios-corporativos/identity_system.png)
 
-*Figura 5.1: Vista de contenedores del Sistema de Identidad basado en Keycloak con componentes de soporte*
+*Figura 5.1: Vista de contenedores del Sistema de Identidad*
+
+## 5.1 Componentes principales
+
+| Componente | Responsabilidad | Tecnología |
+|------------|-----------------|------------|
+| **Keycloak Core** | Autenticación y autorización | Keycloak 23+ |
+| **PostgreSQL** | Persistencia de datos | PostgreSQL 15+ |
+| **Admin Console** | Gestión administrativa | Keycloak UI |
+| **Federation Connectors** | Integración IdPs externos | LDAP, SAML, OIDC |
+
+## 5.2 Interfaces principales
+
+| Interfaz | Protocolo | Propósito |
+|----------|-----------|----------|
+| **Authentication API** | OAuth2/OIDC | Autenticación usuarios |
+| **Admin API** | REST | Gestión administrativa |
+| **Federation** | SAML/LDAP | Integración externa |
+| **Token Validation** | JWT | Validación tokens |
 
 ## 5.1 Sistema de Identidad - Nivel 1 (Caja Blanca)
 

@@ -1,5 +1,21 @@
 # 6. Vista de tiempo de ejecución
 
+## 6.1 Escenarios principales
+
+| Escenario | Flujo | Componentes |
+|-----------|-------|-------------|
+| **Envío inmediato** | API → Orchestrator → Handler | API, Processor |
+| **Envío programado** | API → Repository → Scheduler | API, Processor |
+| **Procesamiento plantilla** | Template Engine → Handler | Processor |
+
+## 6.2 Patrones de interacción
+
+| Patrón | Descripción | Tecnología |
+|---------|---------------|-------------|
+| **CQRS** | Separación comando/consulta | API/Processor |
+| **Queue** | Cola de mensajes | Redis |
+| **Template** | Procesamiento plantillas | RazorEngine |
+
 Esta sección describe los principales escenarios de ejecución del sistema, mostrando cómo los componentes interactúan durante el tiempo de ejecución para cumplir con los casos de uso más relevantes arquitectónicamente.
 
 ## 6.1 Escenario: Envío Transaccional Individual

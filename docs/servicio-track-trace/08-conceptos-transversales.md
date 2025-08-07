@@ -1,5 +1,31 @@
 # 8. Conceptos transversales
 
+## 8.1 Seguridad
+
+| Aspecto | Implementación | Tecnología |
+|---------|-----------------|-------------|
+| **Autenticación** | JWT validation | OAuth2 |
+| **Autorización** | Claims-based | .NET 8 |
+| **Cifrado** | TLS 1.3 | HTTPS |
+| **Datos sensibles** | AES-256 | Cifrado |
+
+## 8.2 Observabilidad
+
+| Tipo | Herramienta | Propósito |
+|------|-------------|----------|
+| **Logs** | Serilog | Registro eventos |
+| **Métricas** | Prometheus | Monitoreo |
+| **Tracing** | OpenTelemetry | Trazabilidad |
+| **Health** | Health Checks | Estado servicios |
+
+## 8.3 Multi-tenancy
+
+| Aspecto | Implementación | Propósito |
+|---------|-----------------|----------|
+| **Aislamiento** | Por país | Separación datos |
+| **Deduplicación** | Por tenant | Prevención duplicados |
+| **Rate limiting** | Por organización | Protección recursos |
+
 ## 8.1 Modelo de dominio
 
 ### 8.1.1 Event Sourcing como principio arquitectónico

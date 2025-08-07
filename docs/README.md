@@ -22,15 +22,15 @@
 ## 📊 Diagramas de Arquitectura
 
 ### Modelo C4 - Vistas Principales
-- **[Contexto General](../diagrams/corporate_services.png)** - Visión de alto nivel del sistema
-- **[API Gateway](../diagrams/api_gateway_yarp.png)** - Componentes y flujos del gateway
-- **[Sistema de Notificaciones](../diagrams/notification_system.png)** - Arquitectura completa de notificaciones
-- **[Observabilidad](../diagrams/observability_overview.png)** - Logging, métricas y tracing
+- **[Contexto General](/diagrams/servicios-corporativos/corporate_services.png)** - Visión de alto nivel del sistema
+- **[API Gateway](/diagrams/servicios-corporativos/api_gateway_yarp.png)** - Componentes y flujos del gateway
+- **[Sistema de Notificaciones](/diagrams/servicios-corporativos/notification_system.png)** - Arquitectura completa de notificaciones
+- **[Observabilidad](/diagrams/servicios-corporativos/observability_overview.png)** - Logging, métricas y tracing
 
 ### Vistas de Despliegue
-- **[Infraestructura AWS](../diagrams/notification_system_deployment.png)** - Despliegue en contenedores
-- **[Monitoreo de Estado](../diagrams/health_monitoring.png)** - Verificaciones de estado y cortocircuitos
-- **[Rastreo Distribuido](../diagrams/distributed_tracing.png)** - Trazabilidad entre servicios
+- **[Infraestructura AWS](/diagrams/servicios-corporativos/notification_system_deployment.png)** - Despliegue en contenedores
+- **[Monitoreo de Estado](/diagrams/servicios-corporativos/health_monitoring.png)** - Verificaciones de estado y cortocircuitos
+- **[Rastreo Distribuido](/diagrams/servicios-corporativos/distributed_tracing.png)** - Trazabilidad entre servicios
 
 ## 🔒 Seguridad y Compliance
 

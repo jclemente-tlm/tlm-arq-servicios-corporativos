@@ -1,5 +1,32 @@
 # 11. Riesgos y deuda técnica
 
+## 11.1 Riesgos identificados
+
+| Riesgo | Probabilidad | Impacto | Mitigación |
+|--------|--------------|---------|------------|
+| **YARP immaturity** | Media | Alto | Fallback a NGINX |
+| **Rate limiting failure** | Baja | Alto | Circuit breaker |
+| **Config corruption** | Baja | Medio | Validación + rollback |
+| **Keycloak dependency** | Media | Alto | Health checks |
+
+## 11.2 Deuda técnica
+
+| Área | Descripción | Prioridad | Esfuerzo |
+|------|---------------|-----------|----------|
+| **Monitoring** | Métricas custom | Alta | 1 sprint |
+| **Testing** | Load testing | Media | 2 sprints |
+| **Documentation** | API docs | Baja | 1 sprint |
+| **Security** | Penetration testing | Alta | 1 sprint |
+
+## 11.3 Acciones recomendadas
+
+| Acción | Plazo | Responsable |
+|--------|-------|-------------|
+| **Implementar circuit breakers** | 1 mes | DevOps |
+| **Setup monitoring completo** | 2 semanas | SRE |
+| **Pruebas de carga** | 1 mes | QA |
+| **Security audit** | 6 semanas | Security |
+
 ## 11.1 Identificación de riesgos
 
 ### 11.1.1 Riesgos técnicos

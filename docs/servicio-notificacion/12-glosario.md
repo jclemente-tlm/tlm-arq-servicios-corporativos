@@ -1,5 +1,30 @@
 # 12. Glosario
 
+## 12.1 Términos principales
+
+| Término | Definición |
+|----------|------------|
+| **Notification** | Mensaje enviado a usuarios |
+| **Template** | Plantilla para generar contenido |
+| **Handler** | Procesador de canal específico |
+| **Queue** | Cola de mensajes pendientes |
+| **Attachment** | Archivo adjunto a notificación |
+| **Channel** | Medio de envío (email, SMS, etc.) |
+| **Scheduler** | Programador de envíos |
+| **Provider** | Servicio externo de envío |
+| **Template Engine** | Motor de procesamiento plantillas |
+| **Multi-tenant** | Soporte múltiples organizaciones |
+
+## 12.2 Acrónimos
+
+| Acrónimo | Significado |
+|-----------|-------------|
+| **CQRS** | Command Query Responsibility Segregation |
+| **SMTP** | Simple Mail Transfer Protocol |
+| **SMS** | Short Message Service |
+| **API** | Application Programming Interface |
+| **EFS** | Elastic File System |
+
 Este glosario define los términos técnicos, conceptos y acrónimos utilizados en la documentación del **Sistema de Notificaciones**, proporcionando claridad y consistencia en la comunicación entre equipos técnicos y stakeholders.
 
 *[INSERTAR AQUÍ: Diagrama C4 - Notification System Terminology]*

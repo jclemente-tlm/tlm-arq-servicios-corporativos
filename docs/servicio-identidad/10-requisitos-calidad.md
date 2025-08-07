@@ -1,5 +1,32 @@
 # 10. Requisitos de calidad
 
+## 10.1 Rendimiento
+
+| Métrica | Objetivo | Medición |
+|---------|----------|----------|
+| **Latencia auth** | < 200ms p95 | Prometheus |
+| **Throughput** | 5k logins/min | Load testing |
+| **Disponibilidad** | 99.95% | Health checks |
+| **Token validation** | < 50ms | Benchmarks |
+
+## 10.2 Seguridad
+
+| Aspecto | Requisito | Implementación |
+|---------|-----------|----------------|
+| **MFA** | Obligatorio admin | Keycloak |
+| **Tokens** | JWT RS256 | Certificados |
+| **Passwords** | Políticas fuertes | Keycloak |
+| **Audit** | Todos los eventos | Logs |
+
+## 10.3 Escalabilidad
+
+| Aspecto | Objetivo | Estrategia |
+|---------|----------|------------|
+| **Usuarios** | 100k por realm | Clustering |
+| **Realms** | 50+ países | Multi-tenant |
+| **Sessions** | 10k concurrentes | Redis |
+| **Federación** | Múltiples IdP | Híbrida |
+
 Este capítulo define los atributos de calidad específicos del **Sistema de Identidad**, estableciendo métricas cuantificables, métodos de evaluación y criterios de aceptación para garantizar que el sistema cumple con las expectativas operacionales y de negocio.
 
 *[INSERTAR AQUÍ: Diagrama C4 - Quality Attributes Overview]*

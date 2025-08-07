@@ -1,5 +1,32 @@
 # 10. Requisitos de calidad
 
+## 10.1 Rendimiento
+
+| Métrica | Objetivo | Medición |
+|---------|----------|----------|
+| **Latencia envío** | < 500ms p95 | Prometheus |
+| **Throughput** | 1k notifications/min | Load testing |
+| **Disponibilidad** | 99.9% | Health checks |
+| **Cola processing** | < 30s | Monitoreo |
+
+## 10.2 Seguridad
+
+| Aspecto | Requisito | Implementación |
+|---------|-----------|----------------|
+| **Autenticación** | JWT obligatorio | Middleware |
+| **Datos sensibles** | Cifrado AES-256 | Aplicación |
+| **Rate limiting** | Por tenant | Redis |
+| **Audit** | Todos los envíos | Logs |
+
+## 10.3 Escalabilidad
+
+| Aspecto | Objetivo | Estrategia |
+|---------|----------|------------|
+| **Horizontal** | Auto-scaling | ECS |
+| **Cola** | Redis clustering | Distribuido |
+| **Attachments** | EFS compartido | Sistema archivos |
+| **Templates** | Cache en memoria | Optimización |
+
 Este capítulo define los atributos de calidad específicos del **Sistema de Notificaciones**, estableciendo métricas cuantificables, métodos de evaluación y criterios de aceptación para garantizar que el sistema cumple con las expectativas operacionales y de negocio.
 
 *[INSERTAR AQUÍ: Diagrama C4 - Notification Quality Attributes]*

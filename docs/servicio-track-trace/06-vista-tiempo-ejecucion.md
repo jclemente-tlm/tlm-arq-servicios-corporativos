@@ -1,5 +1,21 @@
 # 6. Vista de tiempo de ejecución
 
+## 6.1 Escenarios principales
+
+| Escenario | Flujo | Componentes |
+|-----------|-------|-------------|
+| **Registro evento** | API → Validator → Repository | API, Processor |
+| **Consulta tracking** | API → Query Handler → Database | API |
+| **Propagación evento** | Event Publisher → Queue → SITA | Processor |
+
+## 6.2 Patrones de interacción
+
+| Patrón | Descripción | Tecnología |
+|---------|---------------|-------------|
+| **CQRS** | Separación comando/consulta | API/Processor |
+| **Event Sourcing** | Registro eventos | PostgreSQL |
+| **Pub/Sub** | Propagación eventos | Queue |
+
 ## 6.1 Escenarios de runtime
 
 ### 6.1.1 Captura de evento operacional
@@ -113,7 +129,6 @@ sequenceDiagram
 - Detección por deduplication key
 - Retorno de referencia existente
 - Log de intento duplicado
-
 **Flujo de error**:
 - Validación fallida → Error 400
 - Problemas de conectividad → Retry automático
@@ -121,17 +136,12 @@ sequenceDiagram
 
 ### 6.2.2 Construcción de timeline
 
-**Descripción**: Generación de vista cronológica de eventos para una entidad
-
-**Actores**: Usuarios finales, Sistemas de reporting
-
 **Precondiciones**:
 - Entidad existente en el sistema
 - Permisos de lectura para el tenant
 - Read models actualizados
 
 **Flujo normal**:
-1. Validación de permisos por tenant
 2. Consulta a read store optimizado
 3. Aplicación de filtros temporales/contextuales
 4. Construcción de timeline estructurado

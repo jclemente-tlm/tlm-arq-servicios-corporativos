@@ -1,5 +1,32 @@
 # 10. Requisitos de calidad
 
+## 10.1 Rendimiento
+
+| Métrica | Objetivo | Medición |
+|---------|----------|----------|
+| **Latencia** | < 100ms p95 | Prometheus |
+| **Throughput** | 10k requests/seg | Load testing |
+| **Disponibilidad** | 99.9% | Health checks |
+| **CPU** | < 70% promedio | Monitoreo |
+
+## 10.2 Seguridad
+
+| Aspecto | Requisito | Implementación |
+|---------|-----------|----------------|
+| **Autenticación** | JWT obligatorio | Middleware |
+| **Rate limiting** | Por usuario/IP | Redis |
+| **TLS** | 1.3 mínimo | Certificados |
+| **Headers** | Security headers | Middleware |
+
+## 10.3 Escalabilidad
+
+| Aspecto | Objetivo | Estrategia |
+|---------|----------|------------|
+| **Horizontal** | Auto-scaling | ECS |
+| **Carga** | Load balancing | ALB |
+| **Cache** | Redis distribuido | Clustering |
+| **Configuración** | Hot reload | Dinámico |
+
 ## 10.1 Atributos de calidad
 
 ### 10.1.1 Rendimiento

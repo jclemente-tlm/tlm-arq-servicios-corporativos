@@ -1,163 +1,26 @@
 # 1. Introducción y objetivos
 
-El **Sistema de Identidad** es la plataforma centralizada de autenticación, autorización y gestión de identidades para todos los servicios corporativos. Basado en Keycloak, proporciona capacidades empresariales de Identity and Access Management (IAM) con soporte completo para arquitecturas multi-tenant y multi-país.
+Sistema centralizado de autenticación y autorización basado en Keycloak.
 
-## 1.1 Descripción general de los requisitos
+## 1.1 Propósito y funcionalidades
 
-### Propósito del Sistema
+| Funcionalidad | Descripción |
+|---------------|-------------|
+| **SSO** | Single Sign-On para todos los servicios |
+| **Multi-tenant** | Aislamiento por país/organización |
+| **Federación** | Integración con IdPs externos |
+| **RBAC** | Control de acceso basado en roles |
+| **MFA** | Autenticación multi-factor |
+| **Auditoría** | Registro completo de eventos |
 
-El sistema de identidad actúa como la autoridad central de confianza para todos los servicios corporativos, proporcionando:
-- **Inicio de Sesión Único (SSO)** para experiencia unificada de usuario
-- **Federación de identidades** con proveedores externos
-- **Gestión de ciclo de vida** de usuarios y roles
-- **Cumplimiento y auditoría** de accesos y autorizaciones
+## 1.2 Objetivos de calidad
 
-### Arquitectura del Sistema
-
-| Componente | Propósito | Tecnología Base |
-|------------|-----------|-----------------|
-| **Servidor Keycloak** | Proveedor de identidad central | Keycloak 23+, PostgreSQL |
-| **Consola de Administración** | Gestión de realms, usuarios y roles | Keycloak Interfaz de Administración |
-| **API de Identidad** | APIs programáticas para integración | Keycloak REST APIs |
-| **Conectores de Federación** | Integración con IdPs externos | LDAP, SAML, OIDC |
-
-### Requisitos Funcionales Principales
-
-| ID | Requisito | Descripción Detallada |
-|----|-----------|-----------------------|
-| **RF-ID-01** | **Multi-tenant Authentication** | Autenticación aislada por tenant/país con realms dedicados |
-| **RF-ID-02** | **OAuth2/OIDC Compliance** | Soporte completo OAuth2, OIDC con flows estándar |
-| **RF-ID-03** | **JWT Token Management** | Generación, validación y refresh de JWT tokens |
-| **RF-ID-04** | **Role-Based Access Control** | RBAC granular con roles específicos por tenant |
-| **RF-ID-05** | **Soporte de Federación** | Integración con Google Workspace, Microsoft AD, LDAP |
-| **RF-ID-06** | **Gestión de Ciclo de Vida de Usuario** | CRUD completo de usuarios, activación, desactivación |
-| **RF-ID-07** | **Gestión de Sesiones** | Control de sesiones, timeout, sesiones concurrentes |
-| **RF-ID-08** | **Autenticación Multi-Factor** | MFA con TOTP, SMS, email para roles críticos |
-| **RF-ID-09** | **Auditoría y Cumplimiento** | Registro completo de eventos de autenticación/autorización |
-| **RF-ID-10** | **Portal de Autoservicio** | Portal para usuarios (restablecimiento de contraseña, gestión de perfil) |
-
-### Modelo Multi-Tenant
-
-| Tenant/País | Realm Keycloak | Users Esperados | Integration Type |
-|-------------|----------------|-----------------|------------------|
-| **Peru Operations** | `peru-corp` | ~2,000 usuarios | LDAP + Local users |
-| **Ecuador Operations** | `ecuador-corp` | ~800 usuarios | Google Workspace federation |
-| **Colombia Operations** | `colombia-corp` | ~1,500 usuarios | Microsoft AD federation |
-| **Mexico Operations** | `mexico-corp` | ~1,200 usuarios | LDAP + Local users |
-| **Corporate Admin** | `admin-corp` | ~50 super-admin | Local users, enhanced MFA |
-
-### Requisitos No Funcionales
-
-| Categoría | Requisito | Target | Medición |
-|-----------|-----------|--------|----------|
-| **Rendimiento** | Latencia de autenticación | < 200ms P95 | Monitoreo de tiempo de respuesta |
-| **Escalabilidad** | Usuarios concurrentes | 10,000+ concurrent sessions | Monitoreo de sesiones |
-| **Disponibilidad** | Tiempo de actividad | 99.9% uptime | Verificaciones de salud, monitoreo SLA |
-| **Seguridad** | Cumplimiento de estándares | OIDC, SAML 2.0, OAuth 2.1 | Auditorías de seguridad |
-| **Cumplimiento** | Retención de logs | 2 años audit logs | Políticas de retención de logs |
-| **Recuperación** | Disaster recovery | RTO 30 min, RPO 5 min | Pruebas de respaldo y recuperación |
-
-## 1.2 Stakeholders
-
-### Stakeholders Principales
-
-| Stakeholder | Rol | Responsabilidad | Expectativas |
-|-------------|-----|-----------------|--------------|
-| **CISO (Chief Information Security Officer)** | Aprobador | Políticas de seguridad y cumplimiento | Arquitectura zero-trust, cumplimiento GDPR/SOX |
-| **Arquitectos Empresariales** | Diseñadores | Arquitectura e integración | Patrones consistentes, escalabilidad |
-| **Equipos DevOps** | Operadores | Despliegue y operación | Automatización, monitoreo, confiabilidad |
-| **Equipos de Aplicaciones** | Consumidores | Integración de servicios | APIs simples, documentación clara |
-| **Usuarios Finales** | Usuarios finales | Experiencia de usuario | SSO sin fricciones, capacidades de autoservicio |
-| **Oficiales de Cumplimiento** | Auditores | Auditoría y cumplimiento | Logs completos, reportes de acceso |
-
-### Preocupaciones por Stakeholder
-
-#### CISO & Equipo de Seguridad
-
-- **Zero Trust:** Validación continua de identidad y contexto
-- **Principio de Menor Privilegio:** Acceso mínimo necesario
-- **Cumplimiento:** Cumplimiento GDPR, SOX, ISO 27001
-- **Respuesta a Incidentes:** Detección y respuesta a anomalías
-
-#### Equipos de Desarrollo de Aplicaciones
-
-- **Experiencia del Desarrollador:** SDKs, documentación, ejemplos
-- **Simplicidad de Integración:** Estándares de la industria
-- **Manejo de Errores:** Mensajes de error claros y accionables
-- **Soporte de Pruebas:** Ambientes de testing, servicios mock
-
-#### Equipo de Operaciones
-
-- **Excelencia Operacional:** Disponibilidad 24/7, monitoreo
-- **Automatización:** Despliegue automatizado, escalado
-- **Rendimiento:** Latencia baja, capacidad de procesamiento alto
-- **Recuperación ante Desastres:** Procedimientos de backup y recovery
-
-## 1.3 Objetivos de Calidad
-
-### Atributos de Calidad Priorizados
-
-| Atributo | Prioridad | Descripción | Métricas de Éxito |
-|----------|-----------|-------------|-------------------|
-| **Seguridad** | 🔴 Crítico | Protección de identidades y accesos | Zero security incidents, pentesting passed |
-| **Confiabilidad** | 🔴 Crítico | Disponibilidad continua del servicio | 99.9% uptime, MTTR < 15 min |
-| **Rendimiento** | 🟡 Alto | Baja latencia en autenticación | < 200ms login, < 100ms token validation |
-| **Usabilidad** | 🟡 Alto | Experiencia de usuario fluida | < 3 clicks for common tasks, user satisfaction > 4.5/5 |
-| **Escalabilidad** | 🟡 Alto | Soporte de crecimiento organizacional | Support 50K+ users, linear performance scaling |
-| **Cumplimiento** | 🔴 Crítico | Cumplimiento regulatorio | 100% cumplimiento de auditoría, GDPR data rights |
-| **Mantenibilidad** | 🟢 Medio | Facilidad de evolución | < 2 hours for minor changes, automated testing |
-| **Interoperabilidad** | 🟡 Alto | Integración con sistemas externos | Standard protocols (OIDC, SAML), API-first |
-
-### Quality Tree
-
-```text
-Sistema de Identidad - Calidad
-├── Seguridad (Crítico)
-│   ├── Seguridad de Autenticación
-│   │   ├── Autenticación multi-factor
-│   │   ├── Aplicación de políticas de contraseña
-│   │   └── Seguridad de sesiones
-│   ├── Seguridad de Autorización
-│   │   ├── Implementación RBAC
-│   │   ├── Permisos granulares
-│   │   └── Aislamiento de tenant
-│   └── Protección de Datos
-│       ├── Cifrado en reposo/tránsito
-│       ├── Protección PII
-│       └── Cumplimiento GDPR
-├── Confiabilidad (Crítico)
-│   ├── Alta Disponibilidad
-│   │   ├── Despliegue multi-AZ
-│   │   ├── Monitoreo de salud
-│   │   └── Failover automático
-│   ├── Recuperación ante Desastres
-│   │   ├── Estrategias de respaldo
-│   │   ├── Replicación entre regiones
-│   │   └── Procedimientos de recuperación
-│   └── Tolerancia a Fallos
-│       ├── Circuit breakers
-│       ├── Degradación elegante
-│       └── Manejo de errores
-└── Rendimiento (Alto)
-    ├── Tiempo de Respuesta
-    │   ├── Latencia de autenticación < 200ms
-    │   ├── Validación de token < 100ms
-    │   └── Redirección SSO < 300ms
-    ├── Capacidad de procesamiento
-    │   ├── Usuarios concurrentes > 10K
-    │   ├── Requests de auth > 1K/sec
-    │   └── Generación de tokens > 5K/sec
-    └── Eficiencia de Recursos
-        ├── Memory optimization
-        ├── CPU utilization < 70%
-        └── Database connection pooling
-```
-
-## 1.4 Casos de Uso Principales
-
-### Escenarios de Autenticación
-
-#### UC-ID-01: Employee Login (Primary Flow)
+| Atributo | Objetivo | Métrica |
+|----------|----------|--------|
+| **Disponibilidad** | Alta disponibilidad | 99.9% uptime |
+| **Rendimiento** | Baja latencia | < 200ms autenticación |
+| **Escalabilidad** | Soporte masivo | 10,000+ usuarios concurrentes |
+| **Seguridad** | Máxima protección | Zero trust, GDPR compliant |
 
 ```mermaid
 sequenceDiagram

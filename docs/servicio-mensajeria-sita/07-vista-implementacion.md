@@ -1,5 +1,23 @@
 # 7. Vista de implementación
 
+## 7.1 Estructura del proyecto
+
+| Componente | Ubicación | Tecnología |
+|------------|-------------|-------------|
+| **Event Processor** | /src/SitaEventProcessor | .NET 8 Worker |
+| **Sender** | /src/SitaSender | .NET 8 Worker |
+| **PostgreSQL** | AWS RDS | PostgreSQL 15+ |
+| **File Storage** | AWS EFS | Sistema archivos |
+
+## 7.2 Dependencias principales
+
+| Dependencia | Versión | Propósito |
+|-------------|---------|----------|
+| **Entity Framework** | 8.0+ | ORM |
+| **RazorEngine** | 4.0+ | Plantillas SITA |
+| **Serilog** | 3.0+ | Logging |
+| **Polly** | 7.0+ | Resiliencia |
+
 ## 7.1 Estructura del sistema
 
 ### 7.1.1 Organización de código

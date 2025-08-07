@@ -1,5 +1,32 @@
 # 10. Requisitos de calidad
 
+## 10.1 Rendimiento
+
+| Métrica | Objetivo | Medición |
+|---------|----------|----------|
+| **Latencia ingesta** | < 100ms p95 | Prometheus |
+| **Throughput** | 1k eventos/min | Load testing |
+| **Disponibilidad** | 99.9% | Health checks |
+| **Query response** | < 200ms | Monitoreo |
+
+## 10.2 Seguridad
+
+| Aspecto | Requisito | Implementación |
+|---------|-----------|----------------|
+| **Autenticación** | JWT obligatorio | Middleware |
+| **Eventos** | Inmutables | Event store |
+| **Deduplicación** | Por tenant | Hash keys |
+| **Audit** | Trazabilidad completa | Event sourcing |
+
+## 10.3 Escalabilidad
+
+| Aspecto | Objetivo | Estrategia |
+|---------|----------|------------|
+| **Horizontal** | Auto-scaling | ECS |
+| **Event store** | PostgreSQL → SNS+SQS | Evolutivo |
+| **Consultas** | Read replicas | PostgreSQL |
+| **Cache** | Redis distribuido | Timeline queries |
+
 El **Sistema de Track & Trace** maneja eventos críticos operacionales que requieren garantías estrictas de calidad para soportar operaciones aeroportuarias y compliance regulatorio en tiempo real.
 
 *[INSERTAR AQUÍ: Diagrama C4 - Track & Trace Quality Attributes]*

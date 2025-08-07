@@ -1,5 +1,24 @@
 # 7. Vista de implementación
 
+## 7.1 Estructura del proyecto
+
+| Componente | Ubicación | Tecnología |
+|------------|-------------|-------------|
+| **Notification API** | /src/NotificationApi | .NET 8 Web API |
+| **Notification Processor** | /src/NotificationProcessor | .NET 8 Worker |
+| **PostgreSQL** | AWS RDS | PostgreSQL 15+ |
+| **Redis** | AWS ElastiCache | Redis 7+ |
+| **File Storage** | AWS EFS | Sistema archivos |
+
+## 7.2 Dependencias principales
+
+| Dependencia | Versión | Propósito |
+|-------------|---------|----------|
+| **Entity Framework** | 8.0+ | ORM |
+| **FluentValidation** | 11.0+ | Validación |
+| **RazorEngine** | 4.0+ | Plantillas |
+| **Serilog** | 3.0+ | Logging |
+
 ## 7.1 Infraestructura de Despliegue
 
 ### Arquitectura de Contenedores

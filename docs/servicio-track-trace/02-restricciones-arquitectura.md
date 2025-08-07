@@ -1,5 +1,41 @@
 # 2. Restricciones de la arquitectura
 
+## 2.1 Restricciones técnicas
+
+| Categoría | Restricción | Justificación |
+|------------|---------------|---------------|
+| **Runtime** | .NET 8 | Estándar corporativo |
+| **Base de datos** | PostgreSQL | Robustez y ACID |
+| **Arquitectura** | CQRS + Event Sourcing | Trazabilidad inmutable |
+| **APIs** | REST + GraphQL | Flexibilidad consultas |
+| **Contenedores** | Docker | Portabilidad |
+
+## 2.2 Restricciones de rendimiento
+
+| Métrica | Objetivo | Razón |
+|---------|----------|-------|
+| **Capacidad** | 50,000+ eventos/hora | Volumen operacional |
+| **Latencia ingesta** | < 100ms | Tiempo real |
+| **Latencia consulta** | < 200ms | Experiencia usuario |
+| **Disponibilidad** | 99.9% | SLA empresarial |
+
+## 2.3 Restricciones de seguridad
+
+| Aspecto | Requerimiento | Estándar |
+|---------|---------------|----------|
+| **Inmutabilidad** | Event sourcing | Auditoría |
+| **Cifrado** | TLS 1.3 | Mejores prácticas |
+| **Autenticación** | JWT obligatorio | Zero trust |
+| **Trazabilidad** | Auditoría completa | Compliance |
+
+## 2.4 Restricciones organizacionales
+
+| Área | Restricción | Impacto |
+|------|---------------|--------|
+| **Multi-tenancy** | Aislamiento por país | Regulaciones locales |
+| **Operaciones** | DevOps 24/7 | Continuidad negocio |
+| **Documentación** | ARC42 actualizada | Mantenibilidad |
+
 El **Sistema de Track & Trace** debe operar bajo restricciones técnicas, operacionales y de compliance específicas para el seguimiento en tiempo real de eventos operacionales. Estas restricciones definen las decisiones arquitectónicas críticas del sistema.
 
 ## 2.1 Restricciones técnicas

@@ -1,106 +1,31 @@
 # 4. Estrategia de solución
 
-Esta sección presenta las decisiones arquitectónicas fundamentales y la estrategia tecnológica para implementar el **Sistema de Identidad** como la autoridad central de autenticación y autorización para el ecosistema de servicios corporativos.
+## 4.1 Decisiones clave
 
-## 4.1 Resumen de la estrategia
+| Decisión | Alternativa elegida | Justificación |
+|----------|-------------------|---------------|
+| **IdP** | Keycloak | Open source, maduro |
+| **Base de datos** | PostgreSQL | Robustez |
+| **Protocolos** | OAuth2/OIDC, SAML | Estándares |
+| **Tokens** | JWT RS256 | Seguridad |
 
-### Enfoque Arquitectónico Central
+## 4.2 Patrones aplicados
 
-El sistema de identidad se basa en una **arquitectura de microservicios orientada a identidad** que combina:
+| Patrón | Propósito | Implementación |
+|---------|------------|----------------|
+| **Identity Provider** | Centralización identidad | Keycloak |
+| **Federation** | Integración externa | SAML/LDAP |
+| **Multi-tenancy** | Aislamiento por país | Realms |
+| **SSO** | Sesión única | OAuth2/OIDC |
 
-- **Keycloak como IdP central** con capacidades empresariales completas
-- **Federación de identidades** para integrar múltiples fuentes de usuarios
-- **Multi-tenancy nativo** con realms dedicados por país/organización
-- **Protocolos estándar** (OAuth2, OIDC, SAML) para máxima interoperabilidad
-- **Diseño stateless** para escalabilidad horizontal
+## 4.3 Multi-tenancy
 
-### Principios de Diseño
-
-| Principio | Descripción | Implementación |
-|-----------|-------------|----------------|
-| **Fuente Única de Verdad** | Keycloak como autoridad única de identidad | Gestión centralizada usuarios, identidad federada |
-| **Cumplimiento de Estándares** | Adherencia a protocolos estándar | OAuth2, OIDC, SAML 2.0, JWT |
-| **Defensa en Profundidad** | Múltiples capas de seguridad | MFA, cifrado tokens, logging auditoría |
-| **Escalabilidad Primero** | Diseño para crecimiento horizontal | Diseño sin estado, soporte clustering |
-| **Aislamiento de Tenant** | Aislamiento completo entre tenants | Realms separados, segregación datos |
-
-## 4.2 Decisiones arquitectónicas clave
-
-### Decisión 1: Keycloak como Identity Provider Central
-
-**Contexto**: Necesidad de un IdP empresarial robusto con capacidades avanzadas
-
-**Alternativas Evaluadas**:
-- **Keycloak** (seleccionado): Código abierto, características empresariales, extensible
-- **Auth0**: SaaS, fácil uso, costos escalables
-- **Okta**: Características empresariales, dependencia de proveedor
-- **AWS Cognito**: Nativo en la nube, limitaciones de personalización
-
-**Decisión**: Keycloak por flexibilidad, control total, y costo-efectividad
-
-**Consecuencias**:
-
-- ✅ Control completo sobre configuración y extensiones
-- ✅ Costos predecibles sin límites de usuarios
-- ✅ Capacidades avanzadas de federación
-- ❌ Responsabilidad de gestión y actualizaciones
-- ❌ Curva de aprendizaje del equipo
-
-### Decisión 2: Arquitectura Multi-Realm para Multi-Tenancy
-
-**Contexto**: Requerimiento de aislamiento completo entre países/tenants
-
-**Alternativas Evaluadas**:
-- **Single Realm con Groups** (rechazado): Menor aislamiento
-- **Multiple Realms** (seleccionado): Aislamiento completo
-- **Multiple Keycloak Instances** (rechazado): Complejidad operacional
-
-**Decisión**: Un realm dedicado por tenant/país
-
-**Consecuencias**:
-- ✅ Aislamiento completo de datos y configuración
-- ✅ Customización específica por tenant
-- ✅ Compliance con regulaciones locales
-- ❌ Mayor complejidad de administración
-- ❌ Replicación de configuraciones comunes
-
-### Decisión 3: Federación Híbrida de Identidades
-
-**Contexto**: Diferentes fuentes de usuarios por país (LDAP, Google, Microsoft)
-
-**Alternativas Evaluadas**:
-- **Full Migration** (rechazado): Disruptivo para usuarios
-- **Federation Only** (rechazado): Dependencia total de externos
-- **Hybrid Approach** (seleccionado): Federación + usuarios locales
-
-**Decisión**: Federación con external IdPs + usuarios locales en Keycloak
-
-**Consecuencias**:
-- ✅ Flexibilidad para diferentes escenarios
-- ✅ Gradual migration path
-- ✅ Backup authentication en caso de fallos
-- ❌ Complejidad de gestión de múltiples sources
-- ❌ Sincronización de datos entre sistemas
-
-## 4.3 Tecnologías y frameworks
-
-### Stack Tecnológico Principal
-
-| Capa | Tecnología | Versión | Justificación |
-|------|------------|---------|---------------|
-| **Proveedor de Identidad** | Keycloak | 23+ | Características empresariales, cumplimiento estándares |
-| **Base de Datos** | PostgreSQL | 15+ | Compatibilidad Keycloak, cumplimiento ACID |
-| **Tiempo de Ejecución** | Java/JVM | 21 LTS | Requerimiento Keycloak, soporte empresarial |
-| **Contenedorización** | Docker | 24+ | Estandarización despliegue |
-| **Orquestación** | Kubernetes | 1.28+ | Alta disponibilidad, auto-escalado |
-| **Balanceador de Carga** | NGINX/HAProxy | Última | Terminación SSL, distribución carga |
-| **Caché** | Redis | 7+ | Almacenamiento sesión, rendimiento |
-
-### Protocolos y Estándares
-
-| Protocolo | Versión | Uso Principal | Implementación |
-|-----------|---------|---------------|----------------|
-| **OAuth 2.0** | RFC 6749 + 2.1 | Authorization framework | Authorization Code, Client Credentials |
+| Aspecto | Implementación | Tecnología |
+|---------|-----------------|-------------|
+| **Realms** | Por país/organización | Keycloak |
+| **Usuarios** | Aislados por realm | Base datos |
+| **Configuración** | Por jurisdicción | Políticas |
+| **Federación** | IdP externos | SAML/LDAP |
 | **OpenID Connect** | OIDC 1.0 Core | Authentication layer | ID tokens, UserInfo endpoint |
 | **SAML 2.0** | OASIS SAML 2.0 | Legacy federation | External IdP integration |
 | **JWT** | RFC 7519 | Token format | RS256 signatures, standard claims |

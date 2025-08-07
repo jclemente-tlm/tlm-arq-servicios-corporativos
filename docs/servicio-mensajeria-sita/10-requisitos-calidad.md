@@ -1,5 +1,32 @@
 # 10. Requisitos de calidad
 
+## 10.1 Rendimiento
+
+| Métrica | Objetivo | Medición |
+|---------|----------|----------|
+| **Latencia procesamiento** | < 1s p95 | Prometheus |
+| **Throughput** | 500 mensajes/min | Load testing |
+| **Disponibilidad** | 99.9% | Health checks |
+| **File generation** | < 5s | Monitoreo |
+
+## 10.2 Seguridad
+
+| Aspecto | Requisito | Implementación |
+|---------|-----------|----------------|
+| **Certificados** | X.509 SITA | PKI |
+| **Cifrado** | TLS 1.3 | SFTP |
+| **Integridad** | Checksums | MD5/SHA256 |
+| **Audit** | Todos los mensajes | Logs |
+
+## 10.3 Escalabilidad
+
+| Aspecto | Objetivo | Estrategia |
+|---------|----------|------------|
+| **Horizontal** | Auto-scaling | ECS |
+| **Cola** | PostgreSQL → SNS+SQS | Evolutivo |
+| **Files** | EFS compartido | Sistema archivos |
+| **Partners** | 100+ configurados | Base datos |
+
 ## 10.1 Árbol de calidad
 
 ```

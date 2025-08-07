@@ -1,5 +1,32 @@
 # 11. Riesgos y deuda técnica
 
+## 11.1 Riesgos identificados
+
+| Riesgo | Probabilidad | Impacto | Mitigación |
+|--------|--------------|---------|------------|
+| **Redis failure** | Media | Alto | Clustering + backup |
+| **Template corruption** | Baja | Medio | Versionado |
+| **Provider limits** | Media | Medio | Múltiples providers |
+| **Queue overflow** | Media | Alto | Auto-scaling |
+
+## 11.2 Deuda técnica
+
+| Área | Descripción | Prioridad | Esfuerzo |
+|------|---------------|-----------|----------|
+| **Monitoring** | Métricas custom | Alta | 1 sprint |
+| **Testing** | Load testing | Media | 2 sprints |
+| **Templates** | Editor visual | Baja | 3 sprints |
+| **Analytics** | Delivery metrics | Media | 2 sprints |
+
+## 11.3 Acciones recomendadas
+
+| Acción | Plazo | Responsable |
+|--------|-------|-------------|
+| **Setup monitoring completo** | 2 semanas | SRE |
+| **Implementar Redis clustering** | 1 mes | DevOps |
+| **Pruebas de carga** | 1 mes | QA |
+| **Analytics dashboard** | 6 semanas | Product |
+
 Este capítulo identifica, evalúa y documenta los riesgos significativos del **Sistema de Notificaciones**, así como la deuda técnica acumulada, proporcionando estrategias de mitigación y planes de remediación para garantizar la sostenibilidad a largo plazo.
 
 *[INSERTAR AQUÍ: Diagrama C4 - Notification Risk Management]*

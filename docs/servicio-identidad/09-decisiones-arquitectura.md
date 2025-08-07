@@ -1,5 +1,23 @@
 # 9. Decisiones de arquitectura
 
+## 9.1 Decisiones principales
+
+| ADR | Decisión | Estado | Justificación |
+|-----|----------|--------|---------------|
+| **ADR-001** | Keycloak como IdP | Aceptado | Open source maduro |
+| **ADR-002** | Multi-realm por país | Aceptado | Aislamiento completo |
+| **ADR-003** | PostgreSQL backend | Aceptado | Robustez |
+| **ADR-004** | Federación híbrida | Aceptado | Flexibilidad |
+
+## 9.2 Alternativas evaluadas
+
+| Componente | Alternativas | Selección | Razón |
+|------------|-------------|-----------|--------|
+| **IdP** | Auth0, Okta, Keycloak | Keycloak | Control total |
+| **Base datos** | MySQL, PostgreSQL | PostgreSQL | Compatibilidad |
+| **Deployment** | VM, Container, K8s | Container | Portabilidad |
+| **Federación** | Full, None, Híbrida | Híbrida | Gradual |
+
 Esta sección documenta las decisiones arquitectónicas más importantes del **Sistema de Identidad** utilizando el formato ADR (Architecture Decision Record), proporcionando contexto, justificación y consecuencias de cada decisión.
 
 *[INSERTAR AQUÍ: Diagrama C4 - Architecture Decision Dependencies]*

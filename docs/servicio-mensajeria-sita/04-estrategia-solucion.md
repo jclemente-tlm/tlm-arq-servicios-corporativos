@@ -1,58 +1,31 @@
 # 4. Estrategia de solución
 
-## 4.1 Decisiones Fundamentales
+## 4.1 Decisiones clave
 
-### Arquitectura Basada en Adaptadores SITA
+| Decisión | Alternativa elegida | Justificación |
+|----------|-------------------|---------------|
+| **Arquitectura** | Event Processor + Sender | Separación responsabilidades |
+| **Plantillas** | RazorEngine | Flexibilidad SITA |
+| **Almacenamiento** | Sistema archivos | Protocolo SITA |
+| **Procesamiento** | Event-driven | Asincronía |
 
-**Decisión:** Implementar una arquitectura de adaptadores especializados para protocolos SITA
+## 4.2 Patrones aplicados
 
-**Justificación:**
-- **Separación de Responsabilidades:** Cada protocolo SITA maneja sus especificidades
-- **Escalabilidad:** Permite añadir nuevos protocolos sin impactar existentes
-- **Mantenibilidad:** Adaptadores aislados facilitan pruebas y depuración
-- **Cumplimiento:** Cumple estándares IATA/ICAO para comunicaciones aeronáuticas
+| Patrón | Propósito | Implementación |
+|---------|------------|----------------|
+| **Event-Driven** | Procesamiento asíncrono | PostgreSQL queue |
+| **Template Method** | Generación archivos SITA | RazorEngine |
+| **Worker Service** | Procesamiento background | .NET 8 |
+| **File-based** | Intercambio archivos | Sistema archivos |
 
-### Tecnologías Core
+## 4.3 Integración SITA
 
-#### Intermediario de Mensajes: Event Bus Agnóstico
-- **Transmisión de Eventos:** Para manejo de mensajes Type A/B de alto volumen
-- **Durabilidad:** Garantiza entrega de mensajes críticos
-- **Particionamiento:** Por aerolínea/ruta para optimizar capacidad procesamiento
-- **Retención Configurable:** Según normativas de auditoría
-
-#### Adaptadores de Protocolo: .NET 8
-- **Adaptador SITATEX:** Mensajes telegráficos tradicionales
-- **Adaptador API SITA:** REST/HTTP para servicios modernos
-- **Procesador Type B:** Analizador especializado para mensajes operacionales
-- **Puente Legacy:** Conectores para sistemas mainframe
-
-## 4.2 Patrones Arquitectónicos
-
-### Patrón de Traducción de Mensajes
-```
-Mensaje SITA → Formato Canónico → Eventos Internos → Sistemas Objetivo
-```
-
-### Patrón Circuit Breaker
-- **Timeouts Configurables:** Por tipo de mensaje y destino
-- **Mecanismos de Respaldo:** Almacenamiento temporal y reintento automático
-- **Monitoreo de Salud:** Detección proactiva de fallos de conectividad
-
-### Event Sourcing para Auditoría
-- **Registro de Mensajes:** Trazabilidad completa de mensajes SITA
-- **Capacidad de Reproducción:** Reconstrucción de estados para análisis
-- **Reportes de Cumplimiento:** Generación automática de reportes regulatorios
-
-## 4.3 Estrategia de Conectividad
-
-### Integración Red SITA
-- **Redundancia:** Múltiples puntos de acceso SITA
-- **Balanceo de Carga:** Distribución inteligente por geografía
-- **Conmutación Automática:** Cambio transparente entre circuitos
-- **Gestión QoS:** Priorización por criticidad de mensaje
-
-### Matriz Soporte de Protocolos
-| Protocolo | Uso Principal | Criticidad | Timeout |
+| Aspecto | Implementación | Tecnología |
+|---------|-----------------|-------------|
+| **Protocolos** | SFTP/FTP | Estándar SITA |
+| **Formatos** | TTY/EDIFACT | Plantillas |
+| **Certificados** | X.509 | Autenticación |
+| **Partners** | Configuración dinámica | Base datos |
 |-----------|---------------|------------|---------|
 | SITATEX | Mensajes operacionales | Alto | 30s |
 | Type B | Datos de vuelo | Crítico | 10s |

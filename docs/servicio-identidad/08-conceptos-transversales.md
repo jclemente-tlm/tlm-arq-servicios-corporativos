@@ -1,5 +1,30 @@
 # 8. Conceptos transversales
 
+## 8.1 Seguridad
+
+| Aspecto | Implementación | Tecnología |
+|---------|-----------------|-------------|
+| **Autenticación** | OAuth2/OIDC | Keycloak |
+| **Tokens** | JWT RS256 | Estándar |
+| **Federación** | SAML/LDAP | Conectores |
+| **MFA** | Obligatorio admin | Keycloak |
+
+## 8.2 Multi-tenancy
+
+| Aspecto | Implementación | Propósito |
+|---------|-----------------|----------|
+| **Realms** | Por país | Aislamiento |
+| **Usuarios** | Por realm | Separación |
+| **Configuración** | Por jurisdicción | Compliance |
+
+## 8.3 Configuración
+
+| Elemento | Fuente | Formato |
+|----------|--------|--------|
+| **Realms** | Keycloak Admin | UI/API |
+| **Secretos** | AWS Secrets Manager | JSON |
+| **Políticas** | Keycloak | Configuración |
+
 Esta sección describe los aspectos arquitectónicos que afectan múltiples bloques de construcción del **Sistema de Identidad**, proporcionando soluciones coherentes a preocupaciones recurrentes en todo el sistema.
 
 *[INSERTAR AQUÍ: Diagrama C4 - Conceptos Transversales del Sistema de Identidad]*

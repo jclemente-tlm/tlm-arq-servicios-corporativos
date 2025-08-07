@@ -1,5 +1,41 @@
 # 7. Vista de implementación
 
+## 7.1 Estructura del proyecto
+
+| Componente | Ubicación | Tecnología |
+|------------|-------------|-------------|
+| **API Gateway** | /src/ApiGateway | .NET 8 Web API |
+| **YARP** | Microsoft.ReverseProxy | YARP 2.0+ |
+| **Redis** | AWS ElastiCache | Redis 7+ |
+| **Configuración** | AWS Secrets Manager | JSON |
+
+## 7.2 Dependencias principales
+
+| Dependencia | Versión | Propósito |
+|-------------|---------|----------|
+| **YARP** | 2.0+ | Reverse Proxy |
+| **StackExchange.Redis** | 2.6+ | Rate limiting |
+| **Polly** | 7.0+ | Resiliencia |
+| **Serilog** | 3.0+ | Logging |
+
+## 7.1 Estructura del proyecto
+
+| Componente | Ubicación | Tecnología |
+|------------|-------------|-------------|
+| **API Gateway** | /src/ApiGateway | .NET 8 |
+| **Configuración** | /config | JSON/YAML |
+| **Docker** | /docker | Dockerfile |
+| **Scripts** | /scripts | PowerShell/Bash |
+
+## 7.2 Dependencias principales
+
+| Dependencia | Versión | Propósito |
+|-------------|---------|----------|
+| **YARP** | 2.0+ | Proxy reverso |
+| **Polly** | 7.0+ | Resiliencia |
+| **Serilog** | 3.0+ | Logging |
+| **Redis** | 7.0+ | Cache y rate limiting |
+
 ## 7.1 Infraestructura y despliegue
 
 ### 7.1.1 Arquitectura de contenedores

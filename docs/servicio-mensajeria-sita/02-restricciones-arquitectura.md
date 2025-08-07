@@ -1,17 +1,48 @@
 # 2. Restricciones de la arquitectura
 
-El **Sistema de Mensajería SITA** debe operar dentro de restricciones técnicas, organizacionales y regulatorias específicas de la industria aeronáutica. Estas restricciones determinan las decisiones arquitectónicas fundamentales del sistema.
+## 2.1 Restricciones técnicas
+
+| Categoría | Restricción | Justificación |
+|------------|---------------|---------------|
+| **Runtime** | .NET 8 | Estándar corporativo |
+| **Base de datos** | PostgreSQL | Robustez y ACID |
+| **Cola de eventos** | PostgreSQL inicial, SNS+SQS futuro | Simplicidad inicial, escalabilidad futura |
+| **Contenedores** | Docker | Portabilidad |
+| **Protocolos SITA** | SITATEX, AFTN | Estándares aeronáuticos |
+
+## 2.2 Restricciones de rendimiento
+
+| Métrica | Objetivo | Razón |
+|---------|----------|-------|
+| **Capacidad** | 10,000+ mensajes/hora | Volumen aeronáutico |
+| **Latencia** | < 30s extremo a extremo | Operaciones críticas |
+| **Disponibilidad** | 99.95% | Operaciones aeronáuticas |
+| **Cumplimiento** | 100% estándares ICAO | Regulatorio |
+
+## 2.3 Restricciones de seguridad
+
+| Aspecto | Requerimiento | Estándar |
+|---------|---------------|----------|
+| **Cumplimiento** | Estándares ICAO | Aeronáutico |
+| **Cifrado** | TLS 1.3 | Mejores prácticas |
+| **Autenticación** | JWT obligatorio | Zero trust |
+| **Trazabilidad** | Auditoría completa | Compliance |
+
+## 2.4 Restricciones organizacionales
+
+| Área | Restricción | Impacto |
+|------|---------------|--------|
+| **Multi-tenancy** | Aislamiento por aeropuerto | Operaciones independientes |
+| **Operaciones** | DevOps 24/7 | Continuidad aeronáutica |
+| **Documentación** | ARC42 actualizada | Mantenibilidad |
 
 ## 2.1 Restricciones técnicas
 
-### Protocolos y Estándares SITA
-
-| Restricción | Descripción | Impacto Arquitectónico |
-|-------------|-------------|------------------------|
-| **Protocolo SITA SITATEX** | Cumplimiento obligatorio con protocolos SITATEX para comunicación aeronáutica | Implementación de adaptadores específicos, validación de formatos de mensaje |
-| **Direccionamiento AFTN** | Sistema de direccionamiento AFTN (Red Fija de Telecomunicaciones Aeronáuticas) | Motor de enrutamiento específico, validación de direcciones aeronáuticas |
-| **Estándares Mensaje ICAO** | Formatos de mensaje según Organización de Aviación Civil Internacional | Motores parser y validador para tipos de mensaje específicos |
-| **Formato Mensaje Tipo B** | Estructura específica de mensajes Tipo B para operaciones aeroportuarias | Motor plantillas especializado, validación de sintaxis Tipo B |
+### Protocolos SITA obligatorios
+- **SITA SITATEX** para comunicación aeronáutica
+- **Direccionamiento AFTN** para enrutamiento
+- **Estándares ICAO** para formatos de mensaje
+- **Mensajes Tipo B** para operaciones aeroportuarias
 
 ### Infraestructura y Plataforma
 

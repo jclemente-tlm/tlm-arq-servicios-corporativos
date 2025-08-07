@@ -1,5 +1,23 @@
 # 7. Vista de implementación
 
+## 7.1 Estructura del proyecto
+
+| Componente | Ubicación | Tecnología |
+|------------|-------------|-------------|
+| **Track & Trace API** | /src/TrackTraceApi | .NET 8 Web API |
+| **Event Processor** | /src/TrackTraceProcessor | .NET 8 Worker |
+| **PostgreSQL** | AWS RDS | PostgreSQL 15+ |
+| **Redis** | AWS ElastiCache | Redis 7+ |
+
+## 7.2 Dependencias principales
+
+| Dependencia | Versión | Propósito |
+|-------------|---------|----------|
+| **Entity Framework** | 8.0+ | ORM |
+| **FluentValidation** | 11.0+ | Validación |
+| **MediatR** | 12.0+ | CQRS |
+| **Serilog** | 3.0+ | Logging |
+
 ## 7.1 Estructura del sistema
 
 ### 7.1.1 Organización de código

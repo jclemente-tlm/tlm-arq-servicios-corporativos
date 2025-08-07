@@ -2,6 +2,31 @@
 
 ## 8.1 Seguridad
 
+| Aspecto | Implementación | Tecnología |
+|---------|-----------------|-------------|
+| **Autenticación** | Certificados SITA | X.509 |
+| **Cifrado** | TLS 1.3 | HTTPS/SFTP |
+| **Integridad** | Checksums | MD5/SHA256 |
+
+## 8.2 Observabilidad
+
+| Tipo | Herramienta | Propósito |
+|------|-------------|----------|
+| **Logs** | Serilog | Registro eventos |
+| **Métricas** | Prometheus | Monitoreo |
+| **Tracing** | OpenTelemetry | Trazabilidad |
+| **Health** | Health Checks | Estado servicios |
+
+## 8.3 Configuración
+
+| Elemento | Fuente | Formato |
+|----------|--------|---------|
+| **Plantillas SITA** | Scripts | Razor |
+| **Partners** | Base datos | Configuración |
+| **Secretos** | AWS Secrets Manager | JSON |
+
+## 8.1 Seguridad
+
 ### 8.1.1 Autenticación SITA
 
 - **Certificados X.509**: Certificados cliente para autenticación con red SITA

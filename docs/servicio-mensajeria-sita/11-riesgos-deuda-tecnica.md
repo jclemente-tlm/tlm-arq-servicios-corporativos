@@ -1,5 +1,32 @@
 # 11. Riesgos y deuda técnica
 
+## 11.1 Riesgos identificados
+
+| Riesgo | Probabilidad | Impacto | Mitigación |
+|--------|--------------|---------|------------|
+| **SITA network failure** | Media | Alto | Redundancia |
+| **Certificate expiry** | Baja | Alto | Monitoring + renewal |
+| **Template corruption** | Baja | Medio | Versionado |
+| **PostgreSQL limits** | Media | Medio | Migración SNS+SQS |
+
+## 11.2 Deuda técnica
+
+| Área | Descripción | Prioridad | Esfuerzo |
+|------|---------------|-----------|----------|
+| **Monitoring** | Métricas SITA custom | Alta | 1 sprint |
+| **Testing** | SITA protocol testing | Media | 2 sprints |
+| **Migration** | SNS+SQS readiness | Media | 3 sprints |
+| **Documentation** | SITA integration guides | Baja | 1 sprint |
+
+## 11.3 Acciones recomendadas
+
+| Acción | Plazo | Responsable |
+|--------|-------|-------------|
+| **Setup monitoring SITA** | 2 semanas | SRE |
+| **Certificate management** | 1 mes | DevOps |
+| **Prepare SNS+SQS migration** | 2 meses | Architecture |
+| **SITA protocol testing** | 1 mes | QA |
+
 ## 11.1 Identificación de riesgos
 
 ### 11.1.1 Riesgos técnicos

@@ -1,61 +1,27 @@
-# 3. Contexto y Alcance del Sistema
+# 3. Contexto y alcance del sistema
 
-## 3.1 Contexto del Negocio
+![API Gateway - Vista de Contexto](/diagrams/servicios-corporativos/api_gateway.png)
 
-![Servicios Corporativos - Vista de Contexto](/diagrams/servicios-corporativos/corporate_services.png)
+*Figura 3.1: Vista de contexto del API Gateway*
 
-*Figura 3.1: Vista de contexto de los Servicios Corporativos mostrando la interacción entre sistemas y actores externos*
+## 3.1 Alcance del sistema
 
-El API Gateway de Servicios Corporativos actúa como el punto de entrada unificado para todas las aplicaciones cliente, proporcionando un intermediario inteligente que gestiona la autenticación, autorización, enrutamiento y observabilidad de las comunicaciones entre sistemas externos e internos.
+| Aspecto | Descripción |
+|---------|-------------|
+| **Incluido** | Proxy reverso, autenticación, rate limiting, load balancing |
+| **Excluido** | Lógica de negocio, persistencia de datos, procesamiento |
 
-![API Gateway Context](/diagrams/servicios-corporativos/api_gateway.png)
+## 3.2 Actores externos
 
-*Diagrama C4 - Contexto del API Gateway mostrando clientes externos, servicios internos y flujos de comunicación.*
+| Actor | Rol | Interacción |
+|-------|-----|-------------|
+| **Clientes Web** | Consumidores | Solicitudes HTTP/HTTPS |
+| **Apps Móviles** | Consumidores | APIs REST |
+| **Servicios Downstream** | Proveedores | Enrutamiento de solicitudes |
+| **Sistema Identidad** | Proveedor | Validación de tokens |
+| **Observabilidad** | Consumidor | Métricas y logs |
 
-### Stakeholders Principales
-
-| Stakeholder | Rol | Expectativas | Interés |
-|-------------|-----|---------------|---------|
-| **Desarrolladores Frontend** | Consumidores API | APIs consistentes, documentación clara | Productividad de desarrollo |
-| **Desarrolladores Móviles** | Consumidores API | Rendimiento, compatibilidad offline | Experiencia de usuario |
-| **Ingenieros DevOps** | Operadores | Observabilidad, escalabilidad | Estabilidad operacional |
-| **Equipo de Seguridad** | Auditores | Compliance, seguridad centralizada | Gestión de riesgos |
-| **Usuarios Empresariales** | Usuarios finales | Disponibilidad, rendimiento | Continuidad del negocio |
-| **Socios Externos** | Integradores | Interfaces estables, SLAs claros | Integración confiable |
-
-## 3.2 Contexto Técnico
-
-### Arquitectura de Despliegue
-
-```text
-┌─────────────────────────────────────────────────────────────────┐
-│                         INTERNET                                │
-└─────────────────────┬───────────────────────────────────────────┘
-                      │ HTTPS/TLS 1.3
-                      ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                        AWS LOAD BALANCER                       │
-│            [Application Load Balancer - Multi-AZ]             │
-└─────────────────────┬───────────────────────────────────────────┘
-                      │ Load Distribution
-                      ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      API GATEWAY (YARP)                        │
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │         SECURITY & ROUTING MIDDLEWARE                       ││
-│  │  [Auth] [Rate Limit] [Circuit Breaker] [Tenant Routing]    ││
-│  └─────────────────────────────────────────────────────────────┘│
-└─────────────────────┬───────────────────────────────────────────┘
-                      │ Authenticated & Routed Requests
-                      ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    DOWNSTREAM MICROSERVICES                    │
-│  [Identity] [Notification] [Track&Trace] [SITA Messaging]     │
-│  [Reporting] [Configuration] [Health Check]                   │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Especificaciones Técnicas
+## 3.3 Especificaciones técnicas
 
 | Aspecto | Especificación | Rationale |
 |---------|----------------|-----------|
@@ -64,7 +30,6 @@ El API Gateway de Servicios Corporativos actúa como el punto de entrada unifica
 | **Authentication** | OAuth2 + JWT | Estándar de la industria |
 | **Protocol** | HTTP/2, HTTPS only | Security, rendimiento |
 | **Balanceador de Carga** | Round-robin con health checks | Confiabilidad |
-| **Limitación de Velocidad** | Control de tráfico per tenant | Protección de recursos |
 | **Circuit Breaker** | Framework Polly | Tolerancia a fallos |
 | **Observability** | OpenTelemetry + Prometheus | Standards compliance |
 

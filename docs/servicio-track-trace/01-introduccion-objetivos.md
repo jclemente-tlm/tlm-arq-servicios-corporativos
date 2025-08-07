@@ -1,5 +1,27 @@
 # 1. Introducción y objetivos
 
+Sistema de trazabilidad operacional en tiempo real con arquitectura CQRS + Event Sourcing.
+
+## 1.1 Propósito y funcionalidades
+
+| Funcionalidad | Descripción |
+|---------------|-------------|
+| **Captura de eventos** | Ingesta de eventos operacionales |
+| **Event Sourcing** | Almacenamiento inmutable de eventos |
+| **CQRS** | Separación comando/consulta |
+| **Trazabilidad** | Seguimiento completo de operaciones |
+| **Analytics** | Análisis de patrones operacionales |
+| **APIs** | REST y GraphQL para consultas |
+
+## 1.2 Objetivos de calidad
+
+| Atributo | Objetivo | Métrica |
+|----------|----------|--------|
+| **Disponibilidad** | Operación continua | 99.9% uptime |
+| **Rendimiento** | Ingesta rápida | < 100ms procesamiento |
+| **Escalabilidad** | Alto volumen | 50,000+ eventos/hora |
+| **Consistencia** | Datos confiables | Event sourcing garantizado |
+
 El **Sistema de Track & Trace** es un servicio distribuido diseñado para proporcionar trazabilidad completa de eventos corporativos y procesos de negocio en tiempo real. Implementa arquitectura CQRS (Command Query Responsibility Segregation) para optimizar tanto la ingesta de eventos como las consultas de trazabilidad.
 
 ## 1.1 Descripción general de los requisitos

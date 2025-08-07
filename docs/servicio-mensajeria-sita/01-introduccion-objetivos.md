@@ -1,5 +1,27 @@
 # 1. Introducción y objetivos
 
+Sistema especializado para generación y transmisión de mensajes aeronáuticos SITA.
+
+## 1.1 Propósito y funcionalidades
+
+| Funcionalidad | Descripción |
+|---------------|-------------|
+| **Mensajes SITA** | Generación de mensajes SITATEX |
+| **Plantillas** | Motor de plantillas aeronáuticas |
+| **Enrutamiento** | Direccionamiento AFTN |
+| **Transmisión** | Envío a red SITA global |
+| **Trazabilidad** | Seguimiento de entregas |
+| **Cumplimiento** | Estándares ICAO |
+
+## 1.2 Objetivos de calidad
+
+| Atributo | Objetivo | Métrica |
+|----------|----------|--------|
+| **Disponibilidad** | Operación continua | 99.95% uptime |
+| **Latencia** | Transmisión rápida | < 30s extremo a extremo |
+| **Capacidad** | Alto volumen | 10,000 mensajes/hora |
+| **Cumplimiento** | Estándares ICAO | 100% conformidad |
+
 El **Sistema de Mensajería SITA** es un servicio especializado diseñado para generar, procesar y entregar mensajes SITA (Société Internationale de Télécommunications Aéronautiques) para aerolíneas y partners del ecosistema aeronáutico. Proporciona integración confiable con la red SITA global y sistemas aeroportuarios.
 
 ## 1.1 Descripción general de los requisitos

@@ -1,140 +1,37 @@
 # 2. Restricciones de la arquitectura
 
-El **Sistema de Identidad** debe cumplir con restricciones técnicas, de seguridad, regulatorias y organizacionales críticas para la gestión de identidades corporativas. Estas restricciones definen las decisiones arquitectónicas fundamentales del sistema.
-
 ## 2.1 Restricciones técnicas
 
-### Plataforma de Identity Provider
+| Categoría | Restricción | Justificación |
+|------------|---------------|---------------|
+| **Plataforma** | Keycloak 23+ | Estándar corporativo |
+| **Base de datos** | PostgreSQL | Robustez y experiencia |
+| **Contenedores** | Docker | Portabilidad |
+| **Protocolos** | OAuth2/OIDC, SAML | Estándares industria |
 
-| Restricción | Descripción | Justificación | Impacto Arquitectónico |
-|-------------|-------------|---------------|------------------------|
-| **Keycloak Obligatorio** | Uso de Keycloak 23+ como IdP principal | Estándar corporativo, features empresariales | Arquitectura basada en Keycloak realms |
-| **Base de Datos PostgreSQL** | Base de datos PostgreSQL para Keycloak | Robustez, escalabilidad, expertise del equipo | Esquema Keycloak nativo, optimizaciones específicas |
-| **Despliegue Docker** | Despliegue en contenedores Docker | Estandardización DevOps, portabilidad | Containerized Keycloak, orchestration con Kubernetes |
-| **Alta Disponibilidad** | Configuración activo-pasivo mínima | SLA 99.9%, tolerancia a fallos | Clustering, balanceo de carga, replicación de sesiones |
+## 2.2 Restricciones de rendimiento
 
-### Protocolos y Estándares de Seguridad
+| Métrica | Objetivo | Razón |
+|---------|----------|-------|
+| **Usuarios concurrentes** | 10,000+ | Operaciones pico |
+| **Latencia** | < 100ms | Experiencia usuario |
+| **Disponibilidad** | 99.9% | SLA empresarial |
 
-| Protocolo | Versión Requerida | Uso | Implementación |
-|-----------|-------------------|-----|----------------|
-| **OAuth2** | RFC 6749 compliant | Authorization framework | Authorization Code, Client Credentials flows |
-| **OpenID Connect** | OIDC 1.0 Core | Authentication layer | ID tokens, UserInfo endpoint |
-| **JWT** | RFC 7519, RS256 signing | Token format | RSA-256 signatures, short TTL |
-| **SAML 2.0** | OASIS SAML 2.0 | Federation con sistemas legacy | SAML IdP para integración externa |
-| **LDAP v3** | RFC 4511 | Directory integration | User federation, attribute mapping |
+## 2.3 Restricciones de seguridad
 
-### Capacidad y Rendimiento
+| Aspecto | Requerimiento | Estándar |
+|---------|---------------|----------|
+| **Cumplimiento** | GDPR, ISO 27001 | Regulatorio |
+| **MFA** | Obligatorio admin | Zero trust |
+| **Cifrado** | TLS 1.3, AES-256 | Mejores prácticas |
 
-| Métrica | Restricción | Justificación | Arquitectura Requerida |
-|---------|-------------|---------------|------------------------|
-| **Usuarios Concurrentes** | 10,000 sesiones simultáneas | Operaciones pico, multi-tenant | Clustering, optimización de sesiones |
-| **Latencia de Autenticación** | p95 < 100ms | Experiencia de usuario crítica | Caché en memoria, consultas optimizadas |
-| **Validación de Token** | p95 < 50ms | Rendimiento de API | Caché de validación de firmas JWT |
-| **Base de Datos de Usuarios** | 50,000 usuarios por realm | Capacidad por país/tenant | Particionado de base de datos, indexación |
+## 2.4 Restricciones organizacionales
 
-### Integración y Conectividad
-
-| Sistema | Protocolo | Restricción | Implementación |
-|---------|-----------|-------------|----------------|
-| **API Gateway** | OIDC Client | Validación de token por solicitud | Introspección JWT, validación de claims |
-| **Servicios Corporativos** | Flujos OAuth2 | Autenticación servicio-a-servicio | Credenciales de cliente, acceso con alcance |
-| **IdPs Externos** | Federación SAML/OIDC | Cumplimiento de estándares | Adaptadores de protocolo, mapeo de atributos |
-| **Directorios LDAP** | LDAP v3 | Integración solo lectura | Federación de usuarios, estrategias de sincronización |
-
-## 2.2 Restricciones de seguridad
-
-### Cumplimiento y Regulatorio
-
-| Requisito | Estándar | Alcance | Implementación |
-|-------------|----------|-------|----------------|
-| **Cumplimiento GDPR** | Regulación UE 2016/679 | Datos de usuarios UE | Gestión de consentimiento, minimización de datos, derecho al olvido |
-| **Cumplimiento SOX** | Sarbanes-Oxley Act | Datos financieros | Controles de acceso, segregación de deberes, trazas de auditoría |
-| **ISO 27001** | Estándar internacional | Gestión de seguridad | SGSI, evaluaciones de riesgo, controles de seguridad |
-| **Regulaciones Locales** | Leyes por país | Datos por jurisdicción | Residencia de datos, políticas específicas por país |
-| **SOX Compliance** | Sarbanes-Oxley Act | Financial controls | Audit trails, segregation of duties, access controls |
-| **ISO 27001** | Information Security | Enterprise security | Risk assessment, security policies, incident management |
-| **PCI DSS** | Payment Card Industry | Credit card data | Data encryption, access restrictions, monitoring |
-
-### Autenticación y Autorización
-
-| Control | Requisito | Justificación | Implementación |
-|---------|-------------|---------------|----------------|
-| **Autenticación Multi-Factor** | MFA obligatorio para roles admin | Seguridad Zero Trust | TOTP, WebAuthn, SMS de respaldo |
-| **Política de Contraseñas** | Complejidad: 12+ caracteres, mayúsculas/minúsculas | Mejores prácticas de seguridad | Políticas de contraseña Keycloak |
-| **Gestión de Sesiones** | Sesión máx: 8h, timeout inactivo: 1h | Seguridad vs usabilidad | Configurable por realm |
-| **TTL de Access Token** | 15 minutos máximo | Minimizar ventana de ataque | Tokens de corta duración, estrategia de refresh |
-| **Rotación de Refresh Token** | Rotación en cada uso | Mitigación de robo de tokens | Rotación de refresh token Keycloak |
-
-### Cifrado y Protección de Datos
-
-| Aspecto | Requisito | Estándar | Implementación |
-|---------|-------------|----------|----------------|
-| **Datos en Reposo** | Cifrado AES-256 | Estándar de la industria | Cifrado de base de datos, cifrado de sistema de archivos |
-| **Datos en Tránsito** | TLS 1.3 obligatorio | Seguridad moderna | HTTPS en todas partes, gestión de certificados |
-| **Firma de Tokens** | RSA-2048 mínimo | Fortaleza criptográfica | Firmas JWT RS256 |
-| **Gestión de Claves** | Módulos de Seguridad de Hardware | Seguridad empresarial | AWS KMS, rotación de claves |
-
-## 2.3 Restricciones organizacionales
-
-### Governance y Operaciones
-
-| Área | Restricción | Justificación | Impacto |
-|------|-------------|---------------|---------|
-| **Team Structure** | DevOps model, 24/7 support | Business continuity | On-call rotations, automation |
-| **Change Management** | ITIL v4 processes | Risk mitigation | Change approval board, rollback procedures |
-| **Documentation** | Arc42 + ADRs mandatory | Knowledge management | Structured documentation, decision tracking |
-| **Code Review** | 2-person approval minimum | Quality assurance | Peer review process, security review |
-
-### Multi-Tenant Requirements
-
-| Tenant | Isolation Level | Compliance | Special Requirements |
-|---------|----------------|------------|---------------------|
-| **Peru** | Realm-level isolation | Local data residency | Spanish language, PEN currency |
-| **Ecuador** | Realm-level isolation | Local data residency | Spanish language, USD currency |
-| **Colombia** | Realm-level isolation | Local data residency | Spanish language, COP currency |
-| **Mexico** | Realm-level isolation | Local data residency | Spanish language, MXN currency |
-
-### Integration Constraints
-
-| System | Integration Type | Constraint | Rationale |
-|--------|-----------------|------------|-----------|
-| **HRIS Systems** | Read-only federation | No write-back capability | Single source of truth for employee data |
-| **Google Workspace** | SAML/OIDC federation | Limited to @talma.pe domain | Corporate email integration |
-| **Legacy Systems** | SAML 2.0 only | Protocol limitation | Existing enterprise applications |
-| **External Partners** | OAuth2 client credentials | Service-to-service only | API access, no user delegation |
-
-## 2.4 Restricciones regulatorias específicas
-
-### Data Residency por País
-
-| País | Regulación | Requirement | Implementation |
-|------|------------|-------------|----------------|
-| **Perú** | Ley de Protección de Datos Personales | Data must remain in Peru | AWS Lima region deployment |
-| **Ecuador** | Ley Orgánica de Protección de Datos | Data sovereignty | Regional data isolation |
-| **Colombia** | Ley Estatutaria 1581 | Habeas data compliance | Consent management, data rights |
-| **México** | Ley Federal de Protección de Datos | INAI compliance | Privacy notice, data subject rights |
-
-### Cross-Border Data Transfer
-
-| Scenario | Restriction | Compliance Mechanism | Technical Implementation |
-|----------|-------------|---------------------|-------------------------|
-| **Admin Access** | EU personnel access to LATAM data | Standard Contractual Clauses | VPN + audit logging |
-| **Support Operations** | 24/7 global support team | Data Processing Agreements | Role-based access, data minimization |
-| **Disaster Recovery** | Cross-region backup | Adequate data protection | Encrypted backups, limited retention |
-| **Analytics** | Anonymized data only | GDPR compliance | Data anonymization, consent tracking |
-
-## 2.5 Restricciones de infraestructura
-
-### AWS Cloud Environment
-
-| Component | Restriction | Rationale | Implementation |
-|-----------|-------------|-----------|----------------|
-| **Compute** | ECS Fargate only | Serverless management | Container orchestration |
-| **Database** | RDS PostgreSQL | Managed service | Multi-AZ deployment |
-| **Load Balancer** | Application Load Balancer | SSL termination, health checks | Target group management |
-| **Networking** | VPC with private subnets | Security isolation | NAT gateways, security groups |
-
-### Monitoring y Observability
+| Área | Restricción | Impacto |
+|------|---------------|--------|
+| **Operaciones** | DevOps 24/7 | Continuidad negocio |
+| **Multi-tenancy** | Aislamiento por país | Regulaciones locales |
+| **Documentación** | ARC42 + ADRs | Trazabilidad |
 
 | Tool | Purpose | Requirement | Integration |
 |------|---------|-------------|-------------|

@@ -1,28 +1,22 @@
 # 7. Vista de implementación
 
-Esta sección describe el mapping de la arquitectura lógica del **Sistema de Identidad** a la infraestructura física, incluyendo estrategias de deployment, configuración de entornos y consideraciones operacionales.
+## 7.1 Estructura del proyecto
 
-*[INSERTAR AQUÍ: Diagrama C4 - Deployment View del Sistema de Identidad]*
+| Componente | Ubicación | Tecnología |
+|------------|-------------|-------------|
+| **Keycloak** | Contenedor Docker | Keycloak 23+ |
+| **PostgreSQL** | AWS RDS | PostgreSQL 15+ |
+| **Configuración** | AWS Secrets Manager | JSON |
+| **Despliegue** | AWS ECS Fargate | Docker |
 
-## 7.1 Estrategia de contenedorización
+## 7.2 Dependencias principales
 
-### Arquitectura de Contenedores
-
-El sistema de identidad se despliega como una suite de contenedores orquestados en AWS ECS Fargate, proporcionando escalabilidad automática y gestión simplificada de infraestructura.
-
-#### Cluster de Proveedor de Identidad Keycloak
-
-```yaml
-# Definición de Tarea ECS para Keycloak
-{
-  "family": "keycloak-cluster",
-  "networkMode": "awsvpc",
-  "requiresCompatibilities": ["FARGATE"],
-  "cpu": "1024",
-  "memory": "2048",
-  "containerDefinitions": [
-    {
-      "name": "keycloak",
+| Dependencia | Versión | Propósito |
+|-------------|---------|----------|
+| **Keycloak** | 23+ | Identity Provider |
+| **PostgreSQL** | 15+ | Base de datos |
+| **Docker** | 20+ | Contenedorización |
+| **AWS ECS** | - | Orquestación |
       "image": "quay.io/keycloak/keycloak:23.0.4",
       "portMappings": [
         {

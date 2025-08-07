@@ -2,6 +2,22 @@
 
 ## 6.1 Escenarios principales
 
+| Escenario | Flujo | Componentes |
+|-----------|-------|-------------|
+| **Procesamiento evento** | Event Consumer → Orchestrator → Generator | Event Processor |
+| **Generación archivo** | Template Engine → SITA Generator → Storage | Event Processor |
+| **Envío programado** | Sending Worker → Fetcher → Partner Sender | Sender |
+
+## 6.2 Patrones de interacción
+
+| Patrón | Descripción | Tecnología |
+|---------|---------------|-------------|
+| **Event-Driven** | Procesamiento asíncrono | PostgreSQL queue |
+| **Worker Service** | Procesamiento background | .NET 8 |
+| **File-based** | Intercambio archivos | Sistema archivos |
+
+## 6.1 Escenarios principales
+
 ### 6.1.1 Envío de mensaje SITA outbound
 
 ```mermaid

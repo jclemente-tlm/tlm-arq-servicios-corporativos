@@ -1,5 +1,30 @@
 # 12. Glosario
 
+## 12.1 Términos principales
+
+| Término | Definición |
+|----------|------------|
+| **SITA** | Société Internationale de Télécommunications Aéronautiques |
+| **SITATEX** | Protocolo de mensajería telegráfica SITA |
+| **AFTN** | Aeronautical Fixed Telecommunication Network |
+| **Type B** | Formato de mensaje operacional SITA |
+| **TTY** | Teletypewriter - formato texto |
+| **EDIFACT** | Electronic Data Interchange For Administration |
+| **Partner** | Aerolínea o entidad conectada |
+| **Template** | Plantilla para generar mensajes SITA |
+| **Event-driven** | Arquitectura basada en eventos |
+| **File-based** | Intercambio mediante archivos |
+
+## 12.2 Acrónimos
+
+| Acrónimo | Significado |
+|-----------|-------------|
+| **IATA** | International Air Transport Association |
+| **ICAO** | International Civil Aviation Organization |
+| **SFTP** | SSH File Transfer Protocol |
+| **PKI** | Public Key Infrastructure |
+| **CDC** | Change Data Capture |
+
 ## A
 
 **ACARS** (Aircraft Communications Addressing and Reporting System)

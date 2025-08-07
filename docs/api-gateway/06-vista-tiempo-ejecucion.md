@@ -1,5 +1,37 @@
 # 6. Vista de tiempo de ejecución
 
+## 6.1 Escenarios principales
+
+| Escenario | Flujo | Componentes |
+|-----------|-------|-------------|
+| **Proxy request** | Client → YARP → Backend | YARP Core |
+| **Autenticación** | JWT validation → Claims | Auth Middleware |
+| **Rate limiting** | Request → Counter → Allow/Deny | Rate Limit Middleware |
+
+## 6.2 Patrones de interacción
+
+| Patrón | Descripción | Tecnología |
+|---------|---------------|-------------|
+| **Reverse Proxy** | Enrutamiento requests | YARP |
+| **Middleware Pipeline** | Procesamiento secuencial | ASP.NET Core |
+| **Circuit Breaker** | Protección fallos | Polly |
+
+## 6.1 Escenarios principales
+
+| Escenario | Flujo | Componentes |
+|-----------|-------|-------------|
+| **Solicitud autenticada** | Cliente → Auth → Proxy → Servicio | Auth Middleware, YARP |
+| **Rate limiting** | Cliente → Rate Limiter → Rechazo/Paso | Rate Limiter, Redis |
+| **Circuit breaker** | Proxy → Circuit Breaker → Servicio/Fallback | Circuit Breaker, Polly |
+
+## 6.2 Patrones de interacción
+
+| Patrón | Descripción | Tecnología |
+|---------|---------------|-------------|
+| **Request/Response** | Comunicación síncrona | HTTP/HTTPS |
+| **Middleware Pipeline** | Procesamiento secuencial | ASP.NET Core |
+| **Health Check** | Monitoreo de servicios | Health Checks |
+
 ## 6.1 Escenarios principales de ejecución
 
 ### 6.1.1 Flujo de autenticación y enrutamiento

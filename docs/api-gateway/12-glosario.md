@@ -1,5 +1,29 @@
 # 12. Glosario
 
+## 12.1 Términos principales
+
+| Término | Definición |
+|----------|------------|
+| **API Gateway** | Punto de entrada único para todas las APIs |
+| **YARP** | Yet Another Reverse Proxy - Microsoft |
+| **Rate Limiting** | Control de velocidad de requests |
+| **Circuit Breaker** | Patrón de protección contra fallos |
+| **JWT** | JSON Web Token para autenticación |
+| **Realm** | Contexto de tenant en Keycloak |
+| **Middleware** | Componente de procesamiento de pipeline |
+| **Load Balancer** | Distribuidor de carga entre servicios |
+
+## 12.2 Acrónimos
+
+| Acrónimo | Significado |
+|-----------|-------------|
+| **ALB** | Application Load Balancer |
+| **ECS** | Elastic Container Service |
+| **TLS** | Transport Layer Security |
+| **CORS** | Cross-Origin Resource Sharing |
+| **SLA** | Service Level Agreement |
+| **SRE** | Site Reliability Engineering |
+
 ## A
 
 **API Gateway**: Punto de entrada único que gestiona todas las peticiones de clientes hacia los microservicios backend, proporcionando funcionalidades como routing, autenticación, limitación de velocidad y monitoreo.

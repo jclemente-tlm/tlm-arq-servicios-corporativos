@@ -1,5 +1,32 @@
 # 11. Riesgos y deuda técnica
 
+## 11.1 Riesgos identificados
+
+| Riesgo | Probabilidad | Impacto | Mitigación |
+|--------|--------------|---------|------------|
+| **Keycloak vulnerabilities** | Media | Alto | Updates regulares |
+| **Realm corruption** | Baja | Alto | Backups + restore |
+| **Federation failure** | Media | Medio | Fallback local |
+| **Performance degradation** | Media | Medio | Monitoring |
+
+## 11.2 Deuda técnica
+
+| Área | Descripción | Prioridad | Esfuerzo |
+|------|---------------|-----------|----------|
+| **Monitoring** | Métricas custom | Alta | 1 sprint |
+| **Backup** | Automated backup | Alta | 2 sprints |
+| **Documentation** | Admin guides | Media | 1 sprint |
+| **Testing** | Load testing | Media | 2 sprints |
+
+## 11.3 Acciones recomendadas
+
+| Acción | Plazo | Responsable |
+|--------|-------|-------------|
+| **Setup monitoring completo** | 2 semanas | SRE |
+| **Implementar backup automatizado** | 1 mes | DevOps |
+| **Pruebas de carga** | 1 mes | QA |
+| **Security audit** | 6 semanas | Security |
+
 Este capítulo identifica, evalúa y documenta los riesgos significativos del **Sistema de Identidad**, así como la deuda técnica acumulada, proporcionando estrategias de mitigación y planes de remediación para garantizar la sostenibilidad a largo plazo.
 
 *[INSERTAR AQUÍ: Diagrama C4 - Risk Management Overview]*

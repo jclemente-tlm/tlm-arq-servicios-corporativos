@@ -1,5 +1,27 @@
 # 1. Introducción y objetivos
 
+Sistema de notificaciones multi-canal para comunicaciones corporativas.
+
+## 1.1 Propósito y funcionalidades
+
+| Funcionalidad | Descripción |
+|---------------|-------------|
+| **Multi-canal** | Email, SMS, push notifications |
+| **Plantillas** | Sistema de plantillas dinámicas |
+| **Programación** | Envío inmediato y programado |
+| **Adjuntos** | Gestión de archivos adjuntos |
+| **Auditoría** | Trazabilidad completa de envíos |
+| **Multi-tenant** | Aislamiento por organización |
+
+## 1.2 Objetivos de calidad
+
+| Atributo | Objetivo | Métrica |
+|----------|----------|--------|
+| **Disponibilidad** | Alta disponibilidad | 99.9% uptime |
+| **Rendimiento** | Procesamiento rápido | < 5s envío |
+| **Escalabilidad** | Alto volumen | 100,000+ notificaciones/hora |
+| **Confiabilidad** | Entrega garantizada | 99.5% tasa de entrega |
+
 El **Sistema de Notificaciones** es una plataforma distribuida multi-tenant y multi-país diseñada para el envío de mensajes por múltiples canales de comunicación. Forma parte de la arquitectura de servicios corporativos de Talma, operando en Perú, Ecuador, Colombia y México, y proporciona capacidades empresariales para notificaciones transaccionales, promocionales y de alerta con garantías de entrega y observabilidad completa.
 
 ## 1.1 Descripción general de los requisitos

@@ -1,5 +1,23 @@
 # 9. Decisiones de arquitectura
 
+## 9.1 Decisiones principales
+
+| ADR | Decisión | Estado | Justificación |
+|-----|----------|--------|---------------|
+| **ADR-001** | Event Processor + Sender | Aceptado | Separación ingesta/envío |
+| **ADR-002** | PostgreSQL inicial | Aceptado | Simplicidad |
+| **ADR-003** | RazorEngine plantillas | Aceptado | Flexibilidad SITA |
+| **ADR-004** | File-based exchange | Aceptado | Protocolo SITA |
+
+## 9.2 Alternativas evaluadas
+
+| Componente | Alternativas | Selección | Razón |
+|------------|-------------|-----------|--------|
+| **Cola eventos** | RabbitMQ, SNS+SQS, PostgreSQL | PostgreSQL | Simplicidad inicial |
+| **Plantillas** | Liquid, Handlebars, Razor | RazorEngine | .NET nativo |
+| **Protocolos** | REST, gRPC, File | File | Estándar SITA |
+| **Storage** | S3, EFS, Local | EFS | Compartido |
+
 ## 9.1 ADR-001: SITA Type B Protocol Implementation
 
 **Estado**: Aceptado

@@ -1,5 +1,21 @@
 # 6. Vista de tiempo de ejecución
 
+## 6.1 Escenarios principales
+
+| Escenario | Flujo | Componentes |
+|-----------|-------|-------------|
+| **Autenticación** | Usuario → Keycloak → JWT | Keycloak Core |
+| **Validación token** | Servicio → Keycloak → Validación | JWT Validation |
+| **Federación** | IdP externo → Keycloak → Usuario | Federation Connectors |
+
+## 6.2 Patrones de interacción
+
+| Patrón | Descripción | Tecnología |
+|---------|---------------|-------------|
+| **OAuth2/OIDC** | Flujo de autenticación | Estándar |
+| **JWT** | Tokens de acceso | RS256 |
+| **SAML** | Federación legacy | SAML 2.0 |
+
 Esta sección describe los escenarios dinámicos más importantes del **Sistema de Identidad**, mostrando cómo los bloques de construcción colaboran en tiempo de ejecución para cumplir con los requisitos funcionales.
 
 *[INSERTAR AQUÍ: Diagrama C4 - Vista de Tiempo de Ejecución del Sistema de Identidad]*

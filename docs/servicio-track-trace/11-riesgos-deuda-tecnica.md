@@ -1,5 +1,32 @@
 # 11. Riesgos y deuda técnica
 
+## 11.1 Riesgos identificados
+
+| Riesgo | Probabilidad | Impacto | Mitigación |
+|--------|--------------|---------|------------|
+| **Event store corruption** | Baja | Alto | Backups + replication |
+| **Deduplicación failure** | Media | Medio | Monitoring + alerts |
+| **Query performance** | Media | Medio | Indexing + cache |
+| **Integration failures** | Media | Alto | Circuit breakers |
+
+## 11.2 Deuda técnica
+
+| Área | Descripción | Prioridad | Esfuerzo |
+|------|---------------|-----------|----------|
+| **Monitoring** | Event sourcing métricas | Alta | 1 sprint |
+| **Testing** | Event replay testing | Media | 2 sprints |
+| **Migration** | SNS+SQS readiness | Media | 3 sprints |
+| **GraphQL** | Schema optimization | Baja | 1 sprint |
+
+## 11.3 Acciones recomendadas
+
+| Acción | Plazo | Responsable |
+|--------|-------|-------------|
+| **Setup event store monitoring** | 2 semanas | SRE |
+| **Implement read replicas** | 1 mes | DevOps |
+| **Event replay testing** | 1 mes | QA |
+| **Prepare SNS+SQS migration** | 2 meses | Architecture |
+
 El **Sistema de Track & Trace** maneja eventos críticos operacionales que requieren gestión proactiva de riesgos para garantizar continuidad operacional y compliance regulatorio.
 
 *[INSERTAR AQUÍ: Diagrama C4 - Track & Trace Risk Management]*

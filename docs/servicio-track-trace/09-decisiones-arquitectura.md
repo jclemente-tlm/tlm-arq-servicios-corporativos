@@ -1,5 +1,23 @@
 # 9. Decisiones de arquitectura
 
+## 9.1 Decisiones principales
+
+| ADR | Decisión | Estado | Justificación |
+|-----|----------|--------|---------------|
+| **ADR-001** | CQRS + Event Sourcing | Aceptado | Trazabilidad inmutable |
+| **ADR-002** | PostgreSQL event store | Aceptado | Simplicidad inicial |
+| **ADR-003** | Deduplicación por tenant | Aceptado | Prevención duplicados |
+| **ADR-004** | Event-driven propagación | Aceptado | Integración SITA |
+
+## 9.2 Alternativas evaluadas
+
+| Componente | Alternativas | Selección | Razón |
+|------------|-------------|-----------|--------|
+| **Event Store** | EventStore, PostgreSQL, SNS+SQS | PostgreSQL | Simplicidad |
+| **API** | REST, GraphQL, gRPC | REST + GraphQL | Flexibilidad |
+| **Deduplicación** | Global, Por tenant | Por tenant | Aislamiento |
+| **Propagación** | Síncrona, Asíncrona | Asíncrona | Desacoplamiento |
+
 ## 9.1 ADR-001: Event Sourcing como patrón principal
 
 **Estado**: Aceptado

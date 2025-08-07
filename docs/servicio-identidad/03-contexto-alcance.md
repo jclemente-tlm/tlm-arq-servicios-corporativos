@@ -4,19 +4,23 @@
 
 ![Servicios Corporativos - Vista de Contexto](/diagrams/servicios-corporativos/corporate_services.png)
 
-*Figura 3.1: Vista de contexto de los Servicios Corporativos mostrando la interacción entre sistemas y actores externos*
+*Figura 3.1: Vista de contexto de los Servicios Corporativos*
 
-El **Sistema de Identidad** actúa como la autoridad central de autenticación y autorización para todo el ecosistema de servicios corporativos, proporcionando Single Sign-On (SSO) y gestión de identidades multi-tenant.
+## 3.2 Alcance del sistema
 
-### Propósito del Sistema
+| Aspecto | Descripción |
+|---------|-------------|
+| **Incluido** | Autenticación, autorización, RBAC, federación, auditoría |
+| **Excluido** | Lógica de negocio, datos de aplicación, infraestructura |
 
-El sistema de identidad es la piedra angular de la seguridad corporativa, proporcionando:
+## 3.3 Actores externos
 
-- **Autenticación centralizada** para todos los usuarios del ecosistema
-- **Autorización granular** basada en roles y permisos específicos por tenant
-- **Single Sign-On (SSO)** para una experiencia de usuario uniforme
-- **Federación de identidades** con proveedores externos corporativos
-- **Gestión de ciclo de vida** completo de usuarios y credenciales
+| Actor | Rol | Interacción |
+|-------|-----|-------------|
+| **Usuarios** | Consumidores | Autenticación y acceso |
+| **Servicios** | Clientes | Validación de tokens |
+| **IdPs Externos** | Proveedores | Federación de identidades |
+| **Administradores** | Gestores | Configuración y monitoreo |
 
 ### Stakeholders Principales
 

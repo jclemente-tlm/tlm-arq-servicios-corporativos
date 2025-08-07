@@ -1,5 +1,23 @@
 # 9. Decisiones de arquitectura
 
+## 9.1 Decisiones principales
+
+| ADR | Decisión | Estado | Justificación |
+|-----|----------|--------|---------------|
+| **ADR-001** | CQRS API + Processor | Aceptado | Separación responsabilidades |
+| **ADR-002** | Redis como cola | Aceptado | Rendimiento |
+| **ADR-003** | RazorEngine plantillas | Aceptado | Flexibilidad |
+| **ADR-004** | Multi-canal handlers | Aceptado | Extensibilidad |
+
+## 9.2 Alternativas evaluadas
+
+| Componente | Alternativas | Selección | Razón |
+|------------|-------------|-----------|--------|
+| **Cola** | RabbitMQ, Redis, SQS | Redis | Simplicidad |
+| **Plantillas** | Liquid, Handlebars, Razor | RazorEngine | .NET nativo |
+| **Storage** | S3, EFS, Database | EFS | Compartido |
+| **Canales** | Monolítico, Handlers | Handlers | Modularidad |
+
 Esta sección documenta las decisiones arquitectónicas más importantes del **Sistema de Notificaciones** utilizando el formato ADR (Architecture Decision Record), proporcionando contexto, justificación y consecuencias de cada decisión.
 
 ![Notification System Architecture](/diagrams/servicios-corporativos/notification_system.png)

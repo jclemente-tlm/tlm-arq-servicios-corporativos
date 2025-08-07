@@ -1,94 +1,47 @@
-# 2. Restricciones de la Arquitectura
+# 2. Restricciones de la arquitectura
 
-Esta sección define las restricciones técnicas, organizacionales y operacionales que guían el diseño del API Gateway.
+## 2.1 Restricciones técnicas
 
-## 2.1 Restricciones Técnicas
+| Categoría | Restricción | Justificación |
+|------------|---------------|---------------|
+| **Runtime** | .NET 8 | Estándar corporativo |
+| **Proxy** | YARP | Microsoft, alto rendimiento |
+| **Base de datos** | PostgreSQL | Robustez |
+| **Cache** | Redis | Rendimiento |
+| **Autenticación** | OAuth2/OIDC | Estándar industria |
 
-### 🔧 Stack Tecnológico Obligatorio
+## 2.2 Restricciones de rendimiento
 
-| Componente | Tecnología | Justificación |
-|------------|------------|---------------|
-| **Runtime** | .NET 8 LTS | Estándar corporativo |
-| **Proxy** | YARP | Integración nativa .NET |
-| **Contenedores** | Docker + ECS | Estándar de despliegue |
-| **Base de datos** | PostgreSQL | Estándar corporativo |
-| **Cache** | Redis | Rendimiento y escalabilidad |
-
-### 🌐 Protocolos y Estándares
-
-- **OAuth2 + OIDC** para autenticación
-- **JWT (RS256)** para tokens
-- **TLS 1.3** mínimo para transporte
-- **HTTP/2** para rendimiento
-- **OpenAPI 3.0** para documentación
-
-### 📊 Requisitos de Rendimiento
-
-| Métrica | Requisito | Justificación |
-|---------|-----------|---------------|
-| **Latencia P95** | < 100ms | Experiencia de usuario |
-| **Rendimiento** | > 5,000 RPS | Carga esperada |
-| **Utilización CPU** | < 70% promedio | Planificación de capacidad |
+| Métrica | Objetivo | Razón |
+|---------|----------|-------|
+| **Latencia** | < 100ms P95 | Experiencia usuario |
+| **Throughput** | > 5,000 RPS | Carga esperada |
 | **Disponibilidad** | 99.9% | SLA empresarial |
 
-## 2.2 Restricciones Organizacionales
+## 2.3 Restricciones organizacionales
 
-### 🏢 Multi-tenancy Obligatorio
+| Aspecto | Requerimiento | Impacto |
+|---------|---------------|--------|
+| **Multi-tenancy** | Aislamiento por país | Regulaciones locales |
+| **Rate limiting** | Por tenant | Protección recursos |
+| **Despliegue** | Docker | Portabilidad |
 
-- **Aislamiento por país**: Perú, Ecuador, Colombia, México
-- **Configuración independiente** por tenant
-- **Rate limiting** específico por tenant
-- **Datos segregados** por regulaciones locales
+### Seguridad
+- **Arquitectura zero trust** obligatoria
+- **RBAC** por tenant
+- **Auditoría completa** de requests
 
-### 🔐 Seguridad Corporativa
+## 2.3 Restricciones operacionales
 
-- **Arquitectura zero trust** - Todo request debe ser autenticado
-- **Implementación RBAC** - Roles definidos por tenant
-- **Registro de auditoría** completo para cumplimiento
-- **Cifrado de datos** en tránsito y reposo
+### Deployment
+- **Blue-green deployment** obligatorio
+- **Configuración externa** (no hardcoding)
+- **AWS Secrets Manager** para secretos
 
-## 2.3 Restricciones Operacionales
-
-### 🚀 Deployment y DevOps
-
-| Aspecto | Restricción | Impacto |
-|---------|-------------|---------|
-| **Deployment** | Blue-green únicamente | Cero tiempo de inactividad |
-| **Configuración** | Almacén externo de configuración | Sin hardcoding |
-| **Secretos** | AWS Secrets Manager | Cumplimiento de seguridad |
-| **Monitoreo** | Prometheus + Grafana | Observabilidad estándar |
-
-### ☁️ Proveedor Cloud
-
-- **Primario**: AWS (ECS, ALB, RDS)
-- **Portabilidad**: Diseño agnóstico de proveedor
-- **Plan de respaldo**: Arquitectura lista para multi-cloud
-
-### 🔍 Observabilidad Mandatoria
-
+### Observabilidad
 - **Logging estructurado** con Serilog
 - **Distributed tracing** con OpenTelemetry
-- **Recolección de métricas** con Prometheus
-- **Alertas automáticas** en incidentes
-
-## 2.4 Restricciones de Integración
-
-### 🔗 Servicios Downstream
-
-El API Gateway **SOLO** puede enrutar a estos servicios:
-
-- **Identity Service** (Keycloak)
-- **Sistema de Notificaciones**
-- **Track & Trace**
-- **SITA Messaging**
-
-### 📡 Dependencias Externas
-
-| Servicio | Propósito | Restricción |
-|----------|-----------|-------------|
-| **Keycloak** | Autenticación | Única fuente de verdad |
-| **Plataforma de Configuración** | Configuración dinámica | Polling, no push |
-| **Servicios AWS** | Infraestructura | Regiones específicas |
+- **Métricas** con Prometheus
 
 ## 2.5 Restricciones Específicas de YARP
 
