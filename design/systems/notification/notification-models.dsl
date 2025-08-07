@@ -179,6 +179,12 @@ notification = softwareSystem "Notification System" {
             tags "Repository" "001 - Fase 1"
         }
 
+        attachmentFetcher = component "Attachment Fetcher" {
+            technology "S3-Compatible Client"
+            description "Componente especializado para recuperar archivos del storage con cache, retry y validación"
+            tags "Storage" "File Management" "001 - Fase 1"
+        }
+
         // Componentes de Observabilidad
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
@@ -248,4 +254,101 @@ notification = softwareSystem "Notification System" {
     processor.smsHandler -> smsProvider "Envía SMS" "HTTPS/API" "001 - Fase 1"
     processor.whatsappHandler -> whatsappProvider "Envía WhatsApp" "HTTPS/API" "001 - Fase 1"
     processor.pushHandler -> pushProvider "Envía push" "HTTPS/API" "001 - Fase 1"
+
+    // Storage Relations - AttachmentFetcher gestiona acceso al storage
+    processor.attachmentFetcher -> attachmentStorage "Gestiona acceso a archivos con cache y retry" "S3-Compatible" "001 - Fase 1"
+    
+    // Handlers usan AttachmentFetcher para obtener archivos
+    processor.emailHandler -> processor.attachmentFetcher "Solicita archivos adjuntos para emails" "C#" "001 - Fase 1"
+    processor.whatsappHandler -> processor.attachmentFetcher "Solicita archivos multimedia para WhatsApp" "C#" "001 - Fase 1"
+    processor.pushHandler -> processor.attachmentFetcher "Solicita imágenes para notificaciones push" "C#" "001 - Fase 1"
+
+    // ========================================
+    // OBSERVABILIDAD - NOTIFICATION API
+    // ========================================
+
+    // Health Checks
+    api.healthCheck -> notificationDatabase "Ejecuta health check" "PostgreSQL" "001 - Fase 1"
+    api.healthCheck -> attachmentStorage "Verifica conectividad storage" "S3-Compatible" "001 - Fase 1"
+    api.healthCheck -> configPlatform.configService "Verifica configuraciones críticas" "HTTPS/REST" "001 - Fase 1"
+
+    // Logging estructurado
+    api.notificationController -> api.structuredLogger "Registra requests y responses" "Serilog" "001 - Fase 1"
+    api.requestValidator -> api.structuredLogger "Registra validaciones fallidas" "Serilog" "001 - Fase 1"
+    api.messagePublisher -> api.structuredLogger "Registra publicación de mensajes" "Serilog" "001 - Fase 1"
+    api.configurationService -> api.structuredLogger "Registra cache hit/miss config" "Serilog" "001 - Fase 1"
+    api.attachmentService -> api.structuredLogger "Registra operaciones de storage" "Serilog" "001 - Fase 1"
+    api.dynamicConfigProcessor -> api.structuredLogger "Registra cambios de configuración" "Serilog" "001 - Fase 1"
+    api.healthCheck -> api.structuredLogger "Registra health checks" "Serilog" "001 - Fase 1"
+
+    // Métricas de negocio y técnicas
+    api.notificationController -> api.metricsCollector "Publica métricas de requests" "Prometheus" "001 - Fase 1"
+    api.requestValidator -> api.metricsCollector "Publica métricas de validación" "Prometheus" "001 - Fase 1"
+    api.messagePublisher -> api.metricsCollector "Publica métricas de throughput" "Prometheus" "001 - Fase 1"
+    api.configurationService -> api.metricsCollector "Publica métricas de cache" "Prometheus" "001 - Fase 1"
+    api.attachmentService -> api.metricsCollector "Publica métricas de storage" "Prometheus" "001 - Fase 1"
+    api.dynamicConfigProcessor -> api.metricsCollector "Publica métricas de configuración dinámica" "Prometheus" "001 - Fase 1"
+    api.healthCheck -> api.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
+
+    // Observabilidad cross-cutting
+    api.structuredLogger -> api.metricsCollector "Correlaciona logs y métricas" "In-Memory" "001 - Fase 1"
+
+    // ========================================
+    // OBSERVABILIDAD - NOTIFICATION PROCESSOR
+    // ========================================
+
+    // Health Checks
+    processor.healthCheck -> notificationDatabase "Ejecuta health check" "PostgreSQL" "001 - Fase 1"
+    processor.healthCheck -> configPlatform.configService "Verifica configuraciones críticas" "HTTPS/REST" "001 - Fase 1"
+
+    // Logging estructurado
+    processor.messageConsumer -> processor.structuredLogger "Registra consumo de mensajes" "Serilog" "001 - Fase 1"
+    processor.orchestratorService -> processor.structuredLogger "Registra orquestación" "Serilog" "001 - Fase 1"
+    processor.templateEngine -> processor.structuredLogger "Registra procesamiento de templates" "Serilog" "001 - Fase 1"
+    processor.emailHandler -> processor.structuredLogger "Registra envíos de email" "Serilog" "001 - Fase 1"
+    processor.smsHandler -> processor.structuredLogger "Registra envíos de SMS" "Serilog" "001 - Fase 1"
+    processor.whatsappHandler -> processor.structuredLogger "Registra envíos de WhatsApp" "Serilog" "001 - Fase 1"
+    processor.pushHandler -> processor.structuredLogger "Registra envíos de push" "Serilog" "001 - Fase 1"
+    processor.schedulerService -> processor.structuredLogger "Registra tareas programadas" "Serilog" "001 - Fase 1"
+    processor.configurationService -> processor.structuredLogger "Registra cache hit/miss config" "Serilog" "001 - Fase 1"
+    processor.notificationRepository -> processor.structuredLogger "Registra operaciones de datos" "Serilog" "001 - Fase 1"
+    processor.dynamicConfigProcessor -> processor.structuredLogger "Registra cambios de configuración" "Serilog" "001 - Fase 1"
+    processor.healthCheck -> processor.structuredLogger "Registra health checks" "Serilog" "001 - Fase 1"
+
+    // Métricas de negocio y técnicas
+    processor.messageConsumer -> processor.metricsCollector "Publica métricas de consumo" "Prometheus" "001 - Fase 1"
+    processor.orchestratorService -> processor.metricsCollector "Publica métricas de orquestación" "Prometheus" "001 - Fase 1"
+    processor.templateEngine -> processor.metricsCollector "Publica métricas de templates" "Prometheus" "001 - Fase 1"
+    processor.emailHandler -> processor.metricsCollector "Publica métricas de email" "Prometheus" "001 - Fase 1"
+    processor.smsHandler -> processor.metricsCollector "Publica métricas de SMS" "Prometheus" "001 - Fase 1"
+    processor.whatsappHandler -> processor.metricsCollector "Publica métricas de WhatsApp" "Prometheus" "001 - Fase 1"
+    processor.pushHandler -> processor.metricsCollector "Publica métricas de push" "Prometheus" "001 - Fase 1"
+    processor.schedulerService -> processor.metricsCollector "Publica métricas de scheduling" "Prometheus" "001 - Fase 1"
+    processor.configurationService -> processor.metricsCollector "Publica métricas de cache" "Prometheus" "001 - Fase 1"
+    processor.notificationRepository -> processor.metricsCollector "Publica métricas de query performance" "Prometheus" "001 - Fase 1"
+    processor.dynamicConfigProcessor -> processor.metricsCollector "Publica métricas de configuración dinámica" "Prometheus" "001 - Fase 1"
+    processor.healthCheck -> processor.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
+
+    // Observabilidad cross-cutting
+    processor.structuredLogger -> processor.metricsCollector "Correlaciona logs y métricas" "In-Memory" "001 - Fase 1"
+
+    // ========================================
+    // RELACIONES EXTERNAS - OBSERVABILIDAD
+    // ========================================
+
+    // Métricas
+    notification.api.metricsCollector -> observabilitySystem.metricsCollector "Expone métricas de performance" "HTTP" "001 - Fase 1"
+    notification.processor.metricsCollector -> observabilitySystem.metricsCollector "Expone métricas de procesamiento" "HTTP" "001 - Fase 1"
+
+    // Health Checks
+    notification.api.healthCheck -> observabilitySystem.metricsCollector "Expone health checks API" "HTTP" "001 - Fase 1"
+    notification.processor.healthCheck -> observabilitySystem.metricsCollector "Expone health checks Processor" "HTTP" "001 - Fase 1"
+
+    // Logs estructurados
+    notification.api.structuredLogger -> observabilitySystem.logAggregator "Envía logs estructurados API" "HTTP" "001 - Fase 1"
+    notification.processor.structuredLogger -> observabilitySystem.logAggregator "Envía logs estructurados Processor" "HTTP" "001 - Fase 1"
+
+    // Tracing distribuido (Fase 2)
+    notification.api.structuredLogger -> observabilitySystem.tracingPlatform "Envía trazas distribuidas API" "OpenTelemetry" "002 - Fase 2"
+    notification.processor.structuredLogger -> observabilitySystem.tracingPlatform "Envía trazas distribuidas Processor" "OpenTelemetry" "002 - Fase 2"
 }

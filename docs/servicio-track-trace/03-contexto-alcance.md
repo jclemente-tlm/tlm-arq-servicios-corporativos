@@ -35,7 +35,7 @@ El sistema de track & trace actúa como el sistema nervioso de las operaciones, 
 | **Cumplimiento Regulatorio** | Cumplimiento auditoría y regulaciones | 100% audit trail, regulatory compliance |
 | **Integración Sin Interrupciones** | Conexión de sistemas heterogéneos | Event-driven integration, API standardization |
 
-![Track and Trace System](../../diagrams/track_and_trace_system.png)
+![Track and Trace System](/diagrams/servicios-corporativos/track_and_trace_system.png)
 
 *Diagrama C4 - Contexto del Sistema Track & Trace mostrando integración con sistemas externos y componentes internos.*
 

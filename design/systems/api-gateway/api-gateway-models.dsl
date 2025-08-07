@@ -143,4 +143,20 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
 
     // Configuración opcional para Fase 2
     // reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.cacheMiddleware "Invalida políticas de TTL de cache al detectar cambios" "In-Memory" "002 - Fase 2"
+
+    // ========================================
+    // RELACIONES EXTERNAS - OBSERVABILIDAD
+    // ========================================
+
+    // Métricas
+    apiGateway.reverseProxyGateway.metricsCollector -> observabilitySystem.metricsCollector "Expone métricas de performance" "HTTP" "001 - Fase 1"
+
+    // Health Checks
+    apiGateway.reverseProxyGateway.healthCheck -> observabilitySystem.metricsCollector "Expone health checks" "HTTP" "001 - Fase 1"
+
+    // Logs estructurados
+    apiGateway.reverseProxyGateway.structuredLogger -> observabilitySystem.logAggregator "Envía logs estructurados" "HTTP" "001 - Fase 1"
+
+    // Tracing distribuido (Fase 2)
+    apiGateway.reverseProxyGateway.metricsCollector -> observabilitySystem.tracingPlatform "Envía trazas distribuidas" "OpenTelemetry" "002 - Fase 2"
 }

@@ -168,6 +168,11 @@ workspace {
         // NOTA: Storage Platform eliminada - abstracción se maneja a nivel de código
         // !include ./systems/infrastructure/storage-platform-models.dsl
 
+        // Infraestructura de Observabilidad
+        // infrastructureGroup = group "Infraestructura" {
+            !include ./systems/infrastructure/observability-models.dsl
+        // }
+
         // Microservicios Corporativos
         corporateServicesGroup = group "Servicios Corporativos" {
             !include ./systems/identity/identity-models.dsl
@@ -185,12 +190,12 @@ workspace {
             // Integración API Gateway -> Identity System (Autenticación y Autorización)
             apiGateway.reverseProxyGateway.securityMiddleware -> identity.keycloakServer "Valida tokens JWT" "HTTPS" "001 - Fase 1"
 
+            // Integración Event-Driven: Track & Trace -> SITA Messaging
+            trackAndTrace.trackingEventProcessor.reliableDownstreamPublisher -> sitaMessaging.eventProcessor.reliableEventConsumer "Publica eventos de tracking" "PostgreSQL Messaging" "001 - Fase 1"
+
         }
 
-        // Infraestructura de Observabilidad
-        // infrastructureGroup = group "Infraestructura" {
-            !include ./systems/infrastructure/observability-models.dsl
-        // }
+
     }
 
     views {
@@ -211,15 +216,15 @@ workspace {
             title "[Diagrama de Contexto] Servicios Corporativos"
         }
 
+        // Vistas de infraestructura
+        !include ./systems/infrastructure/observability-views.dsl
+
         // Vistas de los microservicios
         !include ./systems/api-gateway/api-gateway-views.dsl
         !include ./systems/identity/identity-views.dsl
         !include ./systems/notification/notification-views.dsl
         !include ./systems/sita-messaging/sita-messaging-views.dsl
         !include ./systems/track-and-trace/track-and-trace-views.dsl
-
-        // Vistas de infraestructura
-        !include ./systems/infrastructure/observability-views.dsl
 
         // Vistas de los sistemas externos
         !include ./systems/notification/notification-deployment-views.dsl

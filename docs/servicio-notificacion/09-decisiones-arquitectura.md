@@ -2,7 +2,7 @@
 
 Esta sección documenta las decisiones arquitectónicas más importantes del **Sistema de Notificaciones** utilizando el formato ADR (Architecture Decision Record), proporcionando contexto, justificación y consecuencias de cada decisión.
 
-![Notification System Architecture](../../diagrams/notification_system.png)
+![Notification System Architecture](/diagrams/servicios-corporativos/notification_system.png)
 
 *Diagrama C4 - Arquitectura general del Sistema de Notificaciones mostrando las decisiones arquitectónicas implementadas y sus relaciones.*
 

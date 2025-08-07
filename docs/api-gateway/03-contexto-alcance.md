@@ -4,7 +4,7 @@
 
 El API Gateway de Servicios Corporativos actúa como el punto de entrada unificado para todas las aplicaciones cliente, proporcionando un intermediario inteligente que gestiona la autenticación, autorización, enrutamiento y observabilidad de las comunicaciones entre sistemas externos e internos.
 
-![API Gateway Context](../../diagrams/api_gateway.png)
+![API Gateway Context](/diagrams/servicios-corporativos/api_gateway.png)
 
 *Diagrama C4 - Contexto del API Gateway mostrando clientes externos, servicios internos y flujos de comunicación.*
 

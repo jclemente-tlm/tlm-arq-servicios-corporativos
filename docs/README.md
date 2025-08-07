@@ -6,7 +6,7 @@
 |-----------|-------------|-----------|--------|
 | **[Resumen Ejecutivo](executive-summary.md)** | Visión estratégica, beneficios empresariales y roadmap | Ejecutivos, Product Owners | ✅ Completo |
 | **[Documentación Arc42](architecture-documentation-arc42.md)** | Arquitectura completa según metodología Arc42 | Arquitectos, Desarrolladores | ✅ Completo |
-| **[Decisiones Arquitectónicas](adrs/)** | ADRs con contexto y consecuencias detalladas | Equipo técnico | 🔄 En progreso |
+| **[Decisiones Arquitectónicas](adrs/)** | 20 ADRs con análisis robusto, criterios ponderados y TCO | Equipo técnico | ✅ Completo |
 
 ## 🏗️ Arquitectura por Sistema
 

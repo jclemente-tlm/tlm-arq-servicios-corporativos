@@ -47,6 +47,11 @@ identity = softwareSystem "Identity & Access Management System" {
     // RELACIONES EXTERNAS - SISTEMAS
     // ========================================
 
-    // Configuración externa (para automatización de setup)
-    // keycloakServer -> configPlatform.configService "Configuración inicial de tenants via Admin API" "Keycloak Admin REST API" "001 - Fase 1"
+    // ========================================
+    // RELACIONES EXTERNAS - OBSERVABILIDAD
+    // ========================================
+    // NOTA: Keycloak es sistema externo - solo métricas nativas, NO observabilidad custom
+
+    // Métricas nativas de Keycloak
+    identity.keycloakServer -> observabilitySystem.metricsCollector "Expone métricas nativas Keycloak" "HTTP" "001 - Fase 1"
 }

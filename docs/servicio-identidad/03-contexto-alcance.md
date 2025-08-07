@@ -295,7 +295,7 @@ sequenceDiagram
 | **Access Controls** | Principle of least privilege | Role-based permissions | Regular access review |
 | **Vulnerability Management** | CVSS 7+ patched within 72h | Automated scanning | Security dashboard |
 
-![Identity System Context](../../diagrams/identity_system.png)
+![Identity System Context](/diagrams/servicios-corporativos/identity_system.png)
 
 *Diagrama C4 - Contexto del Sistema de Identidad mostrando actores externos, sistemas integrados y fronteras del sistema.*
 

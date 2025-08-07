@@ -400,4 +400,24 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     sender.retryHandler -> sender.metricsCollector "Publica métricas de reintentos y circuit breaker" "Prometheus" "001 - Fase 1"
     sender.auditService -> sender.metricsCollector "Publica métricas de auditoría y compliance" "Prometheus" "001 - Fase 1"
     sender.healthCheck -> sender.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
+
+    // ========================================
+    // RELACIONES EXTERNAS - OBSERVABILIDAD
+    // ========================================
+
+    // Métricas
+    sitaMessaging.eventProcessor.metricsCollector -> observabilitySystem.metricsCollector "Expone métricas de procesamiento" "HTTP" "001 - Fase 1"
+    sitaMessaging.sender.metricsCollector -> observabilitySystem.metricsCollector "Expone métricas de envío" "HTTP" "001 - Fase 1"
+
+    // Health Checks
+    sitaMessaging.eventProcessor.healthCheck -> observabilitySystem.metricsCollector "Expone health checks Processor" "HTTP" "001 - Fase 1"
+    sitaMessaging.sender.healthCheck -> observabilitySystem.metricsCollector "Expone health checks Sender" "HTTP" "001 - Fase 1"
+
+    // Logs estructurados
+    sitaMessaging.eventProcessor.structuredLogger -> observabilitySystem.logAggregator "Envía logs estructurados Processor" "HTTP" "001 - Fase 1"
+    sitaMessaging.sender.structuredLogger -> observabilitySystem.logAggregator "Envía logs estructurados Sender" "HTTP" "001 - Fase 1"
+
+    // Tracing distribuido (Fase 2)
+    sitaMessaging.eventProcessor.structuredLogger -> observabilitySystem.tracingPlatform "Envía trazas distribuidas Processor" "OpenTelemetry" "002 - Fase 2"
+    sitaMessaging.sender.structuredLogger -> observabilitySystem.tracingPlatform "Envía trazas distribuidas Sender" "OpenTelemetry" "002 - Fase 2"
 }

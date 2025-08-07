@@ -323,4 +323,92 @@ trackAndTrace = softwareSystem "Track & Trace System" {
 
     // Event Processor - Configuración
     trackingEventProcessor.processorConfigurationProvider -> trackingEventProcessor.processorTenantConfigRepository "Lee configuración por tenant" "EF Core" "001 - Fase 1"
+
+    // ========================================
+    // OBSERVABILIDAD - TRACKING API
+    // ========================================
+
+    // Health Checks
+    trackingAPI.healthCheck -> trackingDatabase "Ejecuta health check" "PostgreSQL" "001 - Fase 1"
+    trackingAPI.healthCheck -> configPlatform.configService "Verifica configuraciones críticas" "HTTPS/REST" "001 - Fase 1"
+
+    // Logging estructurado
+    trackingAPI.trackingIngestController -> trackingAPI.structuredLogger "Registra operaciones de ingesta" "Serilog" "001 - Fase 1"
+    trackingAPI.trackingQueryController -> trackingAPI.structuredLogger "Registra consultas" "Serilog" "001 - Fase 1"
+    trackingAPI.trackingIngestService -> trackingAPI.structuredLogger "Registra procesamiento de eventos" "Serilog" "001 - Fase 1"
+    trackingAPI.trackingQueryService -> trackingAPI.structuredLogger "Registra consultas complejas" "Serilog" "001 - Fase 1"
+    trackingAPI.reliableEventPublisher -> trackingAPI.structuredLogger "Registra publicación de eventos" "Serilog" "001 - Fase 1"
+    trackingAPI.trackingDataRepository -> trackingAPI.structuredLogger "Registra operaciones de datos" "Serilog" "001 - Fase 1"
+    trackingAPI.configurationProvider -> trackingAPI.structuredLogger "Registra cache hit/miss config" "Serilog" "001 - Fase 1"
+    trackingAPI.tenantConfigRepository -> trackingAPI.structuredLogger "Registra configuraciones por tenant" "Serilog" "001 - Fase 1"
+    trackingAPI.dynamicConfigProcessor -> trackingAPI.structuredLogger "Registra cambios de configuración" "Serilog" "001 - Fase 1"
+    trackingAPI.healthCheck -> trackingAPI.structuredLogger "Registra health checks" "Serilog" "001 - Fase 1"
+
+    // Métricas de negocio y técnicas
+    trackingAPI.trackingIngestController -> trackingAPI.metricsCollector "Publica métricas de ingesta" "Prometheus" "001 - Fase 1"
+    trackingAPI.trackingQueryController -> trackingAPI.metricsCollector "Publica métricas de consultas" "Prometheus" "001 - Fase 1"
+    trackingAPI.trackingIngestService -> trackingAPI.metricsCollector "Publica métricas de eventos procesados" "Prometheus" "001 - Fase 1"
+    trackingAPI.trackingQueryService -> trackingAPI.metricsCollector "Publica métricas de performance de consultas" "Prometheus" "001 - Fase 1"
+    trackingAPI.reliableEventPublisher -> trackingAPI.metricsCollector "Publica métricas de throughput" "Prometheus" "001 - Fase 1"
+    trackingAPI.trackingDataRepository -> trackingAPI.metricsCollector "Publica métricas de query performance" "Prometheus" "001 - Fase 1"
+    trackingAPI.configurationProvider -> trackingAPI.metricsCollector "Publica métricas de cache" "Prometheus" "001 - Fase 1"
+    trackingAPI.tenantConfigRepository -> trackingAPI.metricsCollector "Publica métricas de configuración por tenant" "Prometheus" "001 - Fase 1"
+    trackingAPI.dynamicConfigProcessor -> trackingAPI.metricsCollector "Publica métricas de configuración dinámica" "Prometheus" "001 - Fase 1"
+    trackingAPI.healthCheck -> trackingAPI.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
+
+    // Observabilidad cross-cutting
+    trackingAPI.structuredLogger -> trackingAPI.metricsCollector "Correlaciona logs y métricas" "In-Memory" "001 - Fase 1"
+
+    // ========================================
+    // OBSERVABILIDAD - TRACKING EVENT PROCESSOR
+    // ========================================
+
+    // Health Checks
+    trackingEventProcessor.healthCheck -> trackingDatabase "Ejecuta health check" "PostgreSQL" "001 - Fase 1"
+    trackingEventProcessor.healthCheck -> configPlatform.configService "Verifica configuraciones críticas" "HTTPS/REST" "001 - Fase 1"
+
+    // Logging estructurado
+    trackingEventProcessor.reliableEventConsumer -> trackingEventProcessor.structuredLogger "Registra consumo de eventos" "Serilog" "001 - Fase 1"
+    trackingEventProcessor.trackingEventHandler -> trackingEventProcessor.structuredLogger "Registra procesamiento de eventos" "Serilog" "001 - Fase 1"
+    trackingEventProcessor.trackingProcessingService -> trackingEventProcessor.structuredLogger "Registra lógica de procesamiento" "Serilog" "001 - Fase 1"
+    trackingEventProcessor.trackingEventRepository -> trackingEventProcessor.structuredLogger "Registra operaciones de persistencia" "Serilog" "001 - Fase 1"
+    trackingEventProcessor.reliableDownstreamPublisher -> trackingEventProcessor.structuredLogger "Registra publicación downstream" "Serilog" "001 - Fase 1"
+    trackingEventProcessor.processorConfigurationProvider -> trackingEventProcessor.structuredLogger "Registra cache hit/miss config" "Serilog" "001 - Fase 1"
+    trackingEventProcessor.processorTenantConfigRepository -> trackingEventProcessor.structuredLogger "Registra configuraciones por tenant" "Serilog" "001 - Fase 1"
+    trackingEventProcessor.dynamicConfigProcessor -> trackingEventProcessor.structuredLogger "Registra cambios de configuración" "Serilog" "001 - Fase 1"
+    trackingEventProcessor.healthCheck -> trackingEventProcessor.structuredLogger "Registra health checks" "Serilog" "001 - Fase 1"
+
+    // Métricas de negocio y técnicas
+    trackingEventProcessor.reliableEventConsumer -> trackingEventProcessor.metricsCollector "Publica métricas de consumo" "Prometheus" "001 - Fase 1"
+    trackingEventProcessor.trackingEventHandler -> trackingEventProcessor.metricsCollector "Publica métricas de procesamiento" "Prometheus" "001 - Fase 1"
+    trackingEventProcessor.trackingProcessingService -> trackingEventProcessor.metricsCollector "Publica métricas de lógica de negocio" "Prometheus" "001 - Fase 1"
+    trackingEventProcessor.trackingEventRepository -> trackingEventProcessor.metricsCollector "Publica métricas de persistencia" "Prometheus" "001 - Fase 1"
+    trackingEventProcessor.reliableDownstreamPublisher -> trackingEventProcessor.metricsCollector "Publica métricas de throughput downstream" "Prometheus" "001 - Fase 1"
+    trackingEventProcessor.processorConfigurationProvider -> trackingEventProcessor.metricsCollector "Publica métricas de cache" "Prometheus" "001 - Fase 1"
+    trackingEventProcessor.processorTenantConfigRepository -> trackingEventProcessor.metricsCollector "Publica métricas de configuración por tenant" "Prometheus" "001 - Fase 1"
+    trackingEventProcessor.dynamicConfigProcessor -> trackingEventProcessor.metricsCollector "Publica métricas de configuración dinámica" "Prometheus" "001 - Fase 1"
+    trackingEventProcessor.healthCheck -> trackingEventProcessor.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
+
+    // Observabilidad cross-cutting
+    trackingEventProcessor.structuredLogger -> trackingEventProcessor.metricsCollector "Correlaciona logs y métricas" "In-Memory" "001 - Fase 1"
+
+    // ========================================
+    // RELACIONES EXTERNAS - OBSERVABILIDAD
+    // ========================================
+
+    // Métricas
+    trackAndTrace.trackingAPI.metricsCollector -> observabilitySystem.metricsCollector "Expone métricas de performance API" "HTTP" "001 - Fase 1"
+    trackAndTrace.trackingEventProcessor.metricsCollector -> observabilitySystem.metricsCollector "Expone métricas de procesamiento" "HTTP" "001 - Fase 1"
+
+    // Health Checks
+    trackAndTrace.trackingAPI.healthCheck -> observabilitySystem.metricsCollector "Expone health checks API" "HTTP" "001 - Fase 1"
+    trackAndTrace.trackingEventProcessor.healthCheck -> observabilitySystem.metricsCollector "Expone health checks Processor" "HTTP" "001 - Fase 1"
+
+    // Logs estructurados
+    trackAndTrace.trackingAPI.structuredLogger -> observabilitySystem.logAggregator "Envía logs estructurados API" "HTTP" "001 - Fase 1"
+    trackAndTrace.trackingEventProcessor.structuredLogger -> observabilitySystem.logAggregator "Envía logs estructurados Processor" "HTTP" "001 - Fase 1"
+
+    // Tracing distribuido (Fase 2)
+    trackAndTrace.trackingAPI.structuredLogger -> observabilitySystem.tracingPlatform "Envía trazas distribuidas API" "OpenTelemetry" "002 - Fase 2"
+    trackAndTrace.trackingEventProcessor.structuredLogger -> observabilitySystem.tracingPlatform "Envía trazas distribuidas Processor" "OpenTelemetry" "002 - Fase 2"
 }
