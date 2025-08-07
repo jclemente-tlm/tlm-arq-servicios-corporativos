@@ -17,6 +17,7 @@ container sitaMessaging "sita_messaging_system" {
     exclude "observabilitySystem -> trackAndTrace"
     exclude "observabilitySystem -> identity"
     exclude "observabilitySystem -> notification"
+    exclude "trackAndTrace -> observabilitySystem"
 
     exclude "trackAndTrace -> configPlatform"
 
@@ -26,14 +27,11 @@ container sitaMessaging "sita_messaging_system" {
 component sitaMessaging.eventProcessor "sita_messaging_system_event_processor" {
     include *
 
-    // // Incluir solo elementos directamente relacionados con el procesador
-    // include trackAndTrace.trackingAPI
-    // include configPlatform
-
-    // // Excluir otros sistemas
-    // exclude apiGateway identity notification
-    // exclude airlines descartes
-    // exclude emailProvider smsProvider whatsappProvider pushProvider
+    // Exclusión inteligente de componentes de observabilidad para diagrama limpio
+    exclude observabilitySystem
+    exclude sitaMessaging.eventProcessor.healthCheck
+    exclude sitaMessaging.eventProcessor.metricsCollector
+    exclude sitaMessaging.eventProcessor.structuredLogger
 
     title "[Diagrama de Componentes] SITA Messaging System - Event Processor"
     description "Vista del procesador de eventos SITA y su conexión con Track & Trace"
@@ -42,13 +40,11 @@ component sitaMessaging.eventProcessor "sita_messaging_system_event_processor" {
 component sitaMessaging.sender "sita_messaging_system_sender" {
     include *
 
-    // // Incluir solo elementos directamente relacionados con el sender
-    // include airlines descartes
-    // include configPlatform
-
-    // // Excluir otros sistemas
-    // exclude apiGateway identity notification trackAndTrace
-    // exclude emailProvider smsProvider whatsappProvider pushProvider
+    // Exclusión inteligente de componentes de observabilidad para diagrama limpio
+    exclude observabilitySystem
+    exclude sitaMessaging.sender.healthCheck
+    exclude sitaMessaging.sender.metricsCollector
+    exclude sitaMessaging.sender.structuredLogger
 
     title "[Diagrama de Componentes] SITA Messaging System - Message Sender"
     description "Vista del sender de mensajes SITA hacia aerolíneas y Descartes"

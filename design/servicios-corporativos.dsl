@@ -189,10 +189,6 @@ workspace {
 
             // Integración API Gateway -> Identity System (Autenticación y Autorización)
             apiGateway.reverseProxyGateway.securityMiddleware -> identity.keycloakServer "Valida tokens JWT" "HTTPS" "001 - Fase 1"
-
-            // Integración Event-Driven: Track & Trace -> SITA Messaging
-            trackAndTrace.trackingEventProcessor.reliableDownstreamPublisher -> sitaMessaging.eventProcessor.reliableEventConsumer "Publica eventos de tracking" "PostgreSQL Messaging" "001 - Fase 1"
-
         }
 
 

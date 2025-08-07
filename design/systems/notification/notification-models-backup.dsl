@@ -11,6 +11,7 @@ notification = softwareSystem "Notification System" {
         technology "PostgreSQL"
         tags "Database" "PostgreSQL" "001 - Fase 1"
 
+        // Componentes esenciales del esquema
         messagesTable = component "Messages Table" {
             technology "PostgreSQL Table"
             description "Tabla principal para mensajes con routing"
@@ -31,14 +32,14 @@ notification = softwareSystem "Notification System" {
 
         attachmentMetadataTable = component "Attachment Metadata Table" {
             technology "PostgreSQL Table"
-            description "Metadatos de archivos adjuntos"
-            tags "Database Table" "Attachments" "001 - Fase 1"
+            description "Metadatos de archivos: filename, size, type, tenant, timestamps, TTL"
+            tags "Database Table" "Attachments" "Metadata" "001 - Fase 1"
         }
     }
 
     attachmentStorage = store "Attachment Storage" {
         technology "S3-Compatible Storage"
-        description "Storage agnóstico para archivos adjuntos"
+        description "Storage agnóstico para archivos adjuntos."
         tags "File Storage" "S3-Compatible" "001 - Fase 1"
     }
 
@@ -51,16 +52,11 @@ notification = softwareSystem "Notification System" {
         description "API REST para recepción de notificaciones"
         tags "API" "001 - Fase 1"
 
+        // Componentes esenciales - Controllers especializados
         notificationController = component "Notification Controller" {
             technology "ASP.NET Core"
-            description "Endpoints RESTful para notificaciones"
-            tags "Controller" "Notifications" "001 - Fase 1"
-        }
-
-        attachmentController = component "Attachment Controller" {
-            technology "ASP.NET Core"
-            description "Endpoints RESTful para attachments"
-            tags "Controller" "Attachments" "001 - Fase 1"
+            description "Endpoints RESTful para notificaciones: GET/POST/PUT/DELETE /notifications, POST /notifications/{id}/send"
+            tags "Controller" "Notifications" "RESTful" "001 - Fase 1"
         }
 
         requestValidator = component "Request Validator" {
@@ -75,22 +71,34 @@ notification = softwareSystem "Notification System" {
             tags "Messaging" "001 - Fase 1"
         }
 
+        configurationService = component "Configuration Service" {
+            technology "IConfigurationProvider"
+            description "Servicio de configuración con cache local"
+            tags "Configuration" "001 - Fase 1"
+        }
+
+        dynamicConfigProcessor = component "Dynamic Configuration Processor" {
+            technology "C#, FluentValidation, HttpClient"
+            description "Polling de configuración con hot reload"
+            tags "Configuration Events" "Feature Flags" "001 - Fase 1"
+        }
+
+        attachmentController = component "Attachment Controller" {
+            technology "ASP.NET Core"
+            description "Endpoints RESTful para attachments: GET/POST/DELETE /attachments, HEAD /attachments/{id}"
+            tags "Controller" "Attachments" "RESTful" "001 - Fase 1"
+        }
+
         attachmentService = component "Attachment Service" {
             technology "C# Business Logic"
-            description "Lógica de negocio para gestión de archivos"
+            description "Lógica de negocio para gestión de archivos: validaciones, transformaciones, orquestación"
             tags "Business Logic" "001 - Fase 1"
         }
 
         attachmentRepository = component "Attachment Repository" {
             technology "Entity Framework Core"
-            description "Acceso a datos de metadatos de attachments"
-            tags "Data Access" "001 - Fase 1"
-        }
-
-        configManager = component "Configuration Manager" {
-            technology "C#, .NET 8, EF Core"
-            description "Gestiona configuraciones del servicio y por tenant"
-            tags "Configuration" "Multi-Tenant" "001 - Fase 1"
+            description "Acceso a datos para metadatos de attachments con queries optimizadas"
+            tags "Repository" "Data Access" "001 - Fase 1"
         }
 
         // Observabilidad esencial
@@ -108,7 +116,7 @@ notification = softwareSystem "Notification System" {
 
         structuredLogger = component "Structured Logger" {
             technology "Serilog"
-            description "Logging estructurado con correlación"
+            description "Logging estructurado con correlationId, tenant context y metadata de requests"
             tags "Observability" "001 - Fase 1"
         }
     }
@@ -119,71 +127,83 @@ notification = softwareSystem "Notification System" {
 
     processor = application "Notification Processor" {
         technology "Worker Service"
-        description "Procesador unificado con channel handlers especializados"
+        description "Procesador unificado con channel handlers especializados."
         tags "Processor" "001 - Fase 1"
 
         messageConsumer = component "Message Consumer" {
             technology "Reliable Messaging"
-            description "Consumer con retry y dead letter queue"
+            description "Consumer principal con acknowledgments, retry policies y dead letter handling"
             tags "Messaging" "001 - Fase 1"
         }
 
         orchestratorService = component "Orchestrator Service" {
-            technology "C# Business Logic"
-            description "Orquesta el flujo de notificaciones"
-            tags "Business Logic" "001 - Fase 1"
+            technology "C# Service"
+            description "Orquesta el procesamiento, routing por canal y manejo de prioridades"
+            tags "Orchestration" "001 - Fase 1"
         }
 
         templateEngine = component "Template Engine" {
             technology "Liquid Templates"
-            description "Motor de plantillas con i18n"
+            description "Motor de plantillas con cache, i18n y personalización por tenant"
             tags "Templates" "001 - Fase 1"
         }
 
-        schedulerService = component "Scheduler Service" {
-            technology "Quartz.NET"
-            description "Programación de notificaciones diferidas"
-            tags "Scheduling" "001 - Fase 1"
-        }
-
-        notificationRepository = component "Notification Repository" {
-            technology "Entity Framework Core"
-            description "Acceso a datos de notificaciones"
-            tags "Data Access" "001 - Fase 1"
-        }
-
-        // Channel Handlers
+        // Channel Handlers - Componentes livianos en lugar de contenedores
         emailHandler = component "Email Handler" {
             technology "Email Provider Client"
-            description "Handler especializado para emails"
+            description "Handler especializado para emails con retry, templates y attachments"
             tags "Email" "Handler" "001 - Fase 1"
         }
 
         smsHandler = component "SMS Handler" {
             technology "SMS Provider Client"
-            description "Handler especializado para SMS"
+            description "Handler especializado para SMS con límites de caracteres y routing"
             tags "SMS" "Handler" "001 - Fase 1"
         }
 
         whatsappHandler = component "WhatsApp Handler" {
-            technology "WhatsApp Business API"
-            description "Handler especializado para WhatsApp"
+            technology "WhatsApp Provider Client"
+            description "Handler especializado para WhatsApp con templates y media support"
             tags "WhatsApp" "Handler" "001 - Fase 1"
         }
 
         pushHandler = component "Push Handler" {
-            technology "Push Notification Service"
-            description "Handler especializado para push notifications"
+            technology "Push Provider Client"
+            description "Handler especializado para push notifications con targeting"
             tags "Push" "Handler" "001 - Fase 1"
         }
 
-        configManager = component "Configuration Manager" {
-            technology "C#, .NET 8, EF Core"
-            description "Gestiona configuraciones del servicio y por tenant"
-            tags "Configuration" "Multi-Tenant" "001 - Fase 1"
+        schedulerService = component "Scheduler Service" {
+            technology "Background Service"
+            description "Gestión de notificaciones programadas con cron jobs y time zones"
+            tags "Scheduling" "001 - Fase 1"
         }
 
-        // Observabilidad esencial
+        configurationService = component "Configuration Service" {
+            technology "IConfigurationProvider"
+            description "Servicio de configuración con cache distribuido"
+            tags "Configuration" "001 - Fase 1"
+        }
+
+        dynamicConfigProcessor = component "Dynamic Configuration Processor" {
+            technology "C#, FluentValidation, HttpClient"
+            description "Polling de configuración con hot reload"
+            tags "Configuration Events" "Feature Flags" "001 - Fase 1"
+        }
+
+        notificationRepository = component "Notification Repository" {
+            technology "Entity Framework Core"
+            description "Operaciones de datos con alta concurrencia, audit trail y soft deletes"
+            tags "Repository" "001 - Fase 1"
+        }
+
+        attachmentFetcher = component "Attachment Fetcher" {
+            technology "S3-Compatible Client"
+            description "Descarga archivos del storage usando storage keys con cache, retry y optimización"
+            tags "Storage" "File Download" "001 - Fase 1"
+        }
+
+        // Componentes de Observabilidad
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
             description "Monitoreo de salud del Processor"
@@ -213,108 +233,120 @@ notification = softwareSystem "Notification System" {
     appColombia -> api.notificationController "Solicita envió de notificación" "HTTPS via API Gateway" "001 - Fase 1"
     appMexico -> api.notificationController "Solicita envió de notificación" "HTTPS via API Gateway" "001 - Fase 1"
 
-    appPeru -> api.attachmentController "Solicita carga de archivos adjuntos" "HTTPS via API Gateway" "001 - Fase 1"
-    appEcuador -> api.attachmentController "Solicita carga de archivos adjuntos" "HTTPS via API Gateway" "001 - Fase 1"
-    appColombia -> api.attachmentController "Solicita carga de archivos adjuntos" "HTTPS via API Gateway" "001 - Fase 1"
-    appMexico -> api.attachmentController "Solicita carga de archivos adjuntos" "HTTPS via API Gateway" "001 - Fase 1"
-
-    // API - Flujo principal
+    // API Internal Relations - Notification Controller
     api.notificationController -> api.requestValidator "Valida requests de notificaciones" "C#" "001 - Fase 1"
-    api.notificationController -> api.messagePublisher "Publica mensajes validados" "C#" "001 - Fase 1"
+    api.notificationController -> api.messagePublisher "Publica mensaje" "Reliable Messaging" "001 - Fase 1"
+    api.messagePublisher -> notificationDatabase.messagesTable "Persiste mensaje" "PostgreSQL" "001 - Fase 1"
+
+    // API Internal Relations - Attachment Controller
     api.attachmentController -> api.requestValidator "Valida requests de attachments" "C#" "001 - Fase 1"
     api.attachmentController -> api.attachmentService "Orquesta operaciones de archivos" "C#" "001 - Fase 1"
     api.attachmentService -> api.attachmentRepository "Gestiona metadatos" "Entity Framework" "001 - Fase 1"
     api.attachmentService -> attachmentStorage "Almacena archivos binarios" "S3-Compatible" "001 - Fase 1"
-    api.attachmentRepository -> notificationDatabase.attachmentMetadataTable "Persiste metadatos" "PostgreSQL" "001 - Fase 1"
+    api.attachmentRepository -> notificationDatabase.attachmentMetadataTable "Acceso a datos de metadatos" "PostgreSQL" "001 - Fase 1"
 
-    // API - Uso de configuración (vía DI, no acceso directo)
-    // Nota: Controllers y servicios reciben IConfigurationService por constructor
-    api.requestValidator -> notificationDatabase.configTable "Lee reglas de validación por tenant" "PostgreSQL" "001 - Fase 1"
-    api.messagePublisher -> notificationDatabase.configTable "Lee configuración de canales" "PostgreSQL" "001 - Fase 1"
+    // Shared Services
+    api.configurationService -> configPlatform.configService "Lee configuración" "HTTPS" "001 - Fase 1"
 
-    // API - Configuración externa (solo configManager accede directamente)
-    api.configManager -> configPlatform.configService "Obtiene configuración externa" "HTTPS/REST" "001 - Fase 1"
-    api.configManager -> notificationDatabase.configTable "Lee metadatos estáticos tenant" "PostgreSQL" "001 - Fase 1"
-
-    // Processor - Flujo principal
-    processor.messageConsumer -> notificationDatabase.messagesTable "Consume mensajes" "PostgreSQL" "001 - Fase 1"
-    processor.messageConsumer -> processor.orchestratorService "Delega procesamiento" "C#" "001 - Fase 1"
-    processor.orchestratorService -> processor.templateEngine "Renderiza plantillas" "C#" "001 - Fase 1"
-    processor.orchestratorService -> processor.schedulerService "Programa notificaciones diferidas" "C#" "001 - Fase 1"
-    processor.schedulerService -> processor.notificationRepository "Consulta notificaciones pendientes" "Entity Framework" "001 - Fase 1"
-    processor.schedulerService -> processor.notificationRepository "Marca como listas para envío" "Entity Framework" "001 - Fase 1"
-    processor.schedulerService -> notificationDatabase.messagesTable "Crea mensajes desde notificaciones programadas" "PostgreSQL" "001 - Fase 1"
+    // Processor Internal Relations
+    processor.messageConsumer -> notificationDatabase.messagesTable "Consume cola" "PostgreSQL" "001 - Fase 1"
+    processor.messageConsumer -> processor.orchestratorService "Procesa mensaje" "C#" "001 - Fase 1"
+    
+    // Orchestrator: decide inmediato vs programado
+    processor.orchestratorService -> processor.templateEngine "Procesa plantilla" "C#" "001 - Fase 1"
+    processor.orchestratorService -> processor.notificationRepository "Registra notificaciones con fecha futura" "Entity Framework" "001 - Fase 1"
     processor.templateEngine -> notificationDatabase.templatesTable "Lee plantillas" "PostgreSQL" "001 - Fase 1"
-    processor.notificationRepository -> notificationDatabase.messagesTable "Accede a datos de notificaciones" "PostgreSQL" "001 - Fase 1"
 
     // Channel Handlers
     processor.orchestratorService -> processor.emailHandler "Envía email" "C#" "001 - Fase 1"
     processor.orchestratorService -> processor.smsHandler "Envía SMS" "C#" "001 - Fase 1"
     processor.orchestratorService -> processor.whatsappHandler "Envía WhatsApp" "C#" "001 - Fase 1"
-    processor.orchestratorService -> processor.pushHandler "Envía push notification" "C#" "001 - Fase 1"
+    processor.orchestratorService -> processor.pushHandler "Envía push" "C#" "001 - Fase 1"
 
-    // Processor - Uso de configuración (vía DI, no acceso directo)
-    // Nota: Servicios reciben IConfigurationService por constructor
-    processor.orchestratorService -> notificationDatabase.configTable "Lee configuración de canales por tenant" "PostgreSQL" "001 - Fase 1"
-    processor.templateEngine -> notificationDatabase.configTable "Lee configuración de templates" "PostgreSQL" "001 - Fase 1"
-    # processor.emailHandler -> notificationDatabase.configTable "Lee credenciales SMTP" "PostgreSQL" "001 - Fase 1"
-    # processor.smsHandler -> notificationDatabase.configTable "Lee credenciales SMS" "PostgreSQL" "001 - Fase 1"
-    # processor.whatsappHandler -> notificationDatabase.configTable "Lee credenciales WhatsApp" "PostgreSQL" "001 - Fase 1"
-    # processor.pushHandler -> notificationDatabase.configTable "Lee credenciales Push" "PostgreSQL" "001 - Fase 1"
+    // Scheduler: monitoreo proactivo
+    processor.schedulerService -> notificationDatabase "Consulta notificaciones pendientes con envío programado" "PostgreSQL" "001 - Fase 1"
+    processor.schedulerService -> processor.notificationRepository "Marca como listas para envío" "Entity Framework" "001 - Fase 1"
+    processor.schedulerService -> notificationDatabase.messagesTable "Encola notificaciones programadas" "PostgreSQL" "001 - Fase 1"
 
-// External Provider Relations
+    // Configuration Relations
+    processor.configurationService -> configPlatform.configService "Lee configuración" "HTTPS" "001 - Fase 1"
+    
+    // Repository Relations
+    processor.notificationRepository -> notificationDatabase "Actualiza estados de notificaciones" "PostgreSQL" "001 - Fase 1"
+
+    // Dynamic Configuration Relations
+    api.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios config" "HTTPS/REST" "001 - Fase 1"
+    api.dynamicConfigProcessor -> api.configurationService "Invalida cache" "In-Memory" "001 - Fase 1"
+    processor.dynamicConfigProcessor -> configPlatform.configService "Consulta cambios config" "HTTPS/REST" "001 - Fase 1"
+    processor.dynamicConfigProcessor -> processor.configurationService "Invalida cache" "In-Memory" "001 - Fase 1"
+
+    // External Provider Relations
     processor.emailHandler -> emailProvider "Envía email" "HTTPS/SMTP" "001 - Fase 1"
     processor.smsHandler -> smsProvider "Envía SMS" "HTTPS/API" "001 - Fase 1"
     processor.whatsappHandler -> whatsappProvider "Envía WhatsApp" "HTTPS/API" "001 - Fase 1"
     processor.pushHandler -> pushProvider "Envía push" "HTTPS/API" "001 - Fase 1"
 
-    // Processor - Configuración externa (solo configManager accede directamente)
-    processor.configManager -> configPlatform.configService "Obtiene configuración externa" "HTTPS/REST" "001 - Fase 1"
-    processor.configManager -> notificationDatabase.configTable "Lee metadatos estáticos tenant" "PostgreSQL" "001 - Fase 1"
+    // Storage Relations - AttachmentFetcher gestiona acceso al storage
+    processor.attachmentFetcher -> attachmentStorage "Gestiona acceso a archivos con cache y retry" "S3-Compatible" "001 - Fase 1"
+
+    // Handlers usan AttachmentFetcher para obtener archivos
+    processor.emailHandler -> processor.attachmentFetcher "Solicita archivos adjuntos para emails" "C#" "001 - Fase 1"
+    processor.whatsappHandler -> processor.attachmentFetcher "Solicita archivos multimedia para WhatsApp" "C#" "001 - Fase 1"
+    processor.pushHandler -> processor.attachmentFetcher "Solicita imágenes para notificaciones push" "C#" "001 - Fase 1"
 
     // ========================================
-    // OBSERVABILIDAD - API
+    // OBSERVABILIDAD - NOTIFICATION API
     // ========================================
 
     // Health Checks
     api.healthCheck -> notificationDatabase "Ejecuta health check" "PostgreSQL" "001 - Fase 1"
-    api.healthCheck -> attachmentStorage "Verifica conectividad storage" "S3-Compatible API" "001 - Fase 1"
+    api.healthCheck -> attachmentStorage "Verifica conectividad storage" "S3-Compatible" "001 - Fase 1"
+    api.healthCheck -> configPlatform.configService "Verifica configuraciones críticas" "HTTPS/REST" "001 - Fase 1"
 
     // Logging estructurado
-    api.notificationController -> api.structuredLogger "Registra requests de notificaciones" "Serilog" "001 - Fase 1"
-    api.attachmentController -> api.structuredLogger "Registra requests de attachments" "Serilog" "001 - Fase 1"
-    api.requestValidator -> api.structuredLogger "Registra validaciones" "Serilog" "001 - Fase 1"
+    api.notificationController -> api.structuredLogger "Registra requests y responses" "Serilog" "001 - Fase 1"
+    api.requestValidator -> api.structuredLogger "Registra validaciones fallidas" "Serilog" "001 - Fase 1"
     api.messagePublisher -> api.structuredLogger "Registra publicación de mensajes" "Serilog" "001 - Fase 1"
-    api.attachmentService -> api.structuredLogger "Registra operaciones de archivos" "Serilog" "001 - Fase 1"
+    api.configurationService -> api.structuredLogger "Registra cache hit/miss config" "Serilog" "001 - Fase 1"
+    api.attachmentService -> api.structuredLogger "Registra operaciones de storage" "Serilog" "001 - Fase 1"
+    api.dynamicConfigProcessor -> api.structuredLogger "Registra cambios de configuración" "Serilog" "001 - Fase 1"
     api.healthCheck -> api.structuredLogger "Registra health checks" "Serilog" "001 - Fase 1"
 
-    // Métricas
+    // Métricas de negocio y técnicas
     api.notificationController -> api.metricsCollector "Publica métricas de requests" "Prometheus" "001 - Fase 1"
-    api.attachmentController -> api.metricsCollector "Publica métricas de attachments" "Prometheus" "001 - Fase 1"
     api.requestValidator -> api.metricsCollector "Publica métricas de validación" "Prometheus" "001 - Fase 1"
-    api.messagePublisher -> api.metricsCollector "Publica métricas de publicación" "Prometheus" "001 - Fase 1"
-    api.attachmentService -> api.metricsCollector "Publica métricas de archivos" "Prometheus" "001 - Fase 1"
+    api.messagePublisher -> api.metricsCollector "Publica métricas de throughput" "Prometheus" "001 - Fase 1"
+    api.configurationService -> api.metricsCollector "Publica métricas de cache" "Prometheus" "001 - Fase 1"
+    api.attachmentService -> api.metricsCollector "Publica métricas de storage" "Prometheus" "001 - Fase 1"
+    api.dynamicConfigProcessor -> api.metricsCollector "Publica métricas de configuración dinámica" "Prometheus" "001 - Fase 1"
     api.healthCheck -> api.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
 
+    // Observabilidad cross-cutting
+    api.structuredLogger -> api.metricsCollector "Correlaciona logs y métricas" "In-Memory" "001 - Fase 1"
+
     // ========================================
-    // OBSERVABILIDAD - PROCESSOR
+    // OBSERVABILIDAD - NOTIFICATION PROCESSOR
     // ========================================
 
     // Health Checks
     processor.healthCheck -> notificationDatabase "Ejecuta health check" "PostgreSQL" "001 - Fase 1"
+    processor.healthCheck -> configPlatform.configService "Verifica configuraciones críticas" "HTTPS/REST" "001 - Fase 1"
 
     // Logging estructurado
     processor.messageConsumer -> processor.structuredLogger "Registra consumo de mensajes" "Serilog" "001 - Fase 1"
     processor.orchestratorService -> processor.structuredLogger "Registra orquestación" "Serilog" "001 - Fase 1"
-    processor.templateEngine -> processor.structuredLogger "Registra renderizado de plantillas" "Serilog" "001 - Fase 1"
+    processor.templateEngine -> processor.structuredLogger "Registra procesamiento de templates" "Serilog" "001 - Fase 1"
     processor.emailHandler -> processor.structuredLogger "Registra envíos de email" "Serilog" "001 - Fase 1"
     processor.smsHandler -> processor.structuredLogger "Registra envíos de SMS" "Serilog" "001 - Fase 1"
     processor.whatsappHandler -> processor.structuredLogger "Registra envíos de WhatsApp" "Serilog" "001 - Fase 1"
     processor.pushHandler -> processor.structuredLogger "Registra envíos de push" "Serilog" "001 - Fase 1"
     processor.schedulerService -> processor.structuredLogger "Registra tareas programadas" "Serilog" "001 - Fase 1"
+    processor.configurationService -> processor.structuredLogger "Registra cache hit/miss config" "Serilog" "001 - Fase 1"
+    processor.notificationRepository -> processor.structuredLogger "Registra operaciones de datos" "Serilog" "001 - Fase 1"
+    processor.dynamicConfigProcessor -> processor.structuredLogger "Registra cambios de configuración" "Serilog" "001 - Fase 1"
     processor.healthCheck -> processor.structuredLogger "Registra health checks" "Serilog" "001 - Fase 1"
 
-    // Métricas
+    // Métricas de negocio y técnicas
     processor.messageConsumer -> processor.metricsCollector "Publica métricas de consumo" "Prometheus" "001 - Fase 1"
     processor.orchestratorService -> processor.metricsCollector "Publica métricas de orquestación" "Prometheus" "001 - Fase 1"
     processor.templateEngine -> processor.metricsCollector "Publica métricas de templates" "Prometheus" "001 - Fase 1"
@@ -323,17 +355,13 @@ notification = softwareSystem "Notification System" {
     processor.whatsappHandler -> processor.metricsCollector "Publica métricas de WhatsApp" "Prometheus" "001 - Fase 1"
     processor.pushHandler -> processor.metricsCollector "Publica métricas de push" "Prometheus" "001 - Fase 1"
     processor.schedulerService -> processor.metricsCollector "Publica métricas de scheduling" "Prometheus" "001 - Fase 1"
+    processor.configurationService -> processor.metricsCollector "Publica métricas de cache" "Prometheus" "001 - Fase 1"
+    processor.notificationRepository -> processor.metricsCollector "Publica métricas de query performance" "Prometheus" "001 - Fase 1"
+    processor.dynamicConfigProcessor -> processor.metricsCollector "Publica métricas de configuración dinámica" "Prometheus" "001 - Fase 1"
     processor.healthCheck -> processor.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
 
-    // ========================================
-    // RELACIONES EXTERNAS - CONSUMIDORES
-    // ========================================
-
-    // Sistemas que consumen Notification API
-    // NOTA: Las referencias externas se modelarán cuando los componentes estén definidos correctamente
-    // trackAndTrace -> notification.api.notificationController "Solicita notificaciones de eventos" "HTTPS/REST" "001 - Fase 1"
-    // sitaMessaging -> notification.api.notificationController "Solicita notificaciones de entrega" "HTTPS/REST" "001 - Fase 1"
-    // apiGateway -> notification.api.notificationController "Enruta requests de notificaciones" "HTTPS/REST" "001 - Fase 1"
+    // Observabilidad cross-cutting
+    processor.structuredLogger -> processor.metricsCollector "Correlaciona logs y métricas" "In-Memory" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - OBSERVABILIDAD

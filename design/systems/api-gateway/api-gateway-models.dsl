@@ -100,11 +100,23 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     reverseProxyGateway.structuredLogger -> reverseProxyGateway.metricsCollector "Correlaciona logs y métricas" "In-Memory" "001 - Fase 1"
     reverseProxyGateway.healthCheck -> reverseProxyGateway.resilienceHandler "Evalúa estado resiliencia" "In-Memory" "001 - Fase 1"
 
-    // Observabilidad de middleware crítico
-    reverseProxyGateway.securityMiddleware -> reverseProxyGateway.structuredLogger "Registra eventos auth" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.tenantResolutionMiddleware -> reverseProxyGateway.structuredLogger "Registra resolución tenant" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.metricsCollector "Reporta métricas rate limit" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.resilienceHandler -> reverseProxyGateway.metricsCollector "Reporta estado breakers" "In-Memory" "001 - Fase 1"
+    // Observabilidad de middleware crítico - Logs estructurados
+    reverseProxyGateway.securityMiddleware -> reverseProxyGateway.structuredLogger "Registra eventos auth y autorizaciones" "Serilog" "001 - Fase 1"
+    reverseProxyGateway.tenantResolutionMiddleware -> reverseProxyGateway.structuredLogger "Registra resolución tenant y contexto" "Serilog" "001 - Fase 1"
+    reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.structuredLogger "Registra rate limiting y requests bloqueadas" "Serilog" "001 - Fase 1"
+    reverseProxyGateway.dataProcessingMiddleware -> reverseProxyGateway.structuredLogger "Registra transformaciones y mapeos" "Serilog" "001 - Fase 1"
+    reverseProxyGateway.resilienceHandler -> reverseProxyGateway.structuredLogger "Registra circuit breaker y fallos" "Serilog" "001 - Fase 1"
+    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.structuredLogger "Registra cambios de configuración" "Serilog" "001 - Fase 1"
+    reverseProxyGateway.healthCheck -> reverseProxyGateway.structuredLogger "Registra health checks y disponibilidad" "Serilog" "001 - Fase 1"
+
+    // Observabilidad de middleware crítico - Métricas de negocio y técnicas
+    reverseProxyGateway.securityMiddleware -> reverseProxyGateway.metricsCollector "Publica métricas de autenticación y autorización" "Prometheus" "001 - Fase 1"
+    reverseProxyGateway.tenantResolutionMiddleware -> reverseProxyGateway.metricsCollector "Publica métricas de resolución tenant" "Prometheus" "001 - Fase 1"
+    reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.metricsCollector "Publica métricas de rate limiting" "Prometheus" "001 - Fase 1"
+    reverseProxyGateway.dataProcessingMiddleware -> reverseProxyGateway.metricsCollector "Publica métricas de transformación" "Prometheus" "001 - Fase 1"
+    reverseProxyGateway.resilienceHandler -> reverseProxyGateway.metricsCollector "Publica métricas de circuit breaker" "Prometheus" "001 - Fase 1"
+    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.metricsCollector "Publica métricas de configuración dinámica" "Prometheus" "001 - Fase 1"
+    reverseProxyGateway.healthCheck -> reverseProxyGateway.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - ACTORES
@@ -116,6 +128,8 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     appEcuador -> reverseProxyGateway.securityMiddleware "Realiza llamadas API tenant Ecuador" "HTTPS" "001 - Fase 1"
     appColombia -> reverseProxyGateway.securityMiddleware "Realiza llamadas API tenant Colombia" "HTTPS" "001 - Fase 1"
     appMexico -> reverseProxyGateway.securityMiddleware "Realiza llamadas API tenant Mexico" "HTTPS" "001 - Fase 1"
+
+
 
     // ========================================
     // RELACIONES EXTERNAS - SISTEMAS DOWNSTREAM

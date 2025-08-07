@@ -18,28 +18,68 @@ container notification "notification_system" {
 component notification.api "notification_system_api" {
     include *
 
-    // // Incluir solo elementos directamente relacionados con el API
-    // include configPlatform
+    // Excluir solo componentes de observabilidad para limpiar telaraña
+    exclude notification.api.healthCheck
+    exclude notification.api.metricsCollector
+    exclude notification.api.structuredLogger
 
-    // // Excluir el processor (no interactúa directamente con el API)
-    // exclude notification.processor
-    // exclude emailProvider smsProvider whatsappProvider pushProvider
+    // Excluir sistemas externos
+    exclude notification.processor
+    exclude observabilitySystem
 
-    title "[Diagrama de Componentes] Notification API - Optimizado"
-    description "API REST simplificada con componentes esenciales y sin duplicación"
+    title "[Diagrama de Componentes] Notification API - Business Logic"
+    description "API REST enfocada en lógica de negocio sin observabilidad para claridad"
 }
 
 component notification.processor "notification_system_processor" {
     include *
 
-    // // Incluir proveedores de notificación y configuración
-    // include emailProvider smsProvider whatsappProvider pushProvider
-    // include configPlatform
+    // Excluir solo componentes de observabilidad para limpiar telaraña
+    exclude notification.processor.healthCheck
+    exclude notification.processor.metricsCollector
+    exclude notification.processor.structuredLogger
 
-    // // Excluir el API (separación de responsabilidades)
-    // exclude notification.api
-    // exclude apiGateway identity sitaMessaging trackAndTrace
+    // Excluir sistemas externos
+    exclude notification.api
+    exclude observabilitySystem
+    exclude apiGateway identity sitaMessaging trackAndTrace
 
-    title "[Diagrama de Componentes] Notification Processor - Unificado"
-    description "Procesador unificado con channel handlers integrados en lugar de contenedores separados"
+    title "[Diagrama de Componentes] Notification Processor - Business Logic"
+    description "Procesador enfocado en lógica de negocio y handlers sin observabilidad para claridad"
 }
+
+# // ========================================
+# // VISTAS ESPECIALIZADAS - OBSERVABILIDAD
+# // ========================================
+
+# component notification.api "notification_system_api_observability" {
+#     include *
+
+#     // Excluir todos los demás sistemas y componentes
+#     # exclude notification.api.metricsCollector
+#     # exclude notification.api.structuredLogger
+#     # exclude notification.api.healthCheck
+#     # exclude notification.processor
+#     # exclude apiGateway identity sitaMessaging trackAndTrace
+#     # exclude configPlatform emailProvider smsProvider whatsappProvider pushProvider
+
+#     include notification.api.metricsCollector
+#     include notification.api.structuredLogger
+#     include notification.api.healthCheck
+
+#     title "[Diagrama de Observabilidad] Notification API - Monitoring"
+#     description "Vista especializada de observabilidad: métricas, logs y health checks del API"
+# }
+
+# component notification.processor "notification_system_processor_observability" {
+#     include notification.processor
+#     include observabilitySystem
+
+#     // Excluir todos los demás sistemas y componentes
+#     # exclude notification.api
+#     # exclude apiGateway identity sitaMessaging trackAndTrace
+#     # exclude configPlatform emailProvider smsProvider whatsappProvider pushProvider
+
+#     title "[Diagrama de Observabilidad] Notification Processor - Monitoring"
+#     description "Vista especializada de observabilidad: métricas, logs y health checks del Processor"
+# }

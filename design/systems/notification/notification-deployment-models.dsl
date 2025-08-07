@@ -77,74 +77,56 @@ notificationSystem = deploymentEnvironment "Notification System" {
             }
 
             // ====================
-            // Reliable Messaging Infrastructure
-            // ====================
-            reliablePublisherNode = infrastructureNode "Reliable Message Publisher" {
-                tags "PostgreSQL"
-                description "Infraestructura de publicación de mensajes fiables con garantías ACID usando Outbox Pattern."
-                properties {
-                    "Pattern" "Outbox Pattern"
-                    "Garantías" "Exactly-Once Delivery"
-                    "Transaccional" "Sí (PostgreSQL)"
-                }
-            }
-
-            // ====================
             // External Providers
             // ====================
             group "Proveedores Externos" {
-                extProviders = deploymentNode "Proveedores Externos" {
-                    tags "ExternalSystem"
-                    description "Nodos que representan proveedores externos para el envío de notificaciones."
+                emailProviderNode = deploymentNode "Email Providers" {
+                    tags "EmailProvider"
+                    description "Proveedores de email: SendGrid, SES, SMTP, etc."
+                    softwareSystemInstance emailProvider
+                }
 
-                    emailProviderNode = deploymentNode "Email Providers" {
-                        tags "EmailProvider"
-                        description "Proveedores de email: SendGrid, SES, SMTP, etc."
-                        softwareSystemInstance emailProvider
-                    }
+                smsProviderNode = deploymentNode "SMS Providers" {
+                    tags "SmsProvider"
+                    description "Proveedores de SMS: Twilio, AWS SNS, etc."
+                    softwareSystemInstance smsProvider
+                }
 
-                    smsProviderNode = deploymentNode "SMS Providers" {
-                        tags "SmsProvider"
-                        description "Proveedores de SMS: Twilio, AWS SNS, etc."
-                        softwareSystemInstance smsProvider
-                    }
+                whatsappProviderNode = deploymentNode "WhatsApp Providers" {
+                    tags "WhatsAppProvider"
+                    description "WhatsApp Business API oficial."
+                    softwareSystemInstance whatsappProvider
+                }
 
-                    whatsappProviderNode = deploymentNode "WhatsApp Providers" {
-                        tags "WhatsAppProvider"
-                        description "WhatsApp Business API oficial."
-                        softwareSystemInstance whatsappProvider
-                    }
-
-                    pushProviderNode = deploymentNode "Push Providers" {
-                        tags "PushProvider"
-                        description "Proveedores de push: Firebase, APNs, etc."
-                        softwareSystemInstance pushProvider
-                    }
+                pushProviderNode = deploymentNode "Push Providers" {
+                    tags "PushProvider"
+                    description "Proveedores de push: Firebase, APNs, etc."
+                    softwareSystemInstance pushProvider
                 }
             }
 
-            // ====================
-            // Configuration & Monitoring
-            // ====================
-            configurationNode = infrastructureNode "Configuration Platform" {
-                tags "Configuration"
-                description "Plataforma agnóstica de configuración: AWS SSM, Azure App Config, Consul, Kubernetes ConfigMaps."
-                properties {
-                    "Provider" "Configurable (IConfigurationService)"
-                    "Encryption" "KMS/KeyVault/Vault"
-                    "Multi-Tenant" "Sí"
-                }
-            }
+            # // ====================
+            # // Configuration & Monitoring
+            # // ====================
+            # configurationNode = infrastructureNode "Configuration Platform" {
+            #     tags "Configuration"
+            #     description "Plataforma agnóstica de configuración: AWS SSM, Azure App Config, Consul, Kubernetes ConfigMaps."
+            #     properties {
+            #         "Provider" "Configurable (IConfigurationService)"
+            #         "Encryption" "KMS/KeyVault/Vault"
+            #         "Multi-Tenant" "Sí"
+            #     }
+            # }
 
-            monitoringNode = infrastructureNode "Observability Platform" {
-                tags "Monitoring"
-                description "Plataforma de observabilidad con métricas, logs y trazas distribuidas."
-                properties {
-                    "Metrics" "Prometheus/CloudWatch"
-                    "Logging" "ELK Stack/CloudWatch Logs"
-                    "Tracing" "Jaeger/X-Ray"
-                }
-            }
+            # monitoringNode = infrastructureNode "Observability Platform" {
+            #     tags "Monitoring"
+            #     description "Plataforma de observabilidad con métricas, logs y trazas distribuidas."
+            #     properties {
+            #         "Metrics" "Prometheus/CloudWatch"
+            #         "Logging" "ELK Stack/CloudWatch Logs"
+            #         "Tracing" "Jaeger/X-Ray"
+            #     }
+            # }
         }
     }
 
@@ -152,29 +134,29 @@ notificationSystem = deploymentEnvironment "Notification System" {
     // Relaciones de Deployment
     // ====================
 
-    // API -> Processor communication
-    notificationSystem.aws.region.ecsNotificationApi.docker -> notificationSystem.aws.region.ecsNotificationProcessor.docker "Publica mensajes via outbox pattern"
+    # // API -> Processor communication
+    # notificationSystem.aws.region.ecsNotificationApi.docker -> notificationSystem.aws.region.ecsNotificationProcessor.docker "Publica mensajes via outbox pattern"
 
-    // Processor -> Database
-    notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.rdsNode "Consume outbox, actualiza estado"
+    # // Processor -> Database
+    # notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.rdsNode "Consume outbox, actualiza estado"
 
-    // API -> Database
-    notificationSystem.aws.region.ecsNotificationApi.docker -> notificationSystem.aws.region.rdsNode "Persiste requests en outbox"
+    # // API -> Database
+    # notificationSystem.aws.region.ecsNotificationApi.docker -> notificationSystem.aws.region.rdsNode "Persiste requests en outbox"
 
-    // Storage relationships
-    notificationSystem.aws.region.ecsNotificationApi.docker -> notificationSystem.aws.region.s3Node "Almacena adjuntos"
-    notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.s3Node "Lee adjuntos para envío"
+    # // Storage relationships
+    # notificationSystem.aws.region.ecsNotificationApi.docker -> notificationSystem.aws.region.s3Node "Almacena adjuntos"
+    # notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.s3Node "Lee adjuntos para envío"
 
-    // External provider relationships
-    notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.extProviders.emailProviderNode "Envía emails"
-    notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.extProviders.smsProviderNode "Envía SMS"
-    notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.extProviders.whatsappProviderNode "Envía WhatsApp"
-    notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.extProviders.pushProviderNode "Envía Push notifications"
+    # // External provider relationships
+    # notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.extProviders.emailProviderNode "Envía emails"
+    # notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.extProviders.smsProviderNode "Envía SMS"
+    # notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.extProviders.whatsappProviderNode "Envía WhatsApp"
+    # notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.extProviders.pushProviderNode "Envía Push notifications"
 
-    // Infrastructure relationships
-    notificationSystem.aws.region.reliablePublisherNode -> notificationSystem.aws.region.rdsNode "Implementa outbox pattern"
-    notificationSystem.aws.region.configurationNode -> notificationSystem.aws.region.ecsNotificationApi.docker "Provee configuración"
-    notificationSystem.aws.region.configurationNode -> notificationSystem.aws.region.ecsNotificationProcessor.docker "Provee configuración"
-    notificationSystem.aws.region.monitoringNode -> notificationSystem.aws.region.ecsNotificationApi.docker "Recolecta observabilidad"
-    notificationSystem.aws.region.monitoringNode -> notificationSystem.aws.region.ecsNotificationProcessor.docker "Recolecta observabilidad"
+    # // Infrastructure relationships
+    # notificationSystem.aws.region.reliablePublisherNode -> notificationSystem.aws.region.rdsNode "Implementa outbox pattern"
+    # notificationSystem.aws.region.configurationNode -> notificationSystem.aws.region.ecsNotificationApi.docker "Provee configuración"
+    # notificationSystem.aws.region.configurationNode -> notificationSystem.aws.region.ecsNotificationProcessor.docker "Provee configuración"
+    # notificationSystem.aws.region.monitoringNode -> notificationSystem.aws.region.ecsNotificationApi.docker "Recolecta observabilidad"
+    # notificationSystem.aws.region.monitoringNode -> notificationSystem.aws.region.ecsNotificationProcessor.docker "Recolecta observabilidad"
 }

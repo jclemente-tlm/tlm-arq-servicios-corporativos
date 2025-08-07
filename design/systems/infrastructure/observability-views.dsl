@@ -11,15 +11,14 @@ systemContext observabilitySystem "observability_system_overview" {
     description "Stack empresarial de observabilidad para monitoreo transversal."
 }
 
-// Vista de contenedores del sistema de observabilidad
-container observabilitySystem "observability_system_containers" {
-    include observabilitySystem.dashboardEngine
-    include observabilitySystem.metricsCollector
-    include observabilitySystem.logAggregator
-    include observabilitySystem.tracingPlatform
-    title "[Contenedores] Stack de Observabilidad"
-    description "Contenedores principales del stack de observabilidad empresarial."
-}
+# // Vista de contenedores del sistema de observabilidad
+# container observabilitySystem "observability_system_containers" {
+#     include *
+
+#     exclude ""
+#     title "[Contenedores] Stack de Observabilidad"
+#     description "Contenedores principales del stack de observabilidad empresarial."
+# }
 
 // ========================================
 // NOTA: VISTAS DE COMPONENTES ELIMINADAS
