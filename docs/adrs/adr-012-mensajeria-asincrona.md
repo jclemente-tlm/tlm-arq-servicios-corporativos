@@ -44,9 +44,9 @@ Las alternativas evaluadas fueron:
 
 | Solución | Agnosticidad | Escalabilidad | Operación | Rendimiento | Recomendación |
 |----------|--------------|---------------|-----------|-------------|---------------|
-| **Apache Kafka** | Excelente | Excelente | Compleja | Excelente | ✅ **Seleccionada** |
-| **RabbitMQ** | Excelente | Limitada | Simple | Moderado | 🟡 Alternativa |
-| **AWS SNS + SQS** | Mala | Excelente | Gestionada | Muy alto | 🟡 Considerada |
+| **AWS SNS + SQS** | Mala | Excelente | Gestionada | Muy alto | ✅ **Seleccionada** |
+| **Apache Kafka** | Excelente | Excelente | Compleja | Excelente | 🟡 Alternativa |
+| **RabbitMQ** | Excelente | Limitada | Simple | Moderado | 🟡 Considerada |
 | **Azure Service Bus** | Mala | Muy buena | Gestionada | Muy alto | ❌ Descartada |
 | **Google Pub/Sub** | Mala | Muy buena | Gestionada | Muy alto | ❌ Descartada |
 
@@ -74,28 +74,33 @@ Las alternativas evaluadas fueron:
 
 ## ⚖️ DECISIÓN
 
-**Seleccionamos Apache Kafka** como solución de mensajería principal por:
+**Seleccionamos AWS SNS + SQS** como solución de mensajería principal por:
 
 ### Ventajas Clave
-- **Máxima agnosticidad**: Portable entre cualquier cloud/on-premises
-- **Escalabilidad superior**: Maneja millones de mensajes con latencia baja
-- **Event sourcing nativo**: Soporte completo para patrones dirigidos por eventos
-- **Ecosistema maduro**: Amplia comunidad, herramientas, conectores
-- **Control total**: Sin dependencias de proveedor específico
+
+- **Operación gestionada**: Sin necesidad de administrar infraestructura propia
+- **Escalabilidad automática**: Maneja millones de mensajes sin intervención manual
+- **Integración nativa con AWS**: Facilita despliegues y automatización
+- **Costos bajos para cargas típicas**: Pago por uso, sin costos fijos de operación
+- **Alta disponibilidad y durabilidad**: Garantías de entrega y persistencia
 
 ### Mitigación de Desventajas
-- **Complejidad operacional**: Mitigada con Kubernetes operators y herramientas de gestión
-- **Costos operacionales**: Justificados por la flexibilidad y control a largo plazo
-- **Curva de aprendizaje**: Inversión en capacitación del equipo
+
+- **Lock-in AWS**: Se mitiga con desacoplamiento vía interfaces y adaptadores
+- **Menor portabilidad**: Se documenta la arquitectura para facilitar migración futura si es necesario
+- **Limitaciones en patrones avanzados**: Para casos de event sourcing puro, se evaluará Kafka o RabbitMQ como alternativa
 
 ### Estrategia Híbrida
-Para casos específicos donde la simplicidad operacional sea crítica:
-- **Desarrollo/Testing**: RabbitMQ para entornos simples
-- **Integraciones específicas**: SNS+SQS solo cuando sea estrictamente necesario
+
+Para escenarios donde se requiera portabilidad o patrones avanzados:
+
+- **Event sourcing avanzado**: Kafka como alternativa para cargas críticas
+- **Desarrollo/Testing**: RabbitMQ para entornos simples y portables
 
 ## 🔄 CONSECUENCIAS
 
 ### Positivas
+
 - ✅ **Portabilidad completa** entre clouds y on-premises
 - ✅ **Escalabilidad ilimitada** para crecimiento futuro
 - ✅ **Event sourcing robusto** para auditoría y trazabilidad
@@ -103,11 +108,13 @@ Para casos específicos donde la simplicidad operacional sea crítica:
 - ✅ **Control total** sobre configuración y optimización
 
 ### Negativas
+
 - ❌ **Mayor complejidad operacional** requiere expertise especializado
 - ❌ **Costos iniciales más altos** en infraestructura y operación
 - ❌ **Curva de aprendizaje** para el equipo de desarrollo
 
 ### Neutras
+
 - 🔄 **Inversión en capacitación** necesaria pero reutilizable
 - 🔄 **Herramientas de monitoreo** específicas requeridas
 
@@ -120,7 +127,6 @@ Para casos específicos donde la simplicidad operacional sea crítica:
 
 ---
 
-**Decisión tomada por:** Equipo de Arquitectura  
-**Fecha:** Agosto 2025  
+**Decisión tomada por:** Equipo de Arquitectura
+**Fecha:** Agosto 2025
 **Próxima revisión:** Agosto 2026
-

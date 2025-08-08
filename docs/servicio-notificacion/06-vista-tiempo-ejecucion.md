@@ -18,9 +18,9 @@
 
 Esta sección describe los principales escenarios de ejecución del sistema, mostrando cómo los componentes interactúan durante el tiempo de ejecución para cumplir con los casos de uso más relevantes arquitectónicamente.
 
-## 6.1 Escenario: Envío Transaccional Individual
+## 6.3 Escenario: Envío Transaccional Individual
 
-### Descripción
+### Descripción del Envío Transaccional
 
 Flujo crítico para notificaciones transaccionales de alta prioridad (confirmaciones, alertas críticas) que requieren entrega garantizada y baja latencia.
 
@@ -82,9 +82,9 @@ sequenceDiagram
 | **End-to-End Delivery** | < 30s (transactional) | Business metrics |
 | **Capacidad de procesamiento** | 10K req/min per instance | Load testing |
 
-## 6.2 Escenario: Procesamiento de Eventos Track & Trace
+## 6.4 Escenario: Procesamiento de Eventos Track & Trace
 
-### Descripción
+### Descripción del Procesamiento de Eventos
 
 Flujo automático triggered por eventos del sistema Track & Trace para notificaciones operacionales como actualizaciones de vuelo, cambios de puerta, etc.
 
@@ -124,9 +124,9 @@ sequenceDiagram
 - **Multi-canal automático:** Routing inteligente según preferencias
 - **Procesamiento paralelo:** Canales procesan simultáneamente
 
-## 6.3 Escenario: Bulk Processing para Campañas
+## 6.5 Escenario: Bulk Processing para Campañas
 
-### Descripción
+### Descripción del Bulk Processing
 
 Procesamiento optimizado para envío masivo de notificaciones promocionales con limitación de velocidad y batch processing.
 
@@ -158,9 +158,9 @@ flowchart TD
 - **Batch APIs:** Uso de APIs batch cuando están disponibles
 - **Circuit Breaker:** Protección contra failures de providers
 
-## 6.4 Escenario: Manejo de Errores y Retry
+## 6.6 Escenario: Manejo de Errores y Retry
 
-### Descripción
+### Descripción del Manejo de Errores
 
 Manejo de errores y sistema de reintentos con exponential backoff para garantizar entrega.
 
@@ -195,9 +195,9 @@ stateDiagram-v2
 | **Provider Error 5xx** | 3 | Exponential | After 3 failures |
 | **Invalid Data** | 0 | None | Immediate |
 
-## 6.5 Escenario: Monitoring y Observabilidad
+## 6.7 Escenario: Monitoring y Observabilidad
 
-### Descripción
+### Descripción de Observabilidad
 
 Flujo de telemetría y métricas para observabilidad del sistema en tiempo real.
 
@@ -229,9 +229,9 @@ graph LR
 
 Cada escenario incluye puntos de instrumentación específicos para resolución de problemas y optimización continua.
 
-## 6.2 Escenario: Procesamiento Bulk de Notificaciones
+## 6.8 Escenario: Bulk de Notificaciones
 
-### Descripción
+### Descripción del Bulk de Notificaciones
 
 Envío masivo de notificaciones con optimizaciones de batch processing.
 
@@ -266,9 +266,9 @@ sequenceDiagram
 - **Provider rotation:** Load balancing
 - **Retry policy:** Exponential backoff
 
-## 6.3 Escenario: Failover y Recovery
+## 6.9 Escenario: Failover y Recovery
 
-### Descripción
+### Descripción de Failover y Recovery
 
 Manejo de fallos de proveedor con failover automático.
 
@@ -301,9 +301,9 @@ sequenceDiagram
 - **Health check:** Cada 60 segundos
 - **Auto-recovery:** Automático cuando provider responde
 
-## 6.4 Escenario: Multi-canal con Fallback
+## 6.10 Escenario: Multi-canal con Fallback
 
-### Descripción
+### Descripción Multi-canal con Fallback
 
 Envío por canal preferido con fallback automático a canales alternativos.
 
@@ -348,9 +348,9 @@ Channel Priorities:
     2. Push Notification
 ```
 
-## 6.5 Escenario: Template Personalization
+## 6.11 Escenario: Template Personalization
 
-### Descripción
+### Descripción de Personalización de Templates
 
 Procesamiento de templates con personalización dinámica y localización.
 
@@ -381,9 +381,9 @@ sequenceDiagram
 - **Localization:** Multiple languages and regions
 - **A/B Testing:** Template variant selection
 
-## 6.6 Escenario: Compliance y Opt-out
+## 6.12 Escenario: Compliance y Opt-out
 
-### Descripción
+### Descripción de Compliance y Opt-out
 
 Manejo de preferencias de usuario y compliance con regulaciones.
 
@@ -413,9 +413,9 @@ sequenceDiagram
 - **TCPA:** SMS consent verification
 - **Regional Laws:** Country-specific regulations
 
-## 6.7 Escenario: Analytics y Tracking
+## 6.13 Escenario: Analytics y Tracking
 
-### Descripción
+### Descripción de Analytics y Tracking
 
 Captura de métricas de entrega y engagement para analytics.
 
@@ -450,20 +450,7 @@ sequenceDiagram
 - **Conversion Rates:** Business goal completions
 - **Bounce Rates:** Failed deliveries by reason
 
-## Referencias
-
-- [Message Queue Patterns](https://www.enterpriseintegrationpatterns.com/patterns/messaging/)
-- [Patrón Circuit Breaker](https://martinfowler.com/bliki/CircuitBreaker.html)
-- [Email Deliverability Mejores Prácticas](https://sendgrid.com/blog/email-deliverability-best-practices/)
-- [Arc42 Runtime View](https://docs.arc42.org/section-6/)
-    S->>S3: Adjunta archivos (si aplica)
-    S->>K: Publica evento de envío
-    S->>DB: Actualiza estado
-    S->>U: Confirma entrega
-
-```
-
-## 6.2 Consideraciones
+## 6.14 Consideraciones Generales
 
 - **Reintentos automáticos** ante fallos de canal
 - **Trazabilidad** de cada mensaje

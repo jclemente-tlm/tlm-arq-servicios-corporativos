@@ -499,52 +499,52 @@ public class DatabaseMessageQueue : IMessageQueue
 }
 ```
 
-### Queue Configuration
+### Configuración de Colas (Queue Configuration)
 
 ```yaml
-# Queue Definitions for Notification Service
+# Definición de colas para el Servicio de Notificaciones
 NotificationQueues:
   email-notifications:
     priority_levels: [1, 5, 10]  # low, normal, high
     max_retries: 3
     retry_backoff: exponential
     batch_size: 50
-    processing_timeout: 300s  # 5 minutes
+    processing_timeout: 300s  # 5 minutos
 
   sms-notifications:
     priority_levels: [1, 5, 10]
     max_retries: 5
     retry_backoff: exponential
     batch_size: 100
-    processing_timeout: 120s  # 2 minutes
+    processing_timeout: 120s  # 2 minutos
 
   push-notifications:
     priority_levels: [1, 5, 10]
     max_retries: 3
     retry_backoff: linear
     batch_size: 200
-    processing_timeout: 60s   # 1 minute
+    processing_timeout: 60s   # 1 minuto
 
   whatsapp-notifications:
     priority_levels: [1, 5, 10]
     max_retries: 3
     retry_backoff: exponential
     batch_size: 25
-    processing_timeout: 180s  # 3 minutes
+    processing_timeout: 180s  # 3 minutos
 
-# Migration Path to Dedicated Queues
+# Estrategia de migración a colas dedicadas
 MigrationStrategy:
-  phase_1: "Database queues for initial implementation"
-  phase_2: "Evaluate cloud-agnostic queue providers"
-  phase_3: "Implement adapter pattern for easy migration"
-  phase_4: "Switch to dedicated queue service with zero downtime"
+  phase_1: "Colas en base de datos para implementación inicial"
+  phase_2: "Evaluar proveedores de colas cloud-agnostic"
+  phase_3: "Implementar patrón adaptador para migración sencilla"
+  phase_4: "Cambio a servicio de colas dedicado sin downtime"
 ```
 
-### Justificación
+### Justificación de la Configuración de Colas
 
 #### Beneficios de Portabilidad
 
-- **Cloud Agnostic:** Funciona en cualquier nube con PostgreSQL
+- **Cloud Agnostic:** Funciona en cualquier nube con `PostgreSQL`
 - **Sin Vendor Lock-in:** SQL estándar, migración fácil
 - **Listo para Contenedores:** Base de datos portable en contenedores
 - **Costo Predecible:** Sin precio por mensaje
@@ -563,7 +563,7 @@ MigrationStrategy:
 - **Mitigación de riesgos:** Comenzar simple, evolucionar complejidad
 - **Aprendizaje operacional:** El equipo aprende patrones de mensajes primero
 
-### Consecuencias
+### Consecuencias de la Configuración de Colas
 
 #### Positivas
 

@@ -3,58 +3,16 @@
 ## 8.1 Seguridad
 
 | Aspecto | Implementación | Tecnología |
-|---------|-----------------|-------------|
-| **Autenticación** | JWT validation | OAuth2/OIDC |
-| **Autorización** | Claims-based | .NET 8 |
-| **Rate limiting** | Por IP/Usuario | Redis |
-| **CORS** | Configuración dinámica | ASP.NET Core |
-
-## 8.2 Observabilidad
-
-| Tipo | Herramienta | Propósito |
-|------|-------------|----------|
-| **Logs** | Serilog | Registro requests |
-| **Métricas** | Prometheus | Monitoreo performance |
-| **Tracing** | OpenTelemetry | Trazabilidad requests |
-| **Health** | Health Checks | Estado gateway |
-
-## 8.3 Resiliencia
-
-| Patrón | Implementación | Propósito |
-|---------|-----------------|----------|
-| **Circuit Breaker** | Polly | Protección fallos |
-| **Retry** | Políticas exponenciales | Recuperación automática |
-| **Timeout** | Por endpoint | Prevención bloqueos |
-
-## 8.1 Seguridad
-
-| Aspecto | Implementación | Tecnología |
-|---------|-----------------|-------------|
-| **Autenticación** | JWT validation | OAuth2/OIDC |
-| **Autorización** | RBAC | Claims-based |
-| **Cifrado** | TLS 1.3 | HTTPS |
-
-## 8.2 Observabilidad
-
-| Tipo | Herramienta | Propósito |
-|------|-------------|----------|
-| **Logs** | Serilog | Registro eventos |
-| **Métricas** | Prometheus | Monitoreo |
-| **Tracing** | OpenTelemetry | Trazabilidad |
-
-## 8.3 Configuración
-
-| Elemento | Fuente | Formato |
-|----------|--------|--------|
-| **Rutas** | appsettings.json | JSON |
-| **Políticas** | Redis | Key-Value |
-| **Secretos** | Environment | Variables |
-
-## 8.1 Seguridad
+|---------|----------------|-------------|
+| **Autenticación** | `JWT validation` | `OAuth2/OIDC` |
+| **Autorización** | `Claims-based`, `RBAC` | `.NET 8` |
+| **Rate limiting** | Por IP/Usuario | `Redis` |
+| **CORS** | Configuración dinámica | `ASP.NET Core` |
+| **Cifrado** | `TLS 1.3` | `HTTPS` |
 
 ### 8.1.1 Autenticación y autorización
 
-El API Gateway implementa un modelo de seguridad basado en **OAuth2/OIDC** con **JWT tokens** para garantizar acceso seguro a todos los servicios corporativos.
+El API Gateway implementa un modelo de seguridad basado en `OAuth2/OIDC` con `JWT tokens` para garantizar acceso seguro a todos los servicios corporativos.
 
 ```csharp
 // Configuración de autenticación JWT
@@ -196,6 +154,17 @@ public class RateLimitingService : IRateLimitingService
 ```
 
 ## 8.2 Observabilidad y monitoreo
+
+| Tipo | Herramienta | Propósito |
+|------|-------------|----------|
+| **Logs** | `Serilog` | Registro requests/eventos |
+| **Métricas** | `Prometheus` | Monitoreo performance |
+| **Tracing** | `OpenTelemetry`, `Jaeger` | Trazabilidad requests |
+| **Health** | Health Checks | Estado gateway |
+
+- Stack de observabilidad: `Grafana` (dashboards), `Prometheus` (métricas), `Loki` (logs), `Jaeger` (tracing distribuido).
+- Dashboards y alertas preconfiguradas para latencia, errores 5xx, disponibilidad y saturación de recursos.
+- Exporters y anotaciones automáticas en los contenedores para scraping de métricas y logs estructurados.
 
 ### 8.2.1 Logging estructurado
 
@@ -387,6 +356,12 @@ public class TracingEnrichmentMiddleware
 ```
 
 ## 8.3 Resiliencia y manejo de errores
+
+| Patrón | Implementación | Propósito |
+|---------|----------------|----------|
+| **Circuit Breaker** | `Polly` | Protección fallos |
+| **Retry** | Políticas exponenciales | Recuperación automática |
+| **Timeout** | Por endpoint | Prevención bloqueos |
 
 ### 8.3.1 Patrón circuit breaker
 
@@ -691,3 +666,7 @@ public class TenantConfigurationService : ITenantConfigurationService
     }
 }
 ```
+
+---
+
+> Todos los conceptos transversales están alineados a los ADRs, modelos C4/Structurizr DSL y cumplen con los requisitos de seguridad, observabilidad, resiliencia y multi-tenancy definidos para el API Gateway.

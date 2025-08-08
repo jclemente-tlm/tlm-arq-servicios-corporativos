@@ -1,114 +1,67 @@
-# 10. Requisitos de calidad
+# 10. Requisitos de Calidad
 
-## 10.1 Rendimiento
-
-| Métrica | Objetivo | Medición |
-|---------|----------|----------|
-| **Latencia envío** | < 500ms p95 | Prometheus |
-| **Throughput** | 1k notifications/min | Load testing |
-| **Disponibilidad** | 99.9% | Health checks |
-| **Cola processing** | < 30s | Monitoreo |
-
-## 10.2 Seguridad
-
-| Aspecto | Requisito | Implementación |
-|---------|-----------|----------------|
-| **Autenticación** | JWT obligatorio | Middleware |
-| **Datos sensibles** | Cifrado AES-256 | Aplicación |
-| **Rate limiting** | Por tenant | Redis |
-| **Audit** | Todos los envíos | Logs |
-
-## 10.3 Escalabilidad
-
-| Aspecto | Objetivo | Estrategia |
-|---------|----------|------------|
-| **Horizontal** | Auto-scaling | ECS |
-| **Cola** | Redis clustering | Distribuido |
-| **Attachments** | EFS compartido | Sistema archivos |
-| **Templates** | Cache en memoria | Optimización |
-
-Este capítulo define los atributos de calidad específicos del **Sistema de Notificaciones**, estableciendo métricas cuantificables, métodos de evaluación y criterios de aceptación para garantizar que el sistema cumple con las expectativas operacionales y de negocio.
-
-*[INSERTAR AQUÍ: Diagrama C4 - Notification Quality Attributes]*
+Este capítulo define los atributos de calidad del **Sistema de Notificaciones**, estableciendo métricas cuantificables, criterios de aceptación y escenarios de validación alineados a estándares internacionales (ISO/IEC 25010, NIST, SRE) y regulaciones (GDPR, CAN-SPAM, TCPA).
 
 ## 10.1 Rendimiento y Eficiencia
 
+| Métrica                  | Objetivo           | Medición         |
+|--------------------------|-------------------|------------------|
+| **Latencia envío**       | < 500ms p95       | Prometheus       |
+| **Throughput**           | 1k notificaciones/min | Load testing  |
+| **Disponibilidad**       | 99.9%             | Health checks    |
+| **Cola processing**      | < 30s             | Monitoreo        |
+
 ### 10.1.1 Objetivos de Latencia y Rendimiento
 
-| Operación | Objetivo P50 | Objetivo P95 | Objetivo P99 | SLA Crítico |
-|-----------|------------|------------|------------|-------------|
-| **Solicitud API (sync)** | 100ms | 200ms | 500ms | < 1s |
-| **Renderizado de plantilla** | 20ms | 50ms | 100ms | < 200ms |
-| **Llamada API proveedor** | 200ms | 800ms | 2s | < 5s |
-| **Entrega de Email** | 30s | 2min | 5min | < 10min |
-| **Entrega de SMS** | 5s | 30s | 1min | < 2min |
-| **Notificación Push** | 1s | 5s | 10s | < 30s |
-| **Entrega WhatsApp** | 10s | 1min | 3min | < 5min |
+| Operación                  | P50   | P95   | P99   | SLA Crítico |
+|----------------------------|-------|-------|-------|-------------|
+| **Solicitud API (sync)**   | 100ms | 200ms | 500ms | < 1s        |
+| **Renderizado plantilla**  | 20ms  | 50ms  | 100ms | < 200ms     |
+| **Llamada API proveedor**  | 200ms | 800ms | 2s    | < 5s        |
+| **Entrega Email**          | 30s   | 2min  | 5min  | < 10min     |
+| **Entrega SMS**            | 5s    | 30s   | 1min  | < 2min      |
+| **Notificación Push**      | 1s    | 5s    | 10s   | < 30s       |
+| **Entrega WhatsApp**       | 10s   | 1min  | 3min  | < 5min      |
 
-### 10.1.2 Capacidad y Rendimiento
+### 10.1.2 Capacidad y Pruebas de Estrés
 
 ```yaml
 Requisitos de Capacidad:
   Carga Normal:
     - Solicitudes API: 1,000 req/min
-    - Procesamiento de Email: 5,000 emails/hora
-    - Procesamiento de SMS: 2,000 SMS/hora
-    - Notificaciones Push: 10,000 notificaciones/hora
-    - Mensajes WhatsApp: 1,000 mensajes/hora
-
-  Carga Pico (Ráfagas de Campañas):
+    - Emails: 5,000/hora
+    - SMS: 2,000/hora
+    - Push: 10,000/hora
+    - WhatsApp: 1,000/hora
+  Carga Pico:
     - Solicitudes API: 5,000 req/min
-    - Procesamiento de Email: 50,000 emails/hora
-    - Procesamiento de SMS: 20,000 SMS/hora
-    - Notificaciones Push: 100,000 notificaciones/hora
-    - Mensajes WhatsApp: 10,000 mensajes/hora
-
-  Objetivos de Pruebas de Estrés:
+    - Emails: 50,000/hora
+    - SMS: 20,000/hora
+    - Push: 100,000/hora
+    - WhatsApp: 10,000/hora
+  Objetivos Estrés:
     - Capacidad Máxima: 10x carga normal
-    - Duración de Ráfaga: 30 minutos sostenidos
-    - Degradación Gradual: Por encima del 80% de capacidad
-    - Procesamiento de Cola: Sin pérdida de mensajes durante picos
-
-Puntos de Referencia de Rendimiento:
-  Utilización de Recursos:
-    - Uso de CPU: < 60% normal, < 80% pico
-    - Uso de Memoria: < 70% normal, < 85% pico
-    - E/S de Red: < 50% ancho de banda disponible
-    - E/S de Disco: < 1000 IOPS por instancia
-
-  Rendimiento de Base de Datos:
-    - Query Response Time: < 50ms average
-    - Connection Pool Usage: < 70%
-    - Lock Wait Time: < 10ms
-    - Deadlock Rate: < 0.1%
+    - Ráfaga: 30 min sostenidos
+    - Sin pérdida de mensajes durante picos
 ```
 
-### 10.1.3 Auto-scaling Configuration
+### 10.1.3 Auto-scaling y Utilización de Recursos
 
 ```csharp
 public class NotificationServiceScalingPolicy
 {
     public ScalingMetrics GetScalingMetrics() => new()
     {
-        // CPU-based scaling
         CpuThreshold = 70,
-        CpuScaleOutCooldown = 300,   // 5 minutes
-        CpuScaleInCooldown = 600,    // 10 minutes
-
-        // Queue-depth based scaling
-        QueueDepthThreshold = 1000,  // Messages in queue
-        QueueDepthScaleOutCooldown = 180,  // 3 minutes
-        QueueDepthScaleInCooldown = 900,   // 15 minutes
-
-        // Response time based scaling
-        ResponseTimeThreshold = 500, // P95 response time in ms
+        CpuScaleOutCooldown = 300,
+        CpuScaleInCooldown = 600,
+        QueueDepthThreshold = 1000,
+        QueueDepthScaleOutCooldown = 180,
+        QueueDepthScaleInCooldown = 900,
+        ResponseTimeThreshold = 500,
         ResponseTimeScaleOutCooldown = 300,
-
-        // Instance limits
         MinInstances = 2,
         MaxInstances = 50,
-
-        // Custom metrics
         EmailQueueDepth = 500,
         SmsQueueDepth = 200,
         PushQueueDepth = 2000
@@ -118,511 +71,185 @@ public class NotificationServiceScalingPolicy
 
 ## 10.2 Disponibilidad y Confiabilidad
 
-### 10.2.1 Acuerdos de Nivel de Servicio (SLA)
+### 10.2.1 SLA y Arquitectura Alta Disponibilidad
 
 ```yaml
-Disponibilidad SLA:
-  Overall System: 99.9%
-    - Downtime Allowance: 43.2 minutes/month
-    - Measurement Window: 5-minute intervals
-    - Exclusions: Planned maintenance (announced 48h)
-
-  Per Channel SLA:
-    Servicio de Email: 99.95%
-    Servicio de SMS: 99.9%
-    Servicio Push: 99.8%
-    Servicio de WhatsApp: 99.5%
-
-  Delivery SLA:
-    Email Delivery: 95% within 10 minutes
-    SMS Delivery: 98% within 2 minutes
-    Push Delivery: 99% within 30 seconds
-    WhatsApp Delivery: 90% within 5 minutes
-
-Error Rate Targets:
-  API Errors (4xx): < 2% (excluding auth failures)
-  System Errors (5xx): < 0.5%
-  Fallos de Proveedor: < 1%
-  Template Rendering Errors: < 0.1%
+SLA:
+  Sistema: 99.9% (43.2 min/mes)
+  Email: 99.95%
+  SMS: 99.9%
+  Push: 99.8%
+  WhatsApp: 99.5%
+Delivery SLA:
+  Email: 95% < 10min
+  SMS: 98% < 2min
+  Push: 99% < 30s
+  WhatsApp: 90% < 5min
+Errores:
+  API 4xx: < 2%
+  API 5xx: < 0.5%
+  Proveedor: < 1%
+  Plantillas: < 0.1%
 ```
-
-### 10.2.2 High Disponibilidad Architecture
 
 ```yaml
 Multi-AZ Deployment:
   Región Primaria: us-east-1
-    - AZ-1a: 2 API instances, 2 processors
-    - AZ-1b: 2 API instances, 2 processors
-    - AZ-1c: 1 API instance, 1 processor (standby)
-
+    - AZ-1a: 2 API, 2 processors
+    - AZ-1b: 2 API, 2 processors
+    - AZ-1c: 1 API, 1 processor (standby)
   Región Secundaria: us-west-2
-    - AZ-2a: 1 API instance, 1 processor (standby)
-    - Database: Read replica for disaster recovery
-
+    - AZ-2a: 1 API, 1 processor (standby)
+    - DB: Read replica
 Balanceador de Carga:
-  Application Load Balancer:
-    - Health Check: /health/ready (30s interval)
-    - Unhealthy Threshold: 3 consecutive failures
-    - Healthy Threshold: 2 consecutive successes
-    - Target Response: HTTP 200 within 5s
-
-  Database Balanceador de Carga:
-    - Operaciones de Escritura: Solo instancia primaria
-    - Read Operations: Read replicas (round-robin)
-    - Connection Pooling: PgBouncer (100 connections/pool)
+  ALB: Health check /health/ready
+  DB: PgBouncer, replicas lectura
 ```
 
-### 10.2.3 Disaster Recovery Strategy
+### 10.2.2 Estrategia de Recuperación ante Desastres
 
 ```yaml
-Recovery Procedures:
-  RTO (Recovery Time Objective): 30 minutes
-  RPO (Recovery Point Objective): 5 minutes
-
-  Backup Strategy:
-    Database Backups:
-      - Continuous WAL archiving
-      - Automated snapshots every 6 hours
-      - Cross-region backup replication
-      - Point-in-time recovery capability
-
-    Configuration Backups:
-      - GitOps repository (infrastructure as code)
-      - Environment configuration in S3
-      - Secrets backup in AWS Secrets Manager
-      - Template repository versioning
-
-  Failover Scenarios:
-    AZ Failure:
-      - Detection: ALB health checks + CloudWatch alarms
-      - Response: Automatic traffic redistribution
-      - Impacto: < 5 minutos de degradación del servicio
-
-    Regional Failure:
-      - Detection: Multi-region monitoreo de salud
-      - Response: Manual DNS failover to secondary region
-      - Impact: 15-30 minutes service interruption
-
-    Provider Outage:
-      - Detection: Provider API monitoreo de salud
-      - Response: Automatic failover to secondary provider
-      - Impact: 1-2 minutes delay in processing
+Recovery:
+  RTO: 30 min
+  RPO: 5 min
+  Backups: WAL, snapshots 6h, cross-region
+  Failover: ALB + CloudWatch, DNS manual, proveedor secundario
 ```
 
 ## 10.3 Seguridad y Compliance
 
-### 10.3.1 Security Requirements
+### 10.3.1 Requisitos de Seguridad
 
 ```yaml
-Authentication & Authorization:
-  OAuth2 Implementation:
-    - Grant Type: client_credentials
-    - Token Lifetime: 1 hour (configurable)
-    - Refresh Strategy: Automatic refresh
-    - Scope-based Access: Granular permissions
-
-  Role-Based Access Control:
-    notification:admin:
-      - All CRUD operations
-      - Cross-tenant access
-      - Configuration management
-
-    notification:operator:
-      - Send notifications
-      - View status and metrics
-      - Template management (tenant-scoped)
-
-    notification:viewer:
-      - Read-only access
-      - Metrics and reporting
-      - Audit log viewing
-
-    system:processor:
-      - Internal service communication
-      - Queue processing operations
-      - Provider API access
-
-Data Protection:
-  Encryption Standards:
-    Data in Transit:
-      - TLS 1.3 minimum
-      - Perfect Forward Secrecy
-      - HSTS enforcement
-      - Certificate pinning for critical APIs
-
-    Data at Rest:
-      - AES-256 encryption
-      - Database-level encryption (TDE)
-      - S3 server-side encryption
-      - Encrypted backups
-
-    PII Protection:
-      - Email addresses: Hashed for analytics
-      - Phone numbers: Encrypted storage
-      - Message content: Retained for 30 days max
-      - User preferences: Secure storage with access controls
+Auth:
+  OAuth2 client_credentials, JWT, scopes
+RBAC:
+  admin: CRUD, cross-tenant
+  operator: envío, métricas, plantillas
+  viewer: solo lectura
+  processor: interno
+Protección Datos:
+  TLS 1.3, AES-256, TDE, S3 encryption
+  PII: hash, cifrado, retención 30 días
 ```
 
-### 10.3.2 Compliance Requirements
+### 10.3.2 Requisitos de Compliance
 
 ```yaml
-GDPR Compliance:
-  Data Minimization:
-    - Collect only necessary data
-    - Automatic data purging after retention period
-    - User consent management
-    - Right to deletion implementation
-
-  Privacy by Design:
-    - Default privacy settings
-    - Pseudonymization of analytics data
-    - Data processing logs
-    - Privacy impact assessments
-
-CAN-SPAM Act Compliance:
-  Email Requirements:
-    - Unsubscribe mechanism in all emails
-    - Accurate sender identification
-    - Clear subject lines
-    - Physical address in footer
-    - Honor unsubscribe requests within 10 days
-
-TCPA Compliance (SMS):
-  SMS Requirements:
-    - Explicit opt-in consent
-    - Clear opt-out instructions (STOP keyword)
-    - Time-of-day restrictions (8 AM - 9 PM local time)
-    - Frequency limitations per subscriber
-
-Local Regulations:
-  Peru: Ley de Protección de Datos Personales
-  Ecuador: Ley Orgánica de Protección de Datos
-  Colombia: Ley de Habeas Data
-  Mexico: Ley Federal de Protección de Datos
+GDPR:
+  Minimización, purga automática, consentimiento, derecho a borrado
+CAN-SPAM:
+  Unsubscribe, remitente claro, asunto, dirección física
+TCPA:
+  Opt-in, opt-out, horarios, frecuencia
+Locales:
+  Perú, Ecuador, Colombia, México: leyes locales de datos
 ```
 
-## 10.4 Usabilidad y Experience
+## 10.4 Usabilidad y Experiencia
 
-### 10.4.1 API Design Quality
+### 10.4.1 Calidad de API y UX Plantillas
 
 ```yaml
-RESTful API Standards:
-  Consistency:
-    - Standard HTTP methods and status codes
-    - Consistent naming conventions (snake_case)
-    - Uniform error response format
-    - Pagination standards (offset/limit)
-
-  Documentation:
-    - OpenAPI 3.0 specification
-    - Interactive API documentation (Swagger UI)
-    - Code examples in multiple languages
-    - Postman collection disponibilidad
-
-  Developer Experience:
-    - API versioning strategy (v1, v2)
-    - Backward compatibility guarantees
-    - Rate limiting with clear headers
-    - Comprehensive error messages with resolución de problemas guides
-
-Response Time Targets:
-  - GET operations: < 100ms (P95)
-  - POST operations: < 200ms (P95)
-  - Bulk operations: < 2s (P95)
-  - Status checks: < 50ms (P95)
+API:
+  RESTful, OpenAPI 3.0, errores uniformes, paginación
+  Documentación interactiva, ejemplos, versionado
+  Rate limiting, mensajes claros
+UX Plantillas:
+  Editor WYSIWYG, preview, validación, versionado
+  Accesibilidad, drag-and-drop, biblioteca, A/B testing
+  Tutoriales, ayuda contextual, mejores prácticas
 ```
 
-### 10.4.2 Gestión de Plantillas UX
+## 10.5 Mantenibilidad y Observabilidad
+
+### 10.5.1 Logging, Métricas y Alertas
 
 ```yaml
-Template Editor:
-  Features:
-    - WYSIWYG editor with live preview
-    - Syntax highlighting for Liquid tags
-    - Variable autocomplete
-    - Template validation with error highlighting
-    - Version control and rollback capability
-
-  Performance:
-    - Editor load time: < 2 seconds
-    - Preview generation: < 1 second
-    - Save operation: < 500ms
-    - Template validation: < 200ms
-
-  Accessibility:
-    - WCAG 2.1 AA compliance
-    - Keyboard navigation support
-    - Screen reader compatibility
-    - High contrast mode available
-
-Business User Experience:
-  Self-Service Capability:
-    - Template creation without technical knowledge
-    - Drag-and-drop email builder
-    - Template library with pre-built templates
-    - A/B testing interface for templates
-
-  Training and Support:
-    - Video tutorials for common tasks
-    - In-app help and tooltips
-    - Template mejores prácticas guide
-    - Support ticket integration
+Logging: JSON, DEBUG-ERROR, retención 90d/2a
+Métricas: envíos, éxito, uso plantillas, costos, satisfacción
+Técnicas: latencia, errores, colas, recursos, DB
+SLO/SLI: disponibilidad, error rate, percentiles
+Alertas críticas: error >5%, caídas, colas detenidas, fallos proveedor
+Escalado: L1-L4 según criticidad
 ```
 
-## 10.5 Mantenibilidad y Operabilidad
-
-### 10.5.1 Observability Requirements
-
-```yaml
-Logging Standards:
-  Structure: JSON format with standardized fields
-  Levels: DEBUG, INFO, WARN, ERROR, FATAL
-  Sampling: 10% DEBUG logs in production
-  Retention: 90 days hot, 2 years archived
-
-  Required Log Events:
-    - Notification requests (all)
-    - Provider API calls (all)
-    - Template rendering (errors only in prod)
-    - Authentication/authorization events
-    - Performance anomalies (>P95 response time)
-    - Business events (delivery status changes)
-
-Metrics Collection:
-  Business Metrics:
-    - Notifications sent per channel
-    - Delivery success rates
-    - Template usage statistics
-    - Cost per notification
-    - Customer satisfaction scores
-
-  Technical Metrics:
-    - API response times and error rates
-    - Queue depths and processing rates
-    - Provider performance and disponibilidad
-    - Resource utilization (CPU, memory, disk)
-    - Database performance metrics
-
-  SLI/SLO Tracking:
-    - Disponibilidad percentage
-    - Error rate percentage
-    - Response time percentiles
-    - Capacidad de procesamiento rates
-```
-
-### 10.5.2 Monitoring and Alertas
-
-```yaml
-Critical Alerts (Immediate Response):
-  - API error rate > 5%
-  - System unavailable (health check failures)
-  - Queue processing stopped
-  - Provider API failures > 50%
-  - Database connection failures
-
-Warning Alerts (Response within 4 hours):
-  - API response time P95 > 500ms
-  - Queue depth > 1000 messages
-  - Error rate > 2%
-  - Unusual traffic patterns
-  - Template rendering failures > 1%
-
-Informational Alerts:
-  - New deployment completed
-  - Auto-scaling events
-  - Scheduled maintenance reminders
-  - Monthly performance reports
-
-Escalation Procedures:
-  L1 (On-call Engineer): Immediate response to critical alerts
-  L2 (Senior Engineer): Escalation after 15 minutes
-  L3 (Engineering Manager): Escalation after 1 hour
-  L4 (VP Engineering): Escalation after 4 hours
-```
-
-## 10.6 Testabilidad
-
-### 10.6.1 Testing Strategy
+## 10.6 Testabilidad y Gates de Calidad
 
 ```yaml
 Test Pyramid:
-  Unit Tests (80%):
-    - Coverage: > 90% line coverage
-    - Execution Time: < 30 seconds full suite
-    - Isolation: Mocked external dependencies
-    - Quality Gates: All tests pass + coverage check
-
-  Integration Tests (15%):
-    - Database integration tests
-    - Provider API contract tests
-    - Kafka message flow tests
-    - Template rendering integration
-    - Execution Time: < 5 minutes
-
-  End-to-End Tests (5%):
-    - Complete notification workflows
-    - Multi-channel delivery scenarios
-    - Error handling and recovery
-    - Performance regression tests
-    - Execution Time: < 30 minutes
-
-Testing Tools:
-  Unit Testing: xUnit + Moq + FluentAssertions
-  Integration Testing: TestContainers + WebApplicationFactory
-  Load Testing: NBomber + k6
-  Contract Testing: Pact for provider integrations
-  E2E Testing: Playwright for web interfaces
-```
-
-### 10.6.2 Quality Gates
-
-```yaml
-CI/CD Pipeline Quality Gates:
-  Code Quality:
-    - SonarQube Quality Gate: Pass
-    - Code Coverage: > 90%
-    - Deuda Técnica: < 2 days
-    - Duplicated Code: < 3%
-
-  Security:
-    - OWASP Dependency Check: No high vulnerabilities
-    - Static Code Analysis: No critical security issues
-    - Container Security Scan: No high/critical CVEs
-    - Secret Detection: No hardcoded secrets
-
-  Performance:
-    - Load Test: Handle 2x normal load
-    - Response Time Regression: < 10% degradation
-    - Memory Leak Detection: No memory leaks in 1h run
-    - Startup Time: < 30 seconds
+  Unit: >90% cobertura, <30s
+  Integración: DB, APIs, Kafka, <5min
+  E2E: flujos completos, <30min
+Herramientas: xUnit, Moq, TestContainers, NBomber, Pact, Playwright
+Quality Gates: SonarQube, cobertura, seguridad, performance, startup
 ```
 
 ## 10.7 Escalabilidad e Interoperabilidad
 
-### 10.7.1 Scaling Characteristics
+### 10.7.1 Escalado y Estándares de Integración
 
 ```yaml
-Horizontal Scaling:
-  API Services:
-    - Stateless design enables linear scaling
-    - Load balancer distribution
-    - Auto-scaling based on CPU + queue depth
-    - Maximum instances: 50 per region
-
-  Background Processors:
-    - Independent scaling per channel type
-    - Kafka consumer group scaling
-    - Work-stealing queue distribution
-    - CPU-intensive template rendering optimization
-
-  Database Scaling:
-    - Read replicas for query distribution
-    - Connection pooling optimization
-    - Query optimization and indexing
-    - Partitioning strategy for large datasets
-
-Vertical Scaling Limits:
-  - API Services: Up to 16 vCPU, 32GB RAM
-  - Processors: Up to 8 vCPU, 16GB RAM
-  - Database: Up to 64 vCPU, 256GB RAM
-  - Cache: Up to 32GB Redis cluster
+Escalado:
+  API: stateless, auto-scaling, 50/región
+  Procesadores: scaling por canal, Kafka, work-stealing
+  DB: replicas, pooling, particionado
+  Vertical: API 16vCPU/32GB, DB 64vCPU/256GB
+Integración:
+  REST: OpenAPI, JSON, errores estándar
+  Webhook: HMAC, retries, DLQ
+  GraphQL: queries complejas, subscripciones
+  Mensajería: Kafka (Avro, multi-tenant), SQS, RabbitMQ, Azure SB
 ```
 
-### 10.7.2 Integration Standards
-
-```yaml
-API Standards:
-  REST API:
-    - OpenAPI 3.0 specification
-    - JSON request/response format
-    - Standard HTTP status codes
-    - Consistent manejo de errores
-
-  Webhook Support:
-    - Event-driven notifications
-    - Signature verification (HMAC-SHA256)
-    - Retry logic with exponential backoff
-    - Dead letter queue for failed deliveries
-
-  GraphQL (Future):
-    - Query optimization for complex data fetching
-    - Real-time subscriptions for status updates
-    - Schema federation capability
-
-Message Queue Integration:
-  Kafka:
-    - Avro schema for message serialization
-    - Confluent Schema Registry
-    - Event sourcing pattern
-    - Multi-tenant topic strategies
-
-  External Queue Support:
-    - AWS SQS integration
-    - RabbitMQ support
-    - Azure Service Bus connector
-```
-
-*[INSERTAR AQUÍ: Diagrama C4 - Quality Attributes Implementation]*
+*[Diagrama C4 - Quality Attributes Implementation]*
 
 ## Referencias
 
-### Quality Standards
 - [ISO/IEC 25010 - Systems and software Requisitos de Calidad](https://www.iso.org/standard/35733.html)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
 - [SRE Mejores Prácticas](https://sre.google/sre-book/table-of-contents/)
-
-### Compliance and Regulations
 - [GDPR Official Text](https://gdpr.eu/tag/gdpr/)
 - [CAN-SPAM Act Guide](https://www.ftc.gov/tips-advice/business-center/guidance/can-spam-act-compliance-guide-business)
 - [TCPA Compliance Guide](https://www.fcc.gov/document/tcpa-rules)
 
-### 10.1.6 Usabilidad
-- **API First**: RESTful API con OpenAPI 3.0
-- **Documentación**: Swagger UI actualizada automáticamente
-- **Templates**: Editor visual para plantillas de notificación
-- **Multi-idioma**: Soporte i18n para contenido de notificaciones
+## 10.8 Escenarios de Calidad
 
-## 10.2 Escenarios de calidad
+### 10.8.1 Disponibilidad
 
-### 10.2.1 Escenario de Disponibilidad
-**Fuente**: Sistema de monitoreo
-**Estímulo**: Falla de una instancia del API
-**Artefacto**: Servicio de notificaciones
-**Entorno**: Operación normal
-**Respuesta**: Failover automático a otra instancia
-**Medida**: Tiempo de recuperación < 30 segundos
+- **Fuente**: Monitoreo
+- **Estímulo**: Falla de instancia
+- **Respuesta**: Failover automático
+- **Medida**: Recuperación < 30s
 
-### 10.2.2 Escenario de Performance
-**Fuente**: Aplicación cliente
-**Estímulo**: Pico de 50,000 notificaciones en 5 minutos
-**Artefacto**: Sistema completo
-**Entorno**: Carga alta
-**Respuesta**: Auto-scaling de instancias
-**Medida**: Todas las notificaciones procesadas en < 10 minutos
+### 10.8.2 Performance
 
-### 10.2.3 Escenario de Seguridad
-**Fuente**: Atacante externo
-**Estímulo**: Intento de acceso no autorizado
-**Artefacto**: API endpoints
-**Entorno**: Operación normal
-**Respuesta**: Bloqueo de acceso y alertas
-**Medida**: 0% de accesos no autorizados exitosos
+- **Fuente**: Cliente
+- **Estímulo**: Pico 50K notificaciones/5min
+- **Respuesta**: Auto-scaling
+- **Medida**: Procesamiento < 10min
 
-### 10.2.4 Escenario de Multi-tenancy
-**Fuente**: Tenant A
-**Estímulo**: Consulta de datos de notificaciones
-**Artefacto**: Base de datos
-**Entorno**: Multi-tenant
-**Respuesta**: Acceso solo a datos propios
-**Medida**: 100% de aislamiento de datos
+### 10.8.3 Seguridad
 
-## 10.3 Matriz de calidad
+- **Fuente**: Atacante
+- **Estímulo**: Acceso no autorizado
+- **Respuesta**: Bloqueo y alerta
+- **Medida**: 0% accesos exitosos
 
-| Atributo | Criticidad | Escenario Principal | Métrica Objetivo |
-|----------|------------|-------------------|-----------------|
-| Disponibilidad | Alta | Failover automático | 99.9% uptime |
-| Performance | Alta | Procesamiento de picos | < 200ms API, 10K/min capacidad de procesamiento |
-| Seguridad | Crítica | Protección datos PII | 0 brechas, Compliance GDPR |
-| Fiabilidad | Alta | Entrega garantizada | 99.99% delivery rate |
-| Mantenibilidad | Media | Despliegues sin downtime | < 5 min deployment |
-| Escalabilidad | Alta | Auto-scaling | Linear scaling hasta 100K/min |
+### 10.8.4 Multi-tenancy
+
+- **Fuente**: Tenant A
+- **Estímulo**: Consulta de datos
+- **Respuesta**: Aislamiento total
+- **Medida**: 100% aislamiento
+
+## 10.9 Matriz de Calidad
+
+| Atributo      | Criticidad | Escenario Principal         | Métrica Objetivo                |
+|--------------|------------|----------------------------|---------------------------------|
+| Disponibilidad| Alta       | Failover automático        | 99.9% uptime                    |
+| Performance   | Alta       | Procesamiento de picos     | < 200ms API, 10K/min procesamiento |
+| Seguridad     | Crítica    | Protección datos PII       | 0 brechas, Compliance GDPR      |
+| Fiabilidad    | Alta       | Entrega garantizada        | 99.99% delivery rate            |
+| Mantenibilidad| Media      | Despliegues sin downtime   | < 5 min deployment              |
+| Escalabilidad | Alta       | Auto-scaling               | Linear scaling hasta 100K/min    |

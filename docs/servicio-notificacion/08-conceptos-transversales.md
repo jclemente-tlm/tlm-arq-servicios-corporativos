@@ -1,46 +1,48 @@
 # 8. Conceptos transversales
 
-## 8.1 Seguridad
-
-| Aspecto | Implementación | Tecnología |
-|---------|-----------------|-------------|
-| **Autenticación** | JWT validation | OAuth2 |
-| **Autorización** | Claims-based | .NET 8 |
-| **Cifrado** | TLS 1.3 | HTTPS |
-| **Datos sensibles** | AES-256 | Cifrado |
-
-## 8.2 Observabilidad
-
-| Tipo | Herramienta | Propósito |
-|------|-------------|----------|
-| **Logs** | Serilog | Registro eventos |
-| **Métricas** | Prometheus | Monitoreo |
-| **Tracing** | OpenTelemetry | Trazabilidad |
-| **Health** | Health Checks | Estado servicios |
-
-## 8.3 Multi-tenancy
-
-| Aspecto | Implementación | Propósito |
-|---------|-----------------|----------|
-| **Aislamiento** | Por país | Separación datos |
-| **Configuración** | Por tenant | Personalización |
-| **Rate limiting** | Por organización | Protección recursos |
-
-Esta sección describe los conceptos, patrones y soluciones que abarcan múltiples componentes del sistema de notificaciones, proporcionando coherencia arquitectónica y operacional.
-
 ## 8.1 Seguridad y Autenticación
 
-### Modelo de Seguridad Multi-tenant
+- Autenticación y autorización robusta (`OAuth2/JWT`, `claims`, `scopes`)
+- Cifrado en tránsito (`TLS 1.3`) y en reposo (`AES-256`)
+- Gestión de secretos centralizada (`Vault`, `Key Vault`)
+- Control de acceso granular por rol y tenant
 
-El sistema implementa un modelo de seguridad robusta que garantiza el aislamiento entre tenants y la protección de datos sensibles.
+## 8.2 Observabilidad y Monitoreo
 
-#### Autenticación y Autorización
+- Logs estructurados (`Serilog`)
+- Métricas técnicas y de negocio (`Prometheus`, `KPIs`)
+- Trazabilidad distribuida (`OpenTelemetry`)
+- Health checks automatizados
 
-**OAuth 2.0 con JWT:**
+## 8.3 Resiliencia y Escalabilidad
 
-- Integración con el sistema de identidad corporativo
-- Scopes específicos para diferentes operaciones
-- Token refresh automático para servicios internos
+- Circuit Breaker, reintentos y backoff exponencial
+- DLQ y manejo de errores clasificados
+- Escalado horizontal, fan-out `SNS/SQS`, particionado/sharding
+
+## 8.4 Multi-tenancy y Multipaís
+
+- Aislamiento de datos por esquema y `tenantId` en `PostgreSQL`
+- Configuración y personalización por tenant y país
+- Cumplimiento legal y localización (idiomas, monedas, zonas horarias)
+
+## 8.5 Gestión de Configuración y Plantillas
+
+- Configuración jerárquica y por entorno (`YAML`, `JSON`)
+- Plantillas internacionalizadas (`Liquid`, `i18n`)
+- Cache multi-nivel (memoria, `Redis`)
+
+## 8.6 Mantenibilidad y Fiabilidad
+
+- Arquitectura modular y DDD
+- Documentación y pruebas automatizadas
+- Backups, replicación multi-AZ
+
+---
+
+### Ejemplos y fragmentos clave
+
+#### Ejemplo de JWT
 
 ```json
 {
@@ -53,160 +55,14 @@ El sistema implementa un modelo de seguridad robusta que garantiza el aislamient
 }
 ```
 
-#### Control de Acceso Granular
-
-| Rol | Permisos | Ámbito | Limitaciones |
-|-----|----------|--------|--------------|
-| **notification:admin** | CRUD plantillas, configuración | Global | Todos los tenants |
-| **notification:operator** | Envío, consulta de estado | Por tenant | Solo su tenant |
-| **notification:reader** | Solo lectura | Por tenant | Métricas y registros |
-| **system:processor** | Procesamiento interno | Sistema | APIs internas |
-
-#### Cifrado y Protección de Datos
-
-- **En tránsito:** TLS 1.3 para todas las comunicaciones
-- **En reposo:** AES-256 para datos sensibles en BD
-- **Tokens:** Firmado JWT con RS256
-- **Secretos:** Gestión mediante HashiCorp Vault o Azure Key Vault
-
-### Multi-tenancy y Aislamiento
-
-**Estrategia de Aislamiento:**
-
-- Separación de esquema por tenant en PostgreSQL
-- Filtrado automático en consultas por tenantId
-- Aislamiento de almacenamiento para adjuntos
-- Limitación de velocidad independiente por tenant
-
-## 8.2 Observabilidad y Monitoreo
-
-### Registro Estructurado
-
-Implementación de registro estructurado consistente usando Serilog con enriquecimiento contextual.
+#### Ejemplo de registro estructurado
 
 ```csharp
 Log.Information("Notification {NotificationId} sent via {Channel} to {RecipientCount} recipients",
     notificationId, channel, recipients.Count);
 ```
 
-#### Niveles de Registro Estándar
-
-| Nivel | Uso | Ejemplos |
-|-------|-----|----------|
-| **Trace** | Depuración detallada | Entrada/salida de métodos, valores de variables |
-| **Debug** | Información de desarrollo | Consultas SQL, aciertos/fallos de caché |
-| **Information** | Flujo normal del negocio | Notificación enviada, plantilla renderizada |
-| **Warning** | Situaciones recuperables | Límite de velocidad alcanzado, intento de reintento |
-| **Error** | Errores que afectan funcionalidad | Fallo de API del proveedor, error de validación |
-| **Critical** | Errores que comprometen el sistema | Conexión de base de datos perdida, servicio caído |
-
-### Métricas y KPIs
-
-**Métricas Técnicas:**
-
-# Request rate
-
-notification_requests_total{method="POST",status="200"}
-
-# Processing latency
-
-notification_processing_duration_seconds_histogram
-
-# Queue depth
-
-notification_queue_depth_gauge
-
-# Error rate
-
-notification_errors_total{channel="email",error_type="provider_timeout"}
-
-```
-
-**Métricas de Negocio:**
-
-- Tasa de éxito de entrega por canal
-- Tiempo promedio de entrega
-- Estadísticas de uso de plantillas
-- Costo por notificación por proveedor
-
-### Trazado Distribuido
-
-Implementación de OpenTelemetry para trazabilidad distribuida:
-
-```csharp
-using var activity = ActivitySource.StartActivity("ProcessNotification");
-activity?.SetTag("notification.id", notificationId);
-activity?.SetTag("notification.channel", channel);
-activity?.SetTag("tenant.id", tenantId);
-```
-
-## 8.3 Resiliencia y Manejo de Errores
-
-### Patrones de Resiliencia
-
-#### Patrón Circuit Breaker
-
-Protección contra fallos en cascada de proveedores externos:
-
-```csharp
-var circuitBreaker = Policy
-    .Handle<HttpRequestException>()
-    .CircuitBreakerAsync(5, TimeSpan.FromMinutes(1));
-```
-
-#### Reintentos con Backoff Exponencial
-
-```csharp
-var retryPolicy = Policy
-    .Handle<TransientException>()
-    .WaitAndRetryAsync(
-        retryCount: 3,
-        sleepDurationProvider: retryAttempt =>
-            TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
-    );
-```
-
-#### Políticas de Timeout
-
-| Operación | Timeout | Justificación |
-|-----------|---------|---------------|
-| **Llamadas API de proveedor** | 30s | Balance entre confiabilidad y capacidad de respuesta |
-| **Operaciones de base de datos** | 10s | Prevenir agotamiento del pool de conexiones |
-| **Renderizado de plantillas** | 5s | Las plantillas complejas no deben bloquear el procesamiento |
-| **Carga de archivos** | 2min | Adjuntos grandes en campañas |
-
-### Error Classification
-
-```csharp
-public enum ErrorCategory
-{
-    Transient,      // Network timeout, temporary provider issue
-    Permanent,      // Invalid email, template not found
-    Configuration,  // Missing API key, invalid settings
-    Business        // User preferences, compliance violation
-}
-```
-
-## 8.4 Multi-tenancy Implementation
-
-### Data Isolation Strategy
-
-**Schema per Tenant:**
-
-```sql
--- Each tenant gets isolated schema
-CREATE SCHEMA tenant_talma_pe;
-CREATE SCHEMA tenant_talma_ec;
-
--- Automatic filtering in repositories
-SELECT * FROM notifications
-WHERE tenant_id = @currentTenantId;
-
-```
-
-### Gestión de Configuración
-
-**Tenant-specific Settings:**
+#### Ejemplo de configuración por tenant
 
 ```json
 {
@@ -231,108 +87,21 @@ WHERE tenant_id = @currentTenantId;
 }
 ```
 
-## 8.5 Template Engine y Localization
-
-### Template Processing Pipeline
-
-```mermaid
-graph LR
-    A[Raw Template] --> B[Liquid Parser]
-    B --> C[Variable Substitution]
-    C --> D[Localization]
-    D --> E[Output Generation]
-
-    F[User Data] --> C
-
-    G[i18n Resources] --> D
-```
-
-### Internationalization Support
-
-**Template Structure:**
-
-```liquid
-
-{% assign greeting = 'email.greeting' | t: name: user.name %}
-{{ greeting }}
-
-{{ 'flight.status' | t: flight: flight_number, status: current_status }}
-```
-
-**Resource Files:**
-
-```json
-// es-PE.json
-{
-  "email.greeting": "Hola {{name}},",
-  "flight.status": "Tu vuelo {{flight}} está {{status}}"
-}
-
-// en-US.json
-{
-  "email.greeting": "Hello {{name}},",
-  "flight.status": "Your flight {{flight}} is {{status}}"
-
-}
-```
-
-## 8.6 Performance y Caching
-
-### Caching Strategy
-
-**Multi-level Caching:**
+#### Ejemplo de health checks
 
 ```csharp
-// L1: In-memory cache for frequently accessed templates
-public async Task<Template> GetTemplateAsync(string templateId)
-{
-    return await _memoryCache.GetOrCreateAsync(templateId,
-        factory => _repository.GetTemplateAsync(templateId),
-        expiration: TimeSpan.FromMinutes(30));
-}
-
-
-// L2: Redis for rendered content
-public async Task<string> GetRenderedContentAsync(string cacheKey)
-{
-    return await _distributedCache.GetStringAsync(cacheKey);
-}
+services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>("database")
+    .AddCheck<KafkaHealthCheck>("kafka")
+    .AddCheck<RedisHealthCheck>("cache");
 ```
 
-**Cache Invalidation:**
-
-- Template updates trigger cache eviction
-- Tenant configuration changes clear related caches
-
-### Limitación de Velocidad
-
-**Adaptive Limitación de Velocidad:**
-
-```csharp
-public class TenantRateLimiter
-{
-    private readonly Dictionary<string, int> _tenantLimits = new()
-    {
-        ["enterprise"] = 10000,  // requests per minute
-
-        ["standard"] = 1000,
-        ["basic"] = 100
-    };
-}
-```
-
-## 8.7 Deployment y Configuración
-
-### Gestión de Configuración
-
-**Hierarchical Configuration:**
+#### Ejemplo de configuración jerárquica
 
 ```yaml
-# Base configuration
 logging:
   level: Information
 
-# Environment-specific
 development:
   logging:
     level: Debug
@@ -347,69 +116,26 @@ production:
         api_key: ${SENDGRID_API_KEY}
 ```
 
-### Health Checks `<user@dominio.com>`
+#### Ejemplo de template internacionalizado
+
+```liquid
+{% assign greeting = 'email.greeting' | t: name: user.name %}
+{{ greeting }}
+{{ 'flight.status' | t: flight: flight_number, status: current_status }}
+```
+
+#### Ejemplo de error classification
 
 ```csharp
-services.AddHealthChecks()
-    .AddCheck<DatabaseHealthCheck>("database")
-    .AddCheck<KafkaHealthCheck>("kafka")
-    .AddCheck<RedisHealthCheck>("cache")
-```
-
-Estos conceptos transversales aseguran que el sistema opere de manera consistente, segura y observable, proporcionando una base sólida para el crecimiento y la evolución futura.
-  "mensaje": "Error al enviar correo",
-  "detalle": { "email": "<user@dominio.com>" }
+public enum ErrorCategory
+{
+    Transient,      // Network timeout, temporary provider issue
+    Permanent,      // Invalid email, template not found
+    Configuration,  // Missing API key, invalid settings
+    Business        // User preferences, compliance violation
 }
-
 ```
 
-Esto facilita la detección proactiva de incidentes, el análisis de causa raíz y la mejora continua de la operación.
+---
 
-## 8.3 Escalabilidad
-
-El sistema está diseñado para escalar horizontalmente, permitiendo manejar incrementos de carga sin degradar el servicio. Los principales mecanismos son:
-
-- **Desacoplamiento**: Uso de colas y procesadores desacoplados para distribuir la carga y evitar cuellos de botella.
-- **Fan-out SNS/SQS**: Distribución de eventos a múltiples consumidores de forma eficiente.
-- **Particionado y sharding**: División de datos y procesamiento por tenant, país o tipo de evento, permitiendo crecimiento lineal.
-
-Esto asegura capacidad de crecimiento y alta disponibilidad en todos los bloques críticos.
-
-## 8.4 Fiabilidad
-
-La fiabilidad se garantiza mediante estrategias como:
-
-- **Reintentos automáticos**: Ante fallos temporales en APIs o colas, los servicios reintentan operaciones según políticas configurables.
-- **DLQ (Dead Letter Queue)**: Los mensajes no procesados tras varios intentos se almacenan en colas especiales para análisis posterior.
-- **Backups y replicación multi-AZ**: Los datos críticos se respaldan periódicamente y se replican en varias zonas de disponibilidad para tolerancia a fallos.
-
-Estas prácticas minimizan la pérdida de información y aseguran la continuidad operativa ante incidentes en cualquier componente.
-
-## 8.5 Mantenibilidad
-
-La mantenibilidad se logra mediante:
-
-- **Arquitectura modular y DDD**: Separación clara de dominios y responsabilidades, facilitando la comprensión y evolución.
-- **Documentación y pruebas automatizadas**: Cada módulo incluye documentación técnica y pruebas unitarias/integración, lo que reduce el costo de cambios y errores.
-
-Esto permite incorporar nuevas funcionalidades o corregir errores de forma ágil y segura en todos los bloques de construcción.
-
-## 8.6 Multi-tenant
-
-El soporte multi-tenant permite que múltiples clientes o empresas utilicen el sistema de forma aislada y segura. Se implementa mediante:
-
-- **Separación lógica de datos y recursos**: Cada tenant tiene su propio espacio lógico en la base de datos y recursos asociados.
-- **Configuración y personalización por tenant**: Permite adaptar reglas, canales y notificaciones a cada cliente.
-- **Aislamiento de datos**: Mecanismos técnicos y lógicos previenen accesos cruzados entre tenants.
-
-Esto garantiza privacidad, personalización y cumplimiento de acuerdos contractuales.
-
-## 8.7 Multipaís
-
-El sistema está preparado para operar en múltiples países, adaptándose a normativas, idiomas, formatos y requisitos legales locales. Se implementa mediante:
-
-- **Localización y formatos regionales**: Soporte de idiomas, monedas, zonas horarias y formatos de fecha/hora.
-- **Configuración de canales y reglas por país**: Permite definir lógicas y flujos específicos según la región.
-- **Cumplimiento legal**: Adaptación a regulaciones locales (protección de datos, retención, notificaciones legales).
-
-Esto asegura cumplimiento regulatorio y una experiencia adecuada para cada región donde opera el sistema.
+Estos conceptos transversales aseguran que el sistema opere de manera consistente, segura, escalable y observable, proporcionando una base sólida para el crecimiento y la evolución futura.

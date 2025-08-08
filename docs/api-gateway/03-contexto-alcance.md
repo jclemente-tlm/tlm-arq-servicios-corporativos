@@ -2,174 +2,97 @@
 
 ![API Gateway - Vista de Contexto](/diagrams/servicios-corporativos/api_gateway.png)
 
-*Figura 3.1: Vista de contexto del API Gateway*
+*Figura 3.1: Vista de contexto del `API Gateway`*
 
 ## 3.1 Alcance del sistema
 
-| Aspecto | Descripción |
-|---------|-------------|
-| **Incluido** | Proxy reverso, autenticación, rate limiting, load balancing |
-| **Excluido** | Lógica de negocio, persistencia de datos, procesamiento |
+| Aspecto   | Descripción                                                                 |
+|-----------|-----------------------------------------------------------------------------|
+| `Incluido`  | Proxy reverso, autenticación (`OAuth2`/`JWT`), rate limiting, load balancing, observabilidad, resiliencia, multi-tenancy |
+| `Excluido`  | Lógica de negocio, persistencia de datos, procesamiento, gestión de usuarios |
 
 ## 3.2 Actores externos
 
-| Actor | Rol | Interacción |
-|-------|-----|-------------|
-| **Clientes Web** | Consumidores | Solicitudes HTTP/HTTPS |
-| **Apps Móviles** | Consumidores | APIs REST |
-| **Servicios Downstream** | Proveedores | Enrutamiento de solicitudes |
-| **Sistema Identidad** | Proveedor | Validación de tokens |
-| **Observabilidad** | Consumidor | Métricas y logs |
+| Actor                | Rol         | Interacción                |
+|----------------------|-------------|----------------------------|
+| `Clientes Web`       | Consumidor  | Solicitudes `HTTP/HTTPS`   |
+| `Apps Móviles`       | Consumidor  | APIs `REST`                |
+| `Servicios Downstream` | Proveedor | Enrutamiento de solicitudes|
+| `Sistema Identidad`  | Proveedor   | Validación de tokens       |
+| `Observabilidad`     | Consumidor  | Métricas y logs (`Prometheus`, `Grafana`, `Loki`, `Jaeger`) |
 
 ## 3.3 Especificaciones técnicas
 
-| Aspecto | Especificación | Rationale |
-|---------|----------------|-----------|
-| **Platform** | .NET 8 + ASP.NET Core | Rendimiento, ecosystem |
-| **Reverse Proxy** | YARP (Yet Another Reverse Proxy) | Microsoft supported, flexible |
-| **Authentication** | OAuth2 + JWT | Estándar de la industria |
-| **Protocol** | HTTP/2, HTTPS only | Security, rendimiento |
-| **Balanceador de Carga** | Round-robin con health checks | Confiabilidad |
-| **Circuit Breaker** | Framework Polly | Tolerancia a fallos |
-| **Observability** | OpenTelemetry + Prometheus | Standards compliance |
+| Aspecto                | Especificación                        | Rationale                |
+|------------------------|---------------------------------------|--------------------------|
+| `Platform`             | `.NET 8` + `ASP.NET Core`             | Rendimiento, ecosistema  |
+| `Reverse Proxy`        | `YARP`                                | Microsoft, flexible      |
+| `Authentication`       | `OAuth2` + `JWT`                      | Estándar de la industria |
+| `Protocol`             | `HTTP/2`, `HTTPS only`                | Seguridad, rendimiento   |
+| `Balanceador de Carga` | `ALB` (AWS Application Load Balancer) | Alta disponibilidad      |
+| `Circuit Breaker`      | `Polly`                               | Tolerancia a fallos      |
+| `Observabilidad`       | `Prometheus`, `Grafana`, `Loki`, `Jaeger` | Stack estándar         |
 
 ### Protocolos de Comunicación
 
-| Interface | Protocol | Port | Purpose | Security |
-|-----------|----------|------|---------|----------|
-| **Client API** | HTTPS/TLS 1.3 | 443 | Public interface | JWT + TLS |
-| **Health Check** | HTTP | 8080 | ALB health probes | Internal only |
-| **Metrics** | HTTP | 9090 | Prometheus scraping | Internal only |
-| **Admin API** | HTTPS | 8443 | Configuration | mTLS |
+| Interface         | Protocol      | Port | Purpose           | Security         |
+|-------------------|--------------|------|-------------------|------------------|
+| `Client API`      | `HTTPS/TLS 1.3` | 443  | Interfaz pública  | `JWT` + `TLS`    |
+| `Health Check`    | `HTTP`          | 8080 | Health probes     | Interno          |
+| `Metrics`         | `HTTP`          | 9090 | Scraping Prometheus | Interno        |
+| `Admin API`       | `HTTPS`         | 8443 | Configuración     | `mTLS`           |
 
 ### Configuración de Red
 
-| Parameter | Value | Purpose |
-|-----------|-------|---------|
-| **TLS Version** | 1.3 minimum | Security compliance |
-| **HTTP Version** | HTTP/2 | Optimización de rendimiento |
-| **Keep-Alive** | 60 seconds | Connection efficiency |
-| **Request Timeout** | 30 seconds | User experience |
-| **Header Size Limit** | 32KB | Security y rendimiento |
+| Parámetro           | Valor         | Propósito                  |
+|---------------------|--------------|----------------------------|
+| `TLS Version`       | 1.3 mínimo   | Cumplimiento de seguridad  |
+| `HTTP Version`      | HTTP/2       | Optimización de rendimiento|
+| `Keep-Alive`        | 60 segundos  | Eficiencia de conexión     |
+| `Request Timeout`   | 30 segundos  | Experiencia de usuario     |
+| `Header Size Limit` | 32KB         | Seguridad y rendimiento    |
 
-## 3.3 Alcance del Sistema
+## 3.4 Flujos de datos y sistemas externos
 
-### Responsabilidades Incluidas
+| Sistema                  | Tipo      | Protocolo     | Propósito                | Datos Intercambiados         |
+|--------------------------|-----------|--------------|--------------------------|------------------------------|
+| `Web Applications`       | Cliente   | `HTTPS/REST` | Acceso usuario           | Requests/responses API       |
+| `Mobile Applications`    | Cliente   | `HTTPS/REST` | Acceso móvil             | Llamadas API, push           |
+| `Partner Systems`        | Externo   | `HTTPS/REST` | Integración B2B          | Datos de negocio, eventos    |
+| `Identity System`        | Interno   | `HTTP/OIDC`  | Autenticación            | Validación tokens, claims    |
+| `Notification Service`   | Interno   | `HTTP/REST`  | Mensajería               | Requests, status delivery    |
+| `Track & Trace Service`  | Interno   | `HTTP/REST`  | Seguimiento eventos       | Consultas, actualizaciones   |
+| `SITA Messaging Service` | Interno   | `HTTP/REST`  | Mensajería aviación      | Requests, updates status     |
+| `Configuration Platform` | Interno   | `HTTPS/REST` | Configuración dinámica    | Configs rutas, feature flags |
+| `Monitoring Systems`     | Interno   | `HTTP/Metrics`| Observabilidad           | Métricas, logs, traces       |
 
-#### Core Functionality
+## 3.5 Multi-tenancy y configuración específica
 
-- **Request Routing:** Enrutamiento inteligente basado en URL patterns y headers
-- **Authentication:** Validación de JWT tokens y extracción de claims de usuario
-- **Authorization:** Control de acceso basado en roles (RBAC) y contexto tenant
-- **Limitación de Velocidad:** Control de tráfico por tenant, usuario y endpoint específico
-- **Circuit Breaking:** Protección contra cascadas de fallos en servicios downstream
-- **Balanceador de Carga:** Distribución de carga entre múltiples instancias de servicios
+| Método         | Fuente             | Prioridad | Caso de Uso           |
+|---------------|--------------------|-----------|-----------------------|
+| `JWT Claims`  | Token claim        | 1         | Usuarios autenticados |
+| `API Key`     | Custom header      | 2         | Partners externos     |
+| `Subdomain`   | Host header        | 3         | Aplicaciones web      |
+| `Query Param` | URL parameter      | 4         | Sistemas legacy       |
 
-#### Conceptos Transversales
+| Tenant        | País      | Subdominio                  | Rate Limits     | Backend Pool      |
+|---------------|-----------|-----------------------------|-----------------|-------------------|
+| `talma-pe`    | Perú      | pe.corporate.talma.com      | 10k req/hour    | pe-backend-pool   |
+| `talma-ec`    | Ecuador   | ec.corporate.talma.com      | 5k req/hour     | ec-backend-pool   |
+| `talma-co`    | Colombia  | co.corporate.talma.com      | 8k req/hour     | co-backend-pool   |
+| `talma-mx`    | México    | mx.corporate.talma.com      | 6k req/hour     | mx-backend-pool   |
 
-- **Observability:** Logging estructurado, métricas de rendimiento, trazado distribuido
-- **Security:** TLS termination, HTTPS enforcement, security headers injection
-- **Configuration:** Gestión dinámica de configuración sin downtime
-- **Monitoreo de Salud:** Health checks proactivos de servicios downstream
-- **Manejo de Errores:** Transformación de errores y standardización de responses
+## 3.6 Estándares y protocolos
 
-### Responsabilidades Excluidas
-
-#### Fuera del Alcance
-
-- **Lógica Empresarial:** No procesamiento de lógica de dominio específica
-- **Data Storage:** No persistencia de datos de negocio (solo cache temporal)
-- **User Management:** No CRUD de usuarios (delegado a Identity System)
-- **File Processing:** No manipulación de archivos grandes o procesamiento multimedia
-- **Background Jobs:** No procesamiento asíncrono de larga duración
-- **Analytics:** No análisis avanzado de datos (solo métricas operacionales básicas)
-
-#### Integration Boundaries
-
-- **Frontend Rendering:** Delegado a SPAs y aplicaciones cliente
-- **Database Operations:** Delegado a microservicios específicos de dominio
-- **External Integrations:** Delegado a servicios de dominio correspondientes
-- **Message Queuing:** Delegado a infrastructure de messaging confiable
-- **File Storage:** Delegado a servicios de almacenamiento como S3
-
-## 3.4 Interfaces Externas
-
-### Actores del Sistema
-
-| Actor | Tipo | Descripción | Interacciones Principales |
-|-------|------|-------------|---------------------------|
-| **Usuarios de Aplicaciones Web** | Humano | Usuarios finales de aplicaciones web corporativas | Navegación web, consumo de APIs |
-| **Usuarios de Aplicaciones Móviles** | Humano | Usuarios de aplicaciones móviles iOS/Android | Uso de apps móviles, sincronización |
-| **Administradores del Sistema** | Humano | Administradores del gateway y infraestructura | Configuración, monitoreo, resolución de problemas |
-| **Socios Externos** | Sistema/Humano | Socios externos con integración API | Llamadas automatizadas, intercambio de datos |
-| **Aplicaciones Cliente** | Sistema | Aplicaciones frontend (SPAs, mobile) | Llamadas REST API, flujos de autenticación |
-| **Servicios Downstream** | Sistema | Microservicios internos corporativos | Proxy de APIs, health checks |
-
-### Sistemas Externos Conectados
-
-| Sistema | Tipo | Protocolo | Propósito | Datos Intercambiados |
-|---------|------|-----------|-----------|---------------------|
-| **Web Applications** | Client | HTTPS/REST | Acceso de interfaz usuario | Requests/responses API, sesiones usuario |
-| **Mobile Applications** | Client | HTTPS/REST | Acceso móvil | Llamadas API, push notifications, sync offline |
-| **Partner Systems** | External | HTTPS/REST | Integración B2B | Datos de negocio, eventos operacionales |
-| **Identity System (Keycloak)** | Internal | HTTP/OIDC | Autenticación | Validación tokens, user info, claims |
-| **Notification Service** | Internal | HTTP/REST | Mensajería | Requests notificaciones, status delivery |
-| **Track & Trace Service** | Internal | HTTP/REST | Seguimiento eventos | Consultas eventos, actualizaciones real-time |
-| **SITA Messaging Service** | Internal | HTTP/REST | Mensajería aviación | Requests mensajes, updates status |
-| **Configuration Platform** | Internal | HTTPS/REST | Configuración dinámica | Configs rutas, feature flags |
-| **Monitoring Systems** | Internal | HTTP/Metrics | Observabilidad | Métricas, logs, traces |
-
-### Flujos de Datos
-
-#### Datos de Entrada
-
-| Interface | Fuente | Tipo de Datos | Frecuencia | Formato |
-|-----------|--------|---------------|------------|---------|
-| **API Requests** | Aplicaciones cliente | Solicitudes empresariales | Tiempo real | HTTP/REST (JSON) |
-| **Authentication Tokens** | Aplicaciones cliente | JWT tokens | Por request | HTTP headers |
-| **Configuration Updates** | Plataforma config | Configuración gateway | Periódica | HTTP/JSON |
-| **Health Checks** | Sistemas monitoreo | Health probes | Continua | HTTP/JSON |
-
-#### Datos de Salida
-
-| Interface | Destino | Tipo de Datos | Frecuencia | Formato |
-|-----------|---------|---------------|------------|---------|
-| **Proxied Requests** | Servicios downstream | Solicitudes empresariales | Tiempo real | HTTP/REST |
-| **Authentication Queries** | Sistema identidad | Validación tokens | Por request | HTTP/OIDC |
-| **Metrics Data** | Sistemas monitoreo | Métricas de rendimiento | Continua | Prometheus metrics |
-| **Access Logs** | Sistemas logging | Logs requests | Continua | JSON estructurado |
-| **Health Status** | Load balancer | Estado servicios | Continua | HTTP status codes |
-
-## 3.5 Configuración Multi-tenant
-
-### Identificación de Tenants
-
-| Método | Fuente | Prioridad | Caso de Uso |
-|--------|--------|-----------|-------------|
-| **JWT Claims** | Token tenant claim | 1 | Usuarios autenticados |
-| **API Key** | Custom header | 2 | Partners externos |
-| **Subdomain** | Host header | 3 | Aplicaciones web |
-| **Query Parameter** | URL parameter | 4 | Sistemas legacy |
-
-### Configuración Específica por Tenant
-
-| Tenant | País | Subdominio | Rate Limits | Backend Pool |
-|--------|------|-----------|-------------|--------------|
-| **talma-pe** | Perú | pe.corporate.talma.com | 10k req/hour | pe-backend-pool |
-| **talma-ec** | Ecuador | ec.corporate.talma.com | 5k req/hour | ec-backend-pool |
-| **talma-co** | Colombia | co.corporate.talma.com | 8k req/hour | co-backend-pool |
-| **talma-mx** | México | mx.corporate.talma.com | 6k req/hour | mx-backend-pool |
-
-### Estándares y Protocolos
-
-| Categoría | Estándar/Protocolo | Versión | Uso en el Sistema |
-|-----------|-------------------|---------|-------------------|
-| **HTTP** | HTTP/2, HTTP/3 | Latest | Comunicación cliente |
-| **Security** | TLS 1.3 | Current | Encriptación en tránsito |
-| **Authentication** | OAuth2 + JWT | RFC 6749, RFC 7519 | Autenticación basada en tokens |
-| **API Design** | OpenAPI | 3.0+ | Especificación de APIs |
-| **Logging** | JSON estructurado | Schema custom | Observabilidad |
-| **Metrics** | Prometheus | Latest | Monitoreo de rendimiento |
+| Categoría         | Estándar/Protocolo | Versión | Uso en el Sistema         |
+|-------------------|-------------------|---------|--------------------------|
+| `HTTP`            | HTTP/2, HTTP/3    | Latest  | Comunicación cliente      |
+| `Security`        | TLS 1.3           | Current | Encriptación en tránsito  |
+| `Authentication`  | OAuth2 + JWT      | RFC 6749, RFC 7519 | Autenticación tokens |
+| `API Design`      | OpenAPI           | 3.0+    | Especificación de APIs    |
+| `Logging`         | JSON estructurado | Custom  | Observabilidad (`Loki`)   |
+| `Metrics`         | Prometheus        | Latest  | Monitoreo de rendimiento  |
+| `Tracing`         | Jaeger            | Latest  | Trazabilidad distribuida  |
 
 ## Referencias
 
@@ -178,3 +101,11 @@
 - [YARP Documentation](https://microsoft.github.io/reverse-proxy/)
 - [OAuth2 RFC 6749](https://tools.ietf.org/html/rfc6749)
 - [JWT RFC 7519](https://tools.ietf.org/html/rfc7519)
+- [Prometheus](https://prometheus.io/)
+- [Grafana](https://grafana.com/)
+- [Loki](https://grafana.com/oss/loki/)
+- [Jaeger](https://www.jaegertracing.io/)
+
+---
+
+> El contexto y alcance del API Gateway están alineados a los modelos C4/Structurizr DSL y la documentación Arc42, garantizando claridad en los límites, actores, protocolos y mecanismos de multi-tenancy del sistema.

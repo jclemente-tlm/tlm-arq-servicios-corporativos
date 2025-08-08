@@ -50,8 +50,8 @@ Las alternativas evaluadas fueron:
 
 | Solución | Agnosticidad | API S3 | Operación | Escalabilidad | Recomendación |
 |----------|--------------|--------|-----------|---------------|---------------|
-| **MinIO** | Excelente | Excelente | Self-hosted | Excelente | ✅ **Seleccionada** |
-| **AWS S3** | Mala | Nativa | Gestionada | Ilimitada | 🟡 Alternativa |
+| **AWS S3** | Mala | Nativa | Gestionada | Ilimitada | ✅ **Seleccionada** |
+| **MinIO** | Excelente | Excelente | Self-hosted | Excelente | 🟡 Alternativa |
 | **Azure Blob Storage** | Mala | Parcial | Gestionada | Ilimitada | 🟡 Considerada |
 | **Google Cloud Storage** | Mala | Parcial | Gestionada | Ilimitada | ❌ Descartada |
 | **Ceph** | Excelente | Básico | Compleja | Muy buena | ❌ Descartada |
@@ -111,13 +111,14 @@ Consideraciones MinIO:
 
 ## DECISIÓN
 
-Se recomienda desacoplar el almacenamiento de objetos mediante interfaces y adaptadores. Inicialmente se usará AWS S3, pero la arquitectura soporta migración a MinIO o soluciones cloud equivalentes según necesidades de portabilidad o despliegue híbrido.
+Se recomienda desacoplar el almacenamiento de objetos mediante interfaces y adaptadores. Inicialmente se usará **AWS S3** como solución principal, pero la arquitectura soporta migración a MinIO o soluciones cloud equivalentes según necesidades de portabilidad o despliegue híbrido.
 
 ## Justificación
 
 - Permite almacenar archivos y datos no estructurados de forma segura y portable.
 - Facilita la portabilidad y despliegue multi-cloud.
 - El desacoplamiento del backend permite cambiar de tecnología sin impacto en la lógica de negocio.
+- **AWS S3** es la opción seleccionada por su operación gestionada, alta disponibilidad y costos competitivos en el contexto actual.
 - MinIO es una opción madura y ampliamente soportada para escenarios on-premises o híbridos.
 
 ## Limitaciones
@@ -145,4 +146,3 @@ Se recomienda desacoplar el almacenamiento de objetos mediante interfaces y adap
 - [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/)
 - [Google Cloud Storage](https://cloud.google.com/storage)
 - [MinIO](https://min.io/)
-

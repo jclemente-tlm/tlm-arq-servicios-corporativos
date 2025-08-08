@@ -1,24 +1,26 @@
 # 6. Vista de tiempo de ejecución
 
+Esta sección describe los principales escenarios de ejecución y patrones de interacción del sistema de mensajería SITA, detallando flujos críticos, manejo de errores, patrones de resiliencia y consideraciones de monitoreo y despliegue, alineados a mejores prácticas de arquitectura y operación.
+
 ## 6.1 Escenarios principales
 
-| Escenario | Flujo | Componentes |
-|-----------|-------|-------------|
-| **Procesamiento evento** | Event Consumer → Orchestrator → Generator | Event Processor |
-| **Generación archivo** | Template Engine → SITA Generator → Storage | Event Processor |
-| **Envío programado** | Sending Worker → Fetcher → Partner Sender | Sender |
+| Escenario                  | Flujo                                         | Componentes        |
+|----------------------------|-----------------------------------------------|--------------------|
+| **Procesamiento evento**   | Event Consumer → Orchestrator → Generator     | Event Processor    |
+| **Generación archivo**     | Template Engine → SITA Generator → Storage    | Event Processor    |
+| **Envío programado**       | Sending Worker → Fetcher → Partner Sender     | Sender            |
 
 ## 6.2 Patrones de interacción
 
-| Patrón | Descripción | Tecnología |
-|---------|---------------|-------------|
-| **Event-Driven** | Procesamiento asíncrono | PostgreSQL queue |
-| **Worker Service** | Procesamiento background | .NET 8 |
-| **File-based** | Intercambio archivos | Sistema archivos |
+| Patrón           | Descripción                | Tecnología           |
+|------------------|---------------------------|----------------------|
+| **Event-Driven** | Procesamiento asíncrono    | PostgreSQL queue     |
+| **Worker Service** | Procesamiento background | .NET 8               |
+| **File-based**   | Intercambio archivos       | Sistema archivos     |
 
-## 6.1 Escenarios principales
+## 6.3 Flujos de ejecución detallados
 
-### 6.1.1 Envío de mensaje SITA outbound
+### 6.3.1 Envío de mensaje SITA outbound
 
 ```mermaid
 sequenceDiagram
@@ -65,7 +67,7 @@ sequenceDiagram
     end
 ```
 
-### 6.1.2 Recepción de mensaje SITA inbound
+### 6.3.2 Recepción de mensaje SITA inbound
 
 ```mermaid
 sequenceDiagram
@@ -113,7 +115,7 @@ sequenceDiagram
     end
 ```
 
-### 6.1.3 Procesamiento batch de mensajes
+### 6.3.3 Procesamiento batch de mensajes
 
 ```mermaid
 sequenceDiagram
@@ -155,185 +157,43 @@ sequenceDiagram
     Processor->>Monitor: ReportBatchMetrics(stats)
 ```
 
-## 6.2 Flujos de control
+## 6.4 Flujos de control y resiliencia
 
-### 6.2.1 Gestión de conexiones SITA
+### 6.4.1 Gestión de conexiones SITA
 
-**Descripción**: Mantenimiento de conexiones permanentes con la red SITA
+- Pool de conexiones concurrentes y heartbeat
+- Health checks y auto-reconexión
+- Load balancing y failover automático
 
-**Actores**: SITA Protocol Adapter, Connection Pool Manager, Health Monitor
+### 6.4.2 Validación y transformación de mensajes
 
-**Flujo normal**:
-1. **Inicialización**: Establecer pool de conexiones al arranque
-2. **Heartbeat**: Envío periódico de keep-alive messages
-3. **Health check**: Verificación de estado de conexiones
-4. **Load balancing**: Distribución de mensajes entre conexiones
-5. **Monitoring**: Reporte de métricas de conexión
+- Validación de esquema y reglas de negocio
+- Transformación entre formatos y enriquecimiento
+- Cache de reglas y validaciones asíncronas
 
-**Flujo de error**:
+### 6.4.3 Manejo de errores y retry logic
 
-- **Conexión perdida**: Reintento automático con backoff exponencial
-- **Autenticación fallida**: Renovación de certificados
-- **Partición de red**: Activación de conexiones backup
+- Retries con backoff exponencial para errores transitorios
+- Dead letter para errores permanentes
+- Logging y métricas de intentos y fallos
 
-### 6.2.2 Validación y transformación de mensajes
+## 6.5 Patrones de runtime
 
-**Descripción**: Validación y transformación de mensajes entre formatos
+- **Connection Pool**: Conexiones persistentes y balanceadas
+- **Circuit Breaker**: Protección ante fallos de destino
+- **Bulkhead**: Aislamiento de recursos por tenant
+- **Saga**: Coordinación de procesos multi-step
 
-**Precondiciones**:
-- Mensaje recibido en formato interno o SITA
-- Reglas de validación configuradas por tenant
-- Mapeos de transformación disponibles
+## 6.6 Performance y monitoreo
 
-**Flujo normal**:
-1. **Schema validation**: Verificar estructura del mensaje
-2. **Business rules**: Aplicar reglas de negocio específicas
-3. **Format transformation**: Convertir entre formatos
-4. **Enrichment**: Agregar metadata y contexto
-5. **Final validation**: Verificar resultado final
+- 1,000 mensajes/segundo por instancia
+- Batch de 100 mensajes para eficiencia
+- P95 < 200ms API, < 2s transmisión SITA
+- Uso de CPU/memoria autoescalable
+- Health checks, métricas y alertas operacionales
 
-**Optimizaciones**:
-- Cache de reglas de validación
-- Validación asíncrona para mensajes batch
-- Pre-compilación de transformaciones frecuentes
+## 6.7 Escenarios de despliegue
 
-### 6.2.3 Error handling y retry logic
-
-**Descripción**: Manejo robusto de errores con estrategias de reintento
-
-**Tipos de error**:
-
-- **Errores transitorios**: Network timeouts, temporary unavailability
-- **Errores permanentes**: Invalid format, authentication failures
-- **Errores de negocio**: Invalid routing, missing permissions
-
-**Estrategias**:
-
-```csharp
-public class RetryPolicy
-{
-    public async Task<T> ExecuteAsync<T>(Func<Task<T>> operation)
-    {
-        var retryCount = 0;
-        var delays = new[] { 1, 2, 4, 8, 16 }; // seconds
-
-        while (retryCount < MaxRetries)
-        {
-            try
-            {
-                return await operation();
-            }
-            catch (TransientException ex) when (retryCount < MaxRetries - 1)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(delays[retryCount]));
-                retryCount++;
-                _logger.LogWarning("Retry {Count}/{Max} for operation after {Error}",
-                    retryCount, MaxRetries, ex.Message);
-            }
-        }
-
-        throw new MaxRetriesExceededException();
-    }
-}
-```
-
-## 6.3 Patrones de runtime
-
-### 6.3.1 Connection Pool Pattern
-- **Pool size**: 5-10 conexiones concurrentes por destino SITA
-- **Lifecycle**: Long-lived connections con automatic renewal
-- **Load balancing**: Round-robin con health-based routing
-- **Monitoring**: Connection health metrics y alertas
-
-### 6.3.2 Patrón Circuit Breaker
-- **Estados**: Closed, Open, Half-Open
-- **Thresholds**: 50% error rate en 1 minuto
-- **Recovery**: Gradual re-enabling con test requests
-- **Metrics**: Success/failure rates, response times
-
-### 6.3.3 Bulkhead Pattern
-- **Isolation**: Separate thread pools por tipo de mensaje
-- **Resource limits**: CPU y memory quotas por tenant
-- **Failure containment**: Aislamiento de fallos entre tenants
-- **Monitoring**: Resource utilization metrics
-
-### 6.3.4 Saga Pattern (para flujos complejos)
-- **Coordination**: State machine para multi-step processes
-- **Compensation**: Rollback automático en caso de fallo
-- **Persistence**: Estado almacenado para recovery
-- **Monitoring**: Progress tracking y timeout handling
-
-## 6.4 Performance characteristics
-
-### 6.4.1 Capacidad de procesamiento
-- **Messages/second**: 1,000 mensajes salientes por instancia
-- **Batch processing**: 100 mensajes por batch para efficiency
-- **Concurrent connections**: 10 conexiones SITA simultáneas
-- **Queue depth**: Máximo 10,000 mensajes pendientes
-
-### 6.4.2 Latency
-- **API response**: P95 < 200ms para operations síncronas
-- **SITA transmission**: P95 < 2 segundos end-to-end
-- **Message validation**: P95 < 50ms por mensaje
-- **Database operations**: P95 < 100ms para writes
-
-### 6.4.3 Resource utilization
-- **Memory**: 512MB baseline, 2GB max por instancia
-- **CPU**: 2 cores baseline, auto-scaling hasta 4 cores
-- **Network**: 10Mbps sustained, 50Mbps peak
-- **Storage**: 100GB para message store con archiving
-
-## 6.5 Monitoreo de runtime
-
-### 6.5.1 Health checks
-```csharp
-public class SitaMessagingHealthCheck : IHealthCheck
-{
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context)
-    {
-        var checks = await Task.WhenAll(
-            CheckSitaConnectionsAsync(),
-            CheckDatabaseAsync(),
-            CheckMessageQueueAsync()
-        );
-
-        if (checks.All(c => c.IsHealthy))
-            return HealthCheckResult.Healthy("All subsystems operational");
-
-        var unhealthy = checks.Where(c => !c.IsHealthy).ToList();
-        return HealthCheckResult.Degraded($"Issues detected: {string.Join(", ", unhealthy)}");
-    }
-}
-```
-
-### 6.5.2 Métricas de negocio
-- **Message success rate**: % de mensajes enviados exitosamente
-- **Response time distribution**: P50, P95, P99 para operaciones
-- **Error categorization**: Breakdown por tipo de error
-- **Tenant usage**: Mensajes por tenant y throttling status
-
-### 6.5.3 Alertas operacionales
-- **Critical**: SITA connection down, database unavailable
-- **Warning**: High error rate, slow response times
-- **Info**: Unusual traffic patterns, capacity thresholds
-- **Business**: SLA breaches, compliance violations
-
-## 6.6 Deployment scenarios
-
-### 6.6.1 Blue-Green deployment
-- **Zero downtime**: Parallel deployment con traffic switching
-- **Validation**: Automated testing en environment nuevo
-- **Rollback**: Instant switchback en caso de issues
-- **SITA connections**: Graceful migration de conexiones
-
-### 6.6.2 Canary deployment
-- **Gradual rollout**: 5% → 25% → 50% → 100% traffic
-- **Monitoring**: Enhanced metrics durante rollout
-- **Auto-rollback**: Automatic revert en error rate spike
-- **Feature flags**: Runtime control de new features
-
-### 6.6.3 Disaster recovery
-- **RTO**: 15 minutos para restore basic functionality
-- **RPO**: 5 minutos maximum data loss
-- **Failover**: Automatic switch a secondary region
-- **Data sync**: Real-time replication de message store
+- **Blue-Green**: Zero downtime, validación y rollback instantáneo
+- **Canary**: Rollout gradual, monitoreo y auto-rollback
+- **Disaster Recovery**: RTO 15min, RPO 5min, failover automático

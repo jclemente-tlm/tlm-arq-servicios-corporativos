@@ -2,43 +2,30 @@
 
 ## 7.1 Estructura del proyecto
 
-| Componente | Ubicación | Tecnología |
-|------------|-------------|-------------|
-| **API Gateway** | /src/ApiGateway | .NET 8 Web API |
-| **YARP** | Microsoft.ReverseProxy | YARP 2.0+ |
-| **Redis** | AWS ElastiCache | Redis 7+ |
-| **Configuración** | AWS Secrets Manager | JSON |
+| Componente         | Ubicación           | Tecnología         |
+|--------------------|--------------------|--------------------|
+| `API Gateway`      | `/src/ApiGateway`  | `.NET 8 Web API`   |
+| `YARP`             | `Microsoft.ReverseProxy` | `YARP 2.0+`      |
+| `Redis`            | `AWS ElastiCache`  | `Redis 7+`         |
+| `Configuración`    | `AWS Secrets Manager` | `JSON`           |
+| `Docker`           | `/docker`          | `Dockerfile`        |
+| `Scripts`          | `/scripts`         | `PowerShell/Bash`   |
 
 ## 7.2 Dependencias principales
 
-| Dependencia | Versión | Propósito |
-|-------------|---------|----------|
-| **YARP** | 2.0+ | Reverse Proxy |
-| **StackExchange.Redis** | 2.6+ | Rate limiting |
-| **Polly** | 7.0+ | Resiliencia |
-| **Serilog** | 3.0+ | Logging |
+| Dependencia            | Versión | Propósito                |
+|------------------------|---------|--------------------------|
+| `YARP`                 | 2.0+    | `Reverse Proxy`          |
+| `StackExchange.Redis`  | 2.6+    | `Rate limiting`          |
+| `Polly`                | 7.0+    | `Resiliencia`            |
+| `Serilog`              | 3.0+    | `Logging`                |
+| `Redis`                | 7.0+    | `Cache y rate limiting`  |
 
-## 7.1 Estructura del proyecto
+---
 
-| Componente | Ubicación | Tecnología |
-|------------|-------------|-------------|
-| **API Gateway** | /src/ApiGateway | .NET 8 |
-| **Configuración** | /config | JSON/YAML |
-| **Docker** | /docker | Dockerfile |
-| **Scripts** | /scripts | PowerShell/Bash |
+## 7.3 Infraestructura y despliegue
 
-## 7.2 Dependencias principales
-
-| Dependencia | Versión | Propósito |
-|-------------|---------|----------|
-| **YARP** | 2.0+ | Proxy reverso |
-| **Polly** | 7.0+ | Resiliencia |
-| **Serilog** | 3.0+ | Logging |
-| **Redis** | 7.0+ | Cache y rate limiting |
-
-## 7.1 Infraestructura y despliegue
-
-### 7.1.1 Arquitectura de contenedores
+### 7.3.1 Arquitectura de contenedores (local)
 
 ```yaml
 # docker-compose.yml para desarrollo local
@@ -95,7 +82,7 @@ volumes:
   redis-data:
 ```
 
-### 7.1.2 Dockerfile optimizado
+### 7.3.2 Dockerfile optimizado
 
 ```dockerfile
 # Etapa de construcción
@@ -145,427 +132,75 @@ EXPOSE 8443
 ENTRYPOINT ["dotnet", "ApiGateway.dll"]
 ```
 
-### 7.1.3 Despliegue en Kubernetes
-
-```yaml
-# api-gateway-deployment.yaml
-apiVersion: apps/v1
-kind: Despliegue
-metadata:
-  name: api-gateway
-  namespace: corporate-services
-  labels:
-    app: api-gateway
-    version: v1
-spec:
-  replicas: 3
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-  selector:
-    matchLabels:
-      app: api-gateway
-  template:
-    metadata:
-      labels:
-        app: api-gateway
-        version: v1
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "8080"
-        prometheus.io/path: "/metrics"
-    spec:
-      serviceAccountName: api-gateway-sa
-      containers:
-      - name: api-gateway
-        image: corporate-services/api-gateway:1.0.0
-        ports:
-        - containerPort: 8080
-          name: http
-        - containerPort: 8443
-          name: https
-        env:
-        - name: ASPNETCORE_ENVIRONMENT
-          value: "Production"
-        - name: ConnectionStrings__Redis
-          valueFrom:
-            secretKeyRef:
-              name: api-gateway-secrets
-              key: redis-connection
-        - name: Authentication__Authority
-          value: "https://identity.corporate-services.local"
-        - name: Logging__LogLevel__Default
-          value: "Information"
-        resources:
-          solicitudes:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 2
-        volumeMounts:
-        - name: config-volume
-          mountPath: /app/config
-          readOnly: true
-        - name: certificates
-          mountPath: /app/certs
-          readOnly: true
-      volumes:
-      - name: config-volume
-        configMap:
-          name: api-gateway-config
-      - name: certificates
-        secret:
-          secretName: api-gateway-certs
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  - api-gateway
-              topologyKey: kubernetes.io/hostname
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: api-gateway-service
-  namespace: corporate-services
-  labels:
-    app: api-gateway
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-    targetPort: 8080
-    protocol: TCP
-    name: http
-  - port: 443
-    targetPort: 8443
-    protocol: TCP
-    name: https
-  selector:
-    app: api-gateway
-
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: api-gateway-ingress
-  namespace: corporate-services
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/rate-limit: "1000"
-    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
-spec:
-  tls:
-  - hosts:
-    - api.corporate-services.com
-    secretName: api-gateway-tls
-  rules:
-  - host: api.corporate-services.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: api-gateway-service
-            port:
-              number: 80
-```
-
-## 7.2 Configuración y secretos
-
-### 7.2.1 ConfigMap para configuración
-
-```yaml
-# api-gateway-configmap.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: api-gateway-config
-  namespace: corporate-services
-data:
-  appsettings.Production.json: |
-    {
-      "Logging": {
-        "LogLevel": {
-          "Default": "Information",
-          "Microsoft": "Warning",
-          "Microsoft.Hosting.Lifetime": "Information"
-        }
-      },
-      "ReverseProxy": {
-        "Routes": {
-          "identity-route": {
-            "ClusterId": "identity-cluster",
-            "Match": {
-              "Path": "/api/identity/{**catch-all}"
-            },
-            "Transforms": [
-              { "PathPattern": "/api/{**catch-all}" },
-              { "RequestHeader": "X-Forwarded-Proto", "Set": "https" }
-            ]
-          },
-          "notification-route": {
-            "ClusterId": "notification-cluster",
-            "Match": {
-              "Path": "/api/notifications/{**catch-all}"
-            },
-            "Transforms": [
-              { "PathPattern": "/api/{**catch-all}" }
-            ]
-          },
-          "track-trace-route": {
-            "ClusterId": "track-trace-cluster",
-            "Match": {
-              "Path": "/api/tracking/{**catch-all}"
-            }
-          },
-          "sita-messaging-route": {
-            "ClusterId": "sita-messaging-cluster",
-            "Match": {
-              "Path": "/api/sita/{**catch-all}"
-            }
-          }
-        },
-        "Clusters": {
-          "identity-cluster": {
-            "LoadBalancingPolicy": "RoundRobin",
-            "HealthCheck": {
-              "Active": {
-                "Enabled": true,
-                "Interval": "00:00:30",
-                "Timeout": "00:00:05",
-                "Policy": "ConsecutiveFailures",
-                "Path": "/health"
-              }
-            },
-            "Destinations": {
-              "identity-1": {
-                "Address": "http://identity-service:8080"
-              }
-            }
-          },
-          "notification-cluster": {
-            "LoadBalancingPolicy": "LeastRequests",
-            "Destinations": {
-              "notification-1": {
-                "Address": "http://notification-service:8080"
-              }
-            }
-          },
-          "track-trace-cluster": {
-            "LoadBalancingPolicy": "RoundRobin",
-            "Destinations": {
-              "track-trace-1": {
-                "Address": "http://track-trace-service:8080"
-              }
-            }
-          },
-          "sita-messaging-cluster": {
-            "LoadBalancingPolicy": "RoundRobin",
-            "Destinations": {
-              "sita-messaging-1": {
-                "Address": "http://sita-messaging-service:8080"
-              }
-            }
-          }
-        }
-      },
-      "Authentication": {
-        "Authority": "https://identity.corporate-services.local",
-        "RequireHttpsMetadata": true,
-        "ValidateAudience": true,
-        "ValidateIssuer": true,
-        "ClockSkew": "00:05:00"
-      },
-      "RateLimiting": {
-        "DefaultPolicy": {
-          "PermitLimit": 1000,
-          "Window": "00:01:00",
-          "ReplenishmentPeriod": "00:00:01",
-          "SegmentsPerWindow": 8,
-          "QueueLimit": 100
-        },
-        "PremiumPolicy": {
-          "PermitLimit": 10000,
-          "Window": "00:01:00"
-        }
-      },
-      "Observability": {
-        "ServiceName": "api-gateway",
-        "Version": "1.0.0",
-        "Jaeger": {
-          "AgentHost": "jaeger-agent",
-          "AgentPort": 6831
-        },
-        "Prometheus": {
-          "Enabled": true,
-          "Path": "/metrics"
-        }
-      }
-    }
-```
-
-### 7.2.2 Secrets management
-
-```yaml
-# api-gateway-secrets.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: api-gateway-secrets
-  namespace: corporate-services
-type: Opaque
-data:
-  redis-connection: cmVkaXM6Ly9yZWRpcy1jbHVzdGVyOjYzNzk=  # base64 encoded
-  jwt-signing-key: <base64-encoded-key>
-  certificate-password: <base64-encoded-password>
-
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: api-gateway-certs
-  namespace: corporate-services
-type: kubernetes.io/tls
-data:
-  tls.crt: <base64-encoded-certificate>
-  tls.key: <base64-encoded-private-key>
-```
-
-## 7.3 Infraestructura como código
-
-### 7.3.1 Terraform para AWS EKS
+### 7.3.3 Despliegue en AWS ECS con Terraform
 
 ```hcl
-# infrastructure/terraform/api-gateway.tf
-resource "aws_eks_cluster" "corporate_services" {
-  name     = "corporate-services-cluster"
-  role_arn = aws_iam_role.cluster_role.arn
-  version  = "1.28"
+# infrastructure/terraform/api-gateway-ecs.tf
+resource "aws_ecs_cluster" "api_gateway" {
+  name = "api-gateway-cluster"
+}
 
-  vpc_config {
-    subnet_ids              = module.vpc.private_subnets
-    endpoint_private_access = true
-    endpoint_public_access  = true
-    public_access_cidrs     = ["0.0.0.0/0"]
-  }
+resource "aws_ecs_task_definition" "api_gateway" {
+  family                   = "api-gateway"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "512"
+  memory                   = "1024"
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
 
-  encryption_config {
-    provider {
-      key_arn = aws_kms_key.eks.arn
+  container_definitions = jsonencode([
+    {
+      name      = "api-gateway"
+      image     = "${var.ecr_repo_url}:latest"
+      cpu       = 512
+      memory    = 1024
+      essential = true
+      portMappings = [
+        { containerPort = 8080, hostPort = 8080 },
+        { containerPort = 8443, hostPort = 8443 }
+      ]
+      environment = [
+        { name = "ASPNETCORE_ENVIRONMENT", value = "Production" },
+        { name = "ConnectionStrings__Redis", value = var.redis_connection_string },
+        { name = "Authentication__Authority", value = var.identity_authority }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/api-gateway"
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "ecs"
+        }
+      }
+      healthCheck = {
+        command     = ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 10
+      }
     }
-    resources = ["secrets"]
-  }
-
-  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
-
-  depends_on = [
-    aws_iam_role_policy_attachment.cluster_policy,
-    aws_iam_role_policy_attachment.vpc_resource_controller,
-  ]
-
-  tags = {
-    Environment = "production"
-    Service     = "api-gateway"
-  }
+  ])
 }
 
-resource "aws_eks_node_group" "gateway_nodes" {
-  cluster_name    = aws_eks_cluster.corporate_services.name
-  node_group_name = "api-gateway-nodes"
-  node_role_arn   = aws_iam_role.node_role.arn
-  subnet_ids      = module.vpc.private_subnets
-
-  capacity_type  = "ON_DEMAND"
-  instance_types = ["t3.medium"]
-
-  scaling_config {
-    desired_size = 3
-    max_size     = 10
-    min_size     = 2
+resource "aws_ecs_service" "api_gateway" {
+  name            = "api-gateway-service"
+  cluster         = aws_ecs_cluster.api_gateway.id
+  task_definition = aws_ecs_task_definition.api_gateway.arn
+  desired_count   = 3
+  launch_type     = "FARGATE"
+  network_configuration {
+    subnets          = var.private_subnets
+    security_groups  = [aws_security_group.api_gateway.id]
+    assign_public_ip = false
   }
-
-  update_config {
-    max_unavailable = 1
+  load_balancer {
+    target_group_arn = aws_lb_target_group.api_gateway.arn
+    container_name   = "api-gateway"
+    container_port   = 8080
   }
-
-  labels = {
-    "node-type" = "api-gateway"
-  }
-
-  tags = {
-    Environment = "production"
-    Service     = "api-gateway"
-  }
-}
-
-# Balanceador de Carga de Aplicación
-resource "aws_lb" "api_gateway" {
-  name               = "api-gateway-alb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb.id]
-  subnets            = module.vpc.public_subnets
-
-  enable_deletion_protection = true
-
-  tags = {
-    Environment = "production"
-    Service     = "api-gateway"
-  }
-}
-
-resource "aws_lb_target_group" "api_gateway" {
-  name     = "api-gateway-tg"
-  port     = 8080
-  protocol = "HTTP"
-  vpc_id   = module.vpc.vpc_id
-
-  health_check {
-    enabled             = true
-    healthy_threshold   = 2
-    interval            = 30
-    matcher             = "200"
-    path                = "/health"
-    port                = "traffic-port"
-    protocol            = "HTTP"
-    timeout             = 5
-    unhealthy_threshold = 2
-  }
-
-  tags = {
-    Environment = "production"
-    Service     = "api-gateway"
-  }
+  depends_on = [aws_lb_listener.api_gateway]
 }
 
 # ElastiCache Redis Cluster
@@ -594,103 +229,73 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
 }
 ```
 
-### 7.3.2 Helm Chart para deployment
-
-```yaml
-# helm/api-gateway/Chart.yaml
-apiVersion: v2
-name: api-gateway
-description: Corporate Services API Gateway
-type: application
-version: 1.0.0
-appVersion: "1.0.0"
-
-dependencies:
-- name: redis
-  version: "17.3.7"
-  repository: "https://charts.bitnami.com/bitnami"
-  condition: redis.enabled
-
 ---
-# helm/api-gateway/values.yaml
-replicaCount: 3
 
-image:
-  repository: corporate-services/api-gateway
-  tag: "1.0.0"
-  pullPolicy: IfNotPresent
+## 7.4 Configuración y secretos
 
-service:
-  type: LoadBalancer
-  port: 80
-  targetPort: 8080
+### 7.4.1 Configuración de la aplicación
 
-ingress:
-  enabled: true
-  className: "nginx"
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-  hosts:
-    - host: api.corporate-services.com
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: api-gateway-tls
-      hosts:
-        - api.corporate-services.com
-
-resources:
-  limits:
-    cpu: 500m
-    memory: 512Mi
-  requests:
-    cpu: 250m
-    memory: 256Mi
-
-autoscaling:
-  enabled: true
-  minReplicas: 3
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 70
-  targetMemoryUtilizationPercentage: 80
-
-redis:
-  enabled: true
-  auth:
-    enabled: true
-  master:
-    persistence:
-      enabled: true
-      size: 8Gi
-
-monitoring:
-  prometheus:
-    enabled: true
-    port: 8080
-    path: /metrics
-  jaeger:
-    enabled: true
-    agent:
-      host: jaeger-agent
-      port: 6831
-
-configuration:
-  logLevel: "Information"
-  environment: "Production"
-  authentication:
-    authority: "https://identity.corporate-services.local"
-    requireHttps: true
-  rateLimiting:
-    defaultLimit: 1000
-    premiumLimit: 10000
-    windowMinutes: 1
+```json
+// appsettings.Production.json (fragmento)
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning"
+    }
+  },
+  "ReverseProxy": {
+    "Routes": {
+      "identity-route": {
+        "ClusterId": "identity-cluster",
+        "Match": { "Path": "/api/identity/{**catch-all}" }
+      }
+    },
+    "Clusters": {
+      "identity-cluster": {
+        "Destinations": {
+          "identity-1": { "Address": "http://identity-service:8080" }
+        }
+      }
+    }
+  },
+  "Authentication": {
+    "Authority": "https://identity.corporate-services.local",
+    "RequireHttpsMetadata": true
+  },
+  "RateLimiting": {
+    "DefaultPolicy": {
+      "PermitLimit": 1000,
+      "Window": "00:01:00"
+    }
+  },
+  "Observability": {
+    "ServiceName": "api-gateway",
+    "Jaeger": { "AgentHost": "jaeger-agent", "AgentPort": 6831 },
+    "Prometheus": { "Enabled": true, "Path": "/metrics" }
+  }
+}
 ```
 
-## 7.4 CI/CD Pipeline
+### 7.4.2 Gestión de secretos
 
-### 7.4.1 GitHub Actions workflow
+- `AWS Secrets Manager` para credenciales sensibles (`Redis`, JWT, certificados TLS).
+- Acceso a secretos vía variables de entorno y configuración segura en tiempo de despliegue.
+
+---
+
+## 7.5 Infraestructura como código
+
+- Todo el despliegue productivo se realiza con `Terraform` sobre AWS (`ECS Fargate`, `ElastiCache`, `ALB`, `Secrets Manager`).
+- Los entornos de desarrollo usan `docker-compose` y scripts Bash/PowerShell.
+- Los pipelines CI/CD integran validaciones de seguridad (`Checkov`), análisis de código (`SonarQube`) y despliegue automatizado (`GitHub Actions`).
+
+---
+
+## 7.6 CI/CD Pipeline
+
+- Pipeline basado en `GitHub Actions` con etapas de build, test, análisis de seguridad (`Trivy`), análisis de calidad (`SonarCloud`), build/push de imagen y despliegue a AWS ECS vía `Terraform` y `Helm`.
+- Ejemplo de workflow:
 
 ```yaml
 # .github/workflows/api-gateway-deploy.yml
@@ -819,9 +424,14 @@ jobs:
         kubectl get pods -n corporate-services -l app=api-gateway
 ```
 
-## 7.5 Monitoring y observabilidad
+---
 
-### 7.5.1 Prometheus configuration
+## 7.7 Monitoring y observabilidad
+
+- Stack de observabilidad: `Prometheus` (métricas), `Grafana` (dashboards), `Loki` (logs), `Jaeger` (tracing distribuido).
+- Dashboards y alertas preconfiguradas para latencia, errores 5xx, disponibilidad y saturación de recursos.
+- Exporters y anotaciones automáticas en los contenedores para scraping de métricas y logs estructurados.
+- Ejemplo de configuración Prometheus:
 
 ```yaml
 # monitoring/prometheus/prometheus.yml
@@ -861,7 +471,7 @@ alertas:
           - alertmanager:9093
 ```
 
-### 7.5.2 Alertas rules
+### 7.7.2 Alertas rules
 
 ```yaml
 # monitoring/prometheus/api-gateway-alerts.yml
@@ -895,3 +505,7 @@ groups:
       summary: "API Gateway is down"
       description: "API Gateway has been down for more than 1 minute"
 ```
+
+---
+
+> La implementación del API Gateway sigue los principios de Clean Architecture, IaC, seguridad y observabilidad, alineada a los ADRs y modelos C4/Structurizr DSL del sistema.

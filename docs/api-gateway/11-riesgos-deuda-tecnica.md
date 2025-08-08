@@ -1,46 +1,19 @@
 # 11. Riesgos y deuda técnica
 
-## 11.1 Riesgos identificados
-
-| Riesgo | Probabilidad | Impacto | Mitigación |
-|--------|--------------|---------|------------|
-| **YARP immaturity** | Media | Alto | Fallback a NGINX |
-| **Rate limiting failure** | Baja | Alto | Circuit breaker |
-| **Config corruption** | Baja | Medio | Validación + rollback |
-| **Keycloak dependency** | Media | Alto | Health checks |
-
-## 11.2 Deuda técnica
-
-| Área | Descripción | Prioridad | Esfuerzo |
-|------|---------------|-----------|----------|
-| **Monitoring** | Métricas custom | Alta | 1 sprint |
-| **Testing** | Load testing | Media | 2 sprints |
-| **Documentation** | API docs | Baja | 1 sprint |
-| **Security** | Penetration testing | Alta | 1 sprint |
-
-## 11.3 Acciones recomendadas
-
-| Acción | Plazo | Responsable |
-|--------|-------|-------------|
-| **Implementar circuit breakers** | 1 mes | DevOps |
-| **Setup monitoring completo** | 2 semanas | SRE |
-| **Pruebas de carga** | 1 mes | QA |
-| **Security audit** | 6 semanas | Security |
-
-## 11.1 Identificación de riesgos
+## 11.1 Identificación y mitigación de riesgos
 
 ### 11.1.1 Riesgos técnicos
 
 | ID | Riesgo | Probabilidad | Impacto | Severidad | Mitigación |
 |----|--------|--------------|---------|-----------|------------|
-| **RT-01** | YARP como tecnología nueva | Media | Alto | ⚠️ Alto | Evaluación exhaustiva, pruebas piloto, plan de contingencia |
-| **RT-02** | Punto único de falla en gateway | Media | Crítico | 🔴 Crítico | Despliegue multi-AZ, verificaciones de salud, auto-scaling |
-| **RT-03** | Degradación de rendimiento bajo carga | Alta | Alto | ⚠️ Alto | Pruebas de carga continuas, métricas en tiempo real, tuning |
-| **RT-04** | Fallos en cascada por circuit breakers | Media | Medio | 🟡 Medio | Configuración adaptativa, timeouts graduales |
-| **RT-05** | Vulnerabilidades en validación JWT | Baja | Alto | ⚠️ Alto | Auditorías de seguridad, validación rigurosa, logs |
+| `RT-01` | `YARP` como tecnología nueva | Media | Alto | ⚠️ Alto | Evaluación exhaustiva, pruebas piloto, plan de contingencia |
+| `RT-02` | Punto único de falla en `gateway` | Media | Crítico | 🔴 Crítico | Despliegue multi-AZ, health checks, auto-scaling |
+| `RT-03` | Degradación de rendimiento bajo carga | Alta | Alto | ⚠️ Alto | Pruebas de carga continuas, métricas en tiempo real, tuning |
+| `RT-04` | Fallos en cascada por `circuit breakers` | Media | Medio | 🟡 Medio | Configuración adaptativa, timeouts graduales |
+| `RT-05` | Vulnerabilidades en validación `JWT` | Baja | Alto | ⚠️ Alto | Auditorías de seguridad, validación rigurosa, logs |
 
 ```csharp
-// Implementación de mitigación para riesgos técnicos
+// Ejemplo de mitigación para riesgos técnicos
 public class RiskMitigationService
 {
     private readonly ILogger<RiskMitigationService> _logger;
@@ -116,14 +89,14 @@ public class RiskMitigationService
 
 | ID | Riesgo | Probabilidad | Impacto | Severidad | Mitigación |
 |----|--------|--------------|---------|-----------|------------|
-| **RO-01** | Configuración incorrecta de routing | Media | Alto | ⚠️ Alto | Validación automática, tests de integración, blue-green |
-| **RO-02** | Saturación de Redis para limitación de velocidad | Media | Medio | 🟡 Medio | Clustering, monitoreo, fallback local |
-| **RO-03** | Pérdida de conectividad con Identity Service | Baja | Alto | ⚠️ Alto | Cache local, degradación elegante, verificaciones de salud |
-| **RO-04** | Logs excesivos que afectan rendimiento | Alta | Bajo | 🟢 Bajo | Filtrado inteligente, sampling, archiving |
-| **RO-05** | Desincronización entre instancias | Media | Medio | 🟡 Medio | Configuración centralizada, versionado |
+| `RO-01` | Configuración incorrecta de routing | Media | Alto | ⚠️ Alto | Validación automática, tests de integración, blue-green |
+| `RO-02` | Saturación de `Redis` para rate limiting | Media | Medio | 🟡 Medio | Clustering, monitoreo, fallback local |
+| `RO-03` | Pérdida de conectividad con `Identity Service` | Baja | Alto | ⚠️ Alto | Cache local, degradación elegante, health checks |
+| `RO-04` | Logs excesivos que afectan rendimiento | Alta | Bajo | 🟢 Bajo | Filtrado inteligente, sampling, archiving |
+| `RO-05` | Desincronización entre instancias | Media | Medio | 🟡 Medio | Configuración centralizada, versionado |
 
 ```yaml
-# Procedimientos de mitigación operacional
+# Ejemplo de procedimientos de mitigación operacional
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -131,8 +104,8 @@ metadata:
 data:
   routing-validation.sh: |
     #!/bin/bash
-    # RO-01: Validación de configuración de routing
-    echo "Validating YARP routing configuration..."
+    # Validación de configuración de routing
+    yarp validate-config --config=/app/config/routing.json
 
     # Verificar sintaxis de configuración
     yarp validate-config --config=/app/config/routing.json
@@ -149,7 +122,7 @@ data:
 
   redis-health-check.sh: |
     #!/bin/bash
-    # RO-02: Monitoreo de salud de Redis
+    # Monitoreo de salud de Redis
     REDIS_HOST=${REDIS_HOST:-redis}
     REDIS_PORT=${REDIS_PORT:-6379}
 
@@ -179,14 +152,14 @@ data:
 
 | ID | Riesgo | Probabilidad | Impacto | Severidad | Mitigación |
 |----|--------|--------------|---------|-----------|------------|
-| **RS-01** | Ataques de DDoS | Media | Alto | ⚠️ Alto | Rate limiting distribuido, WAF, CDN |
-| **RS-02** | JWT token hijacking | Baja | Crítico | 🔴 Crítico | HTTPS obligatorio, token rotation, monitoring |
-| **RS-03** | Exposición de servicios internos | Baja | Alto | ⚠️ Alto | Validación de routing, network policies |
-| **RS-04** | Bypass de autenticación | Muy Baja | Crítico | 🔴 Crítico | Middleware obligatorio, auditorías, tests |
-| **RS-05** | Logging de información sensible | Media | Medio | 🟡 Medio | Filtros de logs, enmascaramiento, retention |
+| `RS-01` | Ataques de DDoS | Media | Alto | ⚠️ Alto | Rate limiting distribuido, WAF, CDN |
+| `RS-02` | `JWT` token hijacking | Baja | Crítico | 🔴 Crítico | HTTPS obligatorio, token rotation, monitoring |
+| `RS-03` | Exposición de servicios internos | Baja | Alto | ⚠️ Alto | Validación de routing, network policies |
+| `RS-04` | Bypass de autenticación | Muy Baja | Crítico | 🔴 Crítico | Middleware obligatorio, auditorías, tests |
+| `RS-05` | Logging de información sensible | Media | Medio | 🟡 Medio | Filtros de logs, enmascaramiento, retention |
 
 ```csharp
-// Implementación de mitigaciones de seguridad
+// Ejemplo de mitigaciones de seguridad
 public class ServicioMitigacionSeguridad
 {
     private readonly ILogger<SecurityMitigationService> _logger;
@@ -300,17 +273,17 @@ public class ServicioMitigacionSeguridad
 }
 ```
 
-## 11.2 Deuda técnica
+---
 
-### 11.2.1 Deuda técnica actual
+## 11.2 Deuda técnica
 
 | Categoría | Descripción | Prioridad | Esfuerzo estimado | Timeline |
 |-----------|-------------|-----------|-------------------|----------|
-| **Arquitectura** | Migración completa a YARP desde API proxy legacy | Alta | 4-6 semanas | Q2 2024 |
-| **Monitoreo** | Implementación de tracing distribuido completo | Media | 2-3 semanas | Q2 2024 |
-| **Testing** | Cobertura de pruebas de integración < 60% | Alta | 3-4 semanas | Q1-Q2 2024 |
-| **Documentación** | APIs sin documentación OpenAPI completa | Media | 1-2 semanas | Q2 2024 |
-| **Rendimiento** | Optimización de connection pooling | Baja | 1 semana | Q3 2024 |
+| `Arquitectura` | Migración completa a `YARP` desde API proxy legacy | Alta | 4-6 semanas | Q2 2024 |
+| `Monitoreo` | Implementación de tracing distribuido completo | Media | 2-3 semanas | Q2 2024 |
+| `Testing` | Cobertura de pruebas de integración < 60% | Alta | 3-4 semanas | Q1-Q2 2024 |
+| `Documentación` | APIs sin documentación `OpenAPI` completa | Media | 1-2 semanas | Q2 2024 |
+| `Rendimiento` | Optimización de `connection pooling` | Baja | 1 semana | Q3 2024 |
 
 ```csharp
 // Plan de resolución de deuda técnica
@@ -439,6 +412,8 @@ public class TechnicalDebtResolutionPlan
 }
 ```
 
+---
+
 ## 11.3 Plan de contingencia
 
 ### 11.3.1 Escenarios de contingencia
@@ -454,7 +429,6 @@ contingency_plans:
       - "Health check failures across all instances"
       - "Error rate > 90% for 2+ minutes"
       - "Load balancer marking all targets unhealthy"
-
     immediate_response:
       - trigger: "Automated failover to backup region"
         timeout: "30 seconds"
@@ -462,13 +436,11 @@ contingency_plans:
         timeout: "2 minutes"
       - trigger: "Alert on-call team"
         timeout: "Immediate"
-
     recovery_steps:
       - "Scale up new YARP instances in backup region"
       - "Validate configuration and health"
       - "Gradually shift traffic back"
       - "Post-mortem and root cause analysis"
-
   scenario_2:
     name: "Redis Cluster Failure"
     probability: "Medium"
@@ -477,18 +449,15 @@ contingency_plans:
       - "Redis connection timeouts"
       - "Rate limiting fallback activations"
       - "Increased local cache usage"
-
     immediate_response:
       - trigger: "Activate local limitación de velocidad"
         timeout: "10 seconds"
       - trigger: "Scale Redis backup cluster"
         timeout: "5 minutes"
-
     recovery_steps:
       - "Restore Redis cluster from backup"
       - "Validate data consistency"
       - "Gradually migrate traffic back"
-
   scenario_3:
     name: "Identity Service Unavailable"
     probability: "Medium"
@@ -497,7 +466,6 @@ contingency_plans:
       - "JWT validation failures increasing"
       - "Identity service health checks failing"
       - "Authentication error rate > 10%"
-
     immediate_response:
       - trigger: "Extend JWT cache TTL"
         timeout: "Immediate"
@@ -557,3 +525,7 @@ esac
 echo "Rollback completed. Verifying system health..."
 ./scripts/post-rollback-verification.sh
 ```
+
+---
+
+> Todos los riesgos y la deuda técnica están identificados, priorizados y alineados a los ADRs, modelos C4/Structurizr DSL y objetivos de resiliencia, seguridad y mantenibilidad definidos para el API Gateway.

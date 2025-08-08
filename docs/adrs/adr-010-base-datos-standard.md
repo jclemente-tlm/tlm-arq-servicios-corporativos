@@ -27,22 +27,21 @@ Las alternativas evaluadas fueron:
 - **MySQL/MariaDB** (Open source, popular, funcionalidad básica)
 - **SQL Server** (Microsoft, propietario, integración .NET)
 - **Oracle Database** (Propietario, enterprise, alto costo)
-- **CockroachDB** (Distribuido, cloud-native, compatible PostgreSQL)
 - **Amazon Aurora** (Gestionado AWS, compatible MySQL/PostgreSQL)
 
 ## 🔍 COMPARATIVA DE ALTERNATIVAS
 
 ### Comparativa Cualitativa
 
-| Criterio | PostgreSQL | MySQL | SQL Server | Oracle | MongoDB |
-|----------|------------|-------|------------|--------|---------|
-| **Madurez** | ✅ Muy maduro, 25+ años | ✅ Muy maduro, estable | ✅ Maduro, enterprise | ✅ Muy maduro, líder | 🟡 Maduro pero más joven |
-| **Ecosistema .NET** | ✅ Excelente con Npgsql | ✅ Muy bueno | ✅ Nativo Microsoft | ✅ Bueno | 🟡 Limitado |
-| **Costos** | ✅ Completamente gratuito | ✅ Gratuito (Community) | ❌ Licencias muy caras | ❌ Licencias muy caras | ✅ Gratuito (Community) |
-| **Rendimiento** | ✅ Excelente OLTP/OLAP | ✅ Muy bueno OLTP | ✅ Excelente enterprise | ✅ Máximo rendimiento | ✅ Muy bueno NoSQL |
-| **Características** | ✅ Muy avanzado (JSON, etc) | 🟡 Básico pero sólido | ✅ Muy completo | ✅ Máximas características | 🟡 NoSQL flexible |
-| **Comunidad** | ✅ Muy activa, OSS | ✅ Muy activa | ✅ Soporte Microsoft | ✅ Soporte enterprise | ✅ Muy activa |
-| **Portabilidad** | ✅ Multi-plataforma | ✅ Multi-plataforma | ❌ Principalmente Windows | ❌ Limitada | ✅ Multi-plataforma |
+| Criterio | PostgreSQL | MySQL | SQL Server | Oracle | Aurora |
+|----------|------------|-------|------------|--------|--------|
+| **Madurez** | ✅ Muy maduro, 25+ años | ✅ Muy maduro, estable | ✅ Maduro, enterprise | ✅ Muy maduro, líder | 🟡 Reciente, gestionado |
+| **Ecosistema .NET** | ✅ Excelente con Npgsql | ✅ Muy bueno | ✅ Nativo Microsoft | ✅ Bueno | ✅ Compatible (PostgreSQL/MySQL) |
+| **Costos** | ✅ Completamente gratuito | ✅ Gratuito (Community) | ❌ Licencias muy caras | ❌ Licencias muy caras | 🟡 Pago por uso |
+| **Rendimiento** | ✅ Excelente OLTP/OLAP | ✅ Muy bueno OLTP | ✅ Excelente enterprise | ✅ Máximo rendimiento | ✅ Muy bueno, gestionado |
+| **Características** | ✅ Muy avanzado (JSON, etc) | 🟡 Básico pero sólido | ✅ Muy completo | ✅ Máximas características | 🟡 Compatible, gestionado |
+| **Comunidad** | ✅ Muy activa, OSS | ✅ Muy activa | ✅ Soporte Microsoft | ✅ Soporte enterprise | 🟡 Limitada a AWS |
+| **Portabilidad** | ✅ Multi-plataforma | ✅ Multi-plataforma | ❌ Principalmente Windows | ❌ Limitada | ❌ Lock-in AWS |
 
 ### Matriz de Decisión
 
@@ -52,7 +51,7 @@ Las alternativas evaluadas fueron:
 | **SQL Server** | Excelente | Nativo | Muy caro | Muy completo | 🟡 Alternativa |
 | **MySQL** | Excelente | Muy bueno | Gratuito | Básico | 🟡 Considerada |
 | **Oracle** | Excelente | Bueno | Muy caro | Máximo | ❌ Descartada |
-| **MongoDB** | Buena | Limitado | Gratuito | NoSQL | ❌ Descartada |
+| **Aurora** | Buena | Compatible | Pago por uso | Compatible | ❌ Descartada |
 
 ## 💰 ANÁLISIS DE COSTOS (TCO 3 años)
 
@@ -64,7 +63,6 @@ Las alternativas evaluadas fueron:
 | **MySQL/MariaDB** | US$0 (OSS) | US$6,000/año | US$15,000/año | **US$63,000** |
 | **SQL Server** | US$60,000/año | US$7,200/año | US$24,000/año | **US$273,600** |
 | **Oracle** | US$120,000/año | US$10,800/año | US$36,000/año | **US$500,400** |
-| **CockroachDB** | US$36,000/año | US$14,400/año | US$12,000/año | **US$187,200** |
 | **Aurora PostgreSQL** | Pago por uso | US$0 | US$0 | **US$108,000** |
 
 ### Escenario Alto Volumen: 20 bases de datos, multi-región
@@ -75,7 +73,6 @@ Las alternativas evaluadas fueron:
 | **MySQL/MariaDB** | **US$180,000** | Manual, limitada |
 | **SQL Server** | **US$900,000** | Manual con Always On |
 | **Oracle** | **US$1,800,000** | Manual con RAC |
-| **CockroachDB** | **US$600,000** | Automática, distribuida |
 | **Aurora PostgreSQL** | **US$432,000** | Automática, gestionada |
 
 ### Factores de Costo Adicionales
@@ -145,4 +142,3 @@ Se adopta PostgreSQL como base de datos relacional estándar para todos los serv
 - [AWS RDS PostgreSQL](https://aws.amazon.com/rds/postgresql/)
 - [Comparativa DB Engines](https://db-engines.com/en/ranking)
 - [Arc42: Decisiones de arquitectura](https://arc42.org/decision/)
-

@@ -4,22 +4,22 @@
 
 | Componente | Ubicación | Tecnología |
 |------------|-------------|-------------|
-| **Notification API** | /src/NotificationApi | .NET 8 Web API |
-| **Notification Processor** | /src/NotificationProcessor | .NET 8 Worker |
-| **PostgreSQL** | AWS RDS | PostgreSQL 15+ |
-| **Redis** | AWS ElastiCache | Redis 7+ |
-| **File Storage** | AWS EFS | Sistema archivos |
+| **Notification API** | `/src/NotificationApi` | `.NET 8 Web API` |
+| **Notification Processor** | `/src/NotificationProcessor` | `.NET 8 Worker` |
+| **PostgreSQL** | `AWS RDS` | `PostgreSQL 15+` |
+| **Redis** | `AWS ElastiCache` | `Redis 7+` |
+| **File Storage** | `AWS EFS` | `Sistema archivos` |
 
 ## 7.2 Dependencias principales
 
 | Dependencia | Versión | Propósito |
 |-------------|---------|----------|
-| **Entity Framework** | 8.0+ | ORM |
-| **FluentValidation** | 11.0+ | Validación |
-| **RazorEngine** | 4.0+ | Plantillas |
-| **Serilog** | 3.0+ | Logging |
+| **Entity Framework** | `8.0+` | ORM |
+| **FluentValidation** | `11.0+` | Validación |
+| **RazorEngine** | `4.0+` | Plantillas |
+| **Serilog** | `3.0+` | Logging |
 
-## 7.1 Infraestructura de Despliegue
+## 7.3 Infraestructura de Despliegue
 
 ### Arquitectura de Contenedores
 
@@ -118,7 +118,7 @@ Topics:
       retention.ms: 2592000000  # 30 days
 ```
 
-## 7.2 Deployment Environments
+## 7.4 Deployment Environments
 
 ### Entorno de Desarrollo
 
@@ -174,10 +174,9 @@ Configuration:
   - WhatsApp: WhatsApp Business API
 ```
 
-## 7.3 Provider Integration Architecture
+## 7.5 Provider Integration Architecture
 
 ### Multi-Provider Strategy
-
 
 ```yaml
 Email Providers:
@@ -205,7 +204,6 @@ SMS Providers:
     - Features: Cost optimization
 ```
 
-
 ### Provider Abstraction Layer
 
 ```csharp
@@ -232,8 +230,7 @@ public class EmailProviderFactory
 }
 ```
 
-## 7.4 Security Implementation
-
+## 7.6 Security Implementation
 
 ### Network Security
 
@@ -294,7 +291,7 @@ Encryption Strategy:
 
 ```
 
-## 7.5 Monitoring & Observability
+## 7.7 Monitoring & Observability
 
 ### Metrics Collection
 
@@ -356,7 +353,7 @@ Jaeger Configuration:
     - Database operations
 ```
 
-## 7.6 CI/CD Pipeline
+## 7.8 CI/CD Pipeline
 
 ### Build Pipeline
 
@@ -423,7 +420,7 @@ Migration Pipeline:
   6. Production deployment (maintenance window)
 ```
 
-## 7.7 Scaling Strategy
+## 7.9 Scaling Strategy
 
 ### Horizontal Scaling
 
@@ -462,10 +459,9 @@ Kafka Scaling:
     - Dead letter queues for failed messages
 ```
 
-## 7.8 Disaster Recovery
+## 7.10 Disaster Recovery
 
 ### Backup Strategy
-
 
 ```yaml
 Database Backups:
@@ -479,7 +475,6 @@ Message Queue Backups:
   - Consumer offset backup
   - Schema registry backup
 ```
-
 
 ### Recovery Procedures
 
@@ -505,8 +500,7 @@ Recovery Point Objectives:
 ├── docker/
 └── README.md
 
-```
-
+````markdown
 ## 7.2 Consideraciones de despliegue
 
 - Despliegue en <span style="color:#1976d2"><b>AWS</b></span> usando <b>Docker</b> y <b>docker-compose</b>
@@ -514,3 +508,4 @@ Recovery Point Objectives:
 - Variables sensibles gestionadas por <code>secrets</code> y <code>Parameter Store</code>
 - Versionado semántico (`semver`)
 - Integración con <b>monitorización</b> y <b>logging centralizado</b>
+````

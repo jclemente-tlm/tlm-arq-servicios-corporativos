@@ -584,7 +584,7 @@ Response Levels:
 
 Communication Plan:
   Internal: Slack alerts + email escalation
-  Customer: Status page + proactive communication
+  Customer: Status page + proactive comunicación
   Executive: Real-time dashboards + incident summaries
   Post-Incident: Root cause analysis within 24h
 ```

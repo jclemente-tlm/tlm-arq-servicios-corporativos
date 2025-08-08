@@ -28,7 +28,7 @@ El **Sistema de Mensajería SITA** es un servicio especializado diseñado para g
 
 ### Propósito del Sistema
 
-El sistema actúa como puente entre los eventos corporativos internos y la red SITA global, transformando eventos de negocio en mensajes SITA estandardizados y gestionando la entrega confiable a aerolíneas y sistemas de partners.
+El sistema actúa como puente entre los eventos corporativos internos y la red SITA global, transformando eventos de negocio en mensajes SITA estandarizados y gestionando la entrega confiable a aerolíneas y sistemas de partners.
 
 ### Contexto del Dominio SITA
 

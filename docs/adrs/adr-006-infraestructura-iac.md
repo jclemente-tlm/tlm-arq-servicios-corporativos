@@ -147,5 +147,3 @@ Se adopta **Terraform** como herramienta estándar de Infrastructure as Code par
 - [Terraform Documentation](https://www.terraform.io/docs)
 - [Terraform Registry](https://registry.terraform.io/)
 - [HashiCorp Learn](https://learn.hashicorp.com/terraform)
-- [ADR-014: CI/CD GitHub Actions](adr-014-ci-cd-github-actions.md)
-

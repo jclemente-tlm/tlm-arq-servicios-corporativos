@@ -1,4 +1,54 @@
-# 9. Decisiones de arquitectura
+# 9. Decisiones de Arquitectura
+
+Esta sección documenta las decisiones arquitectónicas clave del **Sistema de Identidad**, siguiendo el formato ADR (Architecture Decision Record) y alineando cada decisión a los principios de portabilidad, estándares abiertos, multi-tenant y operación cloud-agnostic.
+
+## 9.1 Decisiones Principales
+
+| ADR     | Decisión                        | Estado    | Justificación         |
+|---------|----------------------------------|-----------|----------------------|
+| ADR-001 | Keycloak como IdP                | Aceptado  | Open source maduro   |
+| ADR-002 | Multi-tenant (realm) por país    | Aceptado  | Aislamiento total    |
+| ADR-003 | PostgreSQL backend               | Aceptado  | Robustez             |
+| ADR-004 | Federación híbrida               | Aceptado  | Flexibilidad         |
+
+## 9.2 Alternativas Evaluadas
+
+| Componente   | Alternativas           | Selección | Razón         |
+|--------------|-----------------------|-----------|---------------|
+| IdP          | Auth0, Okta, Keycloak | Keycloak  | Control total |
+| Base de datos| MySQL, PostgreSQL     | PostgreSQL| Compatibilidad|
+| Deployment   | VM, Container, K8s    | Container | Portabilidad  |
+| Federación   | Full, None, Híbrida   | Híbrida   | Gradual       |
+
+> Todas las decisiones siguen los principios: agnóstico de nube, sin desarrollo personalizado, basado en estándares, multi-tenant (realm), contenedores primero, sin dependencia de proveedor. Cada ADR documenta contexto, justificación y consecuencias.
+
+## 9.3 Resumen de Decisiones
+
+| #       | Decisión                    | Estado     | Impacto | Fecha       |
+|---------|-----------------------------|------------|---------|-------------|
+| ADR-001 | Keycloak Containerizado     | Aprobado   | Alto    | 2024-01-15  |
+| ADR-002 | Multi-tenant (realm)        | Aprobado   | Alto    | 2024-01-20  |
+| ADR-003 | Database-backed Sessions    | Aprobado   | Medio   | 2024-01-25  |
+| ADR-004 | OAuth2 + OIDC Standard      | Aprobado   | Alto    | 2024-01-30  |
+
+## 9.4 Principios Arquitectónicos
+
+- **Portabilidad entre nubes:** Keycloak y PostgreSQL desplegables en AWS, Azure, GCP o on-premise
+- **Sin desarrollo personalizado:** Uso de Keycloak y PostgreSQL listos para usar
+- **Estándares abiertos:** OAuth2, OIDC, SAML 2.0 para máxima interoperabilidad
+- **Multi-tenant (realm) por país:** Aislamiento total de datos y configuración
+- **Contenedores y orquestación:** Docker/Kubernetes como base de despliegue
+- **Independencia de proveedor:** Sin lock-in, migración sencilla
+
+## 9.5 Referencias
+
+- [Arc42 ADR Template](https://docs.arc42.org/section-9/)
+- [Keycloak Architecture](https://www.keycloak.org/architecture/)
+- [C4 Model for Software Architecture](https://c4model.com/)
+
+---
+
+# 9. Decisiones de arquitectura (Detalle ADR)
 
 ## 9.1 Decisiones principales
 

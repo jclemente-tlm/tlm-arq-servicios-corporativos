@@ -1,5 +1,7 @@
 # 2. Restricciones de la arquitectura
 
+Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguridad, organizacionales y regulatorias que condicionan el diseño y operación del sistema de mensajería SITA. Las restricciones aquí descritas son obligatorias y deben ser consideradas en cada decisión arquitectónica.
+
 ## 2.1 Restricciones técnicas
 
 | Categoría | Restricción | Justificación |
@@ -10,35 +12,8 @@
 | **Contenedores** | Docker | Portabilidad |
 | **Protocolos SITA** | SITATEX, AFTN | Estándares aeronáuticos |
 
-## 2.2 Restricciones de rendimiento
-
-| Métrica | Objetivo | Razón |
-|---------|----------|-------|
-| **Capacidad** | 10,000+ mensajes/hora | Volumen aeronáutico |
-| **Latencia** | < 30s extremo a extremo | Operaciones críticas |
-| **Disponibilidad** | 99.95% | Operaciones aeronáuticas |
-| **Cumplimiento** | 100% estándares ICAO | Regulatorio |
-
-## 2.3 Restricciones de seguridad
-
-| Aspecto | Requerimiento | Estándar |
-|---------|---------------|----------|
-| **Cumplimiento** | Estándares ICAO | Aeronáutico |
-| **Cifrado** | TLS 1.3 | Mejores prácticas |
-| **Autenticación** | JWT obligatorio | Zero trust |
-| **Trazabilidad** | Auditoría completa | Compliance |
-
-## 2.4 Restricciones organizacionales
-
-| Área | Restricción | Impacto |
-|------|---------------|--------|
-| **Multi-tenancy** | Aislamiento por aeropuerto | Operaciones independientes |
-| **Operaciones** | DevOps 24/7 | Continuidad aeronáutica |
-| **Documentación** | ARC42 actualizada | Mantenibilidad |
-
-## 2.1 Restricciones técnicas
-
 ### Protocolos SITA obligatorios
+
 - **SITA SITATEX** para comunicación aeronáutica
 - **Direccionamiento AFTN** para enrutamiento
 - **Estándares ICAO** para formatos de mensaje
@@ -73,7 +48,7 @@
 | **Disponibilidad** | 99.95% tiempo de actividad | Operaciones 24/7, impacto en vuelos | Agrupación activo-pasivo |
 | **Tamaño de Mensaje** | Hasta 32KB por mensaje SITA | Limitación de protocolo SITATEX | Fragmentación de mensaje, compresión |
 
-## 2.2 Restricciones organizacionales
+## 2.2 Restricciones organizacionales y regulatorias
 
 ### Cumplimiento y Regulatorio
 
@@ -102,7 +77,7 @@
 | **Support Model** | L1/L2/L3 support structure | Escalation procedures defined | Operational dashboards, documentation |
 | **Disaster Recovery** | RTO: 4 horas, RPO: 15 minutos | Business continuity requirements | Cross-region replication |
 
-## 2.3 Restricciones convencionales
+## 2.3 Restricciones convencionales y de calidad
 
 ### Estándares de Desarrollo
 

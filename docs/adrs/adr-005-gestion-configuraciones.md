@@ -30,32 +30,30 @@ Las alternativas evaluadas fueron:
 - **Azure App Configuration** (Managed service, Azure nativo)
 - **Google Cloud Runtime Config** (Managed service, GCP nativo)
 - **etcd** (Distributed KV store, Kubernetes nativo)
-- **Apache Zookeeper** (Coordination service, configuration)
 
 ## 🔍 COMPARATIVA DE ALTERNATIVAS
 
 ### Comparativa Cualitativa
 
-| Criterio | Consul | Parameter Store | Azure App Config | etcd | Zookeeper | GCP Runtime |
-|----------|--------|-----------------|------------------|------|-----------|-------------|
-| **Agnosticidad** | ✅ Totalmente agnóstico | ❌ Lock-in AWS | ❌ Lock-in Azure | ✅ Agnóstico K8s | ✅ Agnóstico | ❌ Lock-in GCP |
-| **Feature Flags** | ✅ KV dinámico | 🟡 Básico | ✅ Nativo, completo | 🟡 Manual | 🟡 Muy básico | 🟡 Básico |
-| **Multi-tenancy** | ✅ Namespaces nativos | 🟡 Por parámetros | ✅ Labels y filtros | 🟡 Por prefijos | 🟡 Manual | 🟡 Por proyectos |
-| **Operación** | 🟡 Requiere cluster | ✅ Totalmente gestionado | ✅ Totalmente gestionado | 🟡 Gestión manual | 🟡 Complejo | ✅ Gestionado |
-| **Versionado** | ✅ Transacciones | ✅ Historial | ✅ Snapshots | 🟡 Manual | 🟡 No nativo | ✅ Versionado |
-| **Ecosistema .NET** | ✅ Cliente oficial | ✅ SDK nativo | ✅ SDK nativo | 🟡 Terceros | 🟡 Limitado | 🟡 Básico |
-| **Costos** | ✅ Gratuito OSS | ✅ Muy económico | 🟡 Por transacción | ✅ Gratuito | ✅ Gratuito | 🟡 Por uso |
+| Criterio | Consul | Parameter Store | Azure App Config | etcd | GCP Runtime |
+|----------|--------|-----------------|------------------|------|-------------|
+| **Agnosticidad** | ✅ Totalmente agnóstico | ❌ Lock-in AWS | ❌ Lock-in Azure | ✅ Agnóstico K8s | ❌ Lock-in GCP |
+| **Feature Flags** | ✅ KV dinámico | 🟡 Básico | ✅ Nativo, completo | 🟡 Manual | 🟡 Básico |
+| **Multi-tenancy** | ✅ Namespaces nativos | 🟡 Por parámetros | ✅ Labels y filtros | 🟡 Por prefijos | 🟡 Por proyectos |
+| **Operación** | 🟡 Requiere cluster | ✅ Totalmente gestionado | ✅ Totalmente gestionado | 🟡 Gestión manual | ✅ Gestionado |
+| **Versionado** | ✅ Transacciones | ✅ Historial | ✅ Snapshots | 🟡 Manual | ✅ Versionado |
+| **Ecosistema .NET** | ✅ Cliente oficial | ✅ SDK nativo | ✅ SDK nativo | 🟡 Terceros | 🟡 Básico |
+| **Costos** | ✅ Gratuito OSS | ✅ Muy económico | 🟡 Por transacción | ✅ Gratuito | 🟡 Por uso |
 
 ### Matriz de Decisión
 
 | Solución | Agnosticidad | Feature Flags | Multi-tenancy | Operación | Recomendación |
 |----------|--------------|---------------|---------------|-----------|---------------|
-| **HashiCorp Consul** | Excelente | Buena | Excelente | Manual | ✅ **Seleccionada** |
-| **Azure App Configuration** | Mala | Excelente | Excelente | Gestionada | 🟡 Alternativa |
-| **AWS Parameter Store** | Mala | Básica | Moderada | Gestionada | 🟡 Considerada |
+| **AWS Parameter Store** | Mala | Básica | Moderada | Gestionada | ✅ **Seleccionada** |
+| **HashiCorp Consul** | Excelente | Buena | Excelente | Manual | 🟡 Alternativa |
+| **Azure App Configuration** | Mala | Excelente | Excelente | Gestionada | 🟡 Considerada |
 | **etcd** | Excelente | Manual | Moderada | Manual | 🟡 Considerada |
 | **GCP Runtime Config** | Mala | Básica | Moderada | Gestionada | ❌ Descartada |
-| **Apache Zookeeper** | Excelente | Muy básica | Manual | Compleja | ❌ Descartada |
 
 ### Comparativa de costos estimados (2025)
 
@@ -81,7 +79,6 @@ Las alternativas evaluadas fueron:
 | **Parameter Store** | Pago por uso | US$0 | US$0 | **US$1,440/año** |
 | **etcd** | US$0 (OSS) | US$1,800/año | US$18,000/año | **US$59,400** |
 | **GCP Runtime Config** | Pago por uso | US$0 | US$0 | **US$1,680/año** |
-| **Zookeeper** | US$0 (OSS) | US$2,400/año | US$30,000/año | **US$97,200** |
 
 ### Escenario Alto Volumen: 10K parámetros, 1M requests/mes
 
@@ -92,7 +89,6 @@ Las alternativas evaluadas fueron:
 | **Parameter Store** | **US$144,000** | No | Manual |
 | **etcd** | **US$120,000** | Sí | Manual |
 | **GCP Runtime Config** | **US$168,000** | No | Manual |
-| **Zookeeper** | **US$240,000** | Sí | Manual |
 
 ### Factores de Costo Adicionales
 
@@ -111,13 +107,14 @@ Consideraciones Consul:
 
 ## ✔️ DECISIÓN
 
-Se recomienda desacoplar la gestión de configuración mediante interfaces y adaptadores. Inicialmente se usará AWS Parameter Store, pero la arquitectura soporta migración a Consul o soluciones cloud equivalentes según necesidades de portabilidad o despliegue híbrido.
+Se recomienda desacoplar la gestión de configuración mediante interfaces y adaptadores. Inicialmente se usará **AWS Parameter Store** como solución principal, pero la arquitectura soporta migración a Consul o soluciones cloud equivalentes según necesidades de portabilidad o despliegue híbrido.
 
 ## Justificación
 
 - Permite gestión centralizada, segura y versionada de la configuración.
 - Facilita la portabilidad y despliegue multi-cloud.
 - El desacoplamiento del backend permite cambiar de tecnología sin impacto en la lógica de negocio.
+- **AWS Parameter Store** es la opción seleccionada por su integración gestionada, bajo costo y facilidad de operación en el contexto actual.
 - Consul es una opción madura y ampliamente soportada para escenarios on-premises o híbridos.
 
 ## Limitaciones
@@ -145,4 +142,3 @@ Se recomienda desacoplar la gestión de configuración mediante interfaces y ada
 - [Azure App Configuration](https://azure.microsoft.com/en-us/services/app-configuration/)
 - [Consul](https://www.consul.io/)
 - [Google Runtime Config](https://cloud.google.com/deployment-manager/runtime-configurator)
-

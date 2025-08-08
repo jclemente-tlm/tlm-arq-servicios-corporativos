@@ -2,34 +2,37 @@
 
 ## 4.1 Decisiones clave
 
-| Decisión | Alternativa elegida | Justificación |
-|----------|-------------------|---------------|
-| **Proxy** | YARP | Microsoft, alto rendimiento |
-| **Autenticación** | JWT + OAuth2 | Estándar industria |
-| **Rate Limiting** | Redis | Escalabilidad |
-| **Resiliencia** | Polly | Patrones probados |
+| Decisión         | Alternativa elegida         | Justificación                |
+|------------------|----------------------------|------------------------------|
+| `Proxy`          | `YARP`                     | Microsoft, alto rendimiento  |
+| `Autenticación`  | `JWT` + `OAuth2`           | Estándar industria           |
+| `Rate Limiting`  | `Redis`                    | Escalabilidad, multi-tenant  |
+| `Resiliencia`    | `Polly`                    | Patrones probados            |
+| `Observabilidad` | `Grafana`, `Prometheus`, `Loki`, `Jaeger` | Stack estándar, trazabilidad y monitoreo |
+| `Despliegue`     | `AWS ECS Fargate` + `Terraform` | Portabilidad, IaC, automatización |
 
 ## 4.2 Patrones aplicados
 
-| Patrón | Propósito | Implementación |
-|---------|------------|----------------|
-| **API Gateway** | Punto de entrada único | YARP |
-| **Circuit Breaker** | Tolerancia a fallos | Polly |
-| **Rate Limiting** | Protección recursos | Redis |
-| **Load Balancing** | Distribución carga | YARP |
+| Patrón                | Propósito                  | Implementación              |
+|-----------------------|----------------------------|-----------------------------|
+| `API Gateway`         | Punto de entrada único     | `YARP`                      |
+| `Circuit Breaker`     | Tolerancia a fallos        | `Polly`                     |
+| `Rate Limiting`       | Protección recursos        | `Redis`                     |
+| `Load Balancing`      | Distribución carga         | `ALB` + `YARP`              |
+| `Observabilidad`      | Monitoreo y trazabilidad   | `Prometheus`, `Loki`, `Jaeger`, `Grafana` |
 
 ## 4.3 Multi-tenancy
 
-| Aspecto | Implementación | Tecnología |
-|---------|-----------------|-------------|
-| **Tenant resolution** | JWT claims | Keycloak realms |
-| **Configuración** | Por tenant | Dinámico |
-| **Rate limiting** | Por tenant/usuario | Redis buckets |
-| **Enrutamiento** | Basado en tenant | YARP rules |
+| Aspecto               | Implementación             | Tecnología                  |
+|-----------------------|---------------------------|-----------------------------|
+| `Tenant resolution`   | `JWT claims`              | `Keycloak realms`           |
+| `Configuración`       | Por tenant                | Dinámico vía `SSM`/env      |
+| `Rate limiting`       | Por tenant/usuario        | `Redis buckets`             |
+| `Enrutamiento`        | Basado en tenant          | `YARP rules`                |
 
 ### Cabeceras de Seguridad
 
-```
+```http
 Strict-Transport-Security: max-age=31536000; includeSubDomains
 X-Frame-Options: DENY
 X-Content-Type-Options: nosniff
@@ -37,68 +40,54 @@ X-XSS-Protection: 1; mode=block
 Content-Security-Policy: default-src 'self'
 ```
 
-## 4.6 Estrategia de Rendimiento
+## 4.4 Estrategia de despliegue y orquestación
 
-### Técnicas de Optimización
+- Despliegue en `AWS ECS Fargate` usando `Terraform` como IaC.
+- Balanceo de carga y alta disponibilidad mediante `Application Load Balancer` multi-AZ.
+- Autoescalado por métricas de `CloudWatch` y `Prometheus`.
+- Blue-green deployment y rollback automático vía ECS y ALB.
+- Observabilidad y monitoreo centralizados con `Grafana`, `Prometheus`, `Loki` y `Jaeger`.
 
-| Técnica | Propósito | Implementación |
-|---------|-----------|----------------|
-| **Pooling de Conexiones** | Reducir latencia | Pooling de clientes HTTP |
-| **Compresión de Respuesta** | Reducir ancho de banda | Codificación gzip/brotli |
-| **HTTP/2** | Multiplexación | Soporte nativo en .NET |
-| **Caching** | Reducir carga | Headers de caché de respuesta |
-| **Balanceo de Carga** | Distribuir carga | Round-robin ponderado |
+## 4.5 Estrategia de rendimiento
 
-### Objetivos de Rendimiento
+| Técnica                    | Propósito                | Implementación                  |
+|----------------------------|--------------------------|---------------------------------|
+| `Pooling de Conexiones`    | Reducir latencia         | Pooling de clientes HTTP        |
+| `Compresión de Respuesta`  | Reducir ancho de banda   | Gzip/Brotli                     |
+| `HTTP/2`                   | Multiplexación           | Soporte nativo en `.NET`        |
+| `Caching`                  | Reducir carga            | Headers de caché, Redis         |
+| `Balanceo de Carga`        | Distribuir carga         | ALB + YARP                      |
 
-| Métrica | Objetivo | Medición |
-|---------|----------|----------|
-| **Sobrecarga de Latencia** | < 10ms p95 | Monitoreo APM |
-| **Rendimiento** | 10K req/s | Pruebas de carga |
-| **Uso de Memoria** | < 2GB por instancia | Métricas de contenedor |
-| **Uso de CPU** | < 70% promedio | Métricas CloudWatch |
-| **Tasa de Error** | < 0.1% | Seguimiento de errores |
+| Métrica                    | Objetivo                 | Medición                        |
+|----------------------------|--------------------------|---------------------------------|
+| `Sobrecarga de Latencia`   | `< 10ms p95`             | Monitoreo APM                   |
+| `Rendimiento`              | `10K req/s`              | Pruebas de carga                |
+| `Uso de Memoria`           | `< 2GB` por instancia    | Métricas de contenedor          |
+| `Uso de CPU`               | `< 70%` promedio         | Métricas `CloudWatch`           |
+| `Tasa de Error`            | `< 0.1%`                 | Seguimiento de errores          |
 
-## 4.7 Estrategia de Configuración Dinámica
+## 4.6 Estrategia de configuración dinámica
 
-### Fuentes de Configuración
+- Configuración centralizada vía `AWS Systems Manager` (SSM) y `Secrets Manager`.
+- Variables de entorno para overrides por ambiente y tenant.
+- Recarga en caliente cada 30 segundos, validación de esquema y rollback automático si falla health check.
+- Jerarquía: `Env Vars > SSM > Archivos locales > Defaults`.
 
-- **AWS Systems Manager:** Parameter Store para configuraciones
-- **AWS Secrets Manager:** Claves API y certificados
-- **Variables de Entorno:** Overrides a nivel de contenedor
-- **Archivos Locales:** Configuración de respaldo
+## 4.7 Estrategia de testing
 
-### Jerarquía de Configuración
+| Nivel         | Tipo                  | Cobertura   | Herramientas                  |
+|--------------|-----------------------|-------------|-------------------------------|
+| `Unitario`   | Componentes           | 80%+        | `xUnit`, `Moq`                |
+| `Integración`| API                   | 70%+        | `TestServer`, `WebAppFactory` |
+| `Contrato`   | API contract          | 100%        | `Pact`, validación OpenAPI    |
+| `Carga`      | Performance           | Escenarios clave | `NBomber`, `Artillery`   |
+| `Seguridad`  | OWASP Top 10          | Completo    | `OWASP ZAP`, `SonarQube`      |
 
-```
-Variables de Entorno > AWS SSM > Archivos Locales > Valores por Defecto
-```
+- Testing automatizado en CI/CD (`GitHub Actions`).
+- Paridad de ambientes y testing multi-tenant.
+- Integración con `Keycloak` para pruebas de autenticación multi-realm.
+- Validación de observabilidad: métricas, logs y trazas generadas y exportadas correctamente a `Prometheus`, `Loki` y `Jaeger`.
 
-### Proceso de Recarga en Caliente
+---
 
-1. **Sondeo:** Verificar cambios cada 30 segundos
-2. **Validación:** Validación de esquema de nueva configuración
-3. **Despliegue Gradual:** Aplicar cambios incrementalmente
-4. **Verificación de Salud:** Verificar salud del sistema post-cambio
-5. **Rollback:** Auto-rollback si las verificaciones de salud fallan
-
-## 4.8 Estrategia de Testing
-
-### Pirámide de Testing
-
-| Nivel | Tipo | Cobertura | Herramientas |
-|-------|------|-----------|--------------|
-| **Unitario** | Testing de componentes | 80%+ | xUnit, Moq |
-| **Integración** | Testing de API | 70%+ | TestServer, WebApplicationFactory |
-| **Contrato** | Contrato de API | 100% | Pact, validación OpenAPI |
-| **Carga** | Testing de rendimiento | Escenarios clave | NBomber, Artillery |
-| **Seguridad** | Testing de seguridad | OWASP Top 10 | OWASP ZAP, SonarQube |
-
-### Estrategia de Testing
-
-- **Desplazamiento hacia la Izquierda:** Testing temprano en el ciclo de desarrollo
-- **Automatizado:** 100% testing automatizado en CI/CD
-- **Paridad de Ambiente:** Testing en ambientes similares a producción
-- **Continuo:** Testing continuo con ciclos de retroalimentación
-- **Testing Multi-Tenant:** Validación de aislamiento entre tenants/realms
-- **Integración Keycloak:** Testing con múltiples realms configurados
+> Esta estrategia de solución está alineada con los modelos Arc42 y Structurizr DSL, asegurando portabilidad, observabilidad, seguridad y rendimiento en el despliegue y operación del API Gateway corporativo.
