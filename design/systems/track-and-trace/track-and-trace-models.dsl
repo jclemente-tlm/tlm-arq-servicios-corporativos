@@ -281,24 +281,24 @@ trackAndTrace = softwareSystem "Track & Trace System" {
     // ========================================
 
     // Ingest API - Flujo principal
-    trackingIngestAPI.trackingEventController -> trackingIngestAPI.trackingEventService "Usa" "" "001 - Fase 1"
-    trackingIngestAPI.trackingEventService -> trackingIngestAPI.trackingEventPublisher "Usa" "" "001 - Fase 1"
+    trackingIngestAPI.trackingEventController -> trackingIngestAPI.trackingEventService "Valida y procesa evento recibido" "C#" "001 - Fase 1"
+    trackingIngestAPI.trackingEventService -> trackingIngestAPI.trackingEventPublisher "Publica evento en cola" "AWS SQS" "001 - Fase 1"
 
     // // Ingest API - Configuración
     // trackingIngestAPI.ingestConfigurationManager -> trackingIngestAPI.ingestTenantConfigRepository "Lee configuración por tenant" "EF Core" "001 - Fase 1"
 
     // Query API - Flujo principal
-    trackingQueryAPI.trackingQueryController -> trackingQueryAPI.trackingQueryService "Usa" "" "001 - Fase 1"
-    trackingQueryAPI.trackingQueryService -> trackingQueryAPI.trackingDataRepository "Usa" "EF Core" "001 - Fase 1"
+    trackingQueryAPI.trackingQueryController -> trackingQueryAPI.trackingQueryService "Orquesta consulta de tracking" "C#" "001 - Fase 1"
+    trackingQueryAPI.trackingQueryService -> trackingQueryAPI.trackingDataRepository "Accede a datos de tracking" "EF Core" "001 - Fase 1"
 
     // // Query API - Relaciones internas
     // trackingQueryAPI.queryConfigurationManager -> trackingQueryAPI.queryTenantConfigRepository "Lee configuración por tenant" "EF Core" "001 - Fase 1"
 
     // Event Processor - Flujo principal
-    trackingEventProcessor.trackingEventConsumer -> trackingEventProcessor.trackingEventHandler "Envía eventos para procesar" "" "001 - Fase 1"
-    trackingEventProcessor.trackingEventHandler -> trackingEventProcessor.trackingProcessingService "Usa" "" "001 - Fase 1"
-    trackingEventProcessor.trackingProcessingService -> trackingEventProcessor.trackingEventRepository "Usa" "EF Core" "001 - Fase 1"
-    trackingEventProcessor.trackingProcessingService -> trackingEventProcessor.downstreamEventPublisher "Usa" "" "001 - Fase 1"
+    trackingEventProcessor.trackingEventConsumer -> trackingEventProcessor.trackingEventHandler "Entrega evento para validación" "C#" "001 - Fase 1"
+    trackingEventProcessor.trackingEventHandler -> trackingEventProcessor.trackingProcessingService "Aplica reglas de negocio" "C#" "001 - Fase 1"
+    trackingEventProcessor.trackingProcessingService -> trackingEventProcessor.trackingEventRepository "Persiste evento procesado" "EF Core" "001 - Fase 1"
+    trackingEventProcessor.trackingProcessingService -> trackingEventProcessor.downstreamEventPublisher "Publica evento downstream" "AWS SNS" "001 - Fase 1"
 
     // // Event Processor - Configuración
     // trackingEventProcessor.processorConfigurationManager -> trackingEventProcessor.processorTenantConfigRepository "Lee configuración por tenant" "EF Core" "001 - Fase 1"
