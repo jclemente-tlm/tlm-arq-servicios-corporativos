@@ -29,8 +29,6 @@ Proyecto en **C# con .NET 8**, arquitectura **Clean Architecture** y modelo **C4
 
 ## 2. Tecnologías y Prácticas Obligatorias
 
-A continuación se listan las tecnologías obligatorias que deben usarse en todo el código de ejemplo, implementación y documentación generada para este proyecto:
-
 | Categoría        | Tecnología                 | Propósito principal                                                                                       |
 | ---------------- | -------------------------- | --------------------------------------------------------------------------------------------------------- |
 | Arquitectura     | Clean Architecture         | Estructura de capas, separación de responsabilidades                                                      |
@@ -93,7 +91,7 @@ A continuación se listan las tecnologías obligatorias que deben usarse en todo
 - No modificar archivos DSL, solo referenciar
 - Usar los nombres definidos en DSL para describir contenedores/componentes
 - Ejemplo de referencia:
-  “Ver definición de contenedor en `/design/servicio-x.dsl`”
+  > “Ver definición de contenedor en `/design/servicio-x.dsl`”
 
 ---
 
@@ -125,8 +123,10 @@ A continuación se listan las tecnologías obligatorias que deben usarse en todo
   - 11-riesgos-deuda-tecnica.md
   - 12-glosario.md
 
-- Los archivos DSL ubicados en `/design` y los ADRs globales en `/docs/adrs` son las únicas fuentes de verdad para la arquitectura y decisiones del sistema. Toda documentación, propuesta o ejemplo debe alinearse estrictamente a lo definido en estos archivos.
-- No se debe contradecir, reinterpretar ni ignorar lo establecido en los DSL y ADRs. Si se requiere un cambio, debe actualizarse primero la fuente de verdad correspondiente.
+- Los archivos DSL ubicados en `/design` y los ADRs globales en `/docs/adrs` son las únicas fuentes de verdad para la arquitectura y decisiones del sistema.
+- Toda documentación, propuesta o ejemplo debe alinearse estrictamente a lo definido en estos archivos.
+- No se debe contradecir, reinterpretar ni ignorar lo establecido en los DSL y ADRs.
+- Si se requiere un cambio, debe actualizarse primero la fuente de verdad correspondiente.
 - No incluir frases como “según el DSL” o “de acuerdo al ADR” ni indicar explícitamente de dónde se obtuvo la información; la documentación debe ser profesional, directa y sin justificaciones innecesarias.
 - Evitar sobrejustificación, sobreinformación o explicaciones innecesarias sobre el origen de los datos o decisiones (por ejemplo, no mencionar fuentes de verdad al inicio de cada documento).
 - Evitar repeticiones, información duplicada y lenguaje superfluo.
@@ -144,18 +144,28 @@ A continuación se listan las tecnologías obligatorias que deben usarse en todo
 - Toda la documentación debe estar redactada en español neutro. El uso de inglés solo está permitido para terminología técnica, nombres propios de tecnologías, conceptos ampliamente reconocidos o fragmentos de código.
 - Siempre que sea posible, se recomienda organizar la información en tablas para mayor claridad y orden, siguiendo la sugerencia de la plantilla **arc42**.
 - Todo fragmento de código, comando, configuración o ejemplo técnico debe ir siempre en bloques de código (backticks triples ```), especificando el lenguaje si corresponde. Para código corto o referencias en línea, usar backticks simples (`codigo`).
-  Ejemplo:
 
-  ```csharp
-  public class ServicioEjemplo {
-      // Comentario claro y directo
-  }
-  ```
+Ejemplo de bloque de código:
 
-  Ejemplo en línea: `var resultado = servicio.Calcular();`
+````csharp
+public class ServicioEjemplo {
+    // Comentario claro y directo
+}
 
-- Es válido resaltar tecnologías, términos clave o nombres de archivos usando backticks simples (`tecnología`), negritas o enlaces directos a la documentación oficial cuando aporte claridad o valor.
-  Ejemplo: Utilizar `Keycloak` para autenticación o consultar [Documentación oficial de Mapster](https://github.com/MapsterMapper/Mapster).
+
+- Se pueden resaltar tecnologías, términos clave o nombres de archivos usando backticks (tecnología), negritas o enlaces directos a documentación oficial, incluso dentro de tablas.
+Ejemplo: Usar Keycloak para autenticación o consultar la Documentación oficial de Mapster.
+
+- Se pueden añadir enlaces para tecnologías, términos o conceptos siempre que aporten valor y no sean redundantes con información previa. Se recomienda enlazar directamente el término o concepto para mejorar claridad y facilitar el acceso a la documentación oficial.
+Ejemplo: Para más detalles sobre Keycloak, consultar su documentación oficial.
+
+- No se debe combinar backticks y enlaces para el mismo término al mismo tiempo; se debe elegir uno para mantener claridad y evitar redundancia.
+
+- Los términos técnicos, valores métricos, unidades de medida, códigos o fragmentos de texto que requieran destaque o claridad deben ir siempre en backticks (`).
+  Ejemplo: Usar `< 100ms P95` para indicar el percentil 95 de latencia menor a 100 milisegundos.
+
+- Esto ayuda a diferenciar claramente el texto técnico del resto del contenido y mejora la legibilidad.
+
 
 - Diagramas de flujo, secuencia o arquitectura deben realizarse usando **Mermaid** en bloques de código con el tipo `mermaid`.
   Ejemplo:
@@ -170,7 +180,7 @@ A continuación se listan las tecnologías obligatorias que deben usarse en todo
       API->>ServicioInterno: Procesa solicitud
       ServicioInterno-->>API: Respuesta
       API-->>Usuario: Resultado
-  ```
+````
 
 ---
 

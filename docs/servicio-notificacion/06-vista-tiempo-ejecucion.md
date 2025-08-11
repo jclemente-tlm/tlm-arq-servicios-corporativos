@@ -1,37 +1,37 @@
-# 6. Vista de tiempo de ejecución
+# 6. Vista De Tiempo De Ejecución
 
-## 6.1 Escenarios principales
+## 6.1 Escenarios Principales
 
-| Escenario | Flujo | Componentes |
-|-----------|-------|-------------|
-| **Envío inmediato** | API → Orchestrator → Handler | API, Processor |
-| **Envío programado** | API → Repository → Scheduler | API, Processor |
-| **Procesamiento plantilla** | Template Engine → Handler | Processor |
+| Escenario               | Flujo                              | Componentes         |
+|-------------------------|------------------------------------|---------------------|
+| Envío inmediato         | API → Orchestrator → Handler       | API, Processor      |
+| Envío programado        | API → Repository → Scheduler       | API, Processor      |
+| Procesamiento plantilla | Template Engine → Handler          | Processor           |
 
-## 6.2 Patrones de interacción
+## 6.2 Patrones De Interacción
 
-| Patrón | Descripción | Tecnología |
-|---------|---------------|-------------|
-| **CQRS** | Separación comando/consulta | API/Processor |
-| **Queue** | Cola de mensajes | Redis |
-| **Template** | Procesamiento plantillas | RazorEngine |
+| Patrón      | Descripción                   | Tecnología         |
+|-------------|------------------------------|--------------------|
+| CQRS        | Separación comando/consulta  | API, Processor     |
+| Queue       | Cola de mensajes             | `Redis`            |
+| Template    | Procesamiento de plantillas  | `RazorEngine`      |
 
 Esta sección describe los principales escenarios de ejecución del sistema, mostrando cómo los componentes interactúan durante el tiempo de ejecución para cumplir con los casos de uso más relevantes arquitectónicamente.
 
 ## 6.3 Escenario: Envío Transaccional Individual
 
-### Descripción del Envío Transaccional
+### Descripción Del Envío Transaccional
 
 Flujo crítico para notificaciones transaccionales de alta prioridad (confirmaciones, alertas críticas) que requieren entrega garantizada y baja latencia.
 
 ### Actores
 
-- **Aplicación Cliente:** Sistema que origina la notificación
-- **API Gateway:** Punto de entrada con autenticación
-- **API de Notificación:** Servicio de ingesta y validación
-- **Bus de Eventos:** Intermediario de mensajes para desacoplamiento
-- **Procesadores de Canal:** Procesadores especializados por canal
-- **Proveedores Externos:** Servicios de entrega (SendGrid, Twilio, etc.)
+- Aplicación Cliente: Sistema que origina la notificación
+- API Gateway: Punto de entrada con autenticación
+- API de Notificación: Servicio de ingesta y validación
+- Bus de Eventos: Intermediario de mensajes para desacoplamiento
+- Procesadores de Canal: Procesadores especializados por canal
+- Proveedores Externos: Servicios de entrega (`SendGrid`, `Twilio`, `Firebase`, `360dialog`, etc.)
 
 ### Flujo Principal
 
@@ -68,27 +68,27 @@ sequenceDiagram
 
 ### Aspectos Notables
 
-- **Respuesta inmediata:** API responde en `< 100ms` con acknowledgment
-- **Procesamiento asíncrono:** Desacopla ingesta de entrega
-- **Idempotencia:** Cada request incluye messageId para deduplicación
-- **Observabilidad:** Cada paso genera telemetría para tracking
+- Respuesta inmediata: API responde en `< 100ms` con acknowledgment
+- Procesamiento asíncrono: Desacopla ingesta de entrega
+- Idempotencia: Cada request incluye `messageId` para deduplicación
+- Observabilidad: Cada paso genera telemetría para tracking
 
-### Métricas de Rendimiento
+### Métricas De Rendimiento
 
-| Métrica | Target | Medición |
-|---------|--------|----------|
-| **API Response Time** | p95 < 100ms | APM monitoring |
-| **Event Processing** | < 500ms | Custom metrics |
-| **End-to-End Delivery** | < 30s (transactional) | Business metrics |
-| **Capacidad de procesamiento** | 10K req/min per instance | Load testing |
+| Métrica                   | Target                | Medición         |
+|---------------------------|----------------------|------------------|
+| API Response Time         | p95 < 100ms          | APM monitoring   |
+| Event Processing          | < 500ms              | Custom metrics   |
+| End-to-End Delivery       | < 30s (transactional)| Business metrics |
+| Capacidad de procesamiento| 10K req/min/instancia| Load testing     |
 
-## 6.4 Escenario: Procesamiento de Eventos Track & Trace
+## 6.4 Escenario: Procesamiento De Eventos Track & Trace
 
-### Descripción del Procesamiento de Eventos
+### Descripción Del Procesamiento De Eventos
 
 Flujo automático triggered por eventos del sistema Track & Trace para notificaciones operacionales como actualizaciones de vuelo, cambios de puerta, etc.
 
-### Flujo de Eventos
+### Flujo De Eventos
 
 ```mermaid
 sequenceDiagram
@@ -119,18 +119,18 @@ sequenceDiagram
 
 ### Características Especiales
 
-- **Event-driven:** Triggered automáticamente por eventos externos
-- **Transformación de datos:** Mapping de eventos a formato de notificación
-- **Multi-canal automático:** Routing inteligente según preferencias
-- **Procesamiento paralelo:** Canales procesan simultáneamente
+- Event-driven: Triggered automáticamente por eventos externos
+- Transformación de datos: Mapping de eventos a formato de notificación
+- Multi-canal automático: Routing inteligente según preferencias
+- Procesamiento paralelo: Canales procesan simultáneamente
 
-## 6.5 Escenario: Bulk Processing para Campañas
+## 6.5 Escenario: Bulk Processing Para Campañas
 
-### Descripción del Bulk Processing
+### Descripción Del Bulk Processing
 
 Procesamiento optimizado para envío masivo de notificaciones promocionales con limitación de velocidad y batch processing.
 
-### Flujo de Batch Processing
+### Flujo De Batch Processing
 
 ```mermaid
 flowchart TD
@@ -153,18 +153,18 @@ flowchart TD
 
 ### Optimizaciones Aplicadas
 
-- **Chunking:** División en lotes de 100-1000 recipients
-- **Limitación de Velocidad:** Respeto a límites de providers
-- **Batch APIs:** Uso de APIs batch cuando están disponibles
-- **Circuit Breaker:** Protección contra failures de providers
+- Chunking: División en lotes de 100-1000 recipients
+- Limitación de velocidad: Respeto a límites de providers
+- Batch APIs: Uso de APIs batch cuando están disponibles
+- Circuit breaker: Protección contra fallos de providers
 
-## 6.6 Escenario: Manejo de Errores y Retry
+## 6.6 Escenario: Manejo De Errores Y Retry
 
-### Descripción del Manejo de Errores
+### Descripción Del Manejo De Errores
 
 Manejo de errores y sistema de reintentos con exponential backoff para garantizar entrega.
 
-### Flujo de Resilience
+### Flujo De Resilience
 
 ```mermaid
 stateDiagram-v2
@@ -186,22 +186,22 @@ stateDiagram-v2
     DLQ --> [*]
 ```
 
-### Políticas de Retry
+### Políticas De Retry
 
-| Error Type | Retry Count | Backoff | Dead Letter |
-|------------|-------------|---------|-------------|
-| **Network Timeout** | 3 | Exponential (2s, 4s, 8s) | After 3 failures |
-| **Rate Limit** | 5 | Linear (60s intervals) | After 5 failures |
-| **Provider Error 5xx** | 3 | Exponential | After 3 failures |
-| **Invalid Data** | 0 | None | Immediate |
+| Error Type         | Retry Count | Backoff                  | Dead Letter         |
+|--------------------|-------------|--------------------------|---------------------|
+| Network Timeout    | 3           | Exponential (2s,4s,8s)   | After 3 failures    |
+| Rate Limit         | 5           | Linear (60s intervals)   | After 5 failures    |
+| Provider Error 5xx | 3           | Exponential              | After 3 failures    |
+| Invalid Data       | 0           | None                     | Immediate           |
 
-## 6.7 Escenario: Monitoring y Observabilidad
+## 6.7 Escenario: Monitoring Y Observabilidad
 
-### Descripción de Observabilidad
+### Descripción De Observabilidad
 
 Flujo de telemetría y métricas para observabilidad del sistema en tiempo real.
 
-### Pipeline de Observabilidad
+### Pipeline De Observabilidad
 
 ```mermaid
 graph LR
@@ -221,21 +221,21 @@ graph LR
 
 ### Métricas Clave Capturadas
 
-- **Request Rate:** Notifications per second by channel
-- **Error Rate:** Failed notifications percentage
-- **Latency:** p50, p95, p99 processing times
-- **Provider Health:** External API disponibilidad
-- **Queue Depth:** Backlog size by priority
+- Request Rate: Notificaciones por segundo por canal
+- Error Rate: Porcentaje de notificaciones fallidas
+- Latency: p50, p95, p99 tiempos de procesamiento
+- Provider Health: Disponibilidad de APIs externas
+- Queue Depth: Backlog por prioridad
 
 Cada escenario incluye puntos de instrumentación específicos para resolución de problemas y optimización continua.
 
-## 6.8 Escenario: Bulk de Notificaciones
+## 6.8 Escenario: Bulk De Notificaciones
 
-### Descripción del Bulk de Notificaciones
+### Descripción Del Bulk De Notificaciones
 
 Envío masivo de notificaciones con optimizaciones de batch processing.
 
-### Flujo de Ejecución
+### Flujo De Ejecución
 
 ```mermaid
 sequenceDiagram
@@ -261,18 +261,18 @@ sequenceDiagram
 
 ### Optimizaciones
 
-- **Batch size:** 100 recipients per batch
-- **Parallel workers:** 10 concurrent processors
-- **Provider rotation:** Load balancing
-- **Retry policy:** Exponential backoff
+- Batch size: 100 recipients por batch
+- Parallel workers: 10 procesadores concurrentes
+- Provider rotation: Balanceo de carga
+- Retry policy: Exponential backoff
 
-## 6.9 Escenario: Failover y Recovery
+## 6.9 Escenario: Failover Y Recovery
 
-### Descripción de Failover y Recovery
+### Descripción De Failover Y Recovery
 
 Manejo de fallos de proveedor con failover automático.
 
-### Flujo de Ejecución
+### Flujo De Ejecución
 
 ```mermaid
 sequenceDiagram
@@ -296,18 +296,18 @@ sequenceDiagram
 
 ### Recovery Policies
 
-- **Circuit breaker:** 5 fallos consecutivos
-- **Timeout:** 30 segundos por provider
-- **Health check:** Cada 60 segundos
-- **Auto-recovery:** Automático cuando provider responde
+- Circuit breaker: 5 fallos consecutivos
+- Timeout: 30 segundos por provider
+- Health check: Cada 60 segundos
+- Auto-recovery: Automático cuando provider responde
 
-## 6.10 Escenario: Multi-canal con Fallback
+## 6.10 Escenario: Multi-canal Con Fallback
 
-### Descripción Multi-canal con Fallback
+### Descripción Multi-canal Con Fallback
 
 Envío por canal preferido con fallback automático a canales alternativos.
 
-### Flujo de Ejecución
+### Flujo De Ejecución
 
 ```mermaid
 sequenceDiagram
@@ -350,11 +350,11 @@ Channel Priorities:
 
 ## 6.11 Escenario: Template Personalization
 
-### Descripción de Personalización de Templates
+### Descripción De Personalización De Templates
 
 Procesamiento de templates con personalización dinámica y localización.
 
-### Flujo de Ejecución
+### Flujo De Ejecución
 
 ```mermaid
 sequenceDiagram
@@ -376,18 +376,18 @@ sequenceDiagram
 
 ### Personalization Features
 
-- **Dynamic Content:** Variables from user profile
-- **Conditional Logic:** if/else based on user attributes
-- **Localization:** Multiple languages and regions
-- **A/B Testing:** Template variant selection
+- Dynamic Content: Variables del perfil de usuario
+- Conditional Logic: if/else según atributos
+- Localization: Múltiples idiomas y regiones
+- A/B Testing: Selección de variante de template
 
-## 6.12 Escenario: Compliance y Opt-out
+## 6.12 Escenario: Compliance Y Opt-out
 
-### Descripción de Compliance y Opt-out
+### Descripción De Compliance Y Opt-out
 
 Manejo de preferencias de usuario y compliance con regulaciones.
 
-### Flujo de Ejecución
+### Flujo De Ejecución
 
 ```mermaid
 sequenceDiagram
@@ -408,18 +408,18 @@ sequenceDiagram
 
 ### Compliance Rules
 
-- **GDPR:** Explicit consent required
-- **CAN-SPAM:** Easy unsubscribe mechanism
-- **TCPA:** SMS consent verification
-- **Regional Laws:** Country-specific regulations
+- GDPR: Consentimiento explícito requerido
+- CAN-SPAM: Mecanismo de baja sencillo
+- TCPA: Verificación de consentimiento SMS
+- Regional Laws: Regulaciones específicas por país
 
-## 6.13 Escenario: Analytics y Tracking
+## 6.13 Escenario: Analytics Y Tracking
 
-### Descripción de Analytics y Tracking
+### Descripción De Analytics Y Tracking
 
 Captura de métricas de entrega y engagement para analytics.
 
-### Flujo de Ejecución
+### Flujo De Ejecución
 
 ```mermaid
 sequenceDiagram
@@ -444,15 +444,15 @@ sequenceDiagram
 
 ### Tracked Metrics
 
-- **Delivery Rates:** Successful deliveries per channel
-- **Open Rates:** Email opens, SMS reads
-- **Click Rates:** Link clicks, call-to-action engagement
-- **Conversion Rates:** Business goal completions
-- **Bounce Rates:** Failed deliveries by reason
+- Delivery Rates: Entregas exitosas por canal
+- Open Rates: Aperturas de email, lecturas de SMS
+- Click Rates: Clicks en enlaces, engagement
+- Conversion Rates: Conversiones de negocio
+- Bounce Rates: Fallos de entrega por motivo
 
 ## 6.14 Consideraciones Generales
 
-- **Reintentos automáticos** ante fallos de canal
-- **Trazabilidad** de cada mensaje
-- **Aislamiento multi-tenant** en cada paso
-- **Logs estructurados** para auditoría
+- Reintentos automáticos ante fallos de canal
+- Trazabilidad de cada mensaje
+- Aislamiento multi-tenant en cada paso
+- Logs estructurados para auditoría

@@ -1,6 +1,6 @@
-# 5. Vista de Bloques de Construcción
+# 5. Vista De Bloques De Construcción
 
-Esta sección describe la estructura modular del **Sistema de Notificación**, detallando contenedores, componentes, esquemas de datos, APIs y ejemplos de implementación. Se incluyen diagramas C4 para ilustrar la arquitectura y la interacción entre los bloques principales.
+Esta sección describe la estructura modular del Sistema de Notificación, detallando contenedores, componentes, esquemas de datos, APIs y ejemplos de implementación. Se incluyen diagramas C4 para ilustrar la arquitectura y la interacción entre los bloques principales.
 
 ![Vista General del Sistema de Notificación](/diagrams/servicios-corporativos/notification_system.png)
 *Figura 5.1: Contenedores principales del sistema*
@@ -13,104 +13,106 @@ Esta sección describe la estructura modular del **Sistema de Notificación**, d
 
 ## 5.1 Contenedores Principales
 
-| Contenedor               | Responsabilidad                        | Tecnología              |
-|--------------------------|----------------------------------------|-------------------------|
-| **Notification API**     | Recepción y validación de solicitudes  | .NET 8 Web API          |
-| **Notification Processor** | Procesamiento y envío de notificaciones | .NET 8 Worker Service   |
-| **PostgreSQL**           | Persistencia de datos y auditoría      | PostgreSQL 15+          |
-| **Redis**                | Cola de mensajes y cache               | Redis 7+                |
-| **File Storage**         | Almacenamiento de adjuntos             | Sistema de archivos     |
+| Contenedor                | Responsabilidad                        | Tecnología              |
+|---------------------------|----------------------------------------|-------------------------|
+| Notification API          | Recepción y validación de solicitudes  | `.NET 8 Web API`        |
+| Notification Processor    | Procesamiento y envío de notificaciones| `.NET 8 Worker Service` |
+| PostgreSQL                | Persistencia de datos y auditoría      | `PostgreSQL 15+`        |
+| Redis                     | Cola de mensajes y cache               | `Redis 7+`              |
+| File Storage              | Almacenamiento de adjuntos             | Sistema de archivos     |
 
-## 5.2 Componentes del API
+## 5.2 Componentes Del API
 
-| Componente               | Responsabilidad                        | Tecnología              |
-|--------------------------|----------------------------------------|-------------------------|
-| **Notification Controller** | Exposición de endpoints REST         | ASP.NET Core            |
-| **Template Controller**     | Gestión de plantillas                | ASP.NET Core            |
-| **Attachment Service**      | Manejo de adjuntos                   | .NET 8                  |
-| **Validation Service**      | Validación de datos y reglas         | FluentValidation         |
+| Componente                | Responsabilidad                        | Tecnología              |
+|---------------------------|----------------------------------------|-------------------------|
+| Notification Controller   | Exposición de endpoints REST           | `ASP.NET Core`          |
+| Template Controller       | Gestión de plantillas                  | `ASP.NET Core`          |
+| Attachment Service        | Manejo de adjuntos                     | `.NET 8`                |
+| Validation Service        | Validación de datos y reglas           | `FluentValidation`      |
 
-## 5.3 Componentes del Processor
+## 5.3 Componentes Del Processor
 
-| Componente               | Responsabilidad                        | Tecnología              |
-|--------------------------|----------------------------------------|-------------------------|
-| **Orchestrator Service**    | Orquestación y control de flujos     | .NET 8                  |
-| **Template Engine**         | Procesamiento de plantillas          | RazorEngine             |
-| **Email Handler**           | Envío de emails                      | SMTP                    |
-| **SMS Handler**             | Envío de SMS                         | HTTP API                |
-| **Push Handler**            | Envío de notificaciones push         | HTTP API                |
-| **Scheduler Service**       | Programación y temporización         | .NET 8 Timer            |
+| Componente                | Responsabilidad                        | Tecnología              |
+|---------------------------|----------------------------------------|-------------------------|
+| Orchestrator Service      | Orquestación y control de flujos       | `.NET 8`                |
+| Template Engine           | Procesamiento de plantillas            | `RazorEngine`           |
+| Email Handler             | Envío de emails                        | `SMTP`, `SendGrid`      |
+| SMS Handler               | Envío de SMS                           | `Twilio`, `AWS SNS`     |
+| WhatsApp Handler          | Envío de WhatsApp                      | `Twilio`, `360dialog`   |
+| Push Handler              | Envío de notificaciones push           | `Firebase`, `APNS`      |
+| In-App Handler            | Notificaciones in-app                  | SDK propio, `Firebase`  |
+| Scheduler Service         | Programación y temporización           | `.NET 8 Timer`          |
 
-## 5.4 Esquemas de Base de Datos
+## 5.4 Esquemas De Base De Datos
 
 ### 5.4.1 Tabla: `notifications`
 
 | Campo              | Tipo           | Descripción                        | Restricciones                  |
 |--------------------|---------------|------------------------------------|-------------------------------|
-| `id`               | UUID          | Identificador único                | PRIMARY KEY                   |
-| `request_id`       | VARCHAR(100)  | ID de la solicitud                 | NOT NULL, INDEX               |
-| `message_id`       | VARCHAR(100)  | ID del mensaje                     | UNIQUE                        |
-| `tenant_id`        | VARCHAR(50)   | Identificador del tenant           | NOT NULL, INDEX               |
-| `user_id`          | VARCHAR(100)  | ID del usuario destinatario        | NOT NULL                      |
-| `notification_type`| VARCHAR(50)   | transactional, marketing           | NOT NULL                      |
-| `channels`         | JSONB         | Canales solicitados                | NOT NULL                      |
-| `recipient`        | JSONB         | Datos del destinatario             | NOT NULL                      |
-| `message_content`  | JSONB         | Contenido del mensaje              | NOT NULL                      |
-| `schedule`         | JSONB         | Configuración de programación      | NULL                          |
-| `metadata`         | JSONB         | Metadatos adicionales              | NULL                          |
-| `status`           | VARCHAR(20)   | pending, processing, sent, failed  | NOT NULL, DEFAULT 'pending'   |
-| `created_at`       | TIMESTAMP     | Fecha de creación                  | NOT NULL, DEFAULT NOW()       |
-| `updated_at`       | TIMESTAMP     | Fecha de actualización             | NOT NULL, DEFAULT NOW()       |
-| `sent_at`          | TIMESTAMP     | Fecha de envío                     | NULL                          |
+| id                 | UUID          | Identificador único                | PRIMARY KEY                   |
+| request_id         | VARCHAR(100)  | ID de la solicitud                 | NOT NULL, INDEX               |
+| message_id         | VARCHAR(100)  | ID del mensaje                     | UNIQUE                        |
+| tenant_id          | VARCHAR(50)   | Identificador del tenant           | NOT NULL, INDEX               |
+| user_id            | VARCHAR(100)  | ID del usuario destinatario        | NOT NULL                      |
+| notification_type  | VARCHAR(50)   | transactional, marketing           | NOT NULL                      |
+| channels           | JSONB         | Canales solicitados                | NOT NULL                      |
+| recipient          | JSONB         | Datos del destinatario             | NOT NULL                      |
+| message_content    | JSONB         | Contenido del mensaje              | NOT NULL                      |
+| schedule           | JSONB         | Configuración de programación      | NULL                          |
+| metadata           | JSONB         | Metadatos adicionales              | NULL                          |
+| status             | VARCHAR(20)   | pending, processing, sent, failed  | NOT NULL, DEFAULT 'pending'   |
+| created_at         | TIMESTAMP     | Fecha de creación                  | NOT NULL, DEFAULT NOW()       |
+| updated_at         | TIMESTAMP     | Fecha de actualización             | NOT NULL, DEFAULT NOW()       |
+| sent_at            | TIMESTAMP     | Fecha de envío                     | NULL                          |
 
 ### 5.4.2 Tabla: `notification_deliveries`
 
 | Campo                  | Tipo         | Descripción                        | Restricciones                  |
 |------------------------|-------------|------------------------------------|-------------------------------|
-| `id`                   | UUID        | Identificador único                | PRIMARY KEY                   |
-| `notification_id`      | UUID        | Referencia a notification          | FOREIGN KEY, NOT NULL         |
-| `channel`              | VARCHAR(20) | Canal: email, sms, push            | NOT NULL                      |
-| `status`               | VARCHAR(20) | pending, sent, delivered, failed   | NOT NULL                      |
-| `provider`             | VARCHAR(50) | Proveedor utilizado                | NOT NULL                      |
-| `provider_message_id`  | VARCHAR(200)| ID del proveedor                   | NULL                          |
-| `error_message`        | TEXT        | Mensaje de error                   | NULL                          |
-| `retry_count`          | INTEGER     | Número de reintentos               | DEFAULT 0                     |
-| `sent_at`              | TIMESTAMP   | Fecha de envío                     | NULL                          |
-| `delivered_at`         | TIMESTAMP   | Fecha de entrega confirmada        | NULL                          |
-| `created_at`           | TIMESTAMP   | Fecha de creación                  | NOT NULL, DEFAULT NOW()       |
+| id                     | UUID        | Identificador único                | PRIMARY KEY                   |
+| notification_id        | UUID        | Referencia a notification          | FOREIGN KEY, NOT NULL         |
+| channel                | VARCHAR(20) | Canal: email, sms, push, whatsapp, in-app | NOT NULL              |
+| status                 | VARCHAR(20) | pending, sent, delivered, failed   | NOT NULL                      |
+| provider               | VARCHAR(50) | Proveedor utilizado                | NOT NULL                      |
+| provider_message_id    | VARCHAR(200)| ID del proveedor                   | NULL                          |
+| error_message          | TEXT        | Mensaje de error                   | NULL                          |
+| retry_count            | INTEGER     | Número de reintentos               | DEFAULT 0                     |
+| sent_at                | TIMESTAMP   | Fecha de envío                     | NULL                          |
+| delivered_at           | TIMESTAMP   | Fecha de entrega confirmada        | NULL                          |
+| created_at             | TIMESTAMP   | Fecha de creación                  | NOT NULL, DEFAULT NOW()       |
 
 ### 5.4.3 Tabla: `notification_templates`
 
 | Campo              | Tipo         | Descripción                        | Restricciones                  |
 |--------------------|-------------|------------------------------------|-------------------------------|
-| `id`               | UUID        | Identificador único                | PRIMARY KEY                   |
-| `template_id`      | VARCHAR(100)| ID del template                    | UNIQUE, NOT NULL              |
-| `tenant_id`        | VARCHAR(50) | Identificador del tenant           | NOT NULL, INDEX               |
-| `name`             | VARCHAR(200)| Nombre descriptivo                 | NOT NULL                      |
-| `channel`          | VARCHAR(20) | Canal: email, sms, push            | NOT NULL                      |
-| `subject_template` | TEXT        | Template del asunto                | NULL                          |
-| `body_template`    | TEXT        | Template del cuerpo                | NOT NULL                      |
-| `variables`        | JSONB       | Variables disponibles              | NULL                          |
-| `is_active`        | BOOLEAN     | Estado del template                | DEFAULT true                  |
-| `created_at`       | TIMESTAMP   | Fecha de creación                  | NOT NULL, DEFAULT NOW()       |
-| `updated_at`       | TIMESTAMP   | Fecha de actualización             | NOT NULL, DEFAULT NOW()       |
+| id                 | UUID        | Identificador único                | PRIMARY KEY                   |
+| template_id        | VARCHAR(100)| ID del template                    | UNIQUE, NOT NULL              |
+| tenant_id          | VARCHAR(50) | Identificador del tenant           | NOT NULL, INDEX               |
+| name               | VARCHAR(200)| Nombre descriptivo                 | NOT NULL                      |
+| channel            | VARCHAR(20) | Canal: email, sms, push, whatsapp, in-app | NOT NULL              |
+| subject_template   | TEXT        | Template del asunto                | NULL                          |
+| body_template      | TEXT        | Template del cuerpo                | NOT NULL                      |
+| variables          | JSONB       | Variables disponibles              | NULL                          |
+| is_active          | BOOLEAN     | Estado del template                | DEFAULT true                  |
+| created_at         | TIMESTAMP   | Fecha de creación                  | NOT NULL, DEFAULT NOW()       |
+| updated_at         | TIMESTAMP   | Fecha de actualización             | NOT NULL, DEFAULT NOW()       |
 
-## 5.5 Endpoints de API
+## 5.5 Endpoints De API
 
 Se describen los principales endpoints REST para la gestión y consulta de notificaciones y plantillas. Los contratos de datos siguen el estándar DTO y están alineados con la arquitectura Clean Architecture.
 
 ### 5.5.1 Notification API
 
-- **POST `/api/v1/notifications`**: Enviar nueva notificación
-- **GET `/api/v1/notifications/{notificationId}`**: Consultar estado de notificación
-- **POST `/api/v1/notifications/bulk`**: Envío masivo de notificaciones
+- POST `/api/v1/notifications`: Enviar nueva notificación
+- GET `/api/v1/notifications/{notificationId}`: Consultar estado de notificación
+- POST `/api/v1/notifications/bulk`: Envío masivo de notificaciones
 
 ### 5.5.2 Template Management API
 
-- **GET `/api/v1/templates`**: Listar plantillas disponibles
-- **POST `/api/v1/templates`**: Crear nueva plantilla
+- GET `/api/v1/templates`: Listar plantillas disponibles
+- POST `/api/v1/templates`: Crear nueva plantilla
 
-## 5.6 Contratos de Datos (DTOs)
+## 5.6 Contratos De Datos (DTOs)
 
 Los siguientes DTOs definen la estructura de los datos de entrada y salida de la API:
 
@@ -200,11 +202,11 @@ public class ChannelDeliveryDto
 }
 ```
 
-## 5.7 Ejemplos de Implementación
+## 5.7 Ejemplos De Implementación
 
 A continuación, se presentan ejemplos de implementación de controladores y servicios siguiendo buenas prácticas de Clean Architecture, DDD y manejo de errores.
 
-### 5.7.1 Controller de Notificaciones
+### 5.7.1 Controller De Notificaciones
 
 ```csharp
 [ApiController]
@@ -254,7 +256,7 @@ public class NotificationsController : ControllerBase
 }
 ```
 
-### 5.7.2 Servicio de Notificaciones
+### 5.7.2 Servicio De Notificaciones
 
 ```csharp
 public class NotificationService : INotificationService
@@ -308,7 +310,7 @@ public class NotificationService : INotificationService
 }
 ```
 
-### 5.7.3 Procesador de Email
+### 5.7.3 Procesador De Email
 
 ```csharp
 public class EmailHandler : IChannelHandler
