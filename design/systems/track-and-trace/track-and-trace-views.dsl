@@ -48,17 +48,17 @@ container trackAndTrace "track_and_trace_system" {
 //     title "[Diagrama de Contenedores] Track and Trace - Fase 1"
 // }
 
-component trackAndTrace.trackingAPI "track_and_trace_tracking_api" {
+component trackAndTrace.trackingIngestAPI "track_and_trace_tracking_api" {
     include *
 
     // Exclusión inteligente de componentes de observabilidad para diagrama limpio
     exclude observabilitySystem
-    exclude trackAndTrace.trackingAPI.healthCheck
-    exclude trackAndTrace.trackingAPI.metricsCollector
-    exclude trackAndTrace.trackingAPI.structuredLogger
+    exclude apiGateway
+    exclude trackAndTrace.trackingIngestAPI.healthCheck
+    exclude trackAndTrace.trackingIngestAPI.metricsCollector
+    exclude trackAndTrace.trackingIngestAPI.structuredLogger
 
-    title "[Diagrama de Componentes] Track & Trace - API Unificada con CQRS"
-    description "Vista detallada del API unificado con separación lógica de comandos (ingest) y consultas (query). Solo muestra relaciones directas del API."
+    title "[Diagrama de Componentes] Track & Trace - Tracking API"
 }
 
 component trackAndTrace.trackingEventProcessor "track_and_trace_event_processor" {
@@ -66,6 +66,7 @@ component trackAndTrace.trackingEventProcessor "track_and_trace_event_processor"
 
     // Exclusión inteligente de componentes de observabilidad para diagrama limpio
     exclude observabilitySystem
+    exclude apiGateway
     exclude trackAndTrace.trackingEventProcessor.healthCheck
     exclude trackAndTrace.trackingEventProcessor.metricsCollector
     exclude trackAndTrace.trackingEventProcessor.structuredLogger
@@ -76,5 +77,4 @@ component trackAndTrace.trackingEventProcessor "track_and_trace_event_processor"
     exclude "observabilitySystem -> sitaMessaging"
 
     title "[Diagrama de Componentes] Track & Trace - Event Processor"
-    description "Vista enfocada en el procesador de eventos y sus interacciones directas únicamente"
 }

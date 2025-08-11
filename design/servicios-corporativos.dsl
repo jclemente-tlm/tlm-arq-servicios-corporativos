@@ -176,10 +176,10 @@ workspace {
         // Microservicios Corporativos
         corporateServicesGroup = group "Servicios Corporativos" {
             !include ./systems/identity/identity-models.dsl
+            !include ./systems/api-gateway/api-gateway-models.dsl
             !include ./systems/notification/notification-models.dsl
             !include ./systems/sita-messaging/sita-messaging-models.dsl
             !include ./systems/track-and-trace/track-and-trace-models.dsl
-            !include ./systems/api-gateway/api-gateway-models.dsl
 
             !include ./systems/notification/notification-deployment-models.dsl
 

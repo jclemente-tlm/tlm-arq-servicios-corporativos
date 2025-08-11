@@ -39,6 +39,12 @@ sitaMessaging = softwareSystem "SITA Messaging" {
         }
     }
 
+    sitaQueue = store "SITA Message Queue" {
+        description "Cola SQS que recibe eventos de Track & Trace para procesar mensajería SITA"
+        technology "AWS SQS"
+        tags "Message Bus" "SQS" "001 - Fase 1"
+    }
+
     fileStorage = store "SITA File Storage" {
         technology "S3-Compatible Storage"
         description "Storage agnóstico para archivos SITA generados"
@@ -166,7 +172,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     // ========================================
 
     // Event Processor - Flujo principal
-    eventProcessor.eventConsumer -> sitaMessagingDatabase.eventsQueue "Consume eventos de Track & Trace" "PostgreSQL" "001 - Fase 1"
+    eventProcessor.eventConsumer -> sitaQueue "Consume eventos de Track & Trace" "SQS" "001 - Fase 1"
     eventProcessor.eventConsumer -> eventProcessor.eventOrchestrator "Delega eventos para procesamiento" "In-Memory" "001 - Fase 1"
     eventProcessor.eventOrchestrator -> eventProcessor.templateEngine "Solicita procesamiento de plantilla" "In-Memory" "001 - Fase 1"
     eventProcessor.templateEngine -> sitaMessagingDatabase.templates "Lee templates SITA por partner" "PostgreSQL" "001 - Fase 1"

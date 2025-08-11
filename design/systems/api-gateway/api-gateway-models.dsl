@@ -136,12 +136,12 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     // ========================================
 
     // Enrutamiento a servicios corporativos
-    reverseProxyGateway.resilienceHandler -> notification.api "Enruta a notificaciones" "HTTPS" "001 - Fase 1"
-    reverseProxyGateway.resilienceHandler -> trackAndTrace.trackingAPI "Enruta a tracking" "HTTPS" "001 - Fase 1"
+    // reverseProxyGateway.resilienceHandler -> notification.api "Enruta a notificaciones" "HTTPS" "001 - Fase 1"
+    // reverseProxyGateway.resilienceHandler -> trackAndTrace.trackingAPI "Enruta a tracking" "HTTPS" "001 - Fase 1"
 
-    // Health checks de servicios downstream
-    reverseProxyGateway.healthCheck -> notification.api "Verifica disponibilidad" "HTTPS" "001 - Fase 1"
-    reverseProxyGateway.healthCheck -> trackAndTrace.trackingAPI "Verifica disponibilidad" "HTTPS" "001 - Fase 1"
+    // // Health checks de servicios downstream
+    // reverseProxyGateway.healthCheck -> notification.api "Verifica disponibilidad" "HTTPS" "001 - Fase 1"
+    // reverseProxyGateway.healthCheck -> trackAndTrace.trackingAPI "Verifica disponibilidad" "HTTPS" "001 - Fase 1"
 
     // ========================================
     // RELACIONES DE CONFIGURACIÓN DINÁMICA

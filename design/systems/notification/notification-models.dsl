@@ -623,4 +623,10 @@ notification = softwareSystem "Notification System" {
     pushProcessor.service -> pushProcessor.adapter "Envía mensaje a proveedor externo" "C#" "001 - Fase 1"
     pushProcessor.service -> pushProcessor.repository "Actualiza estado de notificación" "C#" "001 - Fase 1"
     pushProcessor.service -> pushProcessor.attachmentFetcher "Obtiene archivos adjuntos" "C#" "001 - Fase 1"
+
+    // Enrutamiento a servicios corporativos
+    apiGateway.reverseProxyGateway.resilienceHandler -> notification.api "Enruta a notificaciones" "HTTPS" "001 - Fase 1"
+
+    // Health checks de servicios downstream
+    apiGateway.reverseProxyGateway.healthCheck -> notification.api "Verifica disponibilidad" "HTTPS" "001 - Fase 1"
 }
