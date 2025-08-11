@@ -13,8 +13,8 @@
 | Patrón      | Descripción                   | Tecnología         |
 |-------------|------------------------------|--------------------|
 | CQRS        | Separación comando/consulta  | API, Processor     |
-| Queue       | Cola de mensajes             | `Redis`            |
-| Template    | Procesamiento de plantillas  | `RazorEngine`      |
+| Queue       | Cola de mensajes             | `EventBus`         |
+| Template    | Procesamiento de plantillas  | Motor de plantillas|
 
 Esta sección describe los principales escenarios de ejecución del sistema, mostrando cómo los componentes interactúan durante el tiempo de ejecución para cumplir con los casos de uso más relevantes arquitectónicamente.
 
@@ -27,43 +27,41 @@ Flujo crítico para notificaciones transaccionales de alta prioridad (confirmaci
 ### Actores
 
 - Aplicación Cliente: Sistema que origina la notificación
-- API Gateway: Punto de entrada con autenticación
-- API de Notificación: Servicio de ingesta y validación
-- Bus de Eventos: Intermediario de mensajes para desacoplamiento
-- Procesadores de Canal: Procesadores especializados por canal
-- Proveedores Externos: Servicios de entrega (`SendGrid`, `Twilio`, `Firebase`, `360dialog`, etc.)
+- `ApiGateway`: Punto de entrada con autenticación
+- `NotificationApi`: Servicio de ingesta y validación
+- `NotificationDb`: Persistencia de notificaciones
+- `EventBus`: Intermediario de mensajes para desacoplamiento
+- `NotificationProcessor`: Procesador especializado por canal
+- `ProviderAdapter`: Adaptador a proveedor externo
 
 ### Flujo Principal
 
 ```mermaid
 sequenceDiagram
-    participant App as Aplicación Cliente
-    participant Gateway as API Gateway
-    participant API as API de Notificación
-    participant EventBus as Bus de Eventos
-    participant Processor as Procesador de Canal
-    participant Provider as Proveedor Externo
-    participant DB as Base de Datos
+    participant Cliente as Aplicación Cliente
+    participant ApiGateway as ApiGateway
+    participant NotificationApi as NotificationApi
+    participant NotificationDb as NotificationDb
+    participant EventBus as EventBus
+    participant NotificationProcessor as NotificationProcessor
+    participant ProviderAdapter as ProviderAdapter
 
-    App->>Gateway: 1. POST /notifications/send
-    Gateway->>Gateway: 2. Validar token JWT
-    Gateway->>API: 3. Reenviar solicitud
+    Cliente->>ApiGateway: 1. POST /notifications/send
+    ApiGateway->>ApiGateway: 2. Validar JWT
+    ApiGateway->>NotificationApi: 3. Reenviar solicitud
 
-    API->>API: 4. Validar payload y plantilla
-    API->>DB: 5. Almacenar registro de notificación
-    API->>Kafka: 6. Publicar evento de notificación
-    API->>App: 7. HTTP 202 Accepted {messageId}
+    NotificationApi->>NotificationApi: 4. Validar payload y plantilla
+    NotificationApi->>NotificationDb: 5. Almacenar notificación
+    NotificationApi->>EventBus: 6. Publicar evento
+    NotificationApi->>Cliente: 7. HTTP 202 Accepted {messageId}
 
-    Note over Kafka,Processor: Procesamiento Asíncrono
-    Kafka->>Processor: 8. Consumir evento de notificación
-    Processor->>Processor: 9. Renderizar plantilla con datos
-    Processor->>Provider: 10. Send via provider API
-    Provider->>Processor: 11. Recibo de entrega
-    Processor->>DB: 12. Actualizar estado de entrega
-    Processor->>Kafka: 13. Publicar evento de estado
-
-    Note over Processor,App: Webhook Opcional
-    Processor->>App: 14. Webhook callback (if configured)
+    Note over EventBus,NotificationProcessor: Procesamiento asíncrono
+    EventBus->>NotificationProcessor: 8. Consumir evento
+    NotificationProcessor->>NotificationProcessor: 9. Renderizar plantilla
+    NotificationProcessor->>ProviderAdapter: 10. Enviar vía API externa
+    ProviderAdapter->>NotificationProcessor: 11. Confirmación de entrega
+    NotificationProcessor->>NotificationDb: 12. Actualizar estado
+    NotificationProcessor->>EventBus: 13. Publicar evento de estado
 ```
 
 ### Aspectos Notables
@@ -75,12 +73,12 @@ sequenceDiagram
 
 ### Métricas De Rendimiento
 
-| Métrica                   | Target                | Medición         |
-|---------------------------|----------------------|------------------|
-| API Response Time         | p95 < 100ms          | APM monitoring   |
-| Event Processing          | < 500ms              | Custom metrics   |
-| End-to-End Delivery       | < 30s (transactional)| Business metrics |
-| Capacidad de procesamiento| 10K req/min/instancia| Load testing     |
+| Métrica                   | Target                | Medición                |
+|---------------------------|----------------------|-------------------------|
+| `API Response Time`       | `p95 < 100ms`        | Monitoreo APM           |
+| `Event Processing`        | `< 500ms`            | Métricas personalizadas |
+| `End-to-End Delivery`     | `< 30s` (transactional) | Métricas de negocio |
+| `Capacidad de procesamiento` | `10K req/min/instancia` | Pruebas de carga   |
 
 ## 6.4 Escenario: Procesamiento De Eventos Track & Trace
 
@@ -92,29 +90,29 @@ Flujo automático triggered por eventos del sistema Track & Trace para notificac
 
 ```mermaid
 sequenceDiagram
-    participant TrackTrace as Track & Trace
-    participant EventBus as Event Bus
-    participant EventConsumer as Event Consumer
-    participant TemplateEngine as Template Engine
-    participant ChannelRouter as Channel Router
-    participant Processors as Channel Processors
+    participant TrackTraceApi as TrackTraceApi
+    participant EventBus as EventBus
+    participant NotificationEventConsumer as NotificationEventConsumer
+    participant TemplateEngine as TemplateEngine
+    participant ChannelRouter as ChannelRouter
+    participant NotificationProcessor as NotificationProcessor
 
-    TrackTrace->>Kafka: 1. Publish flight event
-    EventConsumer->>Kafka: 2. Consume event
-    EventConsumer->>EventConsumer: 3. Transform to notification
-    EventConsumer->>TemplateEngine: 4. Get template by event type
-    TemplateEngine->>EventConsumer: 5. Return template definition
-    EventConsumer->>ChannelRouter: 6. Route to appropriate channels
+    TrackTraceApi->>EventBus: 1. Publicar evento de vuelo
+    NotificationEventConsumer->>EventBus: 2. Consumir evento
+    NotificationEventConsumer->>NotificationEventConsumer: 3. Transformar a notificación
+    NotificationEventConsumer->>TemplateEngine: 4. Obtener plantilla por tipo de evento
+    TemplateEngine->>NotificationEventConsumer: 5. Retornar plantilla
+    NotificationEventConsumer->>ChannelRouter: 6. Enrutar a canales
 
     par Email Channel
-        ChannelRouter->>Processors: 7a. Email notification
+        ChannelRouter->>NotificationProcessor: 7a. Notificación email
     and SMS Channel
-        ChannelRouter->>Processors: 7b. SMS notification
+        ChannelRouter->>NotificationProcessor: 7b. Notificación SMS
     and Push Channel
-        ChannelRouter->>Processors: 7c. Push notification
+        ChannelRouter->>NotificationProcessor: 7c. Notificación push
     end
 
-    Processors->>Processors: 8. Process in parallel
+    NotificationProcessor->>NotificationProcessor: 8. Procesar en paralelo
 ```
 
 ### Características Especiales
@@ -123,111 +121,6 @@ sequenceDiagram
 - Transformación de datos: Mapping de eventos a formato de notificación
 - Multi-canal automático: Routing inteligente según preferencias
 - Procesamiento paralelo: Canales procesan simultáneamente
-
-## 6.5 Escenario: Bulk Processing Para Campañas
-
-### Descripción Del Bulk Processing
-
-Procesamiento optimizado para envío masivo de notificaciones promocionales con limitación de velocidad y batch processing.
-
-### Flujo De Batch Processing
-
-```mermaid
-flowchart TD
-    A[Bulk Request] --> B[Validate Batch]
-    B --> C[Split into Chunks]
-    C --> D[Queue Chunks]
-
-    D --> E[Batch Processor 1]
-    D --> F[Batch Processor 2]
-    D --> G[Batch Processor N]
-
-    E --> H[Rate Limiter]
-    F --> H
-    G --> H
-
-    H --> I[Provider APIs]
-    I --> J[Delivery Tracking]
-    J --> K[Aggregate Results]
-```
-
-### Optimizaciones Aplicadas
-
-- Chunking: División en lotes de 100-1000 recipients
-- Limitación de velocidad: Respeto a límites de providers
-- Batch APIs: Uso de APIs batch cuando están disponibles
-- Circuit breaker: Protección contra fallos de providers
-
-## 6.6 Escenario: Manejo De Errores Y Retry
-
-### Descripción Del Manejo De Errores
-
-Manejo de errores y sistema de reintentos con exponential backoff para garantizar entrega.
-
-### Flujo De Resilience
-
-```mermaid
-stateDiagram-v2
-    [*] --> Pending
-    Pending --> Processing: Dequeue
-    Processing --> Sent: Success
-    Processing --> Retry: Transient Error
-    Processing --> Failed: Permanent Error
-
-    Retry --> Processing: Backoff Delay
-    Retry --> DLQ: Max Retries Exceeded
-
-    Sent --> Delivered: Provider Confirmation
-    Sent --> Bounced: Provider Error
-
-    Failed --> [*]
-    Delivered --> [*]
-    Bounced --> [*]
-    DLQ --> [*]
-```
-
-### Políticas De Retry
-
-| Error Type         | Retry Count | Backoff                  | Dead Letter         |
-|--------------------|-------------|--------------------------|---------------------|
-| Network Timeout    | 3           | Exponential (2s,4s,8s)   | After 3 failures    |
-| Rate Limit         | 5           | Linear (60s intervals)   | After 5 failures    |
-| Provider Error 5xx | 3           | Exponential              | After 3 failures    |
-| Invalid Data       | 0           | None                     | Immediate           |
-
-## 6.7 Escenario: Monitoring Y Observabilidad
-
-### Descripción De Observabilidad
-
-Flujo de telemetría y métricas para observabilidad del sistema en tiempo real.
-
-### Pipeline De Observabilidad
-
-```mermaid
-graph LR
-    A[Application] --> B[OpenTelemetry]
-    B --> C[Jaeger Tracing]
-    B --> D[Prometheus Metrics]
-    B --> E[Structured Logs]
-
-    C --> F[Trace Analysis]
-    D --> G[Grafana Dashboards]
-    E --> H[Log Aggregation]
-
-    F --> I[Performance Insights]
-    G --> J[Alertas]
-    H --> K[Error Analysis]
-```
-
-### Métricas Clave Capturadas
-
-- Request Rate: Notificaciones por segundo por canal
-- Error Rate: Porcentaje de notificaciones fallidas
-- Latency: p50, p95, p99 tiempos de procesamiento
-- Provider Health: Disponibilidad de APIs externas
-- Queue Depth: Backlog por prioridad
-
-Cada escenario incluye puntos de instrumentación específicos para resolución de problemas y optimización continua.
 
 ## 6.8 Escenario: Bulk De Notificaciones
 
@@ -239,23 +132,24 @@ Envío masivo de notificaciones con optimizaciones de batch processing.
 
 ```mermaid
 sequenceDiagram
-    participant Client as Cliente
-    participant API as Notification API
-    participant Splitter as Batch Splitter
-    participant Queue as Message Queue
-    participant Workers as Parallel Workers
-    participant Providers as Multiple Providers
+    participant Cliente as Aplicación Cliente
+    participant NotificationApi as NotificationApi
+    participant BatchSplitter as BatchSplitter
+    participant EventBus as EventBus
+    participant NotificationProcessor as NotificationProcessor
+    participant ProviderAdapter as ProviderAdapter
+    participant NotificationDb as NotificationDb
 
-    Client->>API: 1. POST /notifications/bulk (10K recipients)
-    API->>Splitter: 2. Split into batches (100 each)
-    Splitter->>Queue: 3. Enqueue 100 batches
-    API->>Client: 4. HTTP 202 Batch accepted
+    Cliente->>NotificationApi: 1. POST /notifications/bulk (10K destinatarios)
+    NotificationApi->>BatchSplitter: 2. Dividir en lotes (100 c/u)
+    BatchSplitter->>EventBus: 3. Publicar lotes en EventBus
+    NotificationApi->>Cliente: 4. HTTP 202 Batch accepted
 
-    loop Parallel Processing
-        Queue->>Workers: 5. Dequeue batch
-        Workers->>Providers: 6. Send batch via different providers
-        Providers->>Workers: 7. Batch results
-        Workers->>Queue: 8. Update batch status
+    loop Procesamiento paralelo
+        EventBus->>NotificationProcessor: 5. Consumir lote
+        NotificationProcessor->>ProviderAdapter: 6. Enviar lote a proveedor
+        ProviderAdapter->>NotificationProcessor: 7. Resultados de entrega
+        NotificationProcessor->>NotificationDb: 8. Actualizar estado de lote
     end
 ```
 
@@ -276,22 +170,22 @@ Manejo de fallos de proveedor con failover automático.
 
 ```mermaid
 sequenceDiagram
-    participant Processor as Email Processor
-    participant Primary as Primary Provider
-    participant Secondary as Secondary Provider
-    participant Circuit as Circuit Breaker
-    participant Monitor as Health Monitor
+    participant NotificationProcessor as NotificationProcessor
+    participant PrimaryProvider as PrimaryProvider
+    participant SecondaryProvider as SecondaryProvider
+    participant CircuitBreaker as CircuitBreaker
+    participant HealthMonitor as HealthMonitor
 
-    Processor->>Primary: 1. Send email
-    Primary-->>Processor: 2. Timeout/Error
-    Processor->>Circuit: 3. Record failure
-    Circuit->>Circuit: 4. Trip circuit after 5 failures
-    Processor->>Secondary: 5. Failover to secondary
-    Secondary->>Processor: 6. Success response
+    NotificationProcessor->>PrimaryProvider: 1. Enviar notificación
+    PrimaryProvider-->>NotificationProcessor: 2. Timeout/Error
+    NotificationProcessor->>CircuitBreaker: 3. Registrar fallo
+    CircuitBreaker->>CircuitBreaker: 4. Abrir circuito tras 5 fallos
+    NotificationProcessor->>SecondaryProvider: 5. Failover a secundario
+    SecondaryProvider->>NotificationProcessor: 6. Respuesta exitosa
 
-    Monitor->>Primary: 7. Health check
-    Primary->>Monitor: 8. Service restored
-    Monitor->>Circuit: 9. Reset circuit
+    HealthMonitor->>PrimaryProvider: 7. Health check
+    PrimaryProvider->>HealthMonitor: 8. Servicio restaurado
+    HealthMonitor->>CircuitBreaker: 9. Resetear circuito
 ```
 
 ### Recovery Policies
@@ -300,155 +194,6 @@ sequenceDiagram
 - Timeout: 30 segundos por provider
 - Health check: Cada 60 segundos
 - Auto-recovery: Automático cuando provider responde
-
-## 6.10 Escenario: Multi-canal Con Fallback
-
-### Descripción Multi-canal Con Fallback
-
-Envío por canal preferido con fallback automático a canales alternativos.
-
-### Flujo De Ejecución
-
-```mermaid
-sequenceDiagram
-    participant Client as Cliente
-    participant API as Notification API
-    participant Router as Channel Router
-    participant WhatsApp as WhatsApp Processor
-    participant SMS as SMS Processor
-    participant Email as Email Processor
-
-    Client->>API: 1. Send notification (preference: WhatsApp)
-    API->>Router: 2. Route to preferred channel
-    Router->>WhatsApp: 3. Attempt WhatsApp delivery
-    WhatsApp-->>Router: 4. User not registered
-    Router->>SMS: 5. Fallback to SMS
-    SMS->>Router: 6. SMS sent successfully
-    Router->>API: 7. Delivery confirmation
-    API->>Client: 8. Success response with actual channel
-```
-
-### Fallback Chain
-
-```yaml
-Channel Priorities:
-  High Priority:
-    1. WhatsApp Business
-    2. SMS
-    3. Email
-    4. Push Notification
-
-  Standard Priority:
-    1. Email
-    2. SMS
-    3. Push Notification
-
-  Marketing:
-    1. Email
-    2. Push Notification
-```
-
-## 6.11 Escenario: Template Personalization
-
-### Descripción De Personalización De Templates
-
-Procesamiento de templates con personalización dinámica y localización.
-
-### Flujo De Ejecución
-
-```mermaid
-sequenceDiagram
-    participant Processor as Notification Processor
-    participant TemplateEngine as Template Engine
-    participant UserService as User Service
-    participant LocalizationService as Localization Service
-    participant ContentDB as Content Database
-
-    Processor->>TemplateEngine: 1. Process template request
-    TemplateEngine->>UserService: 2. Get user profile
-    UserService->>TemplateEngine: 3. User data + preferences
-    TemplateEngine->>LocalizationService: 4. Get localized content
-    LocalizationService->>ContentDB: 5. Fetch templates by locale
-    ContentDB->>LocalizationService: 6. Localized templates
-    LocalizationService->>TemplateEngine: 7. Localized content
-    TemplateEngine->>Processor: 8. Rendered notification
-```
-
-### Personalization Features
-
-- Dynamic Content: Variables del perfil de usuario
-- Conditional Logic: if/else según atributos
-- Localization: Múltiples idiomas y regiones
-- A/B Testing: Selección de variante de template
-
-## 6.12 Escenario: Compliance Y Opt-out
-
-### Descripción De Compliance Y Opt-out
-
-Manejo de preferencias de usuario y compliance con regulaciones.
-
-### Flujo De Ejecución
-
-```mermaid
-sequenceDiagram
-    participant Client as Cliente
-    participant API as Notification API
-    participant ComplianceService as Compliance Service
-    participant PreferenceDB as Preference Database
-    participant AuditService as Audit Service
-
-    Client->>API: 1. Send marketing notification
-    API->>ComplianceService: 2. Check user preferences
-    ComplianceService->>PreferenceDB: 3. Get opt-in status
-    PreferenceDB->>ComplianceService: 4. User opted out
-    ComplianceService->>AuditService: 5. Log blocked notification
-    ComplianceService->>API: 6. Notification blocked
-    API->>Client: 7. HTTP 403 User opted out
-```
-
-### Compliance Rules
-
-- GDPR: Consentimiento explícito requerido
-- CAN-SPAM: Mecanismo de baja sencillo
-- TCPA: Verificación de consentimiento SMS
-- Regional Laws: Regulaciones específicas por país
-
-## 6.13 Escenario: Analytics Y Tracking
-
-### Descripción De Analytics Y Tracking
-
-Captura de métricas de entrega y engagement para analytics.
-
-### Flujo De Ejecución
-
-```mermaid
-sequenceDiagram
-    participant Provider as Email Provider
-    participant Webhook as Webhook Handler
-    participant EventProcessor as Event Processor
-    participant AnalyticsDB as Analytics Database
-    participant Dashboard as Analytics Dashboard
-
-    Provider->>Webhook: 1. Delivery webhook
-    Webhook->>EventProcessor: 2. Process delivery event
-    EventProcessor->>AnalyticsDB: 3. Store metrics
-
-    Note over Provider: User opens email
-    Provider->>Webhook: 4. Open tracking webhook
-    Webhook->>EventProcessor: 5. Process open event
-    EventProcessor->>AnalyticsDB: 6. Update engagement metrics
-
-    Dashboard->>AnalyticsDB: 7. Query real-time metrics
-    AnalyticsDB->>Dashboard: 8. Return aggregated data
-```
-
-### Tracked Metrics
-
-- Delivery Rates: Entregas exitosas por canal
-- Open Rates: Aperturas de email, lecturas de SMS
-- Click Rates: Clicks en enlaces, engagement
-- Conversion Rates: Conversiones de negocio
-- Bounce Rates: Fallos de entrega por motivo
 
 ## 6.14 Consideraciones Generales
 

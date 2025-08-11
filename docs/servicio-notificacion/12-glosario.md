@@ -21,7 +21,7 @@ Este glosario define los términos técnicos, conceptos clave y acrónimos utili
 | Processor         | Servicio que consume y procesa mensajes desde colas             |
 | Webhook           | Callback HTTP para notificaciones en tiempo real                |
 
-## 12.2 Acrónimos Y Abreviaturas
+## 12.2 Acrónimos y Abreviaturas
 
 | Acrónimo | Significado                        | Contexto                                      |
 |----------|------------------------------------|-----------------------------------------------|
@@ -42,7 +42,7 @@ Este glosario define los términos técnicos, conceptos clave y acrónimos utili
 | SRE      | Site Reliability Engineering       | Prácticas de confiabilidad operativa          |
 | PII      | Personally Identifiable Information| Información personal identificable            |
 
-## 12.3 Conceptos Clave Y Patrones
+## 12.3 Conceptos Clave y Patrones
 
 - API First Design: Estrategia donde el diseño de la API precede a la implementación.
 - API Gateway: Punto de entrada unificado que maneja autenticación, autorización y enrutamiento hacia microservicios (`YARP`).

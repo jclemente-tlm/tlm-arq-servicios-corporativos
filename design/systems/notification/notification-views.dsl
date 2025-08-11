@@ -11,8 +11,7 @@ container notification "notification_system" {
 
     exclude "observabilitySystem -> sitaMessaging"
 
-    title "[Diagrama de Contenedores] Notification System - Optimizado"
-    description "Arquitectura simplificada con 3 contenedores: API, Processor y Database"
+    title "[Diagrama de Contenedores] Notification System"
 }
 
 component notification.api "notification_system_api" {
@@ -24,28 +23,102 @@ component notification.api "notification_system_api" {
     exclude notification.api.structuredLogger
 
     // Excluir sistemas externos
-    exclude notification.processor
+    exclude notification.notificationProcessor
     exclude observabilitySystem
 
-    title "[Diagrama de Componentes] Notification API - Business Logic"
-    description "API REST enfocada en lógica de negocio sin observabilidad para claridad"
+    title "[Diagrama de Componentes] Notification System - Notification API"
 }
 
-component notification.processor "notification_system_processor" {
+component notification.notificationProcessor "notification_system_processor" {
     include *
 
     // Excluir solo componentes de observabilidad para limpiar telaraña
-    exclude notification.processor.healthCheck
-    exclude notification.processor.metricsCollector
-    exclude notification.processor.structuredLogger
+    exclude notification.scheduler
+    exclude notification.notificationProcessor.healthCheck
+    exclude notification.notificationProcessor.metricsCollector
+    exclude notification.notificationProcessor.structuredLogger
 
     // Excluir sistemas externos
     exclude notification.api
     exclude observabilitySystem
     exclude apiGateway identity sitaMessaging trackAndTrace
 
-    title "[Diagrama de Componentes] Notification Processor - Business Logic"
-    description "Procesador enfocado en lógica de negocio y handlers sin observabilidad para claridad"
+    title "[Diagrama de Componentes] Notification System - Notification Processor"
+}
+
+component notification.scheduler "notification_system_scheduler" {
+    include *
+
+    // Excluir solo componentes de observabilidad para limpiar telaraña
+    exclude notification.scheduler.healthCheck
+    exclude notification.scheduler.metricsCollector
+    exclude notification.scheduler.structuredLogger
+
+    // Excluir sistemas externos
+    exclude observabilitySystem
+
+    exclude apiGateway
+    title "[Diagrama de Componentes] Notification System - Scheduler"
+}
+
+component notification.emailProcessor "notification_system_email_processor" {
+    include *
+
+    // Excluir solo componentes de observabilidad para limpiar telaraña
+    exclude notification.emailProcessor.healthCheck
+    exclude notification.emailProcessor.metricsCollector
+    exclude notification.emailProcessor.structuredLogger
+
+    // Excluir sistemas externos
+    exclude observabilitySystem
+
+    exclude apiGateway
+    title "[Diagrama de Componentes] Notification System - Email Processor"
+}
+
+component notification.smsProcessor "notification_system_sms_processor" {
+    include *
+
+    // Excluir solo componentes de observabilidad para limpiar telaraña
+    exclude notification.smsProcessor.healthCheck
+    exclude notification.smsProcessor.metricsCollector
+    exclude notification.smsProcessor.structuredLogger
+
+    // Excluir sistemas externos
+    exclude observabilitySystem
+
+    exclude apiGateway
+    title "[Diagrama de Componentes] Notification System - SMS Processor"
+}
+
+component notification.whatsappProcessor "notification_system_whatsapp_processor" {
+    include *
+
+    // Excluir solo componentes de observabilidad para limpiar telaraña
+    exclude notification.whatsappProcessor.healthCheck
+    exclude notification.whatsappProcessor.metricsCollector
+    exclude notification.whatsappProcessor.structuredLogger
+
+    // Excluir sistemas externos
+    exclude observabilitySystem
+
+    exclude apiGateway
+    title "[Diagrama de Componentes] Notification System - WhatsApp Processor"
+}
+
+component notification.pushProcessor "notification_system_push_processor" {
+    include *
+
+    // Excluir solo componentes de observabilidad para limpiar telaraña
+    exclude notification.pushProcessor.healthCheck
+    exclude notification.pushProcessor.metricsCollector
+    exclude notification.pushProcessor.structuredLogger
+
+    // Excluir sistemas externos
+    exclude observabilitySystem
+
+    exclude apiGateway
+    title "[Diagrama de Componentes] Notification System - Push Processor"
 }
 
 # // ========================================

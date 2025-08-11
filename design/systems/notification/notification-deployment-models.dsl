@@ -12,11 +12,11 @@ notificationSystem = deploymentEnvironment "Notification System" {
             description "Región AWS us-east-1 (común para DEV, QA y PROD)."
 
             // ====================
-            // ECS Services - Arquitectura Optimizada (3 Contenedores)
+            // ECS Services
             // ====================
             ecsNotificationApi = deploymentNode "ECS - Notification API (via Fargate)" {
                 tags "Amazon Web Services - Elastic Container Service"
-                description "API REST que expone endpoints para gestión y envío de notificaciones multicanal."
+                description "Expone endpoints REST para la gestión y envío de notificaciones multicanal."
                 properties {
                     "Instance Type" "DEV: t3.small, STG: t3.medium, PROD: m5.large"
                     "CPU" "DEV: 1 vCPU, STG: 2 vCPUs, PROD: 4 vCPUs"
@@ -32,131 +32,178 @@ notificationSystem = deploymentEnvironment "Notification System" {
 
             ecsNotificationProcessor = deploymentNode "ECS - Notification Processor (via Fargate)" {
                 tags "Amazon Web Services - Elastic Container Service"
-                description "Procesador unificado que incluye scheduling, routing y todos los channel handlers (Email, SMS, WhatsApp, Push)."
+                description "Servicio backend que consume eventos y distribuye mensajes a los canales configurados."
                 properties {
-                    "Instance Type" "DEV: t3.medium, STG: t3.large, PROD: m5.xlarge"
-                    "CPU" "DEV: 2 vCPUs, STG: 4 vCPUs, PROD: 8 vCPUs"
-                    "Memory" "DEV: 4 GB, STG: 8 GB, PROD: 16 GB"
+                    "Instance Type" "DEV: t3.small, STG: t3.medium, PROD: m5.large"
+                    "CPU" "DEV: 1 vCPU, STG: 2 vCPUs, PROD: 4 vCPUs"
+                    "Memory" "DEV: 2 GB, STG: 4 GB, PROD: 8 GB"
                     "Replicas" "DEV: 1, STG: 2, PROD: 4"
                     "Launch Type" "Fargate"
                 }
                 docker = deploymentNode "Docker" {
                     tags "Docker"
-                    containerInstance notification.processor "DEV,STG,PROD"
+                    containerInstance notification.notificationProcessor "DEV,STG,PROD"
+                }
+            }
+
+            ecsNotificationScheduler = deploymentNode "ECS - Notification Scheduler (via Fargate)" {
+                tags "Amazon Web Services - Elastic Container Service"
+                description "Servicio Worker que programa y dispara eventos de notificación en base a reglas y cron."
+                properties {
+                    "Runtime" ".NET 8"
+                    "Instance Type" "DEV: t3.nano, STG: t3.small, PROD: t3.medium"
+                    "CPU" "DEV: 0.5 vCPU, STG: 1 vCPU, PROD: 2 vCPUs"
+                    "Memory" "DEV: 1 GB, STG: 2 GB, PROD: 4 GB"
+                    "Replicas" "DEV: 1, STG: 1, PROD: 2"
+                    "Launch Type" "Fargate"
+                }
+                docker = deploymentNode "Docker" {
+                    tags "Docker"
+                    containerInstance notification.scheduler "DEV,STG,PROD"
+                }
+            }
+
+            ecsEmailProcessor = deploymentNode "ECS - Email Processor (via Fargate)" {
+                tags "Amazon Web Services - Elastic Container Service"
+                description "Microservicio encargado de procesar y enviar notificaciones por correo electrónico."
+                properties {
+                    "Instance Type" "DEV: t3.nano, STG: t3.small, PROD: m5.large"
+                    "Replicas" "DEV: 1, STG: 1, PROD: 3"
+                    "Launch Type" "Fargate"
+                }
+                docker = deploymentNode "Docker" {
+                    tags "Docker"
+                    containerInstance notification.emailProcessor "DEV,STG,PROD"
+                }
+            }
+
+            ecsSmsProcessor = deploymentNode "ECS - SMS Processor (via Fargate)" {
+                tags "Amazon Web Services - Elastic Container Service"
+                description "Microservicio encargado de procesar y enviar notificaciones por SMS."
+                properties {
+                    "Instance Type" "DEV: t3.nano, STG: t3.small, PROD: m5.large"
+                    "Replicas" "DEV: 1, STG: 1, PROD: 3"
+                    "Launch Type" "Fargate"
+                }
+                docker = deploymentNode "Docker" {
+                    tags "Docker"
+                    containerInstance notification.smsProcessor "DEV,STG,PROD"
+                }
+            }
+
+            ecsWhatsappProcessor = deploymentNode "ECS - WhatsApp Processor (via Fargate)" {
+                tags "Amazon Web Services - Elastic Container Service"
+                description "Microservicio encargado de procesar y enviar notificaciones por WhatsApp."
+                properties {
+                    "Instance Type" "DEV: t3.nano, STG: t3.small, PROD: m5.large"
+                    "Replicas" "DEV: 1, STG: 1, PROD: 2"
+                    "Launch Type" "Fargate"
+                }
+                docker = deploymentNode "Docker" {
+                    tags "Docker"
+                    containerInstance notification.whatsappProcessor "DEV,STG,PROD"
+                }
+            }
+
+            ecsPushProcessor = deploymentNode "ECS - Push Processor (via Fargate)" {
+                tags "Amazon Web Services - Elastic Container Service"
+                description "Microservicio encargado de procesar y enviar notificaciones Push."
+                properties {
+                    "Instance Type" "DEV: t3.nano, STG: t3.small, PROD: m5.large"
+                    "Replicas" "DEV: 1, STG: 1, PROD: 2"
+                    "Launch Type" "Fargate"
+                }
+                docker = deploymentNode "Docker" {
+                    tags "Docker"
+                    containerInstance notification.pushProcessor "DEV,STG,PROD"
                 }
             }
 
             // ====================
-            // Database Services
+            // AWS Messaging
             // ====================
+            sqsNotificationQueue = deploymentNode "SQS - Notification Queue" {
+                tags "Amazon Web Services - Simple Queue Service"
+                description "Cola principal para recepción de solicitudes de notificación desde sistemas externos."
+                containerInstance notification.ingestionQueue "DEV,STG,PROD"
+            }
+
+            sqsEmailQueue = deploymentNode "SQS - Email Queue" {
+                tags "Amazon Web Services - Simple Queue Service"
+                description "Cola específica para procesamiento de notificaciones por correo electrónico."
+                containerInstance notification.emailQueue "DEV,STG,PROD"
+            }
+
+            sqsSmsQueue = deploymentNode "SQS - SMS Queue" {
+                tags "Amazon Web Services - Simple Queue Service"
+                description "Cola específica para procesamiento de notificaciones SMS con integración a proveedores."
+                containerInstance notification.smsQueue "DEV,STG,PROD"
+            }
+
+            sqsWhatsappQueue = deploymentNode "SQS - WhatsApp Queue" {
+                tags "Amazon Web Services - Simple Queue Service"
+                description "Cola específica para procesamiento de notificaciones WhatsApp Business API."
+                containerInstance notification.whatsappQueue "DEV,STG,PROD"
+            }
+
+            sqsPushQueue = deploymentNode "SQS - Push Queue" {
+                tags "Amazon Web Services - Simple Queue Service"
+                description "Cola específica para procesamiento de notificaciones push móviles (FCM/APNS)."
+                containerInstance notification.pushQueue "DEV,STG,PROD"
+            }
+
+            // ====================
+            // AWS Storage & DB
+            // ====================
+            s3Node = deploymentNode "AWS S3" {
+                tags "Amazon Web Services - Simple Storage Service"
+                description "Bucket S3 para almacenar archivos adjuntos y contenido relacionado a notificaciones."
+                properties {
+                    "Bucket" "notification-files"
+                }
+                containerInstance notification.attachmentStorage "DEV,STG,PROD"
+            }
+
             rdsNode = deploymentNode "AWS RDS" {
                 tags "Amazon Web Services - RDS"
-                description "Instancia RDS PostgreSQL para persistencia de configuraciones, outbox pattern, logs y auditoría."
+                description "Instancia RDS PostgreSQL para persistencia de configuraciones, logs y auditoría de notificaciones."
                 properties {
                     "Engine" "PostgreSQL 14"
                     "Instance Type" "DEV: db.t3.micro, STG: db.t3.medium, PROD: db.m5.large"
                     "Storage" "DEV: 20 GB, STG: 50 GB, PROD: 200 GB"
-                    "Multi-AZ" "STG: No, PROD: Sí"
-                    "Backup Retention" "DEV: 1 día, STG: 7 días, PROD: 30 días"
                 }
                 containerInstance notification.notificationDatabase "DEV,STG,PROD"
             }
 
             // ====================
-            // Storage Services
+            // AWS SNS
             // ====================
-            s3Node = deploymentNode "S3-Compatible Storage" {
-                tags "Amazon Web Services - Simple Storage Service"
-                description "Storage agnóstico para adjuntos: S3, Azure Blob, MinIO, FileSystem. Proveedor configurable por tenant."
+            snsInfraNode = infrastructureNode "AWS SNS" {
+                tags "Amazon Web Services - Simple Notification Service"
+                description "SNS Topic que distribuye eventos de notificación a las colas SQS por canal."
                 properties {
-                    "Provider" "Configurable (IStorageService)"
-                    "Bucket" "notification-attachments"
-                    "Encryption" "AES-256"
+                    "Tipo" "SNS Topic"
                 }
-                containerInstance notification.attachmentStorage "DEV,STG,PROD"
             }
 
             // ====================
             // External Providers
             // ====================
             group "Proveedores Externos" {
-                emailProviderNode = deploymentNode "Email Providers" {
-                    tags "EmailProvider"
-                    description "Proveedores de email: SendGrid, SES, SMTP, etc."
-                    softwareSystemInstance emailProvider
-                }
-
-                smsProviderNode = deploymentNode "SMS Providers" {
-                    tags "SmsProvider"
-                    description "Proveedores de SMS: Twilio, AWS SNS, etc."
-                    softwareSystemInstance smsProvider
-                }
-
-                whatsappProviderNode = deploymentNode "WhatsApp Providers" {
-                    tags "WhatsAppProvider"
-                    description "WhatsApp Business API oficial."
-                    softwareSystemInstance whatsappProvider
-                }
-
-                pushProviderNode = deploymentNode "Push Providers" {
-                    tags "PushProvider"
-                    description "Proveedores de push: Firebase, APNs, etc."
-                    softwareSystemInstance pushProvider
-                }
+                softwareSystemInstance emailProvider
+                softwareSystemInstance smsProvider
+                softwareSystemInstance whatsappProvider
+                softwareSystemInstance pushProvider
             }
-
-            # // ====================
-            # // Configuration & Monitoring
-            # // ====================
-            # configurationNode = infrastructureNode "Configuration Platform" {
-            #     tags "Configuration"
-            #     description "Plataforma agnóstica de configuración: AWS SSM, Azure App Config, Consul, Kubernetes ConfigMaps."
-            #     properties {
-            #         "Provider" "Configurable (IConfigurationService)"
-            #         "Encryption" "KMS/KeyVault/Vault"
-            #         "Multi-Tenant" "Sí"
-            #     }
-            # }
-
-            # monitoringNode = infrastructureNode "Observability Platform" {
-            #     tags "Monitoring"
-            #     description "Plataforma de observabilidad con métricas, logs y trazas distribuidas."
-            #     properties {
-            #         "Metrics" "Prometheus/CloudWatch"
-            #         "Logging" "ELK Stack/CloudWatch Logs"
-            #         "Tracing" "Jaeger/X-Ray"
-            #     }
-            # }
         }
     }
 
     // ====================
-    // Relaciones de Deployment
+    // Relaciones
     // ====================
-
-    # // API -> Processor communication
-    # notificationSystem.aws.region.ecsNotificationApi.docker -> notificationSystem.aws.region.ecsNotificationProcessor.docker "Publica mensajes via outbox pattern"
-
-    # // Processor -> Database
-    # notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.rdsNode "Consume outbox, actualiza estado"
-
-    # // API -> Database
-    # notificationSystem.aws.region.ecsNotificationApi.docker -> notificationSystem.aws.region.rdsNode "Persiste requests en outbox"
-
-    # // Storage relationships
-    # notificationSystem.aws.region.ecsNotificationApi.docker -> notificationSystem.aws.region.s3Node "Almacena adjuntos"
-    # notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.s3Node "Lee adjuntos para envío"
-
-    # // External provider relationships
-    # notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.extProviders.emailProviderNode "Envía emails"
-    # notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.extProviders.smsProviderNode "Envía SMS"
-    # notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.extProviders.whatsappProviderNode "Envía WhatsApp"
-    # notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.extProviders.pushProviderNode "Envía Push notifications"
-
-    # // Infrastructure relationships
-    # notificationSystem.aws.region.reliablePublisherNode -> notificationSystem.aws.region.rdsNode "Implementa outbox pattern"
-    # notificationSystem.aws.region.configurationNode -> notificationSystem.aws.region.ecsNotificationApi.docker "Provee configuración"
-    # notificationSystem.aws.region.configurationNode -> notificationSystem.aws.region.ecsNotificationProcessor.docker "Provee configuración"
-    # notificationSystem.aws.region.monitoringNode -> notificationSystem.aws.region.ecsNotificationApi.docker "Recolecta observabilidad"
-    # notificationSystem.aws.region.monitoringNode -> notificationSystem.aws.region.ecsNotificationProcessor.docker "Recolecta observabilidad"
+    notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.snsInfraNode "Publica eventos de notificación"
+    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsEmailQueue "Entrega a SQS Email"
+    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsSmsQueue "Entrega a SQS SMS"
+    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsWhatsappQueue "Entrega a SQS Whatsapp"
+    notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsPushQueue "Entrega a SQS Push"
 }
