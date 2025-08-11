@@ -4,72 +4,73 @@
 
 | Escenario               | Flujo                              | Componentes         |
 |-------------------------|------------------------------------|---------------------|
-| Envío inmediato         | API → Orchestrator → Handler       | API, Processor      |
-| Envío programado        | API → Repository → Scheduler       | API, Processor      |
-| Procesamiento plantilla | Template Engine → Handler          | Processor           |
+| Envío inmediato         | Notification API → ingestionQueue → notificationProcessor → Notification Database → [Colas de Canal] → [Procesadores de Canal] → Proveedor Externo → Notification Database | Notification API, ingestionQueue, notificationProcessor, Notification Database, emailQueue, smsQueue, whatsappQueue, pushQueue, emailProcessor, smsProcessor, whatsappProcessor, pushProcessor, Attachment Storage |
+| Envío programado        | Notification API → Notification Scheduler → ingestionQueue → notificationProcessor → Notification Database → [Colas de Canal] → [Procesadores de Canal] → Proveedor Externo → Notification Database | Notification API, Notification Scheduler, ingestionQueue, notificationProcessor, Notification Database, emailQueue, smsQueue, whatsappQueue, pushQueue, emailProcessor, smsProcessor, whatsappProcessor, pushProcessor |
+| Procesamiento plantilla | Notification API → notificationProcessor → Notification Database → [Colas de Canal] → [Procesadores de Canal] → Proveedor Externo → Notification Database | Notification API, notificationProcessor, Notification Database, emailQueue, smsQueue, whatsappQueue, pushQueue, emailProcessor, smsProcessor, whatsappProcessor, pushProcessor |
 
 ## 6.2 Patrones De Interacción
 
 | Patrón      | Descripción                   | Tecnología         |
 |-------------|------------------------------|--------------------|
-| CQRS        | Separación comando/consulta  | API, Processor     |
-| Queue       | Cola de mensajes             | `EventBus`         |
-| Template    | Procesamiento de plantillas  | Motor de plantillas|
+| CQRS        | Separación comando/consulta  | Notification API, notificationProcessor, emailProcessor, smsProcessor, whatsappProcessor, pushProcessor |
+| Queue       | Cola de mensajes             | ingestionQueue, emailQueue, smsQueue, whatsappQueue, pushQueue |
+| Template    | Procesamiento de plantillas  | Template Engine    |
 
 Esta sección describe los principales escenarios de ejecución del sistema, mostrando cómo los componentes interactúan durante el tiempo de ejecución para cumplir con los casos de uso más relevantes arquitectónicamente.
 
 ## 6.3 Escenario: Envío Transaccional Individual
 
-### Descripción Del Envío Transaccional
+### Participantes
 
-Flujo crítico para notificaciones transaccionales de alta prioridad (confirmaciones, alertas críticas) que requieren entrega garantizada y baja latencia.
-
-### Actores
-
-- Aplicación Cliente: Sistema que origina la notificación
-- `ApiGateway`: Punto de entrada con autenticación
-- `NotificationApi`: Servicio de ingesta y validación
-- `NotificationDb`: Persistencia de notificaciones
-- `EventBus`: Intermediario de mensajes para desacoplamiento
-- `NotificationProcessor`: Procesador especializado por canal
-- `ProviderAdapter`: Adaptador a proveedor externo
+- Cliente
+- Notification API
+- ingestionQueue
+- notificationProcessor
+- Notification Database
+- Colas de Canal (emailQueue, smsQueue, whatsappQueue, pushQueue)
+- Procesadores de Canal (emailProcessor, smsProcessor, whatsappProcessor, pushProcessor)
+- Proveedor Externo
 
 ### Flujo Principal
 
 ```mermaid
 sequenceDiagram
-    participant Cliente as Aplicación Cliente
-    participant ApiGateway as ApiGateway
-    participant NotificationApi as NotificationApi
-    participant NotificationDb as NotificationDb
-    participant EventBus as EventBus
-    participant NotificationProcessor as NotificationProcessor
-    participant ProviderAdapter as ProviderAdapter
+    participant Cliente as Cliente
+    participant API as Notification API
+    participant Ingestion as ingestionQueue
+    participant Processor as Notification Processor
+    participant DB as Notification Database
+    participant ColasCanal as Colas de Canal
+    participant ProcCanal as Procesadores de Canal
+    participant Proveedor as Proveedor Externo
 
-    Cliente->>ApiGateway: 1. POST /notifications/send
-    ApiGateway->>ApiGateway: 2. Validar JWT
-    ApiGateway->>NotificationApi: 3. Reenviar solicitud
+    Cliente->>API: 1. Solicita envío de notificación
+    API->>API: 2.1. Valida datos de la solicitud
+    API->>API: 2.2. Autentica y autoriza al cliente
+    API->>API: 2.3. Construye mensaje de notificación
+    API->>Ingestion: 3. Publica mensaje en ingestionQueue
+    API->>Cliente: 4. Confirma recepción (HTTP 202)
 
-    NotificationApi->>NotificationApi: 4. Validar payload y plantilla
-    NotificationApi->>NotificationDb: 5. Almacenar notificación
-    NotificationApi->>EventBus: 6. Publicar evento
-    NotificationApi->>Cliente: 7. HTTP 202 Accepted {messageId}
-
-    Note over EventBus,NotificationProcessor: Procesamiento asíncrono
-    EventBus->>NotificationProcessor: 8. Consumir evento
-    NotificationProcessor->>NotificationProcessor: 9. Renderizar plantilla
-    NotificationProcessor->>ProviderAdapter: 10. Enviar vía API externa
-    ProviderAdapter->>NotificationProcessor: 11. Confirmación de entrega
-    NotificationProcessor->>NotificationDb: 12. Actualizar estado
-    NotificationProcessor->>EventBus: 13. Publicar evento de estado
+    Ingestion->>Processor: 5. Notification Processor consume mensaje
+    Processor->>Processor: 5.1. Valida reglas de negocio
+    Processor->>Processor: 5.2. Determina canales y tipos de notificación
+    Processor->>Processor: 5.3. Genera mensaje mediante plantilla según tipo de notificación
+    Processor->>DB: 6. Registra notificación
+    Processor->>ColasCanal: 7. Encola mensajes generados en colas por canal
+    ColasCanal->>ProcCanal: 8. Procesadores de canal consumen mensaje
+    ProcCanal->>ProcCanal: 8.1. Aplica lógica de canal (formato, reintentos, etc.)
+    ProcCanal->>Proveedor: 9. Envían notificación a Proveedor Externo
+    Proveedor->>ProcCanal: 10. Confirman entrega
+    ProcCanal->>DB: 11. Actualizan estado final
 ```
 
 ### Aspectos Notables
 
-- Respuesta inmediata: API responde en `< 100ms` con acknowledgment
-- Procesamiento asíncrono: Desacopla ingesta de entrega
-- Idempotencia: Cada request incluye `messageId` para deduplicación
-- Observabilidad: Cada paso genera telemetría para tracking
+- Notification Processor registra el evento inicial en Notification Database
+- Notification Processor genera mensajes usando plantillas por canal y tipo de notificación
+- Los Procesadores de Canal actualizan el estado final en Notification Database tras el envío
+- Procesamiento paralelo y desacoplado por canal
+- Los nombres de los componentes coinciden exactamente con el DSL
 
 ### Métricas De Rendimiento
 
@@ -80,120 +81,47 @@ sequenceDiagram
 | `End-to-End Delivery`     | `< 30s` (transactional) | Métricas de negocio |
 | `Capacidad de procesamiento` | `10K req/min/instancia` | Pruebas de carga   |
 
-## 6.4 Escenario: Procesamiento De Eventos Track & Trace
+## 6.4 Escenario: Failover y Recuperación
 
-### Descripción Del Procesamiento De Eventos
+### Participantes
 
-Flujo automático triggered por eventos del sistema Track & Trace para notificaciones operacionales como actualizaciones de vuelo, cambios de puerta, etc.
+- Email Processor/SMS Processor/WhatsApp Processor/Push Processor
+- Proveedor Externo Primario
+- Proveedor Externo Secundario
+- Circuit Breaker
+- Health Check
+- Notification Database
 
-### Flujo De Eventos
-
-```mermaid
-sequenceDiagram
-    participant TrackTraceApi as TrackTraceApi
-    participant EventBus as EventBus
-    participant NotificationEventConsumer as NotificationEventConsumer
-    participant TemplateEngine as TemplateEngine
-    participant ChannelRouter as ChannelRouter
-    participant NotificationProcessor as NotificationProcessor
-
-    TrackTraceApi->>EventBus: 1. Publicar evento de vuelo
-    NotificationEventConsumer->>EventBus: 2. Consumir evento
-    NotificationEventConsumer->>NotificationEventConsumer: 3. Transformar a notificación
-    NotificationEventConsumer->>TemplateEngine: 4. Obtener plantilla por tipo de evento
-    TemplateEngine->>NotificationEventConsumer: 5. Retornar plantilla
-    NotificationEventConsumer->>ChannelRouter: 6. Enrutar a canales
-
-    par Email Channel
-        ChannelRouter->>NotificationProcessor: 7a. Notificación email
-    and SMS Channel
-        ChannelRouter->>NotificationProcessor: 7b. Notificación SMS
-    and Push Channel
-        ChannelRouter->>NotificationProcessor: 7c. Notificación push
-    end
-
-    NotificationProcessor->>NotificationProcessor: 8. Procesar en paralelo
-```
-
-### Características Especiales
-
-- Event-driven: Triggered automáticamente por eventos externos
-- Transformación de datos: Mapping de eventos a formato de notificación
-- Multi-canal automático: Routing inteligente según preferencias
-- Procesamiento paralelo: Canales procesan simultáneamente
-
-## 6.8 Escenario: Bulk De Notificaciones
-
-### Descripción Del Bulk De Notificaciones
-
-Envío masivo de notificaciones con optimizaciones de batch processing.
-
-### Flujo De Ejecución
+### Flujo de Ejecución
 
 ```mermaid
 sequenceDiagram
-    participant Cliente as Aplicación Cliente
-    participant NotificationApi as NotificationApi
-    participant BatchSplitter as BatchSplitter
-    participant EventBus as EventBus
-    participant NotificationProcessor as NotificationProcessor
-    participant ProviderAdapter as ProviderAdapter
-    participant NotificationDb as NotificationDb
+    participant Processor as Email Processor
+    participant ProveedorPrimario as Proveedor Externo Primario
+    participant ProveedorSecundario as Proveedor Externo Secundario
+    participant CircuitBreaker as Circuit Breaker
+    participant HealthCheck as Health Check
+    participant DB as Notification Database
 
-    Cliente->>NotificationApi: 1. POST /notifications/bulk (10K destinatarios)
-    NotificationApi->>BatchSplitter: 2. Dividir en lotes (100 c/u)
-    BatchSplitter->>EventBus: 3. Publicar lotes en EventBus
-    NotificationApi->>Cliente: 4. HTTP 202 Batch accepted
-
-    loop Procesamiento paralelo
-        EventBus->>NotificationProcessor: 5. Consumir lote
-        NotificationProcessor->>ProviderAdapter: 6. Enviar lote a proveedor
-        ProviderAdapter->>NotificationProcessor: 7. Resultados de entrega
-        NotificationProcessor->>NotificationDb: 8. Actualizar estado de lote
-    end
-```
-
-### Optimizaciones
-
-- Batch size: 100 recipients por batch
-- Parallel workers: 10 procesadores concurrentes
-- Provider rotation: Balanceo de carga
-- Retry policy: Exponential backoff
-
-## 6.9 Escenario: Failover Y Recovery
-
-### Descripción De Failover Y Recovery
-
-Manejo de fallos de proveedor con failover automático.
-
-### Flujo De Ejecución
-
-```mermaid
-sequenceDiagram
-    participant NotificationProcessor as NotificationProcessor
-    participant PrimaryProvider as PrimaryProvider
-    participant SecondaryProvider as SecondaryProvider
-    participant CircuitBreaker as CircuitBreaker
-    participant HealthMonitor as HealthMonitor
-
-    NotificationProcessor->>PrimaryProvider: 1. Enviar notificación
-    PrimaryProvider-->>NotificationProcessor: 2. Timeout/Error
-    NotificationProcessor->>CircuitBreaker: 3. Registrar fallo
+    Processor->>ProveedorPrimario: 1. Enviar notificación
+    ProveedorPrimario-->>Processor: 2. Timeout/Error
+    Processor->>CircuitBreaker: 3. Registrar fallo
     CircuitBreaker->>CircuitBreaker: 4. Abrir circuito tras 5 fallos
-    NotificationProcessor->>SecondaryProvider: 5. Failover a secundario
-    SecondaryProvider->>NotificationProcessor: 6. Respuesta exitosa
+    Processor->>ProveedorSecundario: 5. Failover a secundario
+    ProveedorSecundario->>Processor: 6. Respuesta exitosa
+    Processor->>DB: 7. Actualizar estado en Notification Database
 
-    HealthMonitor->>PrimaryProvider: 7. Health check
-    PrimaryProvider->>HealthMonitor: 8. Servicio restaurado
-    HealthMonitor->>CircuitBreaker: 9. Resetear circuito
+    HealthCheck->>ProveedorPrimario: 8. Health check
+    ProveedorPrimario->>HealthCheck: 9. Servicio restaurado
+    HealthCheck->>CircuitBreaker: 10. Resetear circuito
 ```
 
-### Recovery Policies
+### Políticas de Recuperación
 
 - Circuit breaker: 5 fallos consecutivos
-- Timeout: 30 segundos por provider
+- Timeout: 30 segundos por proveedor
 - Health check: Cada 60 segundos
-- Auto-recovery: Automático cuando provider responde
+- Recuperación automática: Cuando el proveedor responde
 
 ## 6.14 Consideraciones Generales
 
