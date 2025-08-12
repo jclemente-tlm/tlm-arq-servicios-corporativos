@@ -132,18 +132,6 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
 
 
     // ========================================
-    // RELACIONES EXTERNAS - SISTEMAS DOWNSTREAM
-    // ========================================
-
-    // Enrutamiento a servicios corporativos
-    // reverseProxyGateway.resilienceHandler -> notification.api "Enruta a notificaciones" "HTTPS" "001 - Fase 1"
-    // reverseProxyGateway.resilienceHandler -> trackAndTrace.trackingAPI "Enruta a tracking" "HTTPS" "001 - Fase 1"
-
-    // // Health checks de servicios downstream
-    // reverseProxyGateway.healthCheck -> notification.api "Verifica disponibilidad" "HTTPS" "001 - Fase 1"
-    // reverseProxyGateway.healthCheck -> trackAndTrace.trackingAPI "Verifica disponibilidad" "HTTPS" "001 - Fase 1"
-
-    // ========================================
     // RELACIONES DE CONFIGURACIÓN DINÁMICA
     // ========================================
 
@@ -154,9 +142,6 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.securityMiddleware "Invalida cache seguridad" "In-Memory" "001 - Fase 1"
     reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.rateLimitingMiddleware "Invalida cache rate limits" "In-Memory" "001 - Fase 1"
     reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.dataProcessingMiddleware "Invalida cache esquemas" "In-Memory" "001 - Fase 1"
-
-    // Configuración opcional para Fase 2
-    // reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.cacheMiddleware "Invalida políticas de TTL de cache al detectar cambios" "In-Memory" "002 - Fase 2"
 
     // ========================================
     // RELACIONES EXTERNAS - OBSERVABILIDAD

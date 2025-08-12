@@ -4,7 +4,7 @@ trackAndTraceDeployment = deploymentEnvironment "Track & Trace" {
         description "Infraestructura AWS para Track & Trace"
 
         region = deploymentNode "us-east-1" {
-            tags "AWS Region"
+            tags "Amazon Web Services - Region"
             description "Región principal para todos los entornos"
 
             lb = infrastructureNode "Load Balancer" {
@@ -73,9 +73,4 @@ trackAndTraceDeployment = deploymentEnvironment "Track & Trace" {
     trackAndTraceDeployment.aws.region.lb -> trackAndTraceDeployment.aws.region.ecsIngestApi.docker "Redirige tráfico a Ingest API" "HTTPS"
     trackAndTraceDeployment.aws.region.lb -> trackAndTraceDeployment.aws.region.ecsQueryApi.docker "Redirige tráfico a Query API" "HTTPS"
     trackAndTraceDeployment.aws.region.lb -> trackAndTraceDeployment.aws.region.ecsDashboard.docker "Redirige tráfico a Dashboard" "HTTPS"
-    // trackAndTraceDeployment.aws.region.ecsIngestApi.docker -> trackAndTraceDeployment.aws.region.sqsEventQueue "Publica eventos"
-    // trackAndTraceDeployment.aws.region.ecsEventProcessor.docker -> trackAndTraceDeployment.aws.region.sqsEventQueue "Consume eventos"
-    // trackAndTraceDeployment.aws.region.ecsEventProcessor.docker -> trackAndTraceDeployment.aws.region.rdsNode "Persiste eventos"
-    // trackAndTraceDeployment.aws.region.ecsQueryApi.docker -> trackAndTraceDeployment.aws.region.rdsNode "Consulta eventos"
-    // trackAndTraceDeployment.aws.region.ecsDashboard.docker -> trackAndTraceDeployment.aws.region.ecsQueryApi.docker "Consulta API"
 }

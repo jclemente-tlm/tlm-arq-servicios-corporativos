@@ -6,5 +6,5 @@ container identity "identity_system" {
     exclude "admin -> observabilitySystem"
     // exclude notification sitaMessaging trackAndTrace
 
-    title "[Diagrama de Contenedores] Identity Microservice"
+    title "[Diagrama de Contenedores] Identity & Access Management"
 }

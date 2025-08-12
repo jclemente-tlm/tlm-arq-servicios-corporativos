@@ -177,12 +177,16 @@ workspace {
         corporateServicesGroup = group "Servicios Corporativos" {
             !include ./systems/identity/identity-models.dsl
             !include ./systems/api-gateway/api-gateway-models.dsl
-            !include ./systems/notification/notification-models.dsl
             !include ./systems/sita-messaging/sita-messaging-models.dsl
+            !include ./systems/notification/notification-models.dsl
             !include ./systems/track-and-trace/track-and-trace-models.dsl
 
+            // NOTA: Las vistas de deployment de los microservicios se manejan en sus respectivos archivos
+            !include ./systems/identity/identity-deployment-models.dsl
+            !include ./systems/api-gateway/api-gateway-deployment-models.dsl
             !include ./systems/notification/notification-deployment-models.dsl
             !include ./systems/track-and-trace/track-and-trace-deployment-models.dsl
+            !include ./systems/sita-messaging/sita-messaging-deployment-models.dsl
 
             // ========================================
             // RELACIONES CROSS-SYSTEM
@@ -224,8 +228,11 @@ workspace {
         !include ./systems/track-and-trace/track-and-trace-views.dsl
 
         // Vistas de los sistemas externos
+        !include ./systems/api-gateway/api-gateway-deployment-views.dsl
+        !include ./systems/identity/identity-deployment-views.dsl
         !include ./systems/notification/notification-deployment-views.dsl
         !include ./systems/track-and-trace/track-and-trace-deployment-views.dsl
+        !include ./systems/sita-messaging/sita-messaging-deployment-views.dsl
 
         // Estilos
         !include ./common/styles/branding.dsl
