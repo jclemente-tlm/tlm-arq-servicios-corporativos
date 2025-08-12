@@ -12,22 +12,30 @@
 
 | Aspecto   | Descripción                                                                                                                         |
 |-----------|-------------------------------------------------------------------------------------------------------------------------------------|
-| Incluido  | Envío multicanal (email, SMS, WhatsApp, push), gestión de plantillas con versionado e internacionalización, programación de envíos, manejo de adjuntos, auditoría de eventos, integración con sistemas de observabilidad y control de acceso basado en roles (RBAC). |
+| Incluido  | Envío multicanal (`email`, `SMS`, `WhatsApp`, `push`), gestión de plantillas con versionado e internacionalización, programación de envíos, manejo de adjuntos, auditoría de eventos, integración con sistemas de observabilidad y control de acceso basado en roles (`RBAC`). |
 | Excluido  | Composición del contenido de mensajes por canal, lógica de negocio de sistemas origen, gestión de usuarios finales, almacenamiento de información sensible fuera de los adjuntos, procesamiento de pagos o facturación. |
 
-> **Nota profesional:** El alcance se centra en la orquestación, entrega y trazabilidad de notificaciones, desacoplando la lógica de negocio y la gestión de usuarios para mantener la cohesión y facilitar la evolución independiente de los sistemas consumidores.
+> El alcance se centra en la orquestación, entrega y trazabilidad de notificaciones, desacoplando la lógica de negocio y la gestión de usuarios para mantener cohesión y facilitar la evolución independiente de los sistemas consumidores. La resiliencia y escalabilidad se logran mediante el uso de colas, procesadores y desacoplamiento de proveedores externos.
 
 ## 3.2 Actores Y Sistemas Externos
 
 | Actor/Sistema              | Rol         | Interacción                                                                                 |
 |---------------------------|-------------|---------------------------------------------------------------------------------------------|
-| Aplicaciones Corporativas  | Cliente     | Solicitan envíos de notificaciones vía `API REST` autenticada y autorizada (OAuth2/JWT).    |
-| Usuarios Finales           | Destinatario| Reciben notificaciones a través de los canales soportados (email, SMS, WhatsApp, push).     |
+| Aplicaciones Corporativas  | Cliente     | Solicitan envíos de notificaciones vía `API REST` autenticada y autorizada (`OAuth2`/`JWT`).|
+| Usuarios Finales           | Destinatario| Reciben notificaciones a través de los canales soportados (`email`, `SMS`, `WhatsApp`, `push`).|
 | Proveedores Email          | Servicio    | Integración mediante `SMTP` o `API REST` para el envío de correos electrónicos.              |
-| Proveedores SMS            | Servicio    | Integración mediante `API REST` o protocolos estándar (SMPP) para envío de SMS.              |
-| Proveedores WhatsApp       | Servicio    | Integración mediante `API REST` para envío de mensajes WhatsApp.                             |
+| Proveedores SMS            | Servicio    | Integración mediante `API REST` o protocolos estándar (`SMPP`) para envío de `SMS`.          |
+| Proveedores WhatsApp       | Servicio    | Integración mediante `API REST` para envío de mensajes `WhatsApp`.                           |
 | Proveedores Push           | Servicio    | Integración mediante `API REST` para notificaciones push a dispositivos móviles.             |
-| Sistema de Identidad       | Proveedor   | Provee autenticación y autorización centralizada para el acceso a la API de notificaciones.  |
+| Sistema de Identidad       | Proveedor   | Provee autenticación y autorización centralizada para el acceso a la `Notification API`.     |
 | Observabilidad             | Consumidor  | Consume métricas y logs estructurados para monitoreo, alertas y auditoría.                   |
 
-> **Nota profesional:** Todas las integraciones externas están desacopladas mediante APIs y colas, permitiendo resiliencia, escalabilidad y trazabilidad. La seguridad se garantiza mediante autenticación robusta y control de acceso granular. La observabilidad es transversal, asegurando monitoreo y auditoría de extremo a extremo.
+> Todas las integraciones externas están desacopladas mediante `APIs` y colas, permitiendo resiliencia, escalabilidad y trazabilidad. La seguridad se garantiza mediante autenticación robusta y control de acceso granular. La observabilidad es transversal, asegurando monitoreo y auditoría de extremo a extremo.
+
+---
+
+**Notas:**
+
+- Los componentes principales (`Notification API`, `Scheduler`, `Queues`, `Processors`, `Attachment Storage`) orquestan la entrega y trazabilidad de notificaciones, alineados con el modelo arquitectónico definido.
+- El desacoplamiento de proveedores y canales permite tolerancia a fallos, escalabilidad y evolución independiente de cada integración.
+- La arquitectura soporta multi-tenant y multipaís, cumpliendo normativas locales y requisitos de aislamiento.

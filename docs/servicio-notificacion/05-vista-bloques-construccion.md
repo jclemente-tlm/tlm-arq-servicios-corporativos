@@ -9,21 +9,20 @@ Esta sección describe la estructura modular y desacoplada del Sistema de Notifi
 
 | Contenedor                | Responsabilidad                                        | Tecnología              |
 |---------------------------|--------------------------------------------------------|-------------------------|
-| Notification API          | Recepción, validación y orquestación de solicitudes    | `.NET 8 Web API`        |
-| Notification Processor    | Procesamiento asíncrono y envío multicanal             | `.NET 8 Worker Service` |
-| Notification Database     | Persistencia, auditoría y versionado de datos          | `PostgreSQL 15+`        |
-| emailQueue                | Desacoplamiento y buffering de mensajes email           | `AWS SQS`               |
-| smsQueue                  | Desacoplamiento y buffering de mensajes SMS             | `AWS SQS`               |
-| whatsappQueue             | Desacoplamiento y buffering de mensajes WhatsApp        | `AWS SQS`               |
-| pushQueue                 | Desacoplamiento y buffering de mensajes push            | `AWS SQS`               |
-| SNS (opcional)            | Fan-out y routing avanzado a colas SQS                 | `AWS SNS`               |
-| Email Processor           | Procesamiento y entrega de emails                      | `.NET 8 Worker Service` |
-| SMS Processor             | Procesamiento y entrega de SMS                         | `.NET 8 Worker Service` |
-| WhatsApp Processor        | Procesamiento y entrega de WhatsApp                    | `.NET 8 Worker Service` |
-| Push Processor            | Procesamiento y entrega de notificaciones push         | `.NET 8 Worker Service` |
-| Attachment Storage        | Almacenamiento seguro y escalable de adjuntos          | `AWS S3`                |
+| `Notification API`        | Recepción, validación, orquestación, deduplicación e idempotencia de solicitudes, gestión de plantillas | `.NET 8 Web API`        |
+| `Notification Database`   | Persistencia, auditoría, versionado de datos y plantillas | `PostgreSQL 15+`        |
+| `emailQueue`              | Desacoplamiento y buffering de mensajes `email`         | `AWS SQS`               |
+| `smsQueue`                | Desacoplamiento y buffering de mensajes `SMS`           | `AWS SQS`               |
+| `whatsappQueue`           | Desacoplamiento y buffering de mensajes `WhatsApp`      | `AWS SQS`               |
+| `pushQueue`               | Desacoplamiento y buffering de mensajes `push`          | `AWS SQS`               |
+| `SNS` (opcional)          | Fan-out y routing avanzado a colas SQS                 | `AWS SNS`               |
+| `Email Processor`         | Procesamiento y entrega de `email`                      | `.NET 8 Worker Service` |
+| `SMS Processor`           | Procesamiento y entrega de `SMS`                        | `.NET 8 Worker Service` |
+| `WhatsApp Processor`      | Procesamiento y entrega de `WhatsApp`                   | `.NET 8 Worker Service` |
+| `Push Processor`          | Procesamiento y entrega de notificaciones `push`        | `.NET 8 Worker Service` |
+| `Attachment Storage`      | Almacenamiento seguro y escalable de adjuntos           | `AWS S3`                |
 
-> **Nota profesional:** La arquitectura basada en contenedores desacoplados y colas permite escalar cada función de manera independiente, soportar picos de carga y aislar fallos. El uso de S3 para adjuntos garantiza durabilidad y disponibilidad. La modularidad facilita la evolución y el mantenimiento del sistema, alineado a los principios de arquitectura empresarial.
+> La deduplicación, idempotencia y versionado de plantillas son responsabilidades internas de los componentes principales (`Notification API`, `Template Controller`, `Notification Database`) y se implementan mediante lógica de aplicación, claves de idempotencia y versionado en base de datos, no como contenedores independientes.
 
 ## 5.2 Vista de Componentes y Detalles
 
@@ -32,97 +31,84 @@ Esta sección describe la estructura modular y desacoplada del Sistema de Notifi
 
 | Componente                | Responsabilidad                                        | Tecnología              |
 |---------------------------|--------------------------------------------------------|-------------------------|
-| Notification Controller   | Exposición de endpoints REST y control de acceso       | `ASP.NET Core`          |
-| Template Controller       | Gestión de plantillas con versionado e i18n            | `ASP.NET Core`          |
-| Attachment Service        | Manejo seguro y validación de adjuntos                 | `.NET 8, S3 SDK`        |
-| Validation Service        | Validación de datos, límites y reglas por tenant       | `FluentValidation`      |
-| Message Publisher         | Publicación confiable a colas (outbox pattern)         | `.NET 8, PostgreSQL, SQS`|
-| Config Manager            | Gestión de configuración multi-tenant                  | `.NET 8, EF Core`       |
-| Structured Logger         | Logging estructurado y trazabilidad                    | `Serilog`               |
-| Metrics Collector         | Recolección de métricas y monitoreo                    | `Prometheus.NET`        |
+| `Notification Controller` | Exposición de endpoints `REST`, control de acceso, deduplicación e idempotencia | `ASP.NET Core`          |
+| `Template Controller`     | Gestión de plantillas con versionado e `i18n`          | `ASP.NET Core`          |
+| `Attachment Service`      | Manejo seguro y validación de adjuntos                 | `.NET 8`, `S3 SDK`      |
+| `Validation Service`      | Validación de datos, límites y reglas por tenant       | `FluentValidation`      |
+| `Message Publisher`       | Publicación confiable a colas (`outbox pattern`)       | `.NET 8`, `PostgreSQL`, `SQS`|
+| `Config Manager`          | Gestión de configuración multi-tenant                  | `.NET 8`, `EF Core`     |
+| `Structured Logger`       | Logging estructurado y trazabilidad                    | `Serilog`               |
+| `Metrics Collector`       | Recolección de métricas y monitoreo                    | `Prometheus.NET`        |
 
-> **Nota profesional:** La separación de componentes permite aplicar principios SOLID, facilitar pruebas unitarias y soportar la evolución incremental del sistema. La observabilidad y la validación robusta son transversales a todos los componentes críticos.
-
-![Componentes Notification Processor](/diagrams/servicios-corporativos/notification_system_processor.png)
-*Figura 5.3: Componentes internos de Notification Processor*
-
-| Componente            | Responsabilidad                                                        | Tecnología                  |
-|-----------------------|------------------------------------------------------------------------|-----------------------------|
-| Consumer              | Consume mensajes desde la cola de solicitudes de notificación           | C# .NET 8, AWS SDK          |
-| Orchestrator Service  | Valida datos, construye el mensaje y lo distribuye al canal correspondiente | C# .NET 8              |
-| Message Builder       | Genera el mensaje final para cada canal utilizando plantillas y datos   | C# .NET 8                  |
-| Template Engine       | Renderiza plantillas con soporte i18n y variables dinámicas             | C#, Liquid Templates        |
-| Adapter              | Envía el mensaje procesado a la cola específica del canal               | C# .NET 8, AWS SDK          |
-| Repository            | Guarda el estado y eventos de las notificaciones procesadas en la base de datos | C# .NET 8, Entity Framework Core |
-| Configuration Manager | Gestiona configuraciones del servicio y por tenant                     | C#, .NET 8, EF Core         |
+> La deduplicación, idempotencia y versionado de plantillas están integrados como lógica interna en los componentes críticos (`Notification API`, `Template Controller`, `Notification Database`), siguiendo el modelo real del sistema. No existen como servicios o contenedores independientes en el DSL.
 
 ### Email Processor
 
 ![Componentes Email Processor](/diagrams/servicios-corporativos/notification_system_email_processor.png)
-*Figura 5.4: Componentes internos de Email Processor*
+*Figura 5.3: Componentes internos de Email Processor*
 
 | Componente           | Responsabilidad                                      | Tecnología                  |
 |----------------------|------------------------------------------------------|-----------------------------|
-| Consumer             | Consume mensajes de la cola de notificación Email    | C# .NET 8, AWS SDK         |
-| Service              | Procesa y envía notificaciones por email             | C# .NET 8                  |
-| Adapter              | Envía notificaciones al proveedor externo de email   | C# .NET 8, AWS SDK         |
-| Repository           | Actualiza el estado de las notificaciones enviadas   | C# .NET 8, Entity Framework Core |
-| Attachment Fetcher   | Obtiene archivos adjuntos desde almacenamiento       | C# .NET 8, AWS SDK         |
-| Configuration Manager| Gestiona configuraciones del servicio y por tenant   | C#, .NET 8, EF Core        |
+| `Consumer`           | Consume mensajes de la cola de notificación `email`  | `C# .NET 8`, `AWS SDK`      |
+| `Service`            | Procesa y envía notificaciones por `email`           | `C# .NET 8`                 |
+| `Adapter`            | Envía notificaciones al proveedor externo de `email` | `C# .NET 8`, `AWS SDK`      |
+| `Repository`         | Actualiza el estado de las notificaciones enviadas   | `C# .NET 8`, `Entity Framework Core` |
+| `Attachment Fetcher` | Obtiene archivos adjuntos desde almacenamiento       | `C# .NET 8`, `AWS SDK`      |
+| `Configuration Manager`| Gestiona configuraciones del servicio y por tenant | `C# .NET 8`, `EF Core`      |
 
 ### SMS Processor
 
 ![Componentes SMS Processor](/diagrams/servicios-corporativos/notification_system_sms_processor.png)
-*Figura 5.5: Componentes internos de SMS Processor*
+*Figura 5.4: Componentes internos de SMS Processor*
 
 | Componente           | Responsabilidad                                      | Tecnología                  |
 |----------------------|------------------------------------------------------|-----------------------------|
-| Consumer             | Consume mensajes de la cola notificación SMS         | C# .NET 8, AWS SDK         |
-| Service              | Procesa y envía notificaciones SMS                   | C# .NET 8                  |
-| Adapter              | Envía notificaciones al proveedor externo de SMS     | C# .NET 8, AWS SDK         |
-| Repository           | Actualiza el estado de las notificaciones enviadas   | C# .NET 8, Entity Framework Core |
-| Configuration Manager| Gestiona configuraciones del servicio y por tenant   | C#, .NET 8, EF Core        |
+| `Consumer`           | Consume mensajes de la cola notificación `SMS`         | `C# .NET 8`, `AWS SDK`      |
+| `Service`            | Procesa y envía notificaciones `SMS`                   | `C# .NET 8`                 |
+| `Adapter`            | Envía notificaciones al proveedor externo de `SMS`     | `C# .NET 8`, `AWS SDK`      |
+| `Repository`         | Actualiza el estado de las notificaciones enviadas   | `C# .NET 8`, `Entity Framework Core` |
+| `Configuration Manager`| Gestiona configuraciones del servicio y por tenant | `C# .NET 8`, `EF Core`      |
 
 ### WhatsApp Processor
 
 ![Componentes WhatsApp Processor](/diagrams/servicios-corporativos/notification_system_whatsapp_processor.png)
-*Figura 5.6: Componentes internos de WhatsApp Processor*
+*Figura 5.5: Componentes internos de WhatsApp Processor*
 
 | Componente           | Responsabilidad                                      | Tecnología                  |
 |----------------------|------------------------------------------------------|-----------------------------|
-| Consumer             | Consume mensajes de la cola notificación WhatsApp    | C# .NET 8, AWS SDK         |
-| Service              | Procesa y envía notificaciones WhatsApp              | C# .NET 8                  |
-| Adapter              | Envía notificaciones al proveedor externo de WhatsApp| C# .NET 8, AWS SDK         |
-| Repository           | Actualiza el estado de las notificaciones enviadas   | C# .NET 8, Entity Framework Core |
-| Attachment Fetcher   | Obtiene archivos adjuntos desde almacenamiento       | C# .NET 8, AWS SDK         |
-| Configuration Manager| Gestiona configuraciones del servicio y por tenant   | C#, .NET 8, EF Core        |
+| `Consumer`           | Consume mensajes de la cola notificación `WhatsApp`    | `C# .NET 8`, `AWS SDK`      |
+| `Service`            | Procesa y envía notificaciones `WhatsApp`              | `C# .NET 8`                 |
+| `Adapter`            | Envía notificaciones al proveedor externo de `WhatsApp`| `C# .NET 8`, `AWS SDK`      |
+| `Repository`         | Actualiza el estado de las notificaciones enviadas   | `C# .NET 8`, `Entity Framework Core` |
+| `Attachment Fetcher` | Obtiene archivos adjuntos desde almacenamiento       | `C# .NET 8`, `AWS SDK`      |
+| `Configuration Manager`| Gestiona configuraciones del servicio y por tenant | `C# .NET 8`, `EF Core`      |
 
 ### Push Processor
 
 ![Componentes Push Processor](/diagrams/servicios-corporativos/notification_system_push_processor.png)
-*Figura 5.7: Componentes internos de Push Processor*
+*Figura 5.6: Componentes internos de Push Processor*
 
 | Componente           | Responsabilidad                                      | Tecnología                  |
 |----------------------|------------------------------------------------------|-----------------------------|
-| Consumer             | Consume mensajes de la cola notificación Push         | C# .NET 8, AWS SDK         |
-| Service              | Procesa y envía notificaciones Push                  | C# .NET 8                  |
-| Adapter              | Envía notificaciones al proveedor externo de Push    | C# .NET 8, AWS SDK         |
-| Repository           | Actualiza el estado de las notificaciones enviadas   | C# .NET 8, Entity Framework Core |
-| Attachment Fetcher   | Obtiene archivos adjuntos desde almacenamiento       | C# .NET 8, AWS SDK         |
-| Configuration Manager| Gestiona configuraciones del servicio y por tenant   | C#, .NET 8, EF Core        |
+| `Consumer`           | Consume mensajes de la cola notificación `Push`         | `C# .NET 8`, `AWS SDK`      |
+| `Service`            | Procesa y envía notificaciones `Push`                  | `C# .NET 8`                 |
+| `Adapter`            | Envía notificaciones al proveedor externo de `Push`    | `C# .NET 8`, `AWS SDK`      |
+| `Repository`         | Actualiza el estado de las notificaciones enviadas   | `C# .NET 8`, `Entity Framework Core` |
+| `Attachment Fetcher` | Obtiene archivos adjuntos desde almacenamiento       | `C# .NET 8`, `AWS SDK`      |
+| `Configuration Manager`| Gestiona configuraciones del servicio y por tenant | `C# .NET 8`, `EF Core`      |
 
 ### Scheduler
 
 ![Componentes Scheduler](/diagrams/servicios-corporativos/notification_system_scheduler.png)
-*Figura 5.8: Componentes internos de Scheduler*
+*Figura 5.7: Componentes internos de Scheduler*
 
 | Componente           | Responsabilidad                                      | Tecnología                  |
 |----------------------|------------------------------------------------------|-----------------------------|
-| Scheduler Worker     | Ejecuta tareas programadas para enviar notificaciones| Worker Service, C# .NET 8  |
-| Service              | Procesa y programa el envío de notificaciones        | C# .NET 8                  |
-| Queue Publisher      | Envía notificaciones programadas a la cola           | C# .NET 8, AWS SDK         |
-| Repository           | Acceso a notificaciones programadas en la base de datos| C# .NET 8, Entity Framework Core |
-| Configuration Manager| Gestiona configuraciones del servicio y por tenant   | C#, .NET 8, EF Core        |
+| `Scheduler Worker`   | Ejecuta tareas programadas para enviar notificaciones| `Worker Service`, `C# .NET 8`  |
+| `Service`            | Procesa y programa el envío de notificaciones        | `C# .NET 8`                 |
+| `Queue Publisher`    | Envía notificaciones programadas a la cola           | `C# .NET 8`, `AWS SDK`      |
+| `Repository`         | Acceso a notificaciones programadas en la base de datos| `C# .NET 8`, `Entity Framework Core` |
+| `Configuration Manager`| Gestiona configuraciones del servicio y por tenant | `C# .NET 8`, `EF Core`      |
 
 ## 5.4 Esquemas De Base De Datos
 
