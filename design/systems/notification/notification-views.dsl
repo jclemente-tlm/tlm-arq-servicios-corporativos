@@ -23,28 +23,28 @@ component notification.api "notification_system_api" {
     exclude notification.api.structuredLogger
 
     // Excluir sistemas externos
-    exclude notification.notificationProcessor
     exclude observabilitySystem
+    exclude "notification.scheduler -> *"
 
     title "[Diagrama de Componentes] Notification System - Notification API"
 }
 
-component notification.notificationProcessor "notification_system_processor" {
-    include *
+// component notification.notificationProcessor "notification_system_processor" {
+//     include *
 
-    // Excluir solo componentes de observabilidad para limpiar telaraña
-    exclude notification.scheduler
-    exclude notification.notificationProcessor.healthCheck
-    exclude notification.notificationProcessor.metricsCollector
-    exclude notification.notificationProcessor.structuredLogger
+//     // Excluir solo componentes de observabilidad para limpiar telaraña
+//     exclude notification.scheduler
+//     exclude notification.notificationProcessor.healthCheck
+//     exclude notification.notificationProcessor.metricsCollector
+//     exclude notification.notificationProcessor.structuredLogger
 
-    // Excluir sistemas externos
-    exclude notification.api
-    exclude observabilitySystem
-    exclude apiGateway identity sitaMessaging trackAndTrace
+//     // Excluir sistemas externos
+//     exclude notification.api
+//     exclude observabilitySystem
+//     exclude apiGateway identity sitaMessaging trackAndTrace
 
-    title "[Diagrama de Componentes] Notification System - Notification Processor"
-}
+//     title "[Diagrama de Componentes] Notification System - Notification Processor"
+// }
 
 component notification.scheduler "notification_system_scheduler" {
     include *
@@ -56,6 +56,12 @@ component notification.scheduler "notification_system_scheduler" {
 
     // Excluir sistemas externos
     exclude observabilitySystem
+    exclude "notification.api -> notification.emailQueue"
+    exclude "notification.api -> notification.smsQueue"
+    exclude "notification.api -> notification.whatsappQueue"
+    exclude "notification.api -> notification.pushQueue"
+    exclude "notification.api -> notification.notificationDatabase"
+    exclude "notification.api -> configPlatform"
 
     exclude apiGateway
     title "[Diagrama de Componentes] Notification System - Scheduler"

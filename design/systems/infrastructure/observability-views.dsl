@@ -6,7 +6,11 @@
 systemContext observabilitySystem "observability_system_overview" {
     include observabilitySystem
     include notification identity trackAndTrace sitaMessaging apiGateway
-    include admin operationalUser countryAdmin
+    include admin operationalUser
+
+    exclude "operationalUser -> trackAndTrace"
+    exclude "admin -> identity"
+
     title "[Sistema] Observability Platform"
     description "Stack empresarial de observabilidad para monitoreo transversal."
 }

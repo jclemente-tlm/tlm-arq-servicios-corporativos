@@ -4,6 +4,6 @@ deployment notification "Notification System" "notification_system_deployment" {
 
     // autoLayout lr
     // exclude "notificationSystem.aws.region.ecsNotificationProcessor -> notificationSystem.aws.region.sqsEmailNode"
-    exclude "relationship.tag==SNS"
+    exclude "relationship.tag==Messaging"
     title "[Diagrama de Implementación] Notification System"
 }

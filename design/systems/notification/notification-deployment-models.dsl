@@ -11,108 +11,74 @@ notificationSystem = deploymentEnvironment "Notification System" {
             tags "Amazon Web Services - Region"
             description "Región AWS us-east-1 (común para DEV, QA y PROD)."
 
+            // dns = infrastructureNode "DNS router" {
+            //     technology "Route 53"
+            //     description "Routes incoming requests based upon domain name."
+            //     tags "Amazon Web Services - Route 53"
+            // }
+
+            lb = infrastructureNode "Load Balancer" {
+                technology "Elastic Load Balancer"
+                description "Distribuye tráfico a los servicios de notificación."
+                tags "Amazon Web Services - Elastic Load Balancing"
+            }
+
             // ====================
             // ECS Services
             // ====================
             ecsNotificationApi = deploymentNode "ECS - Notification API (via Fargate)" {
                 tags "Amazon Web Services - Elastic Container Service"
                 description "Expone endpoints REST para la gestión y envío de notificaciones multicanal."
-                properties {
-                    "Instance Type" "DEV: t3.small, STG: t3.medium, PROD: m5.large"
-                    "CPU" "DEV: 1 vCPU, STG: 2 vCPUs, PROD: 4 vCPUs"
-                    "Memory" "DEV: 2 GB, STG: 4 GB, PROD: 8 GB"
-                    "Replicas" "DEV: 1, STG: 2, PROD: 3"
-                    "Launch Type" "Fargate"
-                }
-                docker = deploymentNode "Docker" {
-                    tags "Docker"
-                    containerInstance notification.api "DEV,STG,PROD"
-                }
-            }
 
-            ecsNotificationProcessor = deploymentNode "ECS - Notification Processor (via Fargate)" {
-                tags "Amazon Web Services - Elastic Container Service"
-                description "Servicio backend que consume eventos y distribuye mensajes a los canales configurados."
-                properties {
-                    "Instance Type" "DEV: t3.small, STG: t3.medium, PROD: m5.large"
-                    "CPU" "DEV: 1 vCPU, STG: 2 vCPUs, PROD: 4 vCPUs"
-                    "Memory" "DEV: 2 GB, STG: 4 GB, PROD: 8 GB"
-                    "Replicas" "DEV: 1, STG: 2, PROD: 4"
-                    "Launch Type" "Fargate"
-                }
                 docker = deploymentNode "Docker" {
                     tags "Docker"
-                    containerInstance notification.notificationProcessor "DEV,STG,PROD"
+                    containerInstance notification.api
                 }
             }
 
             ecsNotificationScheduler = deploymentNode "ECS - Notification Scheduler (via Fargate)" {
                 tags "Amazon Web Services - Elastic Container Service"
                 description "Servicio Worker que programa y dispara eventos de notificación en base a reglas y cron."
-                properties {
-                    "Runtime" ".NET 8"
-                    "Instance Type" "DEV: t3.nano, STG: t3.small, PROD: t3.medium"
-                    "CPU" "DEV: 0.5 vCPU, STG: 1 vCPU, PROD: 2 vCPUs"
-                    "Memory" "DEV: 1 GB, STG: 2 GB, PROD: 4 GB"
-                    "Replicas" "DEV: 1, STG: 1, PROD: 2"
-                    "Launch Type" "Fargate"
-                }
+
                 docker = deploymentNode "Docker" {
                     tags "Docker"
-                    containerInstance notification.scheduler "DEV,STG,PROD"
+                    containerInstance notification.scheduler
                 }
             }
 
-            ecsEmailProcessor = deploymentNode "ECS - Email Processor (via Fargate)" {
-                tags "Amazon Web Services - Elastic Container Service"
+            // ====================
+            // Lambda Functions
+            // ====================
+            ecsEmailProcessor = deploymentNode "Lambda Function - Email Processor" {
+                tags "Amazon Web Services - AWS Lambda Lambda Function"
                 description "Microservicio encargado de procesar y enviar notificaciones por correo electrónico."
-                properties {
-                    "Instance Type" "DEV: t3.nano, STG: t3.small, PROD: m5.large"
-                    "Replicas" "DEV: 1, STG: 1, PROD: 3"
-                    "Launch Type" "Fargate"
-                }
                 docker = deploymentNode "Docker" {
                     tags "Docker"
-                    containerInstance notification.emailProcessor "DEV,STG,PROD"
+                    containerInstance notification.emailProcessor
                 }
             }
 
-            ecsSmsProcessor = deploymentNode "ECS - SMS Processor (via Fargate)" {
-                tags "Amazon Web Services - Elastic Container Service"
+            ecsSmsProcessor = deploymentNode "Lambda Function - SMS Processor" {
+                tags "Amazon Web Services - AWS Lambda Lambda Function"
                 description "Microservicio encargado de procesar y enviar notificaciones por SMS."
-                properties {
-                    "Instance Type" "DEV: t3.nano, STG: t3.small, PROD: m5.large"
-                    "Replicas" "DEV: 1, STG: 1, PROD: 3"
-                    "Launch Type" "Fargate"
-                }
                 docker = deploymentNode "Docker" {
                     tags "Docker"
-                    containerInstance notification.smsProcessor "DEV,STG,PROD"
+                    containerInstance notification.smsProcessor
                 }
             }
 
-            ecsWhatsappProcessor = deploymentNode "ECS - WhatsApp Processor (via Fargate)" {
-                tags "Amazon Web Services - Elastic Container Service"
+            ecsWhatsappProcessor = deploymentNode "Lambda Function - WhatsApp Processor" {
+                tags "Amazon Web Services - AWS Lambda Lambda Function"
                 description "Microservicio encargado de procesar y enviar notificaciones por WhatsApp."
-                properties {
-                    "Instance Type" "DEV: t3.nano, STG: t3.small, PROD: m5.large"
-                    "Replicas" "DEV: 1, STG: 1, PROD: 2"
-                    "Launch Type" "Fargate"
-                }
                 docker = deploymentNode "Docker" {
                     tags "Docker"
                     containerInstance notification.whatsappProcessor "DEV,STG,PROD"
                 }
             }
 
-            ecsPushProcessor = deploymentNode "ECS - Push Processor (via Fargate)" {
-                tags "Amazon Web Services - Elastic Container Service"
+            ecsPushProcessor = deploymentNode "Lambda Function - Push Processor" {
+                tags "Amazon Web Services - AWS Lambda Lambda Function"
                 description "Microservicio encargado de procesar y enviar notificaciones Push."
-                properties {
-                    "Instance Type" "DEV: t3.nano, STG: t3.small, PROD: m5.large"
-                    "Replicas" "DEV: 1, STG: 1, PROD: 2"
-                    "Launch Type" "Fargate"
-                }
                 docker = deploymentNode "Docker" {
                     tags "Docker"
                     containerInstance notification.pushProcessor "DEV,STG,PROD"
@@ -122,12 +88,6 @@ notificationSystem = deploymentEnvironment "Notification System" {
             // ====================
             // AWS Messaging
             // ====================
-            sqsNotificationQueue = deploymentNode "SQS - Notification Queue" {
-                tags "Amazon Web Services - Simple Queue Service"
-                description "Cola principal para recepción de solicitudes de notificación desde sistemas externos."
-                containerInstance notification.ingestionQueue "DEV,STG,PROD"
-            }
-
             sqsEmailQueue = deploymentNode "SQS - Email Queue" {
                 tags "Amazon Web Services - Simple Queue Service"
                 description "Cola específica para procesamiento de notificaciones por correo electrónico."
@@ -167,12 +127,13 @@ notificationSystem = deploymentEnvironment "Notification System" {
             rdsNode = deploymentNode "AWS RDS" {
                 tags "Amazon Web Services - RDS"
                 description "Instancia RDS PostgreSQL para persistencia de configuraciones, logs y auditoría de notificaciones."
-                properties {
-                    "Engine" "PostgreSQL 14"
-                    "Instance Type" "DEV: db.t3.micro, STG: db.t3.medium, PROD: db.m5.large"
-                    "Storage" "DEV: 20 GB, STG: 50 GB, PROD: 200 GB"
+
+                deploymentNode "PostgreSQL" {
+                    tags "Amazon Web Services - Aurora PostgreSQL Instance"
+
+                    containerInstance notification.notificationDatabase
                 }
-                containerInstance notification.notificationDatabase "DEV,STG,PROD"
+
             }
 
             // ====================
@@ -201,7 +162,12 @@ notificationSystem = deploymentEnvironment "Notification System" {
     // ====================
     // Relaciones
     // ====================
-    notificationSystem.aws.region.ecsNotificationProcessor.docker -> notificationSystem.aws.region.snsInfraNode "Publica eventos de notificación"
+    notificationSystem.aws.region.lb -> notificationSystem.aws.region.ecsNotificationApi "Redirige tráfico a API" "HTTPS" "001 - Fase 1"
+
+
+    notificationSystem.aws.region.ecsNotificationApi -> notificationSystem.aws.region.snsInfraNode "Publica notificación"
+    notificationSystem.aws.region.ecsNotificationScheduler -> notificationSystem.aws.region.snsInfraNode "Publica notificación"
+
     notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsEmailQueue "Entrega a SQS Email"
     notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsSmsQueue "Entrega a SQS SMS"
     notificationSystem.aws.region.snsInfraNode -> notificationSystem.aws.region.sqsWhatsappQueue "Entrega a SQS Whatsapp"

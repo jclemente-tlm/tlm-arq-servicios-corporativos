@@ -39,11 +39,6 @@ notification = softwareSystem "Notification System" {
     // ========================================
     // QUEUES - SQS (EXTERNAS)
     // ========================================
-    ingestionQueue = store "Ingestion Queue" {
-        technology "Amazon SQS"
-        description "Cola de ingesta de notificaciones para desacoplar la recepción del procesamiento"
-        tags "Message Bus" "SQS" "001 - Fase 1"
-    }
     emailQueue = store "Email Queue" {
         technology "Amazon SQS"
         description "Cola específica para procesamiento de notificaciones de email"
@@ -86,10 +81,16 @@ notification = softwareSystem "Notification System" {
             tags "Controller" "Notifications" "001 - Fase 1"
         }
 
-        attachmentController = component "Attachment Controller" {
-            technology "ASP.NET Core"
-            description "Endpoints RESTful para attachments"
-            tags "Controller" "Attachments" "001 - Fase 1"
+        notificationService = component "Notification Service" {
+            technology "C# .NET 8"
+            description "Valida datos, construye el mensaje y lo distribuye al canal correspondiente."
+            tags "Service" "001 - Fase 1"
+        }
+
+        notificationRepository = component "Notification Repository" {
+            technology "C# .NET 8, Entity Framework Core"
+            description "Guarda el estado y eventos de las notificaciones procesadas en la base de datos."
+            tags "Repository" "001 - Fase 1"
         }
 
         requestValidator = component "Request Validator" {
@@ -98,10 +99,28 @@ notification = softwareSystem "Notification System" {
             tags "Validation" "001 - Fase 1"
         }
 
-        messagePublisher = component "Message Publisher" {
-            technology "C#, .NET 8, PostgreSQL"
-            description "Publica mensajes a cola con garantía de entrega (outbox pattern)"
+        messageBuilder = component "Message Builder" {
+            technology "C# .NET 8"
+            description "Genera el mensaje final para cada canal utilizando plantillas y datos de entrada."
+            tags "Builder" "001 - Fase 1"
+        }
+
+        templateEngine = component "Template Engine" {
+            technology "Liquid Templates"
+            description "Genera cuerpo de mensajes en el API"
+            tags "Templates" "001 - Fase 1"
+        }
+
+        channelPublisher = component "Channel Publisher" {
+            technology "Reliable Messaging"
+            description "Publica mensajes directamente a colas por canal"
             tags "Messaging" "001 - Fase 1"
+        }
+
+        attachmentController = component "Attachment Controller" {
+            technology "ASP.NET Core"
+            description "Endpoints RESTful para attachments"
+            tags "Controller" "Attachments" "001 - Fase 1"
         }
 
         attachmentService = component "Attachment Service" {
@@ -142,79 +161,7 @@ notification = softwareSystem "Notification System" {
         }
     }
 
-    // ========================================
-    // NOTIFICATION PROCESSOR - UNIFICADO (OBSOLETO, DEFINICIÓN COMENTADA)
-    // ========================================
-    // (El bloque comentado se mantiene solo como referencia histórica, no debe usarse en relaciones ni documentación activa)
-
-    notificationProcessor = application "Notification Processor" {
-        technology "Worker Service, C# .NET 8"
-        description "Procesa y envía notificaciones multicanal. No gestiona eventos ni realiza consultas."
-        tags "CSharp" "001 - Fase 1"
-
-        messageConsumer = component "Consumer" {
-            technology "C# .NET 8, AWS SDK"
-            description "Consume mensajes desde la cola solicitudes de notificación."
-            tags "001 - Fase 1"
-        }
-
-        orchestratorService = component "Service" {
-            technology "C# .NET 8"
-            description "Valida datos, construye el mensaje y lo distribuye al canal correspondiente."
-            tags "001 - Fase 1"
-        }
-
-        messageBuilder = component "Message Builder" {
-            technology "C# .NET 8"
-            description "Genera el mensaje final para cada canal utilizando plantillas y datos de entrada."
-            tags "Builder" "001 - Fase 1"
-        }
-
-        templateEngine = component "Template Engine" {
-            technology "C#, Liquid Templates"
-            description "Renderiza plantillas con soporte i18n y variables dinámicas"
-            tags "Templates" "001 - Fase 1"
-        }
-
-        adapter = component "Adapter" {
-            technology "C# .NET 8, AWS SDK"
-            description "Envía el mensaje procesado a la cola específica del canal (Email, SMS, WhatsApp, Push)."
-            tags "001 - Fase 1"
-        }
-
-        repository = component "Repository" {
-            technology "C# .NET 8, Entity Framework Core"
-            description "Guarda el estado y eventos de las notificaciones procesadas en la base de datos."
-            tags "001 - Fase 1"
-        }
-
-        configManager = component "Configuration Manager" {
-            technology "C#, .NET 8, EF Core"
-            description "Gestiona configuraciones del servicio y por tenant"
-            tags "Configuration" "Multi-Tenant" "001 - Fase 1"
-        }
-
-        // Observabilidad esencial
-        healthCheck = component "Health Check" {
-            technology "ASP.NET Core Health Checks"
-            description "Monitoreo de salud del API"
-            tags "Observability" "001 - Fase 1"
-        }
-
-        metricsCollector = component "Metrics Collector" {
-            technology "Prometheus.NET"
-            description "Recolección de métricas del API"
-            tags "Observability" "001 - Fase 1"
-        }
-
-        structuredLogger = component "Structured Logger" {
-            technology "Serilog"
-            description "Logging estructurado con correlación"
-            tags "Observability" "001 - Fase 1"
-        }
-    }
-
-    scheduler = application "Notification Scheduler" {
+    scheduler = application "Scheduler Service" {
         technology "Worker Service, C# .NET 8"
         description "Gestiona el envío de notificaciones programadas."
         tags "CSharp" "001 - Fase 1"
@@ -237,10 +184,22 @@ notification = softwareSystem "Notification System" {
             tags "001 - Fase 1"
         }
 
-        publisher = component "Queue Publisher" {
-            technology "C# .NET 8, AWS SDK"
-            description "Envía notificaciones programadas a la cola de notificación."
-            tags "001 - Fase 1"
+        messageBuilder = component "Message Builder" {
+            technology "C# .NET 8"
+            description "Genera el mensaje final para cada canal utilizando plantillas y datos de entrada."
+            tags "Builder" "001 - Fase 1"
+        }
+
+        templateEngine = component "Template Engine" {
+            technology "Liquid Templates"
+            description "Genera cuerpo de mensajes en el API"
+            tags "Templates" "001 - Fase 1"
+        }
+
+        publisher = component "Channel Publisher" {
+            technology "Reliable Messaging"
+            description "Publica mensajes directamente a colas por canal"
+            tags "Messaging" "001 - Fase 1"
         }
 
         configManager = component "Configuration Manager" {
@@ -522,67 +481,76 @@ notification = softwareSystem "Notification System" {
     appEcuador -> api.attachmentController "Solicita carga de archivos adjuntos" "HTTPS via API Gateway" "001 - Fase 1"
     appColombia -> api.attachmentController "Solicita carga de archivos adjuntos" "HTTPS via API Gateway" "001 - Fase 1"
     appMexico -> api.attachmentController "Solicita carga de archivos adjuntos" "HTTPS via API Gateway" "001 - Fase 1"
+
     api.notificationController -> api.requestValidator "Valida requests de notificaciones" "C#" "001 - Fase 1"
-    api.notificationController -> api.messagePublisher "Publica mensajes validados" "C#" "001 - Fase 1"
+    // api.notificationController -> api.messagePublisher "Publica mensajes validados" "C#" "001 - Fase 1"
     api.attachmentController -> api.requestValidator "Valida requests de attachments" "C#" "001 - Fase 1"
     api.attachmentController -> api.attachmentService "Orquesta operaciones de archivos" "C#" "001 - Fase 1"
     api.attachmentService -> api.attachmentRepository "Gestiona metadatos" "Entity Framework" "001 - Fase 1"
     api.attachmentService -> attachmentStorage "Almacena archivos adjuntos" "S3-Compatible" "001 - Fase 1"
     api.attachmentRepository -> notificationDatabase.attachmentMetadataTable "Persiste metadatos" "PostgreSQL" "001 - Fase 1"
-    api.requestValidator -> notificationDatabase.configTable "Lee reglas de validación por tenant" "PostgreSQL" "001 - Fase 1"
-    api.messagePublisher -> notificationDatabase.configTable "Lee configuración de canales" "PostgreSQL" "001 - Fase 1"
+    // api.requestValidator -> notificationDatabase.configTable "Lee reglas de validación por tenant" "PostgreSQL" "001 - Fase 1"
+    // api.messagePublisher -> notificationDatabase.configTable "Lee configuración de canales" "PostgreSQL" "001 - Fase 1"
     api.configManager -> configPlatform.configService "Obtiene configuración externa" "HTTPS/REST" "001 - Fase 1"
     api.configManager -> notificationDatabase.configTable "Lee metadatos estáticos tenant" "PostgreSQL" "001 - Fase 1"
-    api.messagePublisher -> ingestionQueue "Publica en cola de ingesta" "SQS" "001 - Fase 1"
+    // api.messagePublisher -> ingestionQueue "Publica en cola de ingesta" "SQS" "001 - Fase 1"
     api.healthCheck -> notificationDatabase "Ejecuta health check" "PostgreSQL" "001 - Fase 1"
     api.healthCheck -> attachmentStorage "Verifica conectividad storage" "S3-Compatible API" "001 - Fase 1"
     api.notificationController -> api.structuredLogger "Registra requests de notificaciones" "Serilog" "001 - Fase 1"
     api.attachmentController -> api.structuredLogger "Registra requests de attachments" "Serilog" "001 - Fase 1"
     api.requestValidator -> api.structuredLogger "Registra validaciones" "Serilog" "001 - Fase 1"
-    api.messagePublisher -> api.structuredLogger "Registra publicación de mensajes" "Serilog" "001 - Fase 1"
+    api.channelPublisher -> api.structuredLogger "Registra publicación de mensajes" "Serilog" "001 - Fase 1"
     api.attachmentService -> api.structuredLogger "Registra operaciones de archivos" "Serilog" "001 - Fase 1"
     api.healthCheck -> api.structuredLogger "Registra health checks" "Serilog" "001 - Fase 1"
     api.notificationController -> api.metricsCollector "Publica métricas de requests" "Prometheus" "001 - Fase 1"
     api.attachmentController -> api.metricsCollector "Publica métricas de attachments" "Prometheus" "001 - Fase 1"
     api.requestValidator -> api.metricsCollector "Publica métricas de validación" "Prometheus" "001 - Fase 1"
-    api.messagePublisher -> api.metricsCollector "Publica métricas de publicación" "Prometheus" "001 - Fase 1"
+    api.channelPublisher -> api.metricsCollector "Publica métricas de publicación" "Prometheus" "001 - Fase 1"
     api.attachmentService -> api.metricsCollector "Publica métricas de archivos" "Prometheus" "001 - Fase 1"
     api.healthCheck -> api.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
 
-    // === RELACIONES INTERNAS: PROCESSOR ===
-    notificationProcessor.configManager -> configPlatform.configService "Obtiene configuración externa" "HTTPS/REST" "001 - Fase 1"
-    notificationProcessor.configManager -> notificationDatabase.configTable "Lee configuración local y por tenant" "PostgreSQL" "001 - Fase 1"
-    notificationProcessor.messageConsumer -> notificationProcessor.orchestratorService "Delega procesamiento" "C#" "001 - Fase 1"
-    notificationProcessor.orchestratorService -> notificationProcessor.templateEngine "Renderiza plantillas" "C#" "001 - Fase 1"
-    notificationProcessor.templateEngine -> notificationDatabase.templatesTable "Lee plantillas" "PostgreSQL" "001 - Fase 1"
-    notificationProcessor.templateEngine -> notificationDatabase.configTable "Lee configuración de templates" "PostgreSQL" "001 - Fase 1"
-    notificationProcessor.messageConsumer -> ingestionQueue "Consume solicitudes de notificación" "SQS" "001 - Fase 1"
-    notificationProcessor.adapter -> emailQueue "Encola notificación email" "SQS" "SNS, 001 - Fase 1"
-    notificationProcessor.adapter -> smsQueue "Encola notificación SMS" "SQS" "SNS, 001 - Fase 1"
-    notificationProcessor.adapter -> whatsappQueue "Encola notificación WhatsApp" "SQS" "SNS,001 - Fase 1"
-    notificationProcessor.adapter -> pushQueue "Encola notificación push" "SQS" "SNS, 001 - Fase 1"
-    notificationProcessor.healthCheck -> notificationDatabase "Ejecuta health check" "PostgreSQL" "001 - Fase 1"
-    notificationProcessor.messageConsumer -> notificationProcessor.structuredLogger "Registra consumo de mensajes" "Serilog" "001 - Fase 1"
-    notificationProcessor.orchestratorService -> notificationProcessor.structuredLogger "Registra orquestación" "Serilog" "001 - Fase 1"
-    notificationProcessor.templateEngine -> notificationProcessor.structuredLogger "Registra renderizado de plantillas" "Serilog" "001 - Fase 1"
-    notificationProcessor.healthCheck -> notificationProcessor.structuredLogger "Registra health checks" "Serilog" "001 - Fase 1"
-    notificationProcessor.messageConsumer -> notificationProcessor.metricsCollector "Publica métricas de consumo" "Prometheus" "001 - Fase 1"
-    notificationProcessor.orchestratorService -> notificationProcessor.metricsCollector "Publica métricas de orquestación" "Prometheus" "001 - Fase 1"
-    notificationProcessor.templateEngine -> notificationProcessor.metricsCollector "Publica métricas de templates" "Prometheus" "001 - Fase 1"
-    notificationProcessor.healthCheck -> notificationProcessor.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
-    notificationProcessor.orchestratorService -> notificationProcessor.repository "Guarda estado y eventos de notificación" "Entity Framework" "001 - Fase 1"
-    notificationProcessor.orchestratorService -> notificationProcessor.messageBuilder "Construye mensaje final" "C#" "001 - Fase 1"
-    notificationProcessor.orchestratorService -> notificationProcessor.adapter "Envía mensaje a canal" "C#" "001 - Fase 1"
-    notificationProcessor.repository -> notificationDatabase.messagesTable "Guarda y actualiza notificaciones procesadas" "PostgreSQL" "001 - Fase 1"
+    // appCliente -> api.notificationController "Envía solicitud de notificación" "HTTPS" "001 - Fase 1"
+
+    // api.notificationController -> api.requestValidator "Valida request" "C#" "001 - Fase 1"
+    api.notificationController -> api.notificationService "Genera mensaje" "C#" "001 - Fase 1"
+    api.notificationService -> api.messageBuilder "Genera mensaje" "C#" "001 - Fase 1"
+    api.messageBuilder -> api.templateEngine "Renderiza plantilla" "Liquid Templates" "001 - Fase 1"
+    api.notificationService -> api.notificationRepository "Guarda notificación" "Entity Framework" "001 - Fase 1"
+    api.notificationRepository -> notificationDatabase.messagesTable "Guarda notificación" "PostgreSQL" "001 - Fase 1"
+    // api.notificationService -> api.attachmentService "Gestiona adjuntos" "S3-Compatible" "001 - Fase 1"
+    api.templateEngine -> notificationDatabase.templatesTable "Lee plantilla" "PostgreSQL" "001 - Fase 1"
+
+    // api.notificationController -> scheduler.controller "Delega notificaciones programadas" "HTTPS" "001 - Fase 1"
+    api.notificationService -> api.channelPublisher "Publica en cola por canal" "Reliable Messaging" "001 - Fase 1"
+
+    api.channelPublisher -> emailQueue "Encola notificación email" "Messaging" "Messaging, 001 - Fase 1"
+    api.channelPublisher -> smsQueue "Encola notificación  SMS" "Messaging" "Messaging, 001 - Fase 1"
+    api.channelPublisher -> whatsappQueue "Encola notificación  WhatsApp" "Messaging" "Messaging, 001 - Fase 1"
+    api.channelPublisher -> pushQueue "Encola notificación  Push" "Messaging" "Messaging, 001 - Fase 1"
+
+    emailProcessor -> emailProvider "Envia email" "SMTP/HTTPS" "001 - Fase 1"
+    smsProcessor -> smsProvider "Envia SMS" "HTTPS/API" "001 - Fase 1"
+    pushProcessor -> pushProvider "Envia push" "HTTPS/API" "001 - Fase 1"
+
+    scheduler.publisher -> emailQueue "Encola notificación email" "Messaging" "Messaging, 001 - Fase 1"
+    scheduler.publisher -> smsQueue "Encola notificación SMS" "Messaging" "Messaging, 001 - Fase 1"
+    scheduler.publisher -> whatsappQueue "Encola notificación WhatsApp" "Messaging" "Messaging, 001 - Fase 1"
+    scheduler.publisher -> pushQueue "Encola notificación Push" "Messaging" "Messaging 001 - Fase 1"
 
     // === RELACIONES INTERNAS: SCHEDULER ===
     scheduler.configManager -> configPlatform.configService "Obtiene configuración externa" "HTTPS/REST" "001 - Fase 1"
     scheduler.configManager -> notificationDatabase.configTable "Lee configuración local y por tenant" "PostgreSQL" "001 - Fase 1"
-    scheduler.publisher -> ingestionQueue "Publica notificaciones programadas" "SQS" "001 - Fase 1"
+    // scheduler.publisher -> ingestionQueue "Publica notificaciones programadas" "SQS" "001 - Fase 1"
     scheduler.repository -> notificationDatabase.messagesTable "Lee notificaciones programadas proximas a enviar" "PostgreSQL" "001 - Fase 1"
-    scheduler.worker -> scheduler.service "Delega ejecución programada" "C#" "001 - Fase 1"
+    // scheduler.worker -> scheduler.service "Delega ejecución programada" "C#" "001 - Fase 1"
     scheduler.service -> scheduler.repository "Accede a notificaciones programadas" "C#" "001 - Fase 1"
     scheduler.service -> scheduler.publisher "Publica notificaciones programadas" "C#" "001 - Fase 1"
+    scheduler.service -> scheduler.messageBuilder "Genera mensaje" "C#" "001 - Fase 1"
+    scheduler.messageBuilder -> scheduler.templateEngine "Renderiza plantilla" "Liquid Templates" "001 - Fase 1"
+    // scheduler.service -> scheduler.repository "Guarda notificación" "Entity Framework" "001 - Fase 1"
+    scheduler.templateEngine -> notificationDatabase.templatesTable "Lee plantilla" "PostgreSQL" "001 - Fase 1"
+    scheduler.worker -> scheduler.service "Ejecuta tareas programadas" "C#" "001 - Fase 1"
+
 
     // === RELACIONES INTERNAS: PROCESADORES DE CANAL ===
     emailProcessor.configManager -> configPlatform.configService "Obtiene configuración externa" "HTTPS/REST" "001 - Fase 1"

@@ -14,17 +14,20 @@ El Sistema de Notificaciones es una plataforma distribuida multi-tenant y multip
 | Multi-tenant    | Aislamiento por organización y país |
 | Preferencias    | Opt-in/opt-out, límites de frecuencia, horarios |
 | Webhooks        | Callbacks para estado de entrega y eventos |
+| Desacoplamiento | Uso de colas para desacoplar recepción y entrega, permitiendo escalar y tolerar picos de tráfico |
+| Resiliencia     | Reintentos automáticos y DLQ para garantizar entrega ante fallos temporales |
 
 ## 1.2 Objetivos De Calidad
 
 | Atributo        | Objetivo                | Métrica                  |
 |-----------------|------------------------|--------------------------|
-| Disponibilidad  | Alta disponibilidad    | 99.9% uptime             |
-| Rendimiento     | Procesamiento rápido   | p95 < 200ms respuesta API|
-| Escalabilidad   | Alto volumen           | 100,000+ notificaciones/hora |
-| Confiabilidad   | Entrega garantizada    | 99.9% tasa de entrega    |
-| Observabilidad  | Visibilidad completa   | 100% requests trazados   |
-| Seguridad       | Cifrado de datos       | AES-256, TLS 1.3         |
+| Disponibilidad  | Alta disponibilidad, replicación multi-AZ, tolerancia a fallos | 99.9% uptime             |
+| Rendimiento     | Procesamiento rápido, baja latencia, colas desacopladas        | p95 < 200ms respuesta API|
+| Escalabilidad   | Escalabilidad horizontal, sharding y particionamiento          | 100,000+ notificaciones/hora |
+| Confiabilidad   | Entrega garantizada (at-least-once/exactly-once), reintentos automáticos, DLQ | 99.9% tasa de entrega    |
+| Observabilidad  | Visibilidad completa, monitoreo centralizado, alertas proactivas | 100% requests trazados   |
+| Seguridad       | Cifrado de datos, autenticación robusta, rate limiting         | AES-256, TLS 1.3         |
+| Archivado       | Gestión de históricos y logs a bajo costo                      | Políticas de retención   |
 
 ## 1.3 Requisitos Principales
 
@@ -35,11 +38,17 @@ El Sistema de Notificaciones es una plataforma distribuida multi-tenant y multip
 | RF-NOT-03  | Programación de Envíos           | Soporte futuro, zona horaria        |
 | RF-NOT-04  | Gestión de Adjuntos              | `S3`, almacenamiento seguro         |
 | RF-NOT-05  | Preferencias de Usuario          | Opt-in/opt-out, límites, horarios   |
-| RF-NOT-06  | Reintentos Inteligentes          | Backoff exponencial, DLQ            |
+| RF-NOT-06  | Reintentos Inteligentes          | Backoff exponencial, DLQ, reintentos automáticos |
 | RF-NOT-07  | Aislamiento Multi-tenant         | Separación total de datos           |
 | RF-NOT-08  | Trazabilidad de Auditoría        | Seguimiento completo de ciclo de vida |
-| RF-NOT-09  | Control de Velocidad             | Rate limiting por canal/tipo        |
+| RF-NOT-09  | Control de Velocidad             | Rate limiting por canal/tipo, protección anti-abuso |
 | RF-NOT-10  | Integración Webhook              | Callbacks de eventos                |
+| RF-NOT-11  | Desacoplamiento                  | Uso de colas para desacoplar recepción y entrega |
+| RF-NOT-12  | Escalabilidad Horizontal         | Instancias adicionales según demanda |
+| RF-NOT-13  | Sharding y Particionamiento      | Distribución de datos por usuario, región o tiempo |
+| RF-NOT-14  | Caching                         | Preferencias/configuración en caché (Redis/Memcached) |
+| RF-NOT-15  | Monitoreo y Alertas              | Logs centralizados, métricas, alertas proactivas |
+| RF-NOT-16  | Archivado de Históricos          | Políticas de retención y almacenamiento de bajo costo |
 
 ## 1.4 Tipos De Notificaciones
 
@@ -49,6 +58,8 @@ El Sistema de Notificaciones es una plataforma distribuida multi-tenant y multip
 | Promocional    | Marketing, newsletters             | `Email`, `SMS`, `WhatsApp` | Media  | < 5 minutos   |
 | Operacional    | Status updates, mantenimientos     | `Email`, `In-App`, `Push` | Media  | < 2 minutos   |
 | Emergencia     | Alertas críticas, evacuaciones     | Todos           | Crítica   | < 10 segundos |
+
+> Nota: Los SLA y prioridades se definen según la criticidad y el canal, siguiendo mejores prácticas de la industria para asegurar entrega oportuna y confiable.
 
 ## 1.5 Partes Interesadas Y Usuarios
 
@@ -66,6 +77,8 @@ El Sistema de Notificaciones es una plataforma distribuida multi-tenant y multip
 | Usuarios de Marketing  | Configuran campañas           | Admin UI, dashboards        | Configuración fácil, insights       |
 | Operaciones            | Monitorean notificaciones     | `Grafana`, alertas          | Visibilidad en tiempo real, alertas |
 | Destinatarios Finales  | Reciben notificaciones        | `Email`, apps móviles       | Entrega oportuna, preferencias      |
+
+> Nota: La visibilidad en tiempo real, la trazabilidad y la gestión de preferencias son clave para la satisfacción de usuarios y equipos de operaciones.
 
 ## 1.6 Resumen Ejecutivo
 

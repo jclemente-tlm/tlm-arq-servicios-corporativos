@@ -1,39 +1,47 @@
 # 5. Vista De Bloques De Construcción
 
-Esta sección describe la estructura modular del Sistema de Notificación, detallando contenedores, componentes, esquemas de datos, APIs y ejemplos de implementación. Se incluyen diagramas C4 para ilustrar la arquitectura y la interacción entre los bloques principales.
+Esta sección describe la estructura modular y desacoplada del Sistema de Notificación, detallando contenedores, componentes, esquemas de datos, APIs y ejemplos de implementación. Se incluyen diagramas C4 para ilustrar la arquitectura y la interacción entre los bloques principales, priorizando la escalabilidad, resiliencia y observabilidad.
 
 ![Vista General del Sistema de Notificación](/diagrams/servicios-corporativos/notification_system.png)
 *Figura 5.1: Contenedores principales del sistema*
 
 ## 5.1 Contenedores Principales
 
-| Contenedor                | Responsabilidad                        | Tecnología              |
-|---------------------------|----------------------------------------|-------------------------|
-| Notification API          | Recepción y validación de solicitudes  | `.NET 8 Web API`        |
-| Notification Processor    | Procesamiento y envío de notificaciones| `.NET 8 Worker Service` |
-| Notification Database     | Persistencia de datos y auditoría      | `PostgreSQL 15+`        |
-| emailQueue                | Cola de mensajes email                 | `AWS SQS`               |
-| smsQueue                  | Cola de mensajes SMS                   | `AWS SQS`               |
-| whatsappQueue             | Cola de mensajes WhatsApp              | `AWS SQS`               |
-| pushQueue                 | Cola de mensajes push                  | `AWS SQS`               |
-| SNS (opcional)            | Notificación fan-out a colas SQS       | `AWS SNS`               |
-| Email Processor           | Procesamiento y envío de emails        | `.NET 8 Worker Service` |
-| SMS Processor             | Procesamiento y envío de SMS           | `.NET 8 Worker Service` |
-| WhatsApp Processor        | Procesamiento y envío de WhatsApp      | `.NET 8 Worker Service` |
-| Push Processor            | Procesamiento y envío de notificaciones push | `.NET 8 Worker Service` |
-| Attachment Storage        | Almacenamiento de adjuntos             | S3, File System         |
+| Contenedor                | Responsabilidad                                        | Tecnología              |
+|---------------------------|--------------------------------------------------------|-------------------------|
+| Notification API          | Recepción, validación y orquestación de solicitudes    | `.NET 8 Web API`        |
+| Notification Processor    | Procesamiento asíncrono y envío multicanal             | `.NET 8 Worker Service` |
+| Notification Database     | Persistencia, auditoría y versionado de datos          | `PostgreSQL 15+`        |
+| emailQueue                | Desacoplamiento y buffering de mensajes email           | `AWS SQS`               |
+| smsQueue                  | Desacoplamiento y buffering de mensajes SMS             | `AWS SQS`               |
+| whatsappQueue             | Desacoplamiento y buffering de mensajes WhatsApp        | `AWS SQS`               |
+| pushQueue                 | Desacoplamiento y buffering de mensajes push            | `AWS SQS`               |
+| SNS (opcional)            | Fan-out y routing avanzado a colas SQS                 | `AWS SNS`               |
+| Email Processor           | Procesamiento y entrega de emails                      | `.NET 8 Worker Service` |
+| SMS Processor             | Procesamiento y entrega de SMS                         | `.NET 8 Worker Service` |
+| WhatsApp Processor        | Procesamiento y entrega de WhatsApp                    | `.NET 8 Worker Service` |
+| Push Processor            | Procesamiento y entrega de notificaciones push         | `.NET 8 Worker Service` |
+| Attachment Storage        | Almacenamiento seguro y escalable de adjuntos          | `AWS S3`                |
+
+> **Nota profesional:** La arquitectura basada en contenedores desacoplados y colas permite escalar cada función de manera independiente, soportar picos de carga y aislar fallos. El uso de S3 para adjuntos garantiza durabilidad y disponibilidad. La modularidad facilita la evolución y el mantenimiento del sistema, alineado a los principios de arquitectura empresarial.
 
 ## 5.2 Vista de Componentes y Detalles
 
 ![Componentes Notification API](/diagrams/servicios-corporativos/notification_system_api.png)
 *Figura 5.2: Componentes internos de Notification API*
 
-| Componente                | Responsabilidad                        | Tecnología              |
-|---------------------------|----------------------------------------|-------------------------|
-| Notification Controller   | Exposición de endpoints REST           | `ASP.NET Core`          |
-| Template Controller       | Gestión de plantillas                  | `ASP.NET Core`          |
-| Attachment Service        | Manejo de adjuntos                     | `.NET 8`                |
-| Validation Service        | Validación de datos y reglas           | `FluentValidation`      |
+| Componente                | Responsabilidad                                        | Tecnología              |
+|---------------------------|--------------------------------------------------------|-------------------------|
+| Notification Controller   | Exposición de endpoints REST y control de acceso       | `ASP.NET Core`          |
+| Template Controller       | Gestión de plantillas con versionado e i18n            | `ASP.NET Core`          |
+| Attachment Service        | Manejo seguro y validación de adjuntos                 | `.NET 8, S3 SDK`        |
+| Validation Service        | Validación de datos, límites y reglas por tenant       | `FluentValidation`      |
+| Message Publisher         | Publicación confiable a colas (outbox pattern)         | `.NET 8, PostgreSQL, SQS`|
+| Config Manager            | Gestión de configuración multi-tenant                  | `.NET 8, EF Core`       |
+| Structured Logger         | Logging estructurado y trazabilidad                    | `Serilog`               |
+| Metrics Collector         | Recolección de métricas y monitoreo                    | `Prometheus.NET`        |
+
+> **Nota profesional:** La separación de componentes permite aplicar principios SOLID, facilitar pruebas unitarias y soportar la evolución incremental del sistema. La observabilidad y la validación robusta son transversales a todos los componentes críticos.
 
 ![Componentes Notification Processor](/diagrams/servicios-corporativos/notification_system_processor.png)
 *Figura 5.3: Componentes internos de Notification Processor*
