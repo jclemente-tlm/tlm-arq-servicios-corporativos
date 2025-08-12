@@ -1,7 +1,4 @@
 notificationSystem = deploymentEnvironment "Notification System" {
-    deploymentGroup "DEV"
-    deploymentGroup "STG"
-    deploymentGroup "PROD"
 
     aws = deploymentNode "Amazon Web Services" {
         tags "Amazon Web Services"
@@ -72,7 +69,7 @@ notificationSystem = deploymentEnvironment "Notification System" {
                 description "Microservicio encargado de procesar y enviar notificaciones por WhatsApp."
                 docker = deploymentNode "Docker" {
                     tags "Docker"
-                    containerInstance notification.whatsappProcessor "DEV,STG,PROD"
+                    containerInstance notification.whatsappProcessor
                 }
             }
 
@@ -81,7 +78,7 @@ notificationSystem = deploymentEnvironment "Notification System" {
                 description "Microservicio encargado de procesar y enviar notificaciones Push."
                 docker = deploymentNode "Docker" {
                     tags "Docker"
-                    containerInstance notification.pushProcessor "DEV,STG,PROD"
+                    containerInstance notification.pushProcessor
                 }
             }
 
@@ -91,25 +88,25 @@ notificationSystem = deploymentEnvironment "Notification System" {
             sqsEmailQueue = deploymentNode "SQS - Email Queue" {
                 tags "Amazon Web Services - Simple Queue Service"
                 description "Cola específica para procesamiento de notificaciones por correo electrónico."
-                containerInstance notification.emailQueue "DEV,STG,PROD"
+                containerInstance notification.emailQueue
             }
 
             sqsSmsQueue = deploymentNode "SQS - SMS Queue" {
                 tags "Amazon Web Services - Simple Queue Service"
                 description "Cola específica para procesamiento de notificaciones SMS con integración a proveedores."
-                containerInstance notification.smsQueue "DEV,STG,PROD"
+                containerInstance notification.smsQueue
             }
 
             sqsWhatsappQueue = deploymentNode "SQS - WhatsApp Queue" {
                 tags "Amazon Web Services - Simple Queue Service"
                 description "Cola específica para procesamiento de notificaciones WhatsApp Business API."
-                containerInstance notification.whatsappQueue "DEV,STG,PROD"
+                containerInstance notification.whatsappQueue
             }
 
             sqsPushQueue = deploymentNode "SQS - Push Queue" {
                 tags "Amazon Web Services - Simple Queue Service"
                 description "Cola específica para procesamiento de notificaciones push móviles (FCM/APNS)."
-                containerInstance notification.pushQueue "DEV,STG,PROD"
+                containerInstance notification.pushQueue
             }
 
             // ====================
@@ -121,7 +118,7 @@ notificationSystem = deploymentEnvironment "Notification System" {
                 properties {
                     "Bucket" "notification-files"
                 }
-                containerInstance notification.attachmentStorage "DEV,STG,PROD"
+                containerInstance notification.attachmentStorage
             }
 
             rdsNode = deploymentNode "AWS RDS" {
@@ -162,7 +159,7 @@ notificationSystem = deploymentEnvironment "Notification System" {
     // ====================
     // Relaciones
     // ====================
-    notificationSystem.aws.region.lb -> notificationSystem.aws.region.ecsNotificationApi "Redirige tráfico a API" "HTTPS" "001 - Fase 1"
+    notificationSystem.aws.region.lb -> notificationSystem.aws.region.ecsNotificationApi.docker "Redirige tráfico a API" "HTTPS" "001 - Fase 1"
 
 
     notificationSystem.aws.region.ecsNotificationApi -> notificationSystem.aws.region.snsInfraNode "Publica notificación"

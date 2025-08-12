@@ -182,6 +182,7 @@ workspace {
             !include ./systems/track-and-trace/track-and-trace-models.dsl
 
             !include ./systems/notification/notification-deployment-models.dsl
+            !include ./systems/track-and-trace/track-and-trace-deployment-models.dsl
 
             // ========================================
             // RELACIONES CROSS-SYSTEM
@@ -224,6 +225,7 @@ workspace {
 
         // Vistas de los sistemas externos
         !include ./systems/notification/notification-deployment-views.dsl
+        !include ./systems/track-and-trace/track-and-trace-deployment-views.dsl
 
         // Estilos
         !include ./common/styles/branding.dsl
