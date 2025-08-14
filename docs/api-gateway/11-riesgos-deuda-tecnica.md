@@ -1,8 +1,8 @@
-# 11. Riesgos Y Deuda Técnica
+# 11. Riesgos y deuda técnica
 
-## 11.1 Identificación Y Mitigación De Riesgos
+## 11.1 Identificación y mitigación de riesgos
 
-### 11.1.1 Riesgos Técnicos
+### 11.1.1 Riesgos técnicos
 
 | ID     | Riesgo                                 | Probabilidad | Impacto | Severidad   | Mitigación                                                      |
 |--------|----------------------------------------|--------------|---------|-------------|-----------------------------------------------------------------|
@@ -85,7 +85,7 @@ public class RiskMitigationService
 }
 ```
 
-### 11.1.2 Riesgos Operacionales
+### 11.1.2 Riesgos operacionales
 
 | ID     | Riesgo                                         | Probabilidad | Impacto | Severidad   | Mitigación                                 |
 |--------|------------------------------------------------|--------------|---------|-------------|--------------------------------------------|
@@ -148,7 +148,7 @@ data:
       validationInterval: "00:30:00"
 ```
 
-### 11.1.3 Riesgos De Seguridad
+### 11.1.3 Riesgos de seguridad
 
 | ID     | Riesgo                        | Probabilidad | Impacto | Severidad   | Mitigación                                 |
 |--------|-------------------------------|--------------|---------|-------------|--------------------------------------------|
@@ -275,7 +275,7 @@ public class ServicioMitigacionSeguridad
 
 ---
 
-## 11.2 Deuda Técnica
+## 11.2 Deuda técnica
 
 | Categoría      | Descripción                                 | Prioridad | Esfuerzo estimado | Timeline  |
 |----------------|---------------------------------------------|-----------|-------------------|-----------|
@@ -414,9 +414,9 @@ public class TechnicalDebtResolutionPlan
 
 ---
 
-## 11.3 Plan De Contingencia
+## 11.3 Plan de contingencia
 
-### 11.3.1 Escenarios De Contingencia
+### 11.3.1 Escenarios de contingencia
 
 ```yaml
 # Playbook de contingencia
@@ -475,7 +475,7 @@ contingency_plans:
         timeout: "Manual decision"
 ```
 
-### 11.3.2 Procedimientos De Rollback
+### 11.3.2 Procedimientos de rollback
 
 ```bash
 #!/bin/bash

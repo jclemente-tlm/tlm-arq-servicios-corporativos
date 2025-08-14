@@ -1,9 +1,9 @@
-# 7. Vista De Implementación
+# 7. Vista de implementación
 
 ![Vista de implementación del API Gateway](/diagrams/servicios-corporativos/api_gateway_deployment.png)
 *Figura 7.1: Implementación de Componentes de principales del sistema*
 
-## 7.1 Estructura Del Proyecto
+## 7.1 Estructura del proyecto
 
 | Componente         | Ubicación           | Tecnología         |
 |--------------------|--------------------|--------------------|
@@ -14,7 +14,7 @@
 | `Docker`           | `/docker`          | `Dockerfile`        |
 | `Scripts`          | `/scripts`         | `PowerShell/Bash`   |
 
-## 7.2 Dependencias Principales
+## 7.2 Dependencias principales
 
 | Dependencia            | Versión | Propósito                |
 |------------------------|---------|--------------------------|
@@ -26,9 +26,9 @@
 
 ---
 
-## 7.3 Infraestructura Y Despliegue
+## 7.3 Infraestructura y despliegue
 
-### 7.3.1 Arquitectura De Contenedores (Local)
+### 7.3.1 Arquitectura de contenedores (local)
 
 ```yaml
 # docker-compose.yml para desarrollo local
@@ -85,7 +85,7 @@ volumes:
   redis-data:
 ```
 
-### 7.3.2 Dockerfile Optimizado
+### 7.3.2 Dockerfile optimizado
 
 ```dockerfile
 # Etapa de construcción
@@ -135,7 +135,7 @@ EXPOSE 8443
 ENTRYPOINT ["dotnet", "ApiGateway.dll"]
 ```
 
-### 7.3.3 Despliegue En AWS ECS Con Terraform
+### 7.3.3 Despliegue en AWS ECS con Terraform
 
 ```hcl
 # infrastructure/terraform/api-gateway-ecs.tf
@@ -234,9 +234,9 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
 
 ---
 
-## 7.4 Configuración Y Secretos
+## 7.4 Configuración y secretos
 
-### 7.4.1 Configuración De La Aplicación
+### 7.4.1 Configuración de la aplicación
 
 ```json
 // appsettings.Production.json (fragmento)
@@ -280,14 +280,14 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
 }
 ```
 
-### 7.4.2 Gestión De Secretos
+### 7.4.2 Gestión de secretos
 
 - `AWS Secrets Manager` para credenciales sensibles (`Redis`, JWT, certificados TLS).
 - Acceso a secretos vía variables de entorno y configuración segura en tiempo de despliegue.
 
 ---
 
-## 7.5 Infraestructura Como Código
+## 7.5 Infraestructura como código
 
 - Todo el despliegue productivo se realiza con `Terraform` sobre AWS (`ECS Fargate`, `ElastiCache`, `ALB`, `Secrets Manager`).
 - Los entornos de desarrollo usan `docker-compose` y scripts `Bash`/`PowerShell`.
@@ -295,7 +295,7 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
 
 ---
 
-## 7.6 CI/CD Pipeline
+## 7.6 CI/CD pipeline
 
 - Pipeline basado en `GitHub Actions` con etapas de build, test, análisis de seguridad (`Trivy`), análisis de calidad (`SonarCloud`), build/push de imagen y despliegue a AWS ECS vía `Terraform` y `Helm`.
 - Ejemplo de workflow:
@@ -429,7 +429,7 @@ jobs:
 
 ---
 
-## 7.7 Monitoring Y Observabilidad
+## 7.7 Monitoring y observabilidad
 
 - Stack de observabilidad: `Prometheus` (métricas), `Grafana` (dashboards), `Loki` (logs), `Jaeger` (tracing distribuido).
 - Dashboards y alertas preconfiguradas para latencia, errores 5xx, disponibilidad y saturación de recursos.
@@ -474,7 +474,7 @@ alertas:
           - alertmanager:9093
 ```
 
-### 7.7.2 Alertas Rules
+### 7.7.2 Alertas rules
 
 ```yaml
 # monitoring/prometheus/api-gateway-alerts.yml

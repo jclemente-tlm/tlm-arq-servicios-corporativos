@@ -1,4 +1,4 @@
-# 3. Contexto y Alcance del Sistema
+# 3. Contexto y alcance del sistema
 
 ![Servicios Corporativos - Vista de Contexto](/diagrams/servicios-corporativos/corporate_services.png)
 
@@ -8,14 +8,14 @@
 
 *Figura 3.2: Vista de contexto del Sistema Track & Trace*
 
-## 3.1 Alcance del Sistema
+## 3.1 Alcance del sistema
 
 | Aspecto   | Descripción                                                                 |
 |-----------|-----------------------------------------------------------------------------|
 | **Incluido**  | Ingesta de eventos, `event sourcing`, `CQRS`, consultas, analytics           |
 | **Excluido**  | Generación de eventos, lógica de negocio, procesamiento de datos             |
 
-## 3.2 Actores Externos
+## 3.2 Actores externos
 
 | Actor                    | Rol         | Interacción                |
 |--------------------------|-------------|----------------------------|

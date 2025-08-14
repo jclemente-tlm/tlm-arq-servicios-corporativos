@@ -92,12 +92,14 @@ Calidad del Servicio SITA Messaging
 **Entorno**: Operación normal con alta carga
 
 **Respuesta**:
+
 - Switchover automático a conexión secundaria
 - Buffering de mensajes durante transición
 - Notificación a equipos de operaciones
 - Re-envío automático de mensajes pending
 
 **Medida de respuesta**:
+
 - Failover time < 15 segundos
 - 0% pérdida de mensajes durante switchover
 - 100% recovery de mensajes buffered
@@ -116,12 +118,14 @@ Calidad del Servicio SITA Messaging
 **Entorno**: Operación 24/7 con múltiples tenants
 
 **Respuesta**:
+
 - Bloqueo inmediato de fuente maliciosa
 - Validación exhaustiva de certificados
 - Logging detallado para auditoría
 - Alertas de seguridad automáticas
 
 **Medida de respuesta**:
+
 - Detection time < 1 segundo
 - 100% de intentos maliciosos bloqueados
 - 0% impacto en operaciones legítimas
@@ -140,12 +144,14 @@ Calidad del Servicio SITA Messaging
 **Entorno**: Sistema en producción con carga existente
 
 **Respuesta**:
+
 - Provisioning automático de recursos
 - Asignación de SITA addresses únicos
 - Configuración de certificates y permisos
 - Testing automatizado de conectividad
 
 **Medida de respuesta**:
+
 - Provisioning time < 30 minutos por tenant
 - 0% impacto en tenants existentes
 - 100% validación de configuración
@@ -188,11 +194,13 @@ Calidad del Servicio SITA Messaging
 **Herramientas**: JMeter, k6, NBomber
 
 **Escenarios**:
+
 - Carga normal: 1,000 msg/min durante 1 hora
 - Carga pico: 10,000 msg/min durante 15 minutos
 - Carga sostenida: 5,000 msg/min durante 24 horas
 
 **Criterios de aceptación**:
+
 - Latencia P95 < 500ms
 - Error rate < 0.1%
 - Memory leak detection: 0 leaks
@@ -200,11 +208,13 @@ Calidad del Servicio SITA Messaging
 ### 10.4.2 Pruebas de resistencia (Stress Testing)
 
 **Escenarios**:
+
 - Sobrecarga extrema: 50,000 msg/min
 - Conexiones concurrentes: 1,000 connections
 - Memory pressure: 95% memory utilization
 
 **Criterios de evaluación**:
+
 - Graceful degradation sin crashes
 - Circuit breaker activation correcta
 - Recovery automático post-stress
@@ -214,12 +224,14 @@ Calidad del Servicio SITA Messaging
 **Herramientas**: OWASP ZAP, Nessus, custom scripts
 
 **Vectores de ataque**:
+
 - Certificate spoofing attempts
 - Message injection attacks
 - Protocol fuzzing
 - Network-level attacks
 
 **Verificaciones**:
+
 - 100% detection de attacks
 - 0% false positives en production
 - Audit trail completeness
@@ -227,12 +239,14 @@ Calidad del Servicio SITA Messaging
 ### 10.4.4 Pruebas de recuperación (Disaster Recovery)
 
 **Escenarios de fallo**:
+
 - Primary SITA connection failure
 - Database corruption
 - Complete datacenter outage
 - Certificate expiration
 
 **Objetivos de recovery**:
+
 - RTO (Recovery Time): < 1 minuto
 - RPO (Recovery Point): < 10 segundos
 - Data consistency: 100%
@@ -242,18 +256,21 @@ Calidad del Servicio SITA Messaging
 ### 10.5.1 Dashboards de calidad
 
 **Dashboard Principal**:
+
 - Message flow rates y latencias
 - Connection health status
 - Error rates y types
 - Security incident indicators
 
 **Dashboard de Performance**:
+
 - CPU, Memory, Network utilization
 - Database performance metrics
 - Cache hit rates
 - Queue depths
 
 **Dashboard de Seguridad**:
+
 - Authentication success/failure rates
 - Certificate status y expiration
 - Suspicious activity alerts
@@ -262,12 +279,14 @@ Calidad del Servicio SITA Messaging
 ### 10.5.2 Alertas automático
 
 **Alertas críticas** (PagerDuty notification):
+
 - SITA connection failures
 - Message delivery failures > 1%
 - Security incidents
 - Performance degradation > 20%
 
 **Alertas de warning** (Slack notification):
+
 - Latency approaching thresholds
 - Certificate expiration warnings
 - Resource utilization > 80%
@@ -276,22 +295,26 @@ Calidad del Servicio SITA Messaging
 ### 10.5.3 Reportes de calidad
 
 **Reporte diario**:
+
 - SLA compliance summary
 - Performance metrics trends
 - Security incident summary
 - Operational health score
 
 **Reporte semanal**:
+
 - Quality trend analysis
 - Capacity planning insights
 - Performance optimization opportunities
 - Security posture assessment
 
 **Reporte mensual**:
+
 - SLA performance vs objectives
 - Quality improvement initiatives
 - Risk assessment update
 - Stakeholder communication summary
 
 ## Referencias
+
 - [Arc42 Requisitos de Calidad](https://docs.arc42.org/section-10/)

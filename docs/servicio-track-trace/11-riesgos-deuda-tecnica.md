@@ -1,6 +1,6 @@
-# 11. Riesgos y Deuda Técnica
+# 11. Riesgos y deuda técnica
 
-## 11.1 Riesgos Identificados
+## 11.1 Riesgos identificados
 
 | Riesgo                  | Probabilidad | Impacto | Mitigación                |
 |-------------------------|--------------|---------|---------------------------|
@@ -9,7 +9,7 @@
 | `Query performance`     | Media        | Medio   | Indexado, optimización    |
 | `Integration failures`  | Media        | Alto    | Monitoreo, fallback       |
 
-## 11.2 Deuda Técnica
+## 11.2 Deuda técnica
 
 | Área         | Descripción                | Prioridad | Esfuerzo   |
 |--------------|---------------------------|-----------|------------|
@@ -18,7 +18,7 @@
 | `Migration`  | Readiness multi-tenant    | Media     | 3 sprints  |
 | `Proyecciones`| Optimización de esquema   | Baja      | 1 sprint   |
 
-## 11.3 Acciones Recomendadas
+## 11.3 Acciones recomendadas
 
 | Acción                        | Plazo      | Responsable |
 |-------------------------------|------------|-------------|
@@ -27,7 +27,7 @@
 | Pruebas de event replay         | 1 mes     | QA          |
 | Preparar migración multi-tenant | 2 meses   | Arquitectura|
 
-## 11.4 Matriz de Riesgos
+## 11.4 Matriz de riesgos
 
 | ID      | Categoría             | Probabilidad | Impacto | Score | Owner                  | Descripción breve                                 |
 |---------|-----------------------|--------------|---------|-------|------------------------|--------------------------------------------------|
@@ -36,7 +36,7 @@
 | `RT-003`| Integridad de datos   | Media        | Alto    | 12    | Platform Engineering   | Inconsistencias entre event store y read models   |
 | `RT-004`| Integración           | Media        | Alto    | 10    | Integration Team       | Pérdida de mensajes en event bus                  |
 
-## 11.5 Estrategias de Mitigación
+## 11.5 Estrategias de mitigación
 
 - Backups y replicación en `PostgreSQL`
 - Monitoreo de latencia y lag de proyecciones con `Prometheus` y `Grafana`
@@ -45,7 +45,7 @@
 - Fallback a colas locales ante fallos de integración
 - Alertas automáticas para métricas críticas
 
-## 11.6 Métricas de Riesgo y Deuda Técnica
+## 11.6 Métricas de riesgo y deuda técnica
 
 | Métrica                        | Objetivo           | Medición         |
 |-------------------------------|--------------------|------------------|
@@ -56,7 +56,7 @@
 | `Technical debt ratio`        | `< 5%`             | `SonarQube`      |
 | `Duplication rate`            | `< 3%`             | `SonarQube`      |
 
-## 11.7 Proceso de Revisión y Priorización
+## 11.7 Proceso de revisión y priorización
 
 - Revisión semanal de riesgos y deuda técnica
 - Priorización por impacto y probabilidad

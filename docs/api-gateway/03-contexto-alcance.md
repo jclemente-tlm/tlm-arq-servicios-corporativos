@@ -1,17 +1,17 @@
-# 3. Contexto Y Alcance Del Sistema
+# 3. Contexto y alcance del sistema
 
 ![API Gateway - Vista de Contexto](/diagrams/servicios-corporativos/api_gateway.png)
 
 *Figura 3.1: Vista de contexto del API Gateway como punto de entrada seguro y centralizado para clientes, aplicaciones y sistemas internos y externos.*
 
-## 3.1 Alcance Del Sistema
+## 3.1 Alcance del sistema
 
 | Aspecto   | Descripción                                                                 |
 |-----------|-----------------------------------------------------------------------------|
 | Incluido  | Proxy reverso, autenticación (`OAuth2`/`JWT`), rate limiting, balanceo de carga, observabilidad, resiliencia, multi-tenancy (`realms`) |
 | Excluido  | Lógica de negocio, persistencia de datos, procesamiento, gestión de usuarios |
 
-## 3.2 Actores Externos
+## 3.2 Actores externos
 
 | Actor                  | Rol         | Interacción                |
 |------------------------|-------------|----------------------------|
@@ -21,7 +21,7 @@
 | `Sistema Identidad`    | Proveedor   | Validación de tokens       |
 | `Observabilidad`       | Consumidor  | Métricas y logs (`Prometheus`, `Grafana`, `Loki`, `Jaeger`) |
 
-## 3.3 Flujos De Datos Y Sistemas Externos
+## 3.3 Flujos de datos y sistemas externos
 
 | Sistema                  | Tipo      | Protocolo     | Propósito                | Datos Intercambiados         |
 |--------------------------|-----------|--------------|--------------------------|------------------------------|

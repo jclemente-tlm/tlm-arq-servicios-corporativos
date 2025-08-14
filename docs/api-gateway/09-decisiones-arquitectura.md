@@ -1,6 +1,6 @@
-# 9. Decisiones De Arquitectura
+# 9. Decisiones de arquitectura
 
-## 9.1 Decisiones Principales
+## 9.1 Decisiones principales
 
 | ADR        | Decisión                  | Estado    | Justificación                        |
 |------------|---------------------------|-----------|--------------------------------------|
@@ -10,7 +10,7 @@
 | `ADR-004`  | Multi-tenant realms       | Aceptado  | Aislamiento y flexibilidad           |
 | `ADR-005`  | Health checks multinivel  | Aceptado  | Observabilidad granular              |
 
-## 9.2 Alternativas Evaluadas
+## 9.2 Alternativas evaluadas
 
 | Componente        | Alternativas           | Selección | Razón                        |
 |-------------------|-----------------------|-----------|------------------------------|
@@ -19,9 +19,9 @@
 | Auth              | Custom, Auth0, Keycloak | Keycloak | Control total, integración OIDC |
 | Observabilidad    | Custom, Datadog, Grafana | Grafana Stack | Agnóstico, open source |
 
-## 9.3 Decisiones Clave (Formato ADR)
+## 9.3 Decisiones clave (formato ADR)
 
-### ADR-001: Proxy Basado En YARP
+### ADR-001: Proxy basado en YARP
 
 - **Estado**: Aceptado
 - **Fecha**: 2024-01-10
@@ -30,7 +30,7 @@
 - **Decisión**: Se selecciona YARP por su integración nativa, soporte de middlewares y flexibilidad.
 - **Consecuencias**: Integración rápida, reutilización de stack, pero menor madurez frente a NGINX.
 
-### ADR-002: Rate Limiting Distribuido Con Redis
+### ADR-002: Rate limiting distribuido con Redis
 
 - **Estado**: Aceptado
 - **Fecha**: 2024-01-20
@@ -39,7 +39,7 @@
 - **Decisión**: Rate limiting distribuido con Redis (sliding window, fallback local).
 - **Consecuencias**: Consistencia, degradación controlada, mayor complejidad operativa y dependencia externa.
 
-### ADR-003: Circuit Breaker Adaptativo Por Servicio
+### ADR-003: Circuit breaker adaptativo por servicio
 
 - **Estado**: Aceptado
 - **Fecha**: 2024-01-25
@@ -48,7 +48,7 @@
 - **Decisión**: Circuit breakers independientes y adaptativos por servicio, con métricas y backoff configurable.
 - **Consecuencias**: Prevención efectiva, métricas detalladas, tuning y debugging más complejos.
 
-### ADR-004: Validación JWT Local Con Cache Y Revocación Diferida
+### ADR-004: Validación JWT local con cache y revocación diferida
 
 - **Estado**: Aceptado
 - **Fecha**: 2024-02-01
@@ -57,7 +57,7 @@
 - **Decisión**: Validación local con cache y verificación periódica con el servicio de identidad.
 - **Consecuencias**: Latencia baja, resiliencia, posible ventana de inconsistencia.
 
-### ADR-005: Health Checks Multinivel Y Endpoints Especializados
+### ADR-005: Health checks multinivel y endpoints especializados
 
 - **Estado**: Aceptado
 - **Fecha**: 2024-02-05

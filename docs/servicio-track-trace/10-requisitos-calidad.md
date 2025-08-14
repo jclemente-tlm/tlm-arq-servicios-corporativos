@@ -1,4 +1,4 @@
-# 10. Requisitos de Calidad
+# 10. Requisitos de calidad
 
 ## 10.1 Disponibilidad
 
@@ -54,7 +54,7 @@
 | `SOC 2`         | Uptime             | `99.9%`          |
 | `GDPR`          | Data retention     | `100% compliance`|
 
-## 10.8 Estrategias de Implementación
+## 10.8 Estrategias de implementación
 
 - Despliegue multi-AZ y auto-scaling en `Kubernetes`
 - `PostgreSQL` con réplicas y backup automatizado
@@ -63,14 +63,14 @@
 - Proyecciones `CQRS` para consultas optimizadas
 - Health checks y monitoreo continuo
 
-## 10.9 Escenarios de Calidad
+## 10.9 Escenarios de calidad
 
 - Failover automático ante falla de base de datos
 - Auto-scaling ante picos de tráfico
 - Bloqueo inmediato ante intento de acceso no autorizado
 - Disaster recovery con `RTO < 15 minutos`, `RPO < 1 minuto`
 
-## 10.10 Métricas y Monitoreo
+## 10.10 Métricas y monitoreo
 
 - SLIs y SLOs definidos para disponibilidad, latencia, error rate y consistencia
 - Dashboards en `Prometheus` y `Grafana`

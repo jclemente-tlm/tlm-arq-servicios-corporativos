@@ -1,6 +1,6 @@
-# 4. Estrategia De Solución
+# 4. Estrategia de solución
 
-## 4.1 Decisiones Clave
+## 4.1 Decisiones clave
 
 | Decisión         | Alternativa Elegida         | Justificación                |
 |------------------|----------------------------|------------------------------|
@@ -11,7 +11,7 @@
 | Observabilidad   | `Grafana`, `Prometheus`, `Loki`, `Jaeger` | Stack estándar, trazabilidad y monitoreo |
 | Despliegue       | AWS ECS Fargate + `Terraform` | Portabilidad, IaC, automatización |
 
-## 4.2 Patrones Aplicados
+## 4.2 Patrones aplicados
 
 | Patrón                | Propósito                  | Implementación              |
 |-----------------------|----------------------------|-----------------------------|

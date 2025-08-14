@@ -1,13 +1,13 @@
-# 6. Vista de Tiempo de Ejecución
+# 6. Vista de tiempo de ejecución
 
-## 6.1 Escenarios Principales
+## 6.1 Escenarios principales
 
 | Escenario                | Flujo                                                        | Componentes principales         |
 |--------------------------|--------------------------------------------------------------|---------------------------------|
 | **Captura de hito y transmisión SITA** | `API REST` → `Validator` → `Event Store` → `Event Bus` → `SITA Messaging` | `API`, `Validator`, `Event Store`, `Event Bus`, `SITA` |
 | **Consulta de trazabilidad**           | `API REST` → `Auth` → `Cache`/`Query Handler` → `Read Store`  | `API`, `Auth`, `Cache`, `Query Handler`, `Read Store`   |
 
-## 6.2 Patrones de Interacción
+## 6.2 Patrones de interacción
 
 | Patrón         | Descripción                  | Tecnología         |
 |---------------|------------------------------|--------------------|
@@ -15,7 +15,7 @@
 | **Event Sourcing**| Registro de eventos          | `PostgreSQL`         |
 | **Pub/Sub**       | Propagación de eventos       | `Event Bus`, `SITA`    |
 
-## 6.3 Escenarios de Runtime
+## 6.3 Escenarios de runtime
 
 ### 6.3.1 Captura de hito operacional y transmisión SITA
 
@@ -48,7 +48,7 @@ sequenceDiagram
     end
 ```
 
-### 6.3.2 Consulta de Trazabilidad
+### 6.3.2 Consulta de trazabilidad
 
 ```mermaid
 sequenceDiagram

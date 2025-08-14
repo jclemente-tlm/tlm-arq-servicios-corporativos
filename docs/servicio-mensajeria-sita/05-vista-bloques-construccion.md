@@ -21,7 +21,7 @@
 | **PostgreSQL** | Persistencia de datos y cola | PostgreSQL 15+ |
 | **File Storage** | Almacenamiento de archivos SITA | Sistema de archivos |
 
-## 5.2 Componentes del Event Processor
+## 5.2 Componentes del event processor
 
 | Componente | Responsabilidad | Tecnología |
 |------------|-----------------|------------|
@@ -30,7 +30,7 @@
 | **Template Engine** | Procesamiento de plantillas SITA | RazorEngine |
 | **SITA File Generator** | Generación de archivos SITATEX | .NET 8 |
 
-## 5.3 Componentes del Sender
+## 5.3 Componentes del sender
 
 | Componente | Responsabilidad | Tecnología |
 |------------|-----------------|------------|

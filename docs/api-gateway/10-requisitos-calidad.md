@@ -1,4 +1,4 @@
-# 10. Requisitos De Calidad
+# 10. Requisitos de calidad
 
 ## 10.1 Rendimiento
 
@@ -27,7 +27,7 @@
 | Cache           | Redis distribuido | Clustering                 |
 | Configuración   | Hot reload        | Dinámico                   |
 
-## 10.4 Atributos De Calidad
+## 10.4 Atributos de calidad
 
 | Atributo              | Métrica                  | Objetivo     | Crítico     |
 |-----------------------|--------------------------|--------------|-------------|
@@ -123,7 +123,7 @@ public void ConfigureServices(IServiceCollection services)
 | Headers seguridad| OWASP compliance        | Security middleware        | Security scan tools    |
 | Rate limiting    | Prevenir DDoS           | Distributed rate limiter   | Testing de carga       |
 
-## 10.8 Escenarios De Calidad
+## 10.8 Escenarios de calidad
 
 ### 10.8.1 Rendimiento Bajo Carga
 
@@ -193,7 +193,7 @@ Scenario: JWT token validation
   And no debe forwarding al servicio backend
 ```
 
-## 10.9 Métricas Y Monitoreo
+## 10.9 Métricas y monitoreo
 
 - KPIs y métricas expuestas vía `Prometheus` y visualizadas en Grafana.
 - Alertas automáticas configuradas en `Prometheus` para disponibilidad, latencia, errores y uso de recursos.
@@ -326,7 +326,7 @@ groups:
       description: "CPU usage is {{ $value }}% for the last 10 minutes"
 ```
 
-## 10.10 Pruebas De Calidad
+## 10.10 Pruebas de calidad
 
 - Pruebas de carga automatizadas (`k6`) para validar rendimiento y escalabilidad.
 - Pruebas de caos (`Polly`, simulación de fallos) para validar resiliencia.

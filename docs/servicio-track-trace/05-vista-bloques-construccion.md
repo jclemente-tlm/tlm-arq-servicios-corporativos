@@ -1,4 +1,4 @@
-# 5. Vista de Bloques de Construcción
+# 5. Vista de bloques de construcción
 
 Esta sección describe la arquitectura modular del **Sistema Track & Trace**, basada en CQRS y Event Sourcing. Se detallan los contenedores, componentes principales, esquemas de datos y la relación entre los bloques, con diagramas C4 para ilustrar la estructura y la interacción.
 
@@ -11,7 +11,7 @@ Esta sección describe la arquitectura modular del **Sistema Track & Trace**, ba
 ![Componentes Query API](/diagrams/servicios-corporativos/track_and_trace_tracking_api.png)
 *Figura 5.3: Componentes internos del Query API*
 
-## 5.1 Contenedores Principales
+## 5.1 Contenedores principales
 
 | Contenedor         | Responsabilidad                        | Tecnología         |
 |--------------------|----------------------------------------|--------------------|
@@ -20,7 +20,7 @@ Esta sección describe la arquitectura modular del **Sistema Track & Trace**, ba
 | **Event Store**    | Almacenamiento inmutable de eventos    | `PostgreSQL 15+`     |
 | **Read Models**    | Vistas optimizadas para consultas      | `PostgreSQL 15+`     |
 
-## 5.2 Componentes del Command API
+## 5.2 Componentes del command API
 
 | Componente            | Responsabilidad                        | Tecnología         |
 |-----------------------|----------------------------------------|--------------------|
@@ -29,7 +29,7 @@ Esta sección describe la arquitectura modular del **Sistema Track & Trace**, ba
 | **Event Store Service** | Persistencia de eventos              | `.NET 8`           |
 | **Event Publisher**   | Publicación de eventos a bus           | `.NET 8`           |
 
-## 5.3 Componentes del Query API
+## 5.3 Componentes del query API
 
 | Componente            | Responsabilidad                        | Tecnología         |
 |-----------------------|----------------------------------------|--------------------|
@@ -38,7 +38,7 @@ Esta sección describe la arquitectura modular del **Sistema Track & Trace**, ba
 | **Read Model Service**| Acceso a vistas optimizadas            | `Entity Framework` |
 | **Analytics Service** | Análisis de patrones y métricas        | `.NET 8`           |
 
-## 5.4 Esquemas de Base de Datos
+## 5.4 Esquemas de base de datos
 
 ### 5.4.1 Tabla: `event_store`
 
@@ -69,7 +69,7 @@ Esta sección describe la arquitectura modular del **Sistema Track & Trace**, ba
 - **GET** `/api/v1/analytics`: Métricas y análisis de eventos
 - **GraphQL** `/api/v1/query`: Consultas avanzadas sobre modelos de lectura
 
-## 5.6 Contratos de Datos (DTOs)
+## 5.6 Contratos de datos (DTOs)
 
 ### 5.6.1 `EventRequest`
 
@@ -102,9 +102,9 @@ public class EventDto
 }
 ```
 
-## 5.7 Ejemplos de Implementación
+## 5.7 Ejemplos de implementación
 
-### 5.7.1 Controller de Eventos
+### 5.7.1 Controller de eventos
 
 ```csharp
 [ApiController]
@@ -141,7 +141,7 @@ public class EventsController : ControllerBase
 }
 ```
 
-### 5.7.2 Servicio de Consultas
+### 5.7.2 Servicio de consultas
 
 ```csharp
 public class QueryService : IQueryService

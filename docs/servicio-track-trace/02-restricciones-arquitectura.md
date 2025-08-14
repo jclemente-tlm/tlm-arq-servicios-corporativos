@@ -38,7 +38,7 @@
 
 El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionales y de compliance específicas para el seguimiento en tiempo real de eventos operacionales. Estas restricciones definen las decisiones arquitectónicas críticas del sistema.
 
-### Arquitectura CQRS Obligatoria
+### Arquitectura CQRS obligatoria
 
 | Restricción | Descripción | Justificación | Implementación |
 |-------------|-------------|---------------|----------------|
@@ -47,7 +47,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 | **Message Queue** | Event Bus para event streaming | Alta capacidad de procesamiento, durabilidad, replay capability | Event topics por tipo de evento |
 | **Read Models** | Vistas materializadas para consultas | Rendimiento de consultas complejas | `PostgreSQL` para read models |
 
-### Stack Tecnológico Mandatorio
+### Stack tecnológico mandatorio
 
 | Componente | Tecnología Requerida | Versión Mínima | Justificación |
 |------------|---------------------|---------------|---------------|
@@ -58,7 +58,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 | **Base de Datos de Series Temporales** | `InfluxDB` | 2.7+ | Almacenamiento de métricas, analítica basada en tiempo |
 | **Motor de Búsqueda** | `Elasticsearch` | 8.0+ | Búsqueda de texto completo, agregación de registros |
 
-### Rendimiento y Capacidad
+### Rendimiento y capacidad
 
 | Métrica | Restricción | Justificación | Arquitectura Requerida |
 |---------|------------|---------------|-----------------------|
@@ -67,7 +67,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 | **Data Retention** | `7 años eventos`, `2 años métricas` | Cumplimiento, análisis operacional | Tiered storage, archival strategy |
 | **Real-time Updates** | `< 5 segundos latencia` | Operational decision making | Event streaming, WebSocket notifications |
 
-### Integración y Conectividad
+### Integración y conectividad
 
 | Sistema | Protocolo | Restricción | Implementación |
 |---------|-----------|-------------|----------------|
@@ -79,7 +79,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 
 ## 2.5 Restricciones operacionales
 
-### Disponibilidad y Confiabilidad
+### Disponibilidad y confiabilidad
 
 | Aspecto | Restricción | Justificación | Implementación |
 |---------|------------|---------------|----------------|
@@ -88,7 +88,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 | **Disaster Recovery** | RTO: 1 hour, RPO: 5 minutes | Continuidad empresarial | Cross-region replication |
 | **Event Replay** | Soporte para replay histórico | Data recovery, debugging | Event retention, offset management |
 
-### Escalabilidad y Rendimiento
+### Escalabilidad y rendimiento
 
 | Aspecto | Requerimiento | Implementación | Monitoreo |
 |---------|--------------|----------------|-----------|
@@ -97,7 +97,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 | **Query Optimization** | Respuestas sub-segundo | Read models indexados, caching | Seguimiento de rendimiento de consultas |
 | **Storage Scaling** | Expansión automática | Almacenamiento elástico, ciclo de vida | Storage utilization monitoring |
 
-### Data Management
+### Data management
 
 | Aspecto | Restricción | Justificación | Implementación |
 |---------|------------|---------------|----------------|
@@ -108,7 +108,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 
 ## 2.6 Restricciones regulatorias y compliance
 
-### Retención de Datos
+### Retención de datos
 
 | Tipo de Dato | Período Retención | Justificación | Implementación |
 |--------------|------------------|---------------|----------------|
@@ -117,7 +117,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 | **Métricas de Performance** | `2 años` | Análisis operacional | Time-series compression |
 | **Logs de Sistema** | `1 año` | Resolución de problemas, debugging | Log rotation, archival |
 
-### Auditoría y Compliance
+### Auditoría y compliance
 
 | Restricción | Descripción | Implementación | Validación |
 |-------------|------------|----------------|-----------|
@@ -126,7 +126,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 | **Access Control** | RBAC granular | Integración de identidad | Access reviews, monitoring |
 | **Change Tracking** | Registro de modificaciones | Event sourcing pattern | Change audit reports |
 
-### Requerimientos Jurisdiccionales
+### Requerimientos jurisdiccionales
 
 | Jurisdicción | Requerimiento | Implementación | Verificación |
 |--------------|--------------|----------------|--------------|
@@ -137,7 +137,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 
 ## 2.7 Restricciones de seguridad
 
-### Autenticación y Autorización
+### Autenticación y autorización
 
 | Aspecto | Requerimiento | Implementación | Validación |
 |---------|--------------|----------------|-----------|
@@ -146,7 +146,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 | **Data Access** | Permisos RBAC | Autorización granular | Permission testing |
 | **Sensitive Data** | Cifrado a nivel de campo | Column encryption, key management | Encryption compliance |
 
-### Seguridad de Datos
+### Seguridad de datos
 
 | Control | Propósito | Implementación | Monitoreo |
 |---------|----------|----------------|-----------|
@@ -155,7 +155,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 | **Event Integrity** | Detección de alteraciones | Firmas digitales, checksums | Integrity validation |
 | **Access Logging** | Auditoría de accesos | Access logs estructurados | Security event monitoring |
 
-### Seguridad de Red
+### Seguridad de red
 
 | Aspecto | Requerimiento | Implementación | Validación |
 |---------|--------------|----------------|-----------|
@@ -166,7 +166,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 
 ## 2.8 Restricciones específicas CQRS
 
-### Command Side (Write)
+### Command side (write)
 
 | Aspecto | Restricción | Implementación | Validación |
 |---------|------------|----------------|-----------|
@@ -175,7 +175,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 | **Event Ordering** | Orden cronológico | Event partitioning strategy | Ordering verification |
 | **Idempotency** | Manejo de duplicados | Idempotency keys | Duplicate detection testing |
 
-### Query Side (Read)
+### Query side (read)
 
 | Aspecto | Restricción | Implementación | Validación |
 |---------|------------|----------------|-----------|
@@ -184,7 +184,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 | **Search Capabilities** | Búsqueda full-text y facetada | Integración con Elasticsearch | Search relevance testing |
 | **Real-time Updates** | Actualizaciones en vivo | Event-driven view updates | Update latency monitoring |
 
-### Event Store
+### Event store
 
 | Aspecto | Restricción | Implementación | Validación |
 |---------|------------|----------------|-----------|
@@ -195,7 +195,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 
 ## 2.9 Restricciones de integración
 
-### Integración Basada en Eventos
+### Integración basada en eventos
 
 | Sistema | Tipos de Eventos | Restricciones | Implementación |
 |---------|-----------------|---------------|----------------|
@@ -215,7 +215,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 
 ## 2.10 Restricciones de monitoreo
 
-### Observabilidad Obligatoria
+### Observabilidad obligatoria
 
 | Componente | Herramienta | Propósito | Configuración |
 |------------|------------|-----------|--------------|
@@ -224,7 +224,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 | **Tracing** | OpenTelemetry + Jaeger | Trazas distribuidas | Request correlation |
 | **Health Checks** | ASP.NET Core Health Checks | Disponibilidad de servicio | Health endpoints |
 
-### Métricas Empresariales
+### Métricas empresariales
 
 | Métrica | Propósito | Implementación | Alertas |
 |---------|----------|----------------|--------|
@@ -235,7 +235,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 
 ## 2.11 Impacto en el diseño
 
-### Decisiones Arquitectónicas Derivadas
+### Decisiones arquitectónicas derivadas
 
 | Restricción | Decisión de Diseño | Compromiso | Mitigación |
 |-------------|-------------------|------------|------------|
@@ -244,7 +244,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 | **Requerimientos tiempo real** | Caching en memoria | Overhead de memoria | Cache optimization |
 | **Retención a largo plazo** | Tiered storage strategy | Costos de almacenamiento | Automated lifecycle policies |
 
-### Implicaciones de la Pila Tecnológica
+### Implicaciones de la pila tecnológica
 
 | Capa | Elección Tecnológica | Factor de Restricción | Alternativa Considerada |
 |------|---------------------|----------------------|------------------------|
@@ -253,7 +253,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 | **Time Series** | `InfluxDB` | Analítica temporal | Prometheus (query language), TimescaleDB (licencias) |
 | **Search** | `Elasticsearch` | Búsqueda full-text, analítica | Solr (mantenimiento), Amazon OpenSearch (vendor dependency) |
 
-### Consideraciones Operacionales
+### Consideraciones operacionales
 
 | Aspecto | Implicación | Estrategia de Mitigación |
 |---------|------------|-------------------------|
@@ -264,7 +264,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 
 ## Referencias
 
-### Architectural Patterns
+### Architectural patterns
 
 - [CQRS Pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs)
 - [Event Sourcing Pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing)
@@ -277,7 +277,7 @@ El **Sistema de Track & Trace** opera bajo restricciones técnicas, operacionale
 - [InfluxDB Documentation](https://docs.influxdata.com/)
 - [Elasticsearch Documentation](https://www.elastic.co/guide/)
 
-### Compliance and Standards
+### Compliance and standards
 
 - [GDPR Regulation](https://gdpr-info.eu/)
 - [SOX Compliance](https://www.sox-online.com/)

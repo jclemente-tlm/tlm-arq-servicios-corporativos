@@ -1,6 +1,6 @@
-# 4. Estrategia De Solución
+# 4. Estrategia de solución
 
-## 4.1 Decisiones Clave
+## 4.1 Decisiones clave
 
 | Decisión         | Alternativa Elegida                | Justificación                                                                 |
 |------------------|------------------------------------|-------------------------------------------------------------------------------|
@@ -17,7 +17,7 @@
 
 > Todas las decisiones priorizan resiliencia, trazabilidad, entrega única y facilidad de evolución, alineadas con los objetivos de calidad y restricciones técnicas del sistema.
 
-## 4.2 Patrones Aplicados
+## 4.2 Patrones aplicados
 
 | Patrón             | Propósito                                 | Implementación / Componente Principal           |
 |--------------------|-------------------------------------------|------------------------------------------------|
@@ -43,10 +43,3 @@
 | `Push`       | Proveedor `Push API`             | Notificaciones móviles            |
 
 > La arquitectura multi-canal desacopla la lógica de negocio de los proveedores, permitiendo cambios o ampliaciones sin impacto en el core del sistema. El uso de colas, adaptadores, deduplicación e idempotencia garantiza resiliencia, escalabilidad y entrega única.
-
----
-
-**Notas:**
-
-- El desacoplamiento de proveedores y canales permite tolerancia a fallos, escalabilidad y evolución independiente de cada integración.
-- Se prioriza la observabilidad, la trazabilidad y la entrega única en todos los flujos.

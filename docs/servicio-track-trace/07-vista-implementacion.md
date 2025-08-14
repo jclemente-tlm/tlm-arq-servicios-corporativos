@@ -1,9 +1,9 @@
-# 7. Vista de Implementación
+# 7. Vista de implementación
 
 ![Vista de implementación del Sistema de Track & Trace](/diagrams/servicios-corporativos/track_and_trace_deployment.png)
 *Figura 7.1: Implementación de Componentes de principales del sistema*
 
-## 7.1 Estructura del Proyecto
+## 7.1 Estructura del proyecto
 
 | Componente                | Ubicación                        | Tecnología                |
 |---------------------------|----------------------------------|---------------------------|
@@ -13,7 +13,7 @@
 | **Event Bus**             | `AWS MSK` / `RabbitMQ`           | `Kafka` / `RabbitMQ`      |
 | **SITA Messaging**        | `Externo`                        | `SITA`                    |
 
-## 7.2 Dependencias Principales
+## 7.2 Dependencias principales
 
 | Dependencia           | Versión | Propósito                |
 |----------------------|---------|--------------------------|
@@ -24,7 +24,7 @@
 | `OpenTelemetry`         | 1.7+    | Trazas y métricas       |
 | `Prometheus-net`        | 6.0+    | Métricas                |
 
-## 7.3 Organización de Código
+## 7.3 Organización de código
 
 ```text
 src/
@@ -54,14 +54,14 @@ src/
     └── Integration/              # Integration Tests
 ```
 
-## 7.4 Configuración de Despliegue
+## 7.4 Configuración de despliegue
 
 - Contenedores Docker multi-stage para `Tracking API` y `Tracking Event Processor`
 - Despliegue en Kubernetes con probes de salud y recursos definidos
 - Variables de entorno para conexión a base de datos, autenticación y observabilidad
 - Instrumentación obligatoria: logs (`Serilog`), métricas (`Prometheus-net`), trazas (`OpenTelemetry`, Jaeger)
 
-## 7.5 Seguridad y Observabilidad
+## 7.5 Seguridad y observabilidad
 
 - Autenticación y autorización con `Keycloak` (JWT)
 - Logs estructurados con `Serilog`
@@ -69,7 +69,7 @@ src/
 - Trazas distribuidas con `OpenTelemetry` y `Jaeger`
 - Health checks y endpoints de monitoreo
 
-## 7.6 Infraestructura como Código
+## 7.6 Infraestructura como código
 
 - `Terraform` para provisión de `AWS RDS`, `Event Bus` y recursos de red
 - `Helm Charts` para despliegue en Kubernetes

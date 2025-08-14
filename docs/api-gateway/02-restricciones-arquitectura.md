@@ -1,6 +1,6 @@
-# 2. Restricciones De La Arquitectura
+# 2. Restricciones de la arquitectura
 
-## 2.1 Restricciones Técnicas Y De Plataforma
+## 2.1 Restricciones técnicas y de plataforma
 
 | Categoría         | Restricción                | Justificación              |
 |-------------------|---------------------------|----------------------------|
@@ -14,7 +14,7 @@
 | Secrets           | AWS Secrets Manager       | Seguridad y cumplimiento   |
 | Observabilidad    | Grafana, Prometheus, Loki, Jaeger | Stack estándar, trazabilidad y monitoreo |
 
-## 2.2 Restricciones De Rendimiento Y Operación
+## 2.2 Restricciones de rendimiento y operación
 
 | Métrica           | Objetivo                  | Razón                      |
 |-------------------|--------------------------|----------------------------|
@@ -29,7 +29,7 @@
 - Observabilidad centralizada (Grafana, Prometheus, Loki, Jaeger).
 - Seguridad: arquitectura zero trust, RBAC por tenant, auditoría completa de requests.
 
-## 2.3 Restricciones De Seguridad Y Cumplimiento
+## 2.3 Restricciones de seguridad y cumplimiento
 
 | Control                  | Requisito/Implementación                  |
 |--------------------------|-------------------------------------------|
@@ -40,7 +40,7 @@
 | Cifrado en tránsito      | TLS 1.3, terminación en ALB               |
 | Aislamiento de red       | VPC, Security Groups, AWS WAF, Shield     |
 
-## 2.4 Restricciones De Despliegue Y CI/CD
+## 2.4 Restricciones de despliegue y CI/CD
 
 - Imágenes base distroless y escaneo de vulnerabilidades obligatorio.
 - Límites de recursos definidos en ECS Task Definition (CPU, memoria).
@@ -48,7 +48,7 @@
 - Blue-green deployment obligatorio usando ECS y ALB.
 - Pipeline CI/CD con GitHub Actions, pruebas automáticas, escaneo de seguridad (Checkov, Trivy) y despliegue automatizado en AWS ECS (Terraform).
 
-## 2.5 Restricciones De Monitoreo Y Observabilidad
+## 2.5 Restricciones de monitoreo y observabilidad
 
 | Componente     | Herramienta                  | Propósito                  |
 |----------------|-----------------------------|----------------------------|
@@ -57,16 +57,16 @@
 | Tracing        | Jaeger, OpenTelemetry        | Trazabilidad de requests   |
 | Visualización  | Grafana                      | Dashboards y alertas       |
 
-## 2.6 Limitaciones Conocidas
+## 2.6 Limitaciones conocidas
 
 - Actualizaciones de configuración: máximo cada 30 segundos (polling).
 - Rate limiting: consistencia eventual en cluster `Redis`.
 - Costo de infraestructura: optimización continua requerida.
 - Ventana de migración: máximo 4 horas de downtime.
 
-## 2.7 Decisiones Arquitectónicas Derivadas
+## 2.7 Decisiones arquitectónicas derivadas
 
-| Restricción                | Decisión de Diseño                  | Trade-off                        | Mitigación                       |
+| Restricción                | Decisión de diseño                  | Trade-off                        | Mitigación                       |
 |----------------------------|-------------------------------------|----------------------------------|----------------------------------|
 | Soporte multi-tenant       | Middleware consciente de tenant     | Sobrecarga de requests           | Resolución eficiente de tenant   |
 | Alta disponibilidad        | Diseño sin estado, multi-AZ         | Complejidad de sesiones          | Almacenamiento externo           |

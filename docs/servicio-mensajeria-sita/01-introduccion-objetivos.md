@@ -26,15 +26,15 @@ El **Sistema de Mensajería SITA** es un servicio especializado diseñado para g
 
 ## 1.1 Descripción general de los requisitos
 
-### Propósito del Sistema
+### Propósito del sistema
 
 El sistema actúa como puente entre los eventos corporativos internos y la red SITA global, transformando eventos de negocio en mensajes SITA estandarizados y gestionando la entrega confiable a aerolíneas y sistemas de partners.
 
-### Contexto del Dominio SITA
+### Contexto del dominio SITA
 
 SITA es la red de comunicaciones más grande del mundo para la industria aérea, conectando aerolíneas, aeropuertos, agencias de viajes y otros actores del ecosistema aeronáutico. Los mensajes SITA siguen estándares internacionales (IATA, ICAO) para garantizar interoperabilidad global.
 
-### Arquitectura del Sistema
+### Arquitectura del sistema
 
 | Componente | Propósito | Tecnología |
 |------------|-----------|------------|
@@ -43,7 +43,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 | **Motor de Entrega** | Entrega confiable a partners SITA vía múltiples protocolos | SFTP, HTTP/S, Transferencia de Archivos |
 | **Gestor de Configuración** | Gestión de plantillas, mapeos y configuración por partner | Plataforma de Configuración Dinámica |
 
-### Requisitos Funcionales Principales
+### Requisitos funcionales principales
 
 | ID | Requisito | Descripción Detallada |
 |----|-----------|-----------------------|
@@ -58,7 +58,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 | **RF-SITA-09** | **Soporte Multi-tenant** | Soporte para múltiples aeropuertos/países con configuración independiente |
 | **RF-SITA-10** | **Monitoreo en Tiempo Real** | Paneles para monitoreo de entregas y estado de partners |
 
-### Tipos de Mensajes SITA Soportados
+### Tipos de mensajes SITA soportados
 
 | Tipo Mensaje | Estándar | Propósito | Frecuencia Típica |
 |--------------|----------|-----------|-------------------|
@@ -69,7 +69,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 | **METAR/TAF** | ICAO Annex 3 | Weather information | Hourly/scheduled |
 | **Custom** | Partner-specific | Mensajes específicos por aerolínea | Variable |
 
-### Requisitos No Funcionales
+### Requisitos no funcionales
 
 | Categoría | Requisito | Objetivo | Medición |
 |-----------|-----------|--------|----------|
@@ -80,7 +80,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 | **Seguridad** | Transmisión segura | Cifrado en tránsito | Auditorías seguridad |
 | **Auditabilidad** | Rastro auditoría completo mensajes | 100% mensajes rastreados | Reportes auditoría |
 
-### Partners y Protocolos de Integración
+### Partners y protocolos de integración
 
 | Tipo Partner | Método Integración | Protocolo | Seguridad |
 |--------------|-------------------|----------|----------|
@@ -92,7 +92,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 
 ## 1.2 Objetivos de calidad
 
-### Objetivos Primarios
+### Objetivos primarios
 
 | Prioridad | Objetivo | Escenario | Métrica Objetivo |
 |-----------|----------|-----------|------------------|
@@ -100,7 +100,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 | **2** | **Confiabilidad** | Entrega garantizada de mensajes críticos | 99.9% éxito entrega |
 | **3** | **Puntualidad** | Entrega dentro de ventanas tiempo requeridas | 95% entrega a tiempo |
 
-### Objetivos Secundarios
+### Objetivos secundarios
 
 | Objetivo | Descripción | Métrica |
 |----------|-------------|---------|
@@ -109,7 +109,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 | **Eficiencia Costos** | Optimización de costos de transmisión | < $0.10 por mensaje |
 | **Mantenibilidad** | Gestión simple de plantillas y configuraciones | Configuración autoservicio |
 
-### Atributos de Calidad Específicos
+### Atributos de calidad específicos
 
 | Atributo | Definición | Implementación | Verificación |
 |----------|------------|----------------|--------------|
@@ -120,7 +120,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 
 ## 1.3 Partes interesadas
 
-### Stakeholders Principales
+### Stakeholders principales
 
 | Rol | Contacto | Responsabilidades | Expectativas |
 |-----|----------|-------------------|--------------|
@@ -130,7 +130,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 | **Oficial Cumplimiento** | Legal/Cumplimiento | Cumplimiento regulatorio, auditorías | Rastros auditoría completos, reportes cumplimiento |
 | **Técnico SITA** | Representantes SITA | Estándares técnicos, certificación | Cumplimiento estándares, certificación |
 
-### Partners Externos (Consumidores)
+### Partners externos (consumidores)
 
 | Partner | Relationship | Messages Consumed | Technical Contact |
 |---------|--------------|-------------------|-------------------|
@@ -140,7 +140,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 | **Local Ground Handlers** | Service providers | Ground operation messages | Ops teams |
 | **Cargo Companies** | Logistics partners | Cargo-specific messages | Cargo IT teams |
 
-### Sistemas Proveedores (Upstream)
+### Sistemas proveedores (upstream)
 
 | Sistema | Data Provided | Integration Type | SLA |
 |---------|---------------|------------------|-----|
@@ -150,7 +150,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 | **Weather Systems** | METAR, TAF data | Scheduled updates | Hourly |
 | **Configuration Platform** | Templates, partner settings | Polling | 30 sec intervals |
 
-### Autoridades Regulatorias
+### Autoridades regulatorias
 
 | Authority | Jurisdiction | Compliance Requirements | Reporting |
 |-----------|--------------|------------------------|-----------|
@@ -160,7 +160,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 | **AFAC Mexico** | Mexico aviation authority | Movement tracking | Real-time |
 | **IATA** | International standards | Message format compliance | Periodic audits |
 
-### Matriz de Comunicación
+### Matriz de comunicación
 
 | Stakeholder | Frecuencia | Canal | Contenido |
 |-------------|------------|-------|-----------|
@@ -170,7 +170,7 @@ SITA es la red de comunicaciones más grande del mundo para la industria aérea,
 | **Compliance** | Monthly | Formal reports | Audit trails, compliance metrics |
 | **SITA Technical** | Quarterly | Technical reviews | Standards compliance, certification status |
 
-### Escalation Matrix
+### Escalation matrix
 
 | Issue Type | L1 Support | L2 Support | L3 Support | External |
 |------------|------------|------------|------------|----------|

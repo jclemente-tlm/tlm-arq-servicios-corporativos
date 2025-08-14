@@ -1,6 +1,6 @@
-# 9. Decisiones de Arquitectura
+# 9. Decisiones de arquitectura
 
-## 9.1 Decisiones Principales
+## 9.1 Decisiones principales
 
 | ADR        | Decisión                        | Estado    | Justificación           |
 |------------|----------------------------------|-----------|-------------------------|
@@ -11,7 +11,7 @@
 | `ADR-006`  | Multi-tenant schema separation   | Aceptado  | Aislamiento de datos    |
 | `ADR-007`  | Observabilidad OpenTelemetry     | Aceptado  | Trazas y métricas       |
 
-## 9.2 Alternativas Evaluadas
+## 9.2 Alternativas evaluadas
 
 | Componente      | Alternativas                        | Selección      | Razón         |
 |-----------------|-------------------------------------|----------------|---------------|
@@ -20,7 +20,7 @@
 | `Deduplicación` | Global, Por tenant (realm)          | Por tenant     | Aislamiento   |
 | `Propagación`   | Síncrona, Asíncrona                 | Asíncrona      | Desacoplamiento |
 
-## 9.3 ADR-001: Event Sourcing como Patrón Principal
+## 9.3 ADR-001: Event sourcing como patrón principal
 
 **Estado**: Aceptado
 **Fecha**: 2024-01-15
@@ -45,7 +45,7 @@
 
 ---
 
-## 9.4 ADR-002: PostgreSQL como Event Store
+## 9.4 ADR-002: PostgreSQL como event store
 
 **Estado**: Aceptado
 **Fecha**: 2024-01-20
@@ -69,7 +69,7 @@
 
 ---
 
-## 9.5 ADR-003: CQRS con Read Models Especializados
+## 9.5 ADR-003: CQRS con read models especializados
 
 **Estado**: Aceptado
 **Fecha**: 2024-01-25
@@ -92,7 +92,7 @@
 
 ---
 
-## 9.6 ADR-006: Multi-tenant Schema Separation
+## 9.6 ADR-006: Multi-tenant schema separation
 
 **Estado**: Aceptado
 **Fecha**: 2024-02-10
@@ -138,7 +138,7 @@
 
 ---
 
-## 9.8 Decisiones Pendientes
+## 9.8 Decisiones pendientes
 
 - Estrategia de sharding para escalamiento horizontal
 - Políticas de archivado de eventos

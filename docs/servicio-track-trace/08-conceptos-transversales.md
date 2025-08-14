@@ -1,4 +1,4 @@
-# 8. Conceptos Transversales
+# 8. Conceptos transversales
 
 ## 8.1 Seguridad
 
@@ -26,7 +26,7 @@
 | Deduplicación   | Por tenant (realm)    | Prevención duplicados  |
 | Rate limiting   | Por organización      | Protección recursos    |
 
-## 8.4 Modelo de Dominio
+## 8.4 Modelo de dominio
 
 - `Event Sourcing` como principio arquitectónico: todos los cambios de estado se capturan como eventos inmutables en el `Event Store`.
 - `CQRS` aplicado: separación de comandos y consultas en la capa de aplicación.
@@ -39,7 +39,7 @@
 - Cifrado en tránsito (`TLS 1.3`) y en reposo (`AES-256`).
 - Cumplimiento normativo: GDPR, SOX, auditoría completa.
 
-## 8.6 Comunicación e Integración
+## 8.6 Comunicación e integración
 
 - Comunicación basada en eventos (`Event Bus`) para integración con sistemas externos (`SITA Messaging`).
 - Publicación y consumo de eventos con garantía transaccional.

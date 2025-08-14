@@ -47,7 +47,7 @@
 - **Aislamiento de Tenant**: Aislamiento completo de datos entre tenants
 - **Permisos SITA**: Validación de permisos SITA por tipo de mensaje
 
-## 8.2 Multi-tenancy y Multi-país
+## 8.2 Multi-tenancy y multi-país
 
 ### 8.2.1 Separación de datos
 
@@ -63,9 +63,10 @@
 - **Formatos de Mensaje**: Adaptación a formatos específicos por región
 - **Nodos Regionales SITA**: Routing a nodos SITA regionales apropiados
 
-## 8.3 Observabilidad y Monitoreo
+## 8.3 Observabilidad y monitoreo
 
 ### 8.3.1 Logging estructurado
+
 ```csharp
 // Structured logging para mensajes SITA
 _logger.LogInformation("SITA message sent successfully", new
@@ -80,12 +81,14 @@ _logger.LogInformation("SITA message sent successfully", new
 ```
 
 ### 8.3.2 Métricas de negocio
+
 - **Message Success Rate**: % de mensajes SITA enviados exitosamente
 - **Protocol Compliance**: Adherencia a estándares IATA/ICAO
 - **Regional Performance**: Latencia por nodo SITA regional
 - **Tenant Usage**: Volumen de mensajes por tenant y tipo
 
 ### 8.3.3 Trazado Distribuido
+
 - **Correlation IDs**: Seguimiento end-to-end desde API hasta SITA
 - **SITA Transaction Tracing**: Correlación con acknowledgments SITA
 - **Performance Monitoring**: Latencia de cada hop en el flujo
@@ -94,6 +97,7 @@ _logger.LogInformation("SITA message sent successfully", new
 ## 8.4 Gestión de errores
 
 ### 8.4.1 Clasificación de errores
+
 ```csharp
 public enum SitaErrorCategory
 {
@@ -105,46 +109,53 @@ public enum SitaErrorCategory
 ```
 
 ### 8.4.2 Estrategias de retry
+
 - **Exponential Backoff**: Para errores transientes
 - **Circuit Breaker**: Protección contra cascading failures
 - **Dead Letter Queue**: Mensajes que no pueden ser procesados
 - **Manual Intervention**: Workflow para errores de compliance
 
 ### 8.4.3 Fallback mechanisms
+
 - **Secondary SITA Nodes**: Failover automático entre nodos
 - **Message Queuing**: Buffer local para outages temporales
 - **Degraded Mode**: Operación limitada durante fallos parciales
 - **Emergency Procedures**: Procesos para outages críticos
 
-## 8.5 Performance y Escalabilidad
+## 8.5 Performance y escalabilidad
 
-### 8.5.1 Connection Management
+### 8.5.1 Connection management
+
 - **Connection Pooling**: Pool de conexiones SITA por destino
 - **Balanceador de Carga**: Distribución entre múltiples nodos SITA
 - **Adaptive Timeouts**: Timeouts dinámicos basados en latencia histórica
 - **Resource Throttling**: Control de uso de recursos por tenant
 
-### 8.5.2 Caching Strategy
+### 8.5.2 Caching strategy
+
 - **Routing Cache**: Cache de decisiones de routing frecuentes
 - **Message Format Cache**: Templates pre-compilados por tipo
 - **Authentication Cache**: Cache de tokens y certificados válidos
 - **Configuration Cache**: Settings de tenant en memoria
 
-### 8.5.3 Asynchronous Processing
+### 8.5.3 Asynchronous processing
+
 - **Message Queues**: Procesamiento asíncrono de mensajes batch
 - **Background Jobs**: Tasks de mantenimiento y cleanup
 - **Event-Driven Architecture**: Integration events para otros servicios
 - **Parallel Processing**: Procesamiento concurrente por tenant
 
-## 8.6 Compliance y Auditoría
+## 8.6 Compliance y auditoría
 
-### 8.6.1 Regulatory Requirements
+### 8.6.1 Regulatory requirements
+
 - **IATA Standards**: Cumplimiento con formatos de mensaje IATA
 - **ICAO Compliance**: Adherencia a regulaciones ICAO
 - **Local Aviation Authority**: Cumplimiento con autoridades locales
 - **Data Sovereignty**: Retención de datos según leyes locales
 
-### 8.6.2 Audit Trail
+### 8.6.2 Audit trail
+
 ```csharp
 public class SitaAuditEvent
 {
@@ -159,47 +170,54 @@ public class SitaAuditEvent
 }
 ```
 
-### 8.6.3 Data Retention
+### 8.6.3 Data retention
+
 - **Message Archival**: Retención de 7 años para compliance aeronáutico
 - **Audit Log Retention**: 10 años para logs de auditoría críticos
 - **Automatic Purging**: Eliminación automática según políticas
 - **Backup & Recovery**: Respaldos para disaster recovery
 
-## 8.7 Integration Patterns
+## 8.7 Integration patterns
 
-### 8.7.1 Event Publishing
+### 8.7.1 Event publishing
+
 - **Integration Events**: Notificación a otros servicios corporativos
 - **Domain Events**: Eventos del dominio SITA messaging
 - **Webhook Support**: Notificaciones HTTP para sistemas externos
 - **Event Sourcing Integration**: Publicación hacia Track & Trace
 
-### 8.7.2 API Integration
+### 8.7.2 API integration
+
 - **REST APIs**: Interface estándar para aplicaciones cliente
 - **GraphQL Support**: Queries flexibles para dashboards
 - **Bulk Operations**: APIs optimizadas para operaciones masivas
 - **Real-time Updates**: WebSocket connections para status updates
 
-### 8.7.3 Message Transformation
+### 8.7.3 Message transformation
+
 - **Format Adaptation**: Conversión entre formatos internos y SITA
 - **Data Enrichment**: Agregado de contexto y metadata
 - **Validation Pipelines**: Validación en múltiples niveles
 - **Content Filtering**: Filtrado de contenido sensible en logs
 
-## 8.8 Gestión de Configuración
+## 8.8 Gestión de configuración
 
-### 8.8.1 Environment-specific Settings
+### 8.8.1 Environment-specific settings
+
 - **SITA Endpoints**: Configuración de nodos SITA por ambiente
 - **Certificate Management**: Gestión de certificados por entorno
 - **Feature Flags**: Control dinámico de funcionalidades
 - **Tenant Configuration**: Settings específicos por tenant
 
-### 8.8.2 Secret Management
+### 8.8.2 Secret management
+
 - **SITA Credentials**: Gestión segura de credenciales SITA
 - **Database Connections**: Strings de conexión cifradas
 - **API Keys**: Claves de integración con servicios externos
 - **Certificate Storage**: Almacenamiento seguro de certificados
 
-### 8.8.3 Dynamic Configuration
+### 8.8.3 Dynamic configuration
+
 - **Runtime Updates**: Cambios de configuración sin restart
 - **A/B Testing**: Configuraciones experimentales
 - **Circuit Breaker Thresholds**: Ajuste dinámico de umbrales

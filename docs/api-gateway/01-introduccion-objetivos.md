@@ -1,8 +1,8 @@
-# 1. Introducción y Objetivos
+# 1. Introducción y objetivos
 
 El API Gateway es el punto de entrada unificado y seguro para los servicios corporativos, implementado con [YARP](https://microsoft.github.io/reverse-proxy/) y desplegado en AWS ECS mediante [Terraform](https://www.terraform.io/). Opera en entornos multi-tenant (realms) y multi-país, garantizando seguridad, resiliencia, observabilidad y cumplimiento de los objetivos de negocio.
 
-## 1.1 Propósito y Funcionalidades
+## 1.1 Propósito y funcionalidades
 
 | Funcionalidad    | Descripción                                                                 |
 |------------------|-----------------------------------------------------------------------------|
@@ -13,7 +13,7 @@ El API Gateway es el punto de entrada unificado y seguro para los servicios corp
 | Observabilidad   | Logging estructurado (Serilog/Loki), métricas ([Prometheus](https://prometheus.io/)), tracing ([Jaeger](https://www.jaegertracing.io/)), dashboards ([Grafana](https://grafana.com/)) |
 | Resiliencia      | Circuit breakers ([Polly](https://github.com/App-vNext/Polly)), retry policies y health checks multinivel        |
 
-## 1.2 Objetivos de Calidad
+## 1.2 Objetivos de calidad
 
 | Atributo       | Objetivo                | Métrica                |
 |----------------|------------------------|------------------------|

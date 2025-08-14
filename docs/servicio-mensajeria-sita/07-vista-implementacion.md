@@ -57,7 +57,7 @@ src/
     └── Contract/                            # Contract Tests with SITA
 ```
 
-### 7.1.2 SITA Protocol Implementation
+### 7.1.2 SITA protocol implementation
 
 ```csharp
 // Core SITA protocol abstraction
@@ -98,7 +98,7 @@ public class SitaTypeBAdapter : ISitaProtocolAdapter
 
 ## 7.2 Configuración de despliegue
 
-### 7.2.1 Docker Configuration
+### 7.2.1 Docker configuration
 
 ```dockerfile
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
@@ -144,7 +144,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 ENTRYPOINT ["dotnet", "TLM.Services.SitaMessaging.API.dll"]
 ```
 
-### 7.2.2 Kubernetes Deployment
+### 7.2.2 Kubernetes deployment
 
 ```yaml
 apiVersion: apps/v1
@@ -210,7 +210,7 @@ spec:
             add: ["NET_RAW", "NET_ADMIN"]
 ```
 
-### 7.2.3 Terraform Infrastructure
+### 7.2.3 Terraform infrastructure
 
 ```hcl
 # ECS Cluster for SITA Messaging
@@ -287,7 +287,7 @@ resource "aws_rds_cluster" "sita_messaging_db" {
   master_username       = "sita_user"
   manage_master_user_password = true
 
-  # High disponibilidad for critical SITA operations
+  # High disponibilidad para critical SITA operations
   availability_zones = ["us-west-2a", "us-west-2b", "us-west-2c"]
 
   backup_retention_period = 14
@@ -300,7 +300,7 @@ resource "aws_rds_cluster" "sita_messaging_db" {
 
 ## 7.3 Configuración específica SITA
 
-### 7.3.1 Application Configuration
+### 7.3.1 Application configuration
 
 ```json
 {
@@ -359,7 +359,7 @@ resource "aws_rds_cluster" "sita_messaging_db" {
 }
 ```
 
-### 7.3.2 SITA Certificate Management
+### 7.3.2 SITA certificate management
 
 ```csharp
 public class SitaCertificateManager : ICertificateManager
@@ -395,7 +395,7 @@ public class SitaCertificateManager : ICertificateManager
 
 ## 7.4 Patrones de implementación
 
-### 7.4.1 Message Handler Factory
+### 7.4.1 Message handler factory
 
 ```csharp
 public class SitaMessageHandlerFactory : IMessageHandlerFactory
@@ -428,7 +428,7 @@ public class SitaMessageHandlerFactory : IMessageHandlerFactory
 }
 ```
 
-### 7.4.2 Connection Pool Implementation
+### 7.4.2 Connection pool implementation
 
 ```csharp
 public class SitaConnectionPool : ISitaConnectionPool, IDisposable
@@ -482,9 +482,9 @@ public class SitaConnectionPool : ISitaConnectionPool, IDisposable
 }
 ```
 
-## 7.5 Testing Strategy
+## 7.5 Testing strategy
 
-### 7.5.1 Contract Testing con SITA
+### 7.5.1 Contract testing con SITA
 
 ```csharp
 [TestClass]
@@ -528,7 +528,7 @@ public class SitaProtocolContractTests
 }
 ```
 
-### 7.5.2 Load Testing
+### 7.5.2 Load testing
 
 ```csharp
 [TestClass]

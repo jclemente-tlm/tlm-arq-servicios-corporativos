@@ -38,6 +38,7 @@
 **Descripción**: Fallo prolongado de conectividad con red SITA puede interrumpir operaciones aeronáuticas críticas
 
 **Escenarios de riesgo**:
+
 - Interrupción de red SITA regional (> 4 horas)
 - Cambios no anunciados en protocolos SITA
 - Saturación de ancho de banda durante eventos masivos
@@ -75,11 +76,13 @@
 **Descripción**: Crecimiento exponencial de mensajes puede exceder capacidad actual
 
 **Proyecciones de crecimiento**:
+
 - 2024: 10,000 msg/min peak
 - 2025: 25,000 msg/min peak (estimado)
 - 2026: 50,000 msg/min peak (estimado)
 
 **Estrategias de mitigación**:
+
 - **Auto-scaling**: Kubernetes HPA basado en queue depth
 - **Optimization**: Message batching y compression
 - **Caching**: Redis para frequent lookups
@@ -92,11 +95,13 @@
 **Descripción**: Cambios en regulaciones IATA/ICAO pueden requerir modificaciones significativas
 
 **Áreas de compliance**:
+
 - GDPR para datos de pasajeros
 - Regulaciones de ciberseguridad aeronáutica
 - Nuevos estándares de mensaje SITA
 
 **Estrategias de mitigación**:
+
 - **Monitoring**: Subscripción a cambios regulatorios
 - **Flexibility**: Arquitectura configurable para adaptación rápida
 - **Expertise**: Partnership con consultores compliance
@@ -111,11 +116,13 @@
 **Descripción**: Escasez de personal con expertise en protocolos SITA y aviación
 
 **Factores contribuyentes**:
+
 - Mercado laboral especializado limitado
 - Conocimiento concentrado en pocos individuos
 - Training requirements extensivos
 
 **Estrategias de mitigación**:
+
 - **Knowledge transfer**: Documentación comprehensiva
 - **Training programs**: Certificación interna en SITA
 - **External partnerships**: Contratos con expertos externos
@@ -128,11 +135,13 @@
 **Descripción**: Naturaleza crítica de operaciones aeronáuticas requiere soporte continuo
 
 **Desafíos operacionales**:
+
 - Cobertura timezone global
 - Escalation procedures complejos
 - Integration con NOCs aeronáuticos
 
 **Estrategias de mitigación**:
+
 - **Follow-the-sun**: Equipos distribuidos globalmente
 - **Automation**: Self-healing capabilities para issues comunes
 - **Runbooks**: Procedimientos detallados para scenarios típicos
@@ -147,11 +156,13 @@
 **Descripción**: Vulnerabilidades en protocolos legacy pueden comprometer seguridad
 
 **Vectores de ataque potenciales**:
+
 - Man-in-the-middle en conexiones Type B
 - Certificate spoofing
 - Message injection attacks
 
 **Estrategias de mitigación**:
+
 - **Defense in depth**: Múltiples capas de validación
 - **Monitoring**: SIEM para detección de anomalías
 - **Isolation**: Network segmentation estricta
@@ -170,6 +181,7 @@
 **Descripción**: Endpoints y configuraciones SITA están hardcoded en multiple lugares
 
 **Plan de resolución**:
+
 - Centralizar configuración en appsettings
 - Implementar configuration provider pattern
 - Environment-specific configuration files
@@ -184,6 +196,7 @@
 **Descripción**: Coverage insuficiente de failure scenarios y edge cases
 
 **Plan de resolución**:
+
 - Chaos engineering implementation
 - Comprehensive integration tests
 - Disaster recovery testing automatizado
@@ -198,6 +211,7 @@
 **Descripción**: Logs inconsistentes, métricas no correlacionadas
 
 **Plan de resolución**:
+
 - Structured logging con correlation IDs
 - OpenTelemetry implementation
 - Centralized dashboards
@@ -212,6 +226,7 @@
 **Descripción**: Proceso manual para certificate provisioning y rotation
 
 **Plan de resolución**:
+
 - PKI automation con HashiCorp Vault
 - Certificate lifecycle management
 - Automated testing de certificates
@@ -225,6 +240,7 @@
 **Descripción**: Performance degradation esperada con volumen creciente
 
 **Estrategias preventivas**:
+
 - Database sharding implementation
 - Read replicas para analytics queries
 - Archival strategy para historical data
@@ -236,6 +252,7 @@
 **Descripción**: Arquitectura actual no optimizada para multi-region
 
 **Estrategias preventivas**:
+
 - Region-aware routing design
 - Data residency compliance planning
 - Cross-region failover mechanisms
@@ -258,21 +275,25 @@
 ### 11.3.2 Plan de acción por trimestre
 
 #### Q1 2024
+
 - **RT-004**: Establecer compliance monitoring framework
 - **RO-001**: Iniciar programa de training interno
 - **DT-002**: Implementar chaos engineering básico
 
 #### Q2 2024
+
 - **RT-003**: Implementar auto-scaling inicial
 - **RO-002**: Establecer follow-the-sun operations
 - **DT-002**: Completar comprehensive testing suite
 
 #### Q3 2024
+
 - **RT-002**: Automatizar certificate management
 - **DT-004**: Desplegar PKI automation
 - **DT-005**: Implementar database sharding
 
 #### Q4 2024
+
 - **RT-001**: Redundancia completa de conectividad
 - **DT-006**: Diseñar multi-region architecture
 - **RS-001**: Security audit comprehensivo
@@ -302,11 +323,13 @@
 ### 11.4.1 Proceso de evaluación
 
 **Evaluación mensual**:
+
 - Review de nuevos items de deuda técnica
 - Re-priorización basada en business impact
 - Budget allocation para remediation
 
 **Criterios de priorización**:
+
 1. **Business Impact**: Revenue/operational impact
 2. **Risk Score**: Probability × Impact
 3. **Remediation Cost**: Development effort required
@@ -315,14 +338,17 @@
 ### 11.4.2 Budget allocation
 
 **Recommended allocation**:
+
 - 70% Feature development
 - 20% Technical debt remediation
 - 10% Innovation/R&D
 
 **Tracking metrics**:
+
 - Technical debt ratio: current = 18%
 - Target deuda técnica ratio: < 15%
 - Velocity impact: 15% slowdown due to debt
 
 ## Referencias
+
 - [Arc42 Risks](https://docs.arc42.org/section-11/)

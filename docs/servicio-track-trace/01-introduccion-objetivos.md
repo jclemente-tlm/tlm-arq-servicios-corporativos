@@ -1,8 +1,8 @@
-# 1. Introducción y Objetivos
+# 1. Introducción y objetivos
 
 El **Sistema Track & Trace** es una solución distribuida multi-tenant para trazabilidad operacional en tiempo real, basada en `CQRS`, `Event Sourcing` y tecnologías aprobadas en la arquitectura corporativa. Proporciona visibilidad integral de eventos y procesos críticos de negocio, soportando altos volúmenes, auditoría y analítica avanzada.
 
-## 1.1 Propósito y Funcionalidades
+## 1.1 Propósito y funcionalidades
 
 | Funcionalidad              | Descripción                                      |
 |---------------------------|--------------------------------------------------|
@@ -13,7 +13,7 @@ El **Sistema Track & Trace** es una solución distribuida multi-tenant para traz
 | Analytics                 | Análisis de patrones y métricas operacionales    |
 | APIs                      | Exposición de datos vía `REST` y `GraphQL`       |
 
-## 1.2 Objetivos de Calidad
+## 1.2 Objetivos de calidad
 
 | Atributo         | Objetivo                | Métrica                |
 |------------------|------------------------|------------------------|
@@ -24,7 +24,7 @@ El **Sistema Track & Trace** es una solución distribuida multi-tenant para traz
 
 El sistema implementa `CQRS` y `Event Sourcing` para optimizar la ingesta y consulta de eventos, asegurando trazabilidad, integridad y disponibilidad en entornos multi-sistema y multi-país.
 
-## 1.3 Requisitos Principales
+## 1.3 Requisitos principales
 
 | ID         | Requisito                    | Descripción Detallada                                               |
 |------------|-----------------------------|---------------------------------------------------------------------|
@@ -39,7 +39,7 @@ El sistema implementa `CQRS` y `Event Sourcing` para optimizar la ingesta y cons
 | `RF-TT-09`   | Integración con SITA         | Publicación de eventos críticos para procesamiento externo           |
 | `RF-TT-10`   | Alertas y Monitoreo          | Detección de patrones anómalos y alertas proactivas                 |
 
-## 1.4 Objetivos de Calidad Detallados
+## 1.4 Objetivos de calidad detallados
 
 | Prioridad | Objetivo                  | Escenario                                 | Métrica Objetivo         |
 |-----------|--------------------------|-------------------------------------------|-------------------------|
@@ -61,7 +61,7 @@ El sistema implementa `CQRS` y `Event Sourcing` para optimizar la ingesta y cons
 | Auditabilidad    | Cumplimiento regulatorio                   | Logging estructurado, retención        | Reportes de auditoría       |
 | Resiliencia      | Tolerancia a fallos                        | `Circuit breakers`, `retry policies`       | Pruebas de caos             |
 
-## 1.5 Partes Interesadas y Comunicación
+## 1.5 Partes interesadas y comunicación
 
 | Rol                   | Contacto         | Responsabilidades                        | Expectativas                        |
 |-----------------------|------------------|------------------------------------------|-------------------------------------|

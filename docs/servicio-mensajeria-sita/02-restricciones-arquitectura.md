@@ -19,7 +19,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 - **Estándares ICAO** para formatos de mensaje
 - **Mensajes Tipo B** para operaciones aeroportuarias
 
-### Infraestructura y Plataforma
+### Infraestructura y plataforma
 
 | Área | Restricción | Justificación | Solución Adoptada |
 |------|-------------|---------------|-------------------|
@@ -29,7 +29,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 | **Colas de Mensajes** | Bus de eventos agnóstico para transmisión de mensajes | Alto rendimiento, capacidades de abastecimiento de eventos | Cluster de bus de eventos con particionado |
 | **Registro** | Serilog para logging estructurado | Observabilidad, resolución problemas | Logging JSON estructurado |
 
-### Integración y Conectividad
+### Integración y conectividad
 
 | Sistema Externo | Protocolo Requerido | Restricción | Implementación |
 |-----------------|---------------------|-------------|----------------|
@@ -39,7 +39,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 | **Track & Trace** | APIs REST internas | Entrega de eventos en tiempo real | Clientes HTTP asíncronos |
 | **Sistemas Gubernamentales** | Canales seguros (VPN/TLS) | Cumplimiento seguridad | Túneles cifrados, certificados |
 
-### Performance y Capacidad
+### Performance y capacidad
 
 | Métrica | Restricción | Justificación | Arquitectura Requerida |
 |---------|-------------|---------------|------------------------|
@@ -50,7 +50,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 
 ## 2.2 Restricciones organizacionales y regulatorias
 
-### Cumplimiento y Regulatorio
+### Cumplimiento y regulatorio
 
 | Área | Restricción | Autoridad | Implementación Requerida |
 |------|-------------|-----------|--------------------------|
@@ -59,7 +59,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 | **Financial Controls** | SOX compliance para data financiera | Corporate audit requirements | Access controls, change management |
 | **Local Regulations** | Compliance con regulaciones por país | Aviation authorities per country | Country-specific adapters |
 
-### Arquitectura Corporativa
+### Arquitectura corporativa
 
 | Restricción | Origen | Impacto | Solución |
 |-------------|--------|---------|----------|
@@ -68,7 +68,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 | **Identity Integration** | SSO corporativo | Autenticación centralizada vía Keycloak | OAuth2/OIDC integration |
 | **Audit Requirements** | Compliance corporativo | Logging de todas las operaciones | Comprehensive audit logging |
 
-### Operaciones y Mantenimiento
+### Operaciones y mantenimiento
 
 | Área | Restricción | Justificación | Implementación |
 |------|-------------|---------------|----------------|
@@ -79,7 +79,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 
 ## 2.3 Restricciones convencionales y de calidad
 
-### Estándares de Desarrollo
+### Estándares de desarrollo
 
 | Categoría | Estándar | Herramienta/Framework | Enforcement |
 |-----------|----------|----------------------|-------------|
@@ -97,7 +97,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 | **Data Encryption** | TLS 1.3 for transport, AES-256 at rest | .NET encryption libraries | Security audits |
 | **Secret Management** | Azure Key Vault / HashiCorp Vault | Centralized secret storage | Secret rotation policies |
 
-### Monitoreo y Observabilidad
+### Monitoreo y observabilidad
 
 | Componente | Herramienta Requerida | Propósito | Configuración |
 |------------|----------------------|-----------|---------------|
@@ -108,7 +108,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 
 ## 2.4 Restricciones específicas SITA
 
-### Conectividad SITA Network
+### Conectividad SITA network
 
 | Aspecto | Restricción | Detalle Técnico |
 |---------|-------------|-----------------|
@@ -117,7 +117,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 | **Message Priority** | Priority levels (SS, DD, FF, GG) | Routing based on message urgency |
 | **Manejo de Errores** | SITA-specific error codes | Standard SITA error reporting |
 
-### Message Format Compliance
+### Message format compliance
 
 | Tipo Mensaje | Standard | Validación Requerida | Ejemplo |
 |--------------|---------|---------------------|---------|
@@ -126,7 +126,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 | **Airport Operations** | SITA specifications | Operational constraints | Gate assignments, baggage |
 | **Weather Data** | ICAO Annex 3 | Meteorological format | METAR, TAF messages |
 
-### Certification Requirements
+### Certification requirements
 
 | Certificación | Organismo | Frecuencia | Scope |
 |---------------|-----------|------------|-------|
@@ -136,7 +136,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 
 ## 2.5 Impacto en el diseño
 
-### Decisiones Arquitectónicas Derivadas
+### Decisiones arquitectónicas derivadas
 
 | Restricción | Decisión de Diseño | Rationale |
 |-------------|-------------------|-----------|
@@ -146,7 +146,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 | **Message Validation** | Pipeline pattern with validators | Extensible validation chain |
 | **Manejo de Errores** | Circuit breaker pattern | Resilience for external dependencies |
 
-### Trade-offs Aceptados
+### Trade-offs aceptados
 
 | Trade-off | Decisión | Justificación |
 |-----------|----------|---------------|
@@ -157,7 +157,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 
 ## Referencias
 
-### Estándares y Especificaciones
+### Estándares y especificaciones
 
 - [SITA SITATEX Protocol Specification](https://www.sita.aero/solutions/airline-operations/sitatex/)
 - [ICAO Doc 4444 - PANS-ATM](https://www.icao.int/publications/documents/4444_cons_en.pdf)
@@ -170,7 +170,7 @@ Esta sección documenta todas las limitaciones técnicas, de rendimiento, seguri
 - [GDPR Regulation (EU) 2016/679](https://gdpr-info.eu/)
 - [Sarbanes-Oxley Act](https://www.congress.gov/bill/107th-congress/house-bill/3763)
 
-### Documentación Corporativa
+### Documentación corporativa
 
 - [Keycloak Documentation](https://www.keycloak.org/documentation)
 - [.NET 8 Documentation](https://docs.microsoft.com/en-us/dotnet/)

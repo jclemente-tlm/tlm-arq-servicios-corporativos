@@ -1,4 +1,4 @@
-# 8. Conceptos Transversales
+# 8. Conceptos transversales
 
 ## 8.1 Seguridad
 
@@ -10,7 +10,7 @@
 | CORS              | Configuración dinámica         | ASP.NET Core       |
 | Cifrado           | `TLS 1.3`                     | `HTTPS`            |
 
-### 8.1.1 Autenticación Y Autorización
+### 8.1.1 Autenticación y autorización
 
 El API Gateway implementa un modelo de seguridad basado en OAuth2/OIDC con JWT tokens para garantizar acceso seguro a todos los servicios corporativos.
 
@@ -58,7 +58,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### 8.1.2 Cabeceras De Seguridad Y Protección
+### 8.1.2 Cabeceras de seguridad y protección
 
 ```csharp
 public class CabecerasSeguridadMiddleware
@@ -99,7 +99,7 @@ public class CabecerasSeguridadMiddleware
 }
 ```
 
-### 8.1.3 Rate Limiting Y Throttling
+### 8.1.3 Rate limiting y throttling
 
 ```csharp
 public class RateLimitingService : IRateLimitingService
@@ -153,7 +153,7 @@ public class RateLimitingService : IRateLimitingService
 }
 ```
 
-## 8.2 Observabilidad Y Monitoreo
+## 8.2 Observabilidad y monitoreo
 
 | Tipo        | Herramienta                  | Propósito                |
 |-------------|-----------------------------|--------------------------|
@@ -166,7 +166,7 @@ public class RateLimitingService : IRateLimitingService
 - Dashboards y alertas preconfiguradas para latencia, errores 5xx, disponibilidad y saturación de recursos.
 - Exporters y anotaciones automáticas en los contenedores para scraping de métricas y logs estructurados.
 
-### 8.2.1 Logging Estructurado
+### 8.2.1 Logging estructurado
 
 ```csharp
 // Configuración de Serilog
@@ -221,7 +221,7 @@ public class CorrelationMiddleware
 }
 ```
 
-### 8.2.2 Métricas Y Telemetría
+### 8.2.2 Métricas y telemetría
 
 ```csharp
 public class MetricsMiddleware
@@ -290,7 +290,7 @@ public class MetricsMiddleware
 }
 ```
 
-### 8.2.3 Trazabilidad Distribuida
+### 8.2.3 Trazabilidad distribuida
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -355,7 +355,7 @@ public class TracingEnrichmentMiddleware
 }
 ```
 
-## 8.3 Resiliencia Y Manejo De Errores
+## 8.3 Resiliencia y manejo de errores
 
 | Patrón           | Implementación         | Propósito                |
 |------------------|-----------------------|--------------------------|
@@ -363,7 +363,7 @@ public class TracingEnrichmentMiddleware
 | Retry            | Políticas exponenciales| Recuperación automática  |
 | Timeout          | Por endpoint           | Prevención bloqueos      |
 
-### 8.3.1 Patrón Circuit Breaker
+### 8.3.1 Patrón circuit breaker
 
 ```csharp
 public class CircuitBreakerService : ICircuitBreakerService
@@ -441,7 +441,7 @@ public class CircuitBreakerState
 }
 ```
 
-### 8.3.2 Políticas De Reintentos
+### 8.3.2 Políticas de reintentos
 
 ```csharp
 public class RetryPolicyService
@@ -479,9 +479,9 @@ public class RetryPolicyService
 }
 ```
 
-## 8.4 Rendimiento Y Caching
+## 8.4 Rendimiento y caching
 
-### 8.4.1 Estrategia De Caching Multinivel
+### 8.4.1 Estrategia de caching multinivel
 
 ```csharp
 public class MultiLevelCacheService : ICacheService
@@ -543,7 +543,7 @@ public class MultiLevelCacheService : ICacheService
 }
 ```
 
-### 8.4.2 Agrupación De Conexiones Y Reutilización
+### 8.4.2 Agrupación de conexiones y reutilización
 
 ```csharp
 public class HttpClientService
@@ -577,9 +577,9 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-## 8.5 Multi-Tenancy
+## 8.5 Multi-tenancy
 
-### 8.5.1 Resolución De Contexto De Tenant
+### 8.5.1 Resolución de contexto de tenant
 
 ```csharp
 public class TenantContextMiddleware
@@ -625,7 +625,7 @@ public class TenantContextMiddleware
 }
 ```
 
-### 8.5.2 Configuración Específica Por Tenant
+### 8.5.2 Configuración específica por tenant
 
 ```csharp
 public class TenantConfigurationService : ITenantConfigurationService

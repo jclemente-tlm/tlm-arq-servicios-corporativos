@@ -1,6 +1,6 @@
-# 4. Estrategia de Solución
+# 4. Estrategia de solución
 
-## 4.1 Decisiones Clave
+## 4.1 Decisiones clave
 
 | Decisión         | Alternativa Elegida         | Justificación                  |
 |------------------|----------------------------|-------------------------------|
@@ -9,7 +9,7 @@
 | **Deduplicación** | Por `tenant` + `key`       | Prevención de duplicados        |
 | **Propagación**   | `Event-driven`             | Integración con SITA            |
 
-## 4.2 Patrones Aplicados
+## 4.2 Patrones aplicados
 
 | Patrón             | Propósito                  | Implementación         |
 |--------------------|---------------------------|------------------------|

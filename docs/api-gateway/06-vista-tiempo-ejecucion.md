@@ -1,6 +1,6 @@
-# 6. Vista De Tiempo De Ejecución
+# 6. Vista de tiempo de ejecución
 
-## 6.1 Escenarios Principales
+## 6.1 Escenarios principales
 
 | Escenario                  | Flujo principal                                      | Componentes involucrados                |
 |----------------------------|-----------------------------------------------------|-----------------------------------------|
@@ -10,7 +10,7 @@
 | Circuit breaker            | Proxy → `Polly` → Servicio/Fallback                 | `Polly`, `YARP`                        |
 | Observabilidad             | Request → Logging/Metrics/Tracing                   | `Serilog`, `Loki`, `Prometheus`, `Jaeger` |
 
-## 6.2 Flujos De Interacción Y Patrones
+## 6.2 Flujos de interacción y patrones
 
 - Autenticación y enrutamiento: validación de token `JWT` (cache en `Redis`), resolución de tenant, rate limiting y enrutamiento al backend, enriqueciendo headers con información relevante.
 - Health checks y circuit breaker: monitoreo activo, apertura/cierre de circuitos y failover automático.
@@ -19,9 +19,9 @@
 - Multi-tenancy: resolución de tenant vía claims `JWT`, `API Key`, subdominio o query param; routing inteligente por tier y país.
 - Observabilidad: trazabilidad distribuida (`Jaeger`), métricas en tiempo real (`Prometheus`), logs estructurados (`Loki`), dashboards y alertas (`Grafana`).
 
-## 6.3 Ejemplos De Ejecución (Diagramas De Secuencia)
+## 6.3 Ejemplos de ejecución (diagramas de secuencia)
 
-### 6.3.1 Flujo De Autenticación Y Enrutamiento
+### 6.3.1 Flujo de autenticación y enrutamiento
 
 ```mermaid
 sequenceDiagram
@@ -45,7 +45,7 @@ sequenceDiagram
     Gateway->>Client: Response con headers de rate limit
 ```
 
-### 6.3.2 Health Check Y Circuit Breaker
+### 6.3.2 Health check y circuit breaker
 
 ```mermaid
 sequenceDiagram
@@ -69,7 +69,7 @@ sequenceDiagram
     Gateway->>Service1: Route only to healthy
 ```
 
-### 6.3.3 Rate Limiting Distribuido
+### 6.3.3 Rate limiting distribuido
 
 ```mermaid
 sequenceDiagram
@@ -89,7 +89,7 @@ sequenceDiagram
     Gateway1->>Client: 429 Too Many Requests
 ```
 
-### 6.3.4 Failover Automático Y Degradación
+### 6.3.4 Failover automático y degradación
 
 ```mermaid
 sequenceDiagram
@@ -109,7 +109,7 @@ sequenceDiagram
     Gateway->>Client: Response
 ```
 
-### 6.3.5 Multi-Tenancy Y Routing Inteligente
+### 6.3.5 Multi-tenancy y routing inteligente
 
 ```mermaid
 sequenceDiagram
@@ -128,7 +128,7 @@ sequenceDiagram
     Gateway->>ClientB: Response
 ```
 
-### 6.3.6 Observabilidad Y Monitoreo
+### 6.3.6 Observabilidad y monitoreo
 
 ```mermaid
 sequenceDiagram
@@ -147,7 +147,7 @@ sequenceDiagram
     Grafana->>Jaeger: Query traces
 ```
 
-## 6.4 Objetivos De Rendimiento Y SLA
+## 6.4 Objetivos de rendimiento y SLA
 
 | Operación                  | Target           | Timeout | SLA    |
 |----------------------------|------------------|---------|--------|
@@ -159,7 +159,7 @@ sequenceDiagram
 | Config reload              | `< 1s`           | `30s`   | `99%`    |
 | Circuit breaker            | `< 100ms`        | `500ms` | `99%`    |
 
-## 6.5 Manejo De Errores Y Resiliencia
+## 6.5 Manejo de errores y resiliencia
 
 - Timeout downstream: `30s`, `3 reintentos` con backoff, circuit breaker tras `5 fallos`, responde `504` con `retry-after`.
 - Identity service caído: cache de tokens extendido `1h`, solo requests con tokens válidos, responde `503` para nuevas autenticaciones.

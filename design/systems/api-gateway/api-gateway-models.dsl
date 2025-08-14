@@ -47,6 +47,12 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
             tags "Performance" "002 - Fase 2"
         }
 
+        configManager = component "Configuration Manager" {
+            technology "C#, .NET 8, EF Core"
+            description "Gestiona configuraciones del servicio y por tenant"
+            tags "Configuration" "Multi-Tenant" "001 - Fase 1"
+        }
+
         // Componentes de observabilidad
         healthCheck = component "Health Check" {
             technology "ASP.NET Core Health Checks"
@@ -64,13 +70,6 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
             technology "Serilog"
             description "Registra eventos con correlación de requests y contexto de tenant"
             tags "Observability" "001 - Fase 1"
-        }
-
-        // Configuración dinámica
-        dynamicConfigProcessor = component "Dynamic Configuration Processor" {
-            technology "C#, .NET 8, HttpClient"
-            description "Actualiza configuración de routing y políticas sin reinicio"
-            tags "Configuration Events" "Feature Flags" "001 - Fase 1"
         }
     }
 
@@ -106,7 +105,7 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.structuredLogger "Registra rate limiting y requests bloqueadas" "Serilog" "001 - Fase 1"
     reverseProxyGateway.dataProcessingMiddleware -> reverseProxyGateway.structuredLogger "Registra transformaciones y mapeos" "Serilog" "001 - Fase 1"
     reverseProxyGateway.resilienceHandler -> reverseProxyGateway.structuredLogger "Registra circuit breaker y fallos" "Serilog" "001 - Fase 1"
-    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.structuredLogger "Registra cambios de configuración" "Serilog" "001 - Fase 1"
+    reverseProxyGateway.configManager -> reverseProxyGateway.structuredLogger "Registra cambios de configuración" "Serilog" "001 - Fase 1"
     reverseProxyGateway.healthCheck -> reverseProxyGateway.structuredLogger "Registra health checks y disponibilidad" "Serilog" "001 - Fase 1"
 
     // Observabilidad de middleware crítico - Métricas de negocio y técnicas
@@ -115,7 +114,7 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.metricsCollector "Publica métricas de rate limiting" "Prometheus" "001 - Fase 1"
     reverseProxyGateway.dataProcessingMiddleware -> reverseProxyGateway.metricsCollector "Publica métricas de transformación" "Prometheus" "001 - Fase 1"
     reverseProxyGateway.resilienceHandler -> reverseProxyGateway.metricsCollector "Publica métricas de circuit breaker" "Prometheus" "001 - Fase 1"
-    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.metricsCollector "Publica métricas de configuración dinámica" "Prometheus" "001 - Fase 1"
+    reverseProxyGateway.configManager -> reverseProxyGateway.metricsCollector "Publica métricas de configuración dinámica" "Prometheus" "001 - Fase 1"
     reverseProxyGateway.healthCheck -> reverseProxyGateway.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
 
     // ========================================
@@ -136,12 +135,12 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     // ========================================
 
     // Configuración dinámica vía polling (patrón correcto)
-    reverseProxyGateway.dynamicConfigProcessor -> configPlatform.configService "Consulta configuración" "HTTPS/REST" "001 - Fase 1"
+    reverseProxyGateway.configManager -> configPlatform.configService "Consulta configuración" "HTTPS/REST" "001 - Fase 1"
 
     // Invalidación selectiva de cache tras cambios de configuración
-    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.securityMiddleware "Invalida cache seguridad" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.rateLimitingMiddleware "Invalida cache rate limits" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.dynamicConfigProcessor -> reverseProxyGateway.dataProcessingMiddleware "Invalida cache esquemas" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.configManager -> reverseProxyGateway.securityMiddleware "Invalida cache seguridad" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.configManager -> reverseProxyGateway.rateLimitingMiddleware "Invalida cache rate limits" "In-Memory" "001 - Fase 1"
+    reverseProxyGateway.configManager -> reverseProxyGateway.dataProcessingMiddleware "Invalida cache esquemas" "In-Memory" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - OBSERVABILIDAD
