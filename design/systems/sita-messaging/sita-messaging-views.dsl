@@ -28,10 +28,10 @@ component sitaMessaging.eventProcessor "sita_messaging_system_event_processor" {
     include *
 
     // Exclusión inteligente de componentes de observabilidad para diagrama limpio
-    exclude observabilitySystem
-    exclude sitaMessaging.eventProcessor.healthCheck
-    exclude sitaMessaging.eventProcessor.metricsCollector
-    exclude sitaMessaging.eventProcessor.structuredLogger
+    // exclude observabilitySystem
+    // exclude sitaMessaging.eventProcessor.healthCheck
+    // exclude sitaMessaging.eventProcessor.metricsCollector
+    // exclude sitaMessaging.eventProcessor.structuredLogger
 
     title "[Diagrama de Componentes] SITA Messaging System - Event Processor"
     description "Vista del procesador de eventos SITA y su conexión con Track & Trace"
@@ -41,10 +41,10 @@ component sitaMessaging.sender "sita_messaging_system_sender" {
     include *
 
     // Exclusión inteligente de componentes de observabilidad para diagrama limpio
-    exclude observabilitySystem
-    exclude sitaMessaging.sender.healthCheck
-    exclude sitaMessaging.sender.metricsCollector
-    exclude sitaMessaging.sender.structuredLogger
+    // exclude observabilitySystem
+    // exclude sitaMessaging.sender.healthCheck
+    // exclude sitaMessaging.sender.metricsCollector
+    // exclude sitaMessaging.sender.structuredLogger
 
     title "[Diagrama de Componentes] SITA Messaging System - Message Sender"
     description "Vista del sender de mensajes SITA hacia aerolíneas y Descartes"

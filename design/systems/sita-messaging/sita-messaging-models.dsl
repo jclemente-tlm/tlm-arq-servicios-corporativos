@@ -2,52 +2,21 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     description "Sistema de generación y entrega de mensajes SITA"
     tags "SITA Messaging" "001 - Fase 1"
 
-    // ========================================
-    // DATA STORES - ARQUITECTURA SIMPLE
-    // ========================================
-    // DECISIÓN: PostgreSQL como cola inicial, migración futura a SNS+SQS según volumen
-    // INTEGRACIÓN: Consume eventos de Track & Trace
-    // DELIVERY: Genera y envía archivos SITA a partners
-
     sitaMessagingDatabase = store "SITA Messaging Database" {
-        description "PostgreSQL para datos SITA y cola de eventos"
+        description "Almacena datos de mensajeria SITA y cola de eventos"
         technology "PostgreSQL"
         tags "Database" "PostgreSQL" "001 - Fase 1"
-
-        eventsQueue = component "Events Queue Table" {
-            technology "PostgreSQL Table"
-            description "Cola de eventos de Track & Trace para procesamiento SITA"
-            tags "Database Table" "Event Queue" "001 - Fase 1"
-        }
-
-        templates = component "Templates Table" {
-            technology "PostgreSQL Table"
-            description "Templates SITA por partner y tipo de mensaje"
-            tags "Database Table" "Templates" "001 - Fase 1"
-        }
-
-        configuration = component "Configuration Table" {
-            technology "PostgreSQL Table"
-            description "Configuración por tenant y partner"
-            tags "Database Table" "Configuration" "001 - Fase 1"
-        }
-
-        deliveryLog = component "Delivery Log Table" {
-            technology "PostgreSQL Table"
-            description "Log de entregas y confirmaciones de partners"
-            tags "Database Table" "Audit" "001 - Fase 1"
-        }
     }
 
     sitaQueue = store "SITA Message Queue" {
-        description "Cola SQS que recibe eventos de Track & Trace para procesar mensajería SITA"
+        description "Cola que recibe eventos de Track & Trace para procesar mensajería SITA"
         technology "AWS SQS"
         tags "Message Bus" "SQS" "001 - Fase 1"
     }
 
     fileStorage = store "SITA File Storage" {
         technology "S3-Compatible Storage"
-        description "Storage agnóstico para archivos SITA generados"
+        description "Almacena archivos SITA generados"
         tags "File Storage" "S3-Compatible" "001 - Fase 1"
     }
 
@@ -61,7 +30,7 @@ sitaMessaging = softwareSystem "SITA Messaging" {
 
         eventConsumer = component "Event Consumer" {
             technology "C#, .NET 8"
-            description "Consume y deserializa eventos de Track & Trace desde cola PostgreSQL"
+            description "Consume y deserializa eventos de Track & Trace desde cola"
             tags "Event Processing" "001 - Fase 1"
         }
 
@@ -71,41 +40,46 @@ sitaMessaging = softwareSystem "SITA Messaging" {
             tags "Event Orchestration" "001 - Fase 1"
         }
 
+        messageRepository = component "Message Repository" {
+            technology "C#, .NET 8, EF Core"
+            description "Registra mensajes SITA para envío posterior"
+            tags "EF Core" "001 - Fase 1"
+        }
+
         templateEngine = component "Template Engine" {
             technology "C#, .NET 8, Scriban"
-            description "Carga y procesa plantillas SITA específicas por partner y tipo de mensaje"
+            description "Solicita plantillas y las procesa para generar el contenido SITA, retorna el contenido procesado."
             tags "Template Processing" "001 - Fase 1"
         }
 
-        sitaFileGenerator = component "SITA File Generator" {
+        templateRepository = component "Template Repository" {
+            technology "C#, .NET 8, EF Core"
+            description "Accede a las plantillas SITA almacenadas en la base de datos por partner y tipo de mensaje. Abstrae el acceso a datos para el Template Engine."
+            tags "Repository" "001 - Fase 1"
+        }
+
+        fileGenerator = component "File Generator" {
             technology "C#, .NET 8"
             description "Genera archivos SITA finales usando plantillas procesadas"
             tags "File Generation" "001 - Fase 1"
         }
 
-        configManager = component "Configuration Manager" {
+        tenantSettingsRepository = component "TenantSettings Repository" {
             technology "C#, .NET 8, EF Core"
-            description "Gestiona configuraciones del servicio y por tenant"
-            tags "Configuration" "Multi-Tenant" "001 - Fase 1"
+            description "Gestiona configuraciones por tenant del sistema"
+            tags "Repository" "TenantSettings"
         }
 
-        // Observabilidad esencial
-        healthCheck = component "Health Check" {
-            technology "ASP.NET Core Health Checks"
-            description "Valida salud del Event Processor"
-            tags "Observability" "001 - Fase 1"
+        secretsAndConfigs = component "SecretsAndConfigs (Cross-Cutting)" {
+            technology "NuGet (AWS Secrets Manager, AppConfig)"
+            description "Provee acceso centralizado a configuraciones y secretos"
+            tags "Configuration" "Cross-Cutting"
         }
 
-        metricsCollector = component "Metrics Collector" {
-            technology "Prometheus.NET"
-            description "Recolecta métricas de procesamiento"
-            tags "Observability" "001 - Fase 1"
-        }
-
-        structuredLogger = component "Structured Logger" {
-            technology "Serilog"
-            description "Logging estructurado para trazabilidad"
-            tags "Observability" "001 - Fase 1"
+        observability = component "Observability\n(Cross-Cutting)" {
+            technology "NuGet (Serilog, Prometheus, HealthChecks)"
+            description "Provee logging estructurado, métricas y health checks"
+            tags "Observability" "Cross-Cutting"
         }
     }
 
@@ -119,8 +93,26 @@ sitaMessaging = softwareSystem "SITA Messaging" {
 
         sendingWorker = component "Sending Worker" {
             technology "C#, .NET 8, Quartz.NET"
-            description "Orquesta envío programado de archivos SITA a partners externos"
+            description "Monitorea mensajes SITA pendientes y orquesta envíos"
             tags "Worker Service" "Scheduling" "001 - Fase 1"
+        }
+
+        messageDispatchService = component "Message Dispatch Service" {
+            technology "C#, .NET 8"
+            description "Orquesta envío programado de archivos SITA a partners externos."
+            tags "001 - Fase 1"
+        }
+
+        messageRepository = component "Message Repository" {
+            technology "C#, .NET 8, EF Core"
+            description "Consulta mensajes SITA pendientes de envío y actualiza estados"
+            tags "EF Core" "001 - Fase 1"
+        }
+
+        partnerConfigRepository = component "PartnerConfig Repository" {
+            technology "C#, .NET 8, EF Core"
+            description "Gestiona preferencias de envío por partner/tenant (Email o API SITA)"
+            tags "Repository" "PartnerConfigs"
         }
 
         fileFetcher = component "File Fetcher" {
@@ -129,41 +121,30 @@ sitaMessaging = softwareSystem "SITA Messaging" {
             tags "File Retrieval" "001 - Fase 1"
         }
 
-        partnerSender = component "Partner Sender" {
-            technology "C#, .NET 8, SFTP Client"
-            description "Transmite archivos SITA a partners externos vía SFTP/HTTP"
+        // Canales de envío
+        emailSender = component "Email Sender" {
+            technology "C#, .NET 8, Notification System API"
+            description "Envía archivos SITA por email usando el sistema de notificaciones"
+            tags "Email" "001 - Fase 1"
+        }
+
+        // Proveedores específicos
+        sitaProviderSender = component "SITA Provider Sender" {
+            technology "C#, .NET 8, HTTP Client"
+            description "Envía archivos SITA a través del servicio/middleware de mensajería SITA (API)."
             tags "Partner Integration" "001 - Fase 1"
         }
 
-        deliveryTracker = component "Delivery Tracker" {
-            technology "C#, .NET 8"
-            description "Registra confirmaciones de entrega y actualiza estado de mensajes"
-            tags "Delivery Tracking" "001 - Fase 1"
+        secretsAndConfigs = component "SecretsAndConfigs (Cross-Cutting)" {
+            technology "NuGet (AWS Secrets Manager, AppConfig)"
+            description "Provee acceso centralizado a configuraciones y secretos"
+            tags "Configuration" "Cross-Cutting"
         }
 
-        configManager = component "Configuration Manager" {
-            technology "C#, .NET 8, EF Core"
-            description "Gestiona configuraciones del servicio y por tenant"
-            tags "Configuration" "Multi-Tenant" "001 - Fase 1"
-        }
-
-        // Observabilidad esencial
-        healthCheck = component "Health Check" {
-            technology "ASP.NET Core Health Checks"
-            description "Valida salud del Message Sender"
-            tags "Observability" "001 - Fase 1"
-        }
-
-        metricsCollector = component "Metrics Collector" {
-            technology "Prometheus.NET"
-            description "Recolecta métricas de envío"
-            tags "Observability" "001 - Fase 1"
-        }
-
-        structuredLogger = component "Structured Logger" {
-            technology "Serilog"
-            description "Logging estructurado para trazabilidad"
-            tags "Observability" "001 - Fase 1"
+        observability = component "Observability\n(Cross-Cutting)" {
+            technology "NuGet (Serilog, Prometheus, HealthChecks)"
+            description "Provee logging estructurado, métricas y health checks"
+            tags "Observability" "Cross-Cutting"
         }
     }
 
@@ -173,27 +154,35 @@ sitaMessaging = softwareSystem "SITA Messaging" {
 
     // Event Processor - Flujo principal
     eventProcessor.eventConsumer -> sitaQueue "Consume eventos de Track & Trace" "SQS" "001 - Fase 1"
-    eventProcessor.eventConsumer -> eventProcessor.eventOrchestrator "Delega eventos para procesamiento" "In-Memory" "001 - Fase 1"
-    eventProcessor.eventOrchestrator -> eventProcessor.templateEngine "Solicita procesamiento de plantilla" "In-Memory" "001 - Fase 1"
-    eventProcessor.templateEngine -> sitaMessagingDatabase.templates "Lee templates SITA por partner" "PostgreSQL" "001 - Fase 1"
-    eventProcessor.templateEngine -> eventProcessor.sitaFileGenerator "Entrega plantilla procesada" "In-Memory" "001 - Fase 1"
-    eventProcessor.sitaFileGenerator -> fileStorage "Almacena archivos SITA generados" "S3-Compatible API" "001 - Fase 1"
-    eventProcessor.eventOrchestrator -> sitaMessagingDatabase.deliveryLog "Registra mensaje para envío posterior" "PostgreSQL" "001 - Fase 1"
+    eventProcessor.eventConsumer -> eventProcessor.eventOrchestrator "Delega eventos para procesamiento" "" "001 - Fase 1"
+    eventProcessor.eventOrchestrator -> eventProcessor.templateEngine "Solicita procesamiento de plantilla" "" "001 - Fase 1"
+    eventProcessor.templateEngine -> eventProcessor.templateRepository "Solicita plantilla SITA por partner y tipo" "" "001 - Fase 1"
+    eventProcessor.templateRepository -> sitaMessagingDatabase "Lee templates SITA por partner" "EF Core/PostgreSQL" "001 - Fase 1"
+    eventProcessor.eventOrchestrator -> eventProcessor.fileGenerator "Solicita generación de archivo SITA con plantilla procesada" "" "001 - Fase 1"
+    eventProcessor.fileGenerator -> fileStorage "Almacena archivos SITA generados" "S3-Compatible API" "001 - Fase 1"
+    eventProcessor.eventOrchestrator -> eventProcessor.messageRepository "Registra mensaje SITA" "" "001 - Fase 1"
+    eventProcessor.messageRepository -> sitaMessagingDatabase "Registra mensajes SITA" "EF Core/PostgreSQL" "001 - Fase 1"
 
     // Event Processor - Uso de configuración (vía DI, no acceso directo)
     // Nota: Componentes reciben IConfigurationService por constructor
-    # eventProcessor.sitaFileGenerator -> sitaMessagingDatabase.configuration "Lee configuración de templates por tenant" "PostgreSQL" "001 - Fase 1"
-    eventProcessor.eventOrchestrator -> sitaMessagingDatabase.configuration "Lee reglas de procesamiento por tenant" "PostgreSQL" "001 - Fase 1"
+    eventProcessor.eventOrchestrator -> eventProcessor.tenantSettingsRepository "Usa" "" "001 - Fase 1"
+    eventProcessor.tenantSettingsRepository -> sitaMessagingDatabase "Lee desde y escribe a" "EF Core/PostgreSQL" "001 - Fase 1"
+
 
     // Sender - Flujo principal orquestado por sendingWorker
-    sender.sendingWorker -> sitaMessagingDatabase.deliveryLog "Consulta archivos pendientes de envío" "PostgreSQL" "001 - Fase 1"
-    sender.sendingWorker -> sender.fileFetcher "Solicita descarga de archivos específicos" "In-Memory" "001 - Fase 1"
-    sender.fileFetcher -> fileStorage "Recupera archivos SITA desde storage" "S3-Compatible API" "001 - Fase 1"
-    sender.sendingWorker -> sender.partnerSender "Coordina envío de archivos" "In-Memory" "001 - Fase 1"
-    sender.partnerSender -> airlines "Envía archivos a aerolíneas" "HTTPS/Email" "001 - Fase 1"
-    sender.partnerSender -> descartes "Envía archivos a Descartes" "HTTPS/FTP" "001 - Fase 1"
-    sender.sendingWorker -> sender.deliveryTracker "Coordina actualización de estado" "In-Memory" "001 - Fase 1"
-    sender.deliveryTracker -> sitaMessagingDatabase.deliveryLog "Actualiza estado de entregas" "PostgreSQL" "001 - Fase 1"
+    sender.fileFetcher -> fileStorage "Obtiene archivos SITA" "S3-Compatible API" "001 - Fase 1"
+    sender.sendingWorker -> sender.messageDispatchService "Consulta mensajes SITA pendientes y delega envío" "" "001 - Fase 1"
+    sender.messageDispatchService -> sender.partnerConfigRepository "Consulta configuración de partner/tenant" "" "001 - Fase 1"
+    sender.partnerConfigRepository -> sitaMessagingDatabase "Lee configuraciones de envío por partner/tenant" "EF Core/PostgreSQL" "001 - Fase 1"
+    sender.messageRepository -> sitaMessagingDatabase "Consulta y actualiza mensajes SITA" "EF Core/PostgreSQL" "001 - Fase 1"
+    sender.messageDispatchService -> sender.messageRepository "Consulta y actualiza mensajes SITA" "" "001 - Fase 1"
+    sender.messageDispatchService -> sender.fileFetcher "Solicita descarga de archivos específicos" "" "001 - Fase 1"
+    // sender.messageDispatchService -> sender.partnerSender "Envía mensaje SITA" "C#" "001 - Fase 1"
+
+    // sender.partnerSender -> airlines "Envía archivos a aerolíneas" "HTTPS/Email via Notification System" "001 - Fase 1"
+    // sender.partnerSender -> descartes "Envía archivos a Descartes" "HTTPS/FTP" "001 - Fase 1"
+    // sender.sendingWorker -> sender.deliveryTracker "Coordina actualización de estado" "In-Memory" "001 - Fase 1"
+    // sender.deliveryTracker -> sitaMessagingDatabase.deliveryLog "Actualiza estado de entregas" "PostgreSQL" "001 - Fase 1"
 
     // Sender - Uso de configuración (vía DI, no acceso directo)
     // Nota: Componentes reciben IConfigurationService por constructor
@@ -205,72 +194,16 @@ sitaMessaging = softwareSystem "SITA Messaging" {
     // ========================================
 
     // Configuración externa - Solo config managers acceden directamente
-    eventProcessor.configManager -> configPlatform.configService "Obtiene configuración por tenant" "HTTPS/REST" "001 - Fase 1"
-    eventProcessor.configManager -> sitaMessagingDatabase.configuration "Lee metadatos estáticos tenant" "PostgreSQL" "001 - Fase 1"
-    sender.configManager -> configPlatform.configService "Obtiene credenciales partners" "HTTPS/REST" "001 - Fase 1"
-    sender.configManager -> sitaMessagingDatabase.configuration "Lee metadatos estáticos tenant" "PostgreSQL" "001 - Fase 1"
+    eventProcessor.secretsAndConfigs  -> configPlatform.configService "Lee secretos y configuraciones" "HTTPS/REST" "001 - Fase 1"
+    sender.secretsAndConfigs  -> configPlatform.configService "Lee secretos y configuraciones" "HTTPS/REST" "001 - Fase 1"
 
-    // ========================================
-    // OBSERVABILIDAD - EVENT PROCESSOR
-    // ========================================
+    eventProcessor.observability  -> observabilitySystem "Envía logs, métricas y health checks" "HTTPS/REST" "001 - Fase 1"
+    sender.observability  -> observabilitySystem "Envía logs, métricas y health checks" "HTTPS/REST" "001 - Fase 1"
 
-    // Health Checks
-    eventProcessor.healthCheck -> sitaMessagingDatabase "Ejecuta health check" "PostgreSQL" "001 - Fase 1"
-    eventProcessor.healthCheck -> fileStorage "Verifica conectividad storage" "S3-Compatible API" "001 - Fase 1"
+    sender.messageDispatchService -> sender.emailSender "Envía vía Email" "" "001 - Fase 1"
+    sender.messageDispatchService -> sender.sitaProviderSender "Envía vía API SITA" "" "001 - Fase 1"
 
-    // Logging estructurado
-    eventProcessor.eventConsumer -> eventProcessor.structuredLogger "Registra procesamiento de eventos" "Serilog" "001 - Fase 1"
-    eventProcessor.eventOrchestrator -> eventProcessor.structuredLogger "Registra orquestación y transacciones" "Serilog" "001 - Fase 1"
-    eventProcessor.templateEngine -> eventProcessor.structuredLogger "Registra procesamiento de plantillas" "Serilog" "001 - Fase 1"
-    eventProcessor.sitaFileGenerator -> eventProcessor.structuredLogger "Registra generación de archivos" "Serilog" "001 - Fase 1"
-    eventProcessor.healthCheck -> eventProcessor.structuredLogger "Registra health checks" "Serilog" "001 - Fase 1"
+    sender.emailSender -> airlines "Envía archivos a aerolíneas (Email)" "Notification System API" "001 - Fase 1"
+    sender.sitaProviderSender -> descartes "Envía archivos al servicio SITA" "HTTPS/API" "001 - Fase 1"
 
-    // Métricas
-    eventProcessor.eventConsumer -> eventProcessor.metricsCollector "Publica métricas de eventos" "Prometheus" "001 - Fase 1"
-    eventProcessor.eventOrchestrator -> eventProcessor.metricsCollector "Publica métricas de orquestación" "Prometheus" "001 - Fase 1"
-    eventProcessor.templateEngine -> eventProcessor.metricsCollector "Publica métricas de templates" "Prometheus" "001 - Fase 1"
-    eventProcessor.sitaFileGenerator -> eventProcessor.metricsCollector "Publica métricas de generación" "Prometheus" "001 - Fase 1"
-    eventProcessor.healthCheck -> eventProcessor.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
-
-    // ========================================
-    // OBSERVABILIDAD - SENDER
-    // ========================================
-
-    // Health Checks
-    sender.healthCheck -> sitaMessagingDatabase "Ejecuta health check" "PostgreSQL" "001 - Fase 1"
-    sender.healthCheck -> fileStorage "Verifica conectividad storage" "S3-Compatible API" "001 - Fase 1"
-
-    // Logging estructurado
-    sender.sendingWorker -> sender.structuredLogger "Registra orquestación de envíos" "Serilog" "001 - Fase 1"
-    sender.fileFetcher -> sender.structuredLogger "Registra descarga de archivos" "Serilog" "001 - Fase 1"
-    sender.partnerSender -> sender.structuredLogger "Registra envíos a partners" "Serilog" "001 - Fase 1"
-    sender.deliveryTracker -> sender.structuredLogger "Registra confirmaciones de entrega" "Serilog" "001 - Fase 1"
-    sender.healthCheck -> sender.structuredLogger "Registra health checks" "Serilog" "001 - Fase 1"
-
-    // Métricas
-    sender.sendingWorker -> sender.metricsCollector "Publica métricas de scheduling" "Prometheus" "001 - Fase 1"
-    sender.fileFetcher -> sender.metricsCollector "Publica métricas de descarga" "Prometheus" "001 - Fase 1"
-    sender.partnerSender -> sender.metricsCollector "Publica métricas de envío" "Prometheus" "001 - Fase 1"
-    sender.deliveryTracker -> sender.metricsCollector "Publica métricas de tracking" "Prometheus" "001 - Fase 1"
-    sender.healthCheck -> sender.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
-
-    // ========================================
-    // RELACIONES EXTERNAS - OBSERVABILIDAD
-    // ========================================
-
-    // Métricas
-    sitaMessaging.eventProcessor.metricsCollector -> observabilitySystem.metricsCollector "Expone métricas de procesamiento" "HTTP" "001 - Fase 1"
-    sitaMessaging.sender.metricsCollector -> observabilitySystem.metricsCollector "Expone métricas de envío" "HTTP" "001 - Fase 1"
-
-    // Health Checks
-    sitaMessaging.eventProcessor.healthCheck -> observabilitySystem.metricsCollector "Expone health checks Processor" "HTTP" "001 - Fase 1"
-    sitaMessaging.sender.healthCheck -> observabilitySystem.metricsCollector "Expone health checks Sender" "HTTP" "001 - Fase 1"
-
-    // Logs estructurados
-    sitaMessaging.eventProcessor.structuredLogger -> observabilitySystem.logAggregator "Envía logs estructurados Processor" "HTTP" "001 - Fase 1"
-    sitaMessaging.sender.structuredLogger -> observabilitySystem.logAggregator "Envía logs estructurados Sender" "HTTP" "001 - Fase 1"
-
-    // Tracing distribuido (Fase 2)
-    sitaMessaging.eventProcessor.structuredLogger -> observabilitySystem.tracingPlatform "Envía trazas distribuidas Processor" "OpenTelemetry" "002 - Fase 2"
-    sitaMessaging.sender.structuredLogger -> observabilitySystem.tracingPlatform "Envía trazas distribuidas Sender" "OpenTelemetry" "002 - Fase 2"
 }

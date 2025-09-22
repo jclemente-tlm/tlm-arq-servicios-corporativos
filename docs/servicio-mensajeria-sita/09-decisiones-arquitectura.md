@@ -31,13 +31,13 @@ Necesidad de comunicación directa con la red global SITA para intercambio de me
 ### Alternativas consideradas
 
 1. **SITA Type B Directo**: Implementación directa del protocolo SITA
-2. **Gateway SITATEX**: Uso de gateway comercial SITATEX
+2. **Gateway SITA**: Uso de gateway comercial SITA
 3. **Adaptador SITA de Terceros**: Adaptador de terceros
 4. **Bridge de Protocolo Personalizado**: Desarrollo de bridge propietario
 
 ### Decisión
 
-Adoptamos **Implementación Directa SITA Type B** con fallback a SITATEX para casos específicos.
+Adoptamos **Implementación Directa SITA Type B** con fallback a SITA para casos específicos.
 
 ### Justificación
 

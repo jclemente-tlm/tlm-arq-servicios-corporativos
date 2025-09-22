@@ -3,13 +3,13 @@ trackAndTrace = softwareSystem "Track & Trace System" {
     tags "Track & Trace" "001 - Fase 1"
 
     trackingEventQueue = store "Tracking Event Queue" {
-        description "Cola de alta disponibilidad que desacopla la recepción de eventos de tracking del procesamiento asíncrono."
+        description "Cola que desacopla la recepción de eventos de tracking del procesamiento asíncrono."
         technology "AWS SQS"
         tags "Message Bus" "SQS" "001 - Fase 1"
     }
 
     trackingIngestAPI = container "Tracking Ingest API" {
-        description "API REST de alta concurrencia para recepción de eventos de tracking desde sistemas externos y publicación en cola de procesamiento."
+        description "API REST para recepción de eventos de tracking desde sistemas externos y publicación en cola de procesamiento."
         technology "C#, ASP.NET Core, REST API"
         tags "CSharp" "001 - Fase 1"
 
@@ -31,46 +31,27 @@ trackAndTrace = softwareSystem "Track & Trace System" {
             tags "001 - Fase 1"
         }
 
-        // ingestConfigurationManager = component "Ingest Configuration Manager" {
-        //     technology "C#, AWS SDK"
-        //     description "Gestiona configuraciones dinámicas de ingesta y recupera secretos desde sistemas de configuración externos."
-        //     tags "001 - Fase 1"
-        // }
-
-        // ingestTenantConfigRepository = component "Ingest Tenant Config Repository" {
-        //     technology "C#, EF Core"
-        //     description "Gestiona configuraciones específicas por tenant para validación y enriquecimiento de eventos."
-        //     tags "EF Core" "001 - Fase 1"
-        // }
-
-        configManager = component "Configuration Manager" {
+        tenantSettingsRepository = component "TenantSettings Repository" {
             technology "C#, .NET 8, EF Core"
-            description "Gestiona configuraciones del servicio y por tenant"
-            tags "Configuration" "Multi-Tenant" "001 - Fase 1"
+            description "Gestiona configuraciones por tenant del sistema"
+            tags "Repository" "TenantSettings"
         }
 
-        // Observabilidad esencial
-        healthCheck = component "Health Check" {
-            technology "ASP.NET Core Health Checks"
-            description "Monitoreo de salud del API"
-            tags "Observability" "001 - Fase 1"
+        secretsAndConfigs = component "SecretsAndConfigs (Cross-Cutting)" {
+            technology "NuGet (AWS Secrets Manager, AppConfig)"
+            description "Provee acceso centralizado a configuraciones y secretos"
+            tags "Configuration" "Cross-Cutting"
         }
 
-        metricsCollector = component "Metrics Collector" {
-            technology "Prometheus.NET"
-            description "Recolecta métricas unificadas"
-            tags "Observability" "001 - Fase 1"
-        }
-
-        structuredLogger = component "Structured Logger" {
-            technology "Serilog"
-            description "Logging estructurado unificado"
-            tags "Observability" "001 - Fase 1"
+        observability = component "Observability\n(Cross-Cutting)" {
+            technology "NuGet (Serilog, Prometheus, HealthChecks)"
+            description "Provee logging estructurado, métricas y health checks"
+            tags "Observability" "Cross-Cutting"
         }
     }
 
     trackingQueryAPI = container "Tracking Query API" {
-        description "API REST de consulta con alta performance para búsqueda de estado actual e historial de eventos de tracking."
+        description "API REST de consulta de estado actual e historial de eventos de tracking."
         technology "C#, ASP.NET Core, REST API"
         tags "CSharp" "001 - Fase 1"
 
@@ -92,41 +73,22 @@ trackAndTrace = softwareSystem "Track & Trace System" {
             tags "EF Core" "001 - Fase 1"
         }
 
-        // queryConfigurationManager = component "Query Configuration Manager" {
-        //     technology "C#, AWS SDK"
-        //     description "Gestiona configuraciones dinámicas de consulta y parámetros de rendimiento específicos por tenant."
-        //     tags "001 - Fase 1"
-        // }
-
-        // queryTenantConfigRepository = component "Query Tenant Config Repository" {
-        //     technology "C#, EF Core"
-        //     description "Gestiona configuraciones específicas por tenant para autorización y límites de consulta."
-        //     tags "EF Core" "001 - Fase 1"
-        // }
-
-        configManager = component "Configuration Manager" {
+        tenantSettingsRepository = component "TenantSettings Repository" {
             technology "C#, .NET 8, EF Core"
-            description "Gestiona configuraciones del servicio y por tenant"
-            tags "Configuration" "Multi-Tenant" "001 - Fase 1"
+            description "Gestiona configuraciones por tenant del sistema"
+            tags "Repository" "TenantSettings"
         }
 
-        // Observabilidad esencial
-        healthCheck = component "Health Check" {
-            technology "ASP.NET Core Health Checks"
-            description "Monitoreo de salud del API"
-            tags "Observability" "001 - Fase 1"
+        secretsAndConfigs = component "SecretsAndConfigs (Cross-Cutting)" {
+            technology "NuGet (AWS Secrets Manager, AppConfig)"
+            description "Provee acceso centralizado a configuraciones y secretos"
+            tags "Configuration" "Cross-Cutting"
         }
 
-        metricsCollector = component "Metrics Collector" {
-            technology "Prometheus.NET"
-            description "Recolecta métricas unificadas"
-            tags "Observability" "001 - Fase 1"
-        }
-
-        structuredLogger = component "Structured Logger" {
-            technology "Serilog"
-            description "Logging estructurado unificado"
-            tags "Observability" "001 - Fase 1"
+        observability = component "Observability\n(Cross-Cutting)" {
+            technology "NuGet (Serilog, Prometheus, HealthChecks)"
+            description "Provee logging estructurado, métricas y health checks"
+            tags "Observability" "Cross-Cutting"
         }
     }
 
@@ -165,52 +127,33 @@ trackAndTrace = softwareSystem "Track & Trace System" {
             tags "001 - Fase 1"
         }
 
-        // processorConfigurationManager = component "Processor Configuration Manager" {
-        //     technology "C#, AWS SDK"
-        //     description "Gestiona configuraciones dinámicas de procesamiento y parámetros de enriquecimiento por tenant."
-        //     tags "001 - Fase 1"
-        // }
-
-        // processorTenantConfigRepository = component "Processor Tenant Config Repository" {
-        //     technology "C#, EF Core"
-        //     description "Gestiona configuraciones específicas por tenant para reglas de procesamiento y enriquecimiento."
-        //     tags "EF Core" "001 - Fase 1"
-        // }
-
-        configManager = component "Configuration Manager" {
+        tenantSettingsRepository = component "TenantSettings Repository" {
             technology "C#, .NET 8, EF Core"
-            description "Gestiona configuraciones del servicio y por tenant"
-            tags "Configuration" "Multi-Tenant" "001 - Fase 1"
+            description "Gestiona configuraciones por tenant del sistema"
+            tags "Repository" "TenantSettings"
         }
 
-        // Observabilidad esencial
-        healthCheck = component "Health Check" {
-            technology "ASP.NET Core Health Checks"
-            description "Monitoreo de salud del API"
-            tags "Observability" "001 - Fase 1"
+        secretsAndConfigs = component "SecretsAndConfigs (Cross-Cutting)" {
+            technology "NuGet (AWS Secrets Manager, AppConfig)"
+            description "Provee acceso centralizado a configuraciones y secretos"
+            tags "Configuration" "Cross-Cutting"
         }
 
-        metricsCollector = component "Metrics Collector" {
-            technology "Prometheus.NET"
-            description "Recolecta métricas unificadas"
-            tags "Observability" "001 - Fase 1"
-        }
-
-        structuredLogger = component "Structured Logger" {
-            technology "Serilog"
-            description "Logging estructurado unificado"
-            tags "Observability" "001 - Fase 1"
+        observability = component "Observability\n(Cross-Cutting)" {
+            technology "NuGet (Serilog, Prometheus, HealthChecks)"
+            description "Provee logging estructurado, métricas y health checks"
+            tags "Observability" "Cross-Cutting"
         }
     }
 
-    trackingDashboard = container "Tracking Dashboard" {
+    trackingDashboard = container "Tracking Web" {
         description "Interfaz web reactiva para visualización en tiempo real del estado de tracking y análisis de eventos."
         technology "React, TypeScript"
         tags "Web App" "001 - Fase 1"
     }
 
     trackingDatabase = store "Tracking Database" {
-        description "Base de datos transaccional optimizada para almacenamiento de eventos, estados de tracking y configuraciones por tenant."
+        description "Almacena eventos, estados de tracking y configuraciones por tenant."
         technology "PostgreSQL"
         tags "Database" "PostgreSQL" "001 - Fase 1"
     }
@@ -226,7 +169,7 @@ trackAndTrace = softwareSystem "Track & Trace System" {
     // trackingIngestAPI.ingestTenantConfigRepository -> trackingDatabase "Lee configuración por tenant" "" "001 - Fase 1"
 
     // Query API - Flujo principal
-    trackingQueryAPI.trackingDataRepository -> trackingDatabase "Lee datos de trazabilidad" "EF Core" "001 - Fase 1"
+    trackingQueryAPI.trackingDataRepository -> trackingDatabase "Lee datos de trazabilidad" "EF Core/PostgreSQL" "001 - Fase 1"
 
     // // Query API - Configuración
     // trackingQueryAPI.queryTenantConfigRepository -> trackingDatabase "Lee configuración por tenant" "EF Core" "001 - Fase 1"
@@ -236,7 +179,7 @@ trackAndTrace = softwareSystem "Track & Trace System" {
     trackingEventProcessor.downstreamEventPublisher -> sitaMessaging.sitaQueue "Publica eventos" "fan-out vía SNS" "001 - Fase 1"
 
     // Event Processor - Configuración y datos
-    trackingEventProcessor.trackingEventRepository -> trackingDatabase "Lee y escribe datos" "EF Core" "001 - Fase 1"
+    trackingEventProcessor.trackingEventRepository -> trackingDatabase "Lee y escribe datos" "EF Core/PostgreSQL" "001 - Fase 1"
     // trackingEventProcessor.processorTenantConfigRepository -> trackingDatabase "Lee configuración por tenant" "EF Core" "001 - Fase 1"
 
     // ========================================
@@ -249,63 +192,62 @@ trackAndTrace = softwareSystem "Track & Trace System" {
     appColombia -> trackingIngestAPI.trackingEventController "Registra eventos" "HTTPS via API Gateway" "001 - Fase 1"
     appMexico -> trackingIngestAPI.trackingEventController "Registra eventos" "HTTPS via API Gateway" "001 - Fase 1"
 
-    // Aplicaciones por país - Consulta de estado
-    appPeru -> trackingQueryAPI.trackingQueryController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
-    appEcuador -> trackingQueryAPI.trackingQueryController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
-    appColombia -> trackingQueryAPI.trackingQueryController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
-    appMexico -> trackingQueryAPI.trackingQueryController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
+    // // Aplicaciones por país - Consulta de estado
+    // appPeru -> trackingQueryAPI.trackingQueryController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
+    // appEcuador -> trackingQueryAPI.trackingQueryController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
+    // appColombia -> trackingQueryAPI.trackingQueryController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
+    // appMexico -> trackingQueryAPI.trackingQueryController "Consulta estado e historial" "HTTPS via API Gateway" "001 - Fase 1"
 
     // Usuario operacional
     operationalUser -> trackingDashboard "Consulta trazabilidad" "" "001 - Fase 1"
-    trackingDashboard -> trackingQueryAPI "Consulta datos de trazabilidad" "HTTPS" "001 - Fase 1"
+    trackingDashboard -> trackingQueryAPI.trackingQueryController "Consulta datos de trazabilidad" "HTTPS" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - SISTEMAS
     // ========================================
 
     // Integración con plataforma de configuración
-    trackingIngestAPI.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
-    trackingIngestAPI.configManager -> trackingDatabase "Lee configuración por tenant" "EF Core" "001 - Fase 1"
-    trackingQueryAPI.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
-    trackingQueryAPI.configManager -> trackingDatabase "Lee configuración por tenant" "EF Core" "001 - Fase 1"
-    trackingEventProcessor.configManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
-    trackingEventProcessor.configManager -> trackingDatabase "Lee configuración por tenant" "EF Core" "001 - Fase 1"
-    // trackingEventProcessor.processorConfigurationManager -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+    trackingIngestAPI.secretsAndConfigs -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+    trackingQueryAPI.secretsAndConfigs -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
+    trackingEventProcessor.secretsAndConfigs -> configPlatform.configService "Lee configuraciones y secretos" "" "001 - Fase 1"
 
     // Integración con API Gateway
-    apiGateway.reverseProxyGateway.resilienceHandler -> trackingIngestAPI.trackingEventController "Redirige solicitudes a" "HTTPS" "001 - Fase 1"
-    apiGateway.reverseProxyGateway.resilienceHandler -> trackingQueryAPI.trackingQueryController "Redirige solicitudes a" "HTTPS" "001 - Fase 1"
+    apiGateway.reverseProxyGateway.resilienceMiddleware -> trackingIngestAPI.trackingEventController "Redirige solicitudes a" "HTTPS" "001 - Fase 1"
+    apiGateway.reverseProxyGateway.resilienceMiddleware -> trackingQueryAPI.trackingQueryController "Redirige solicitudes a" "HTTPS" "001 - Fase 1"
 
     // ========================================
     // RELACIONES ENTRE COMPONENTES INTERNOS
     // ========================================
 
     // Ingest API - Flujo principal
-    trackingIngestAPI.trackingEventController -> trackingIngestAPI.trackingEventService "Valida y procesa evento recibido" "C#" "001 - Fase 1"
-    trackingIngestAPI.trackingEventService -> trackingIngestAPI.trackingEventPublisher "Publica evento en cola" "AWS SQS" "001 - Fase 1"
+    trackingIngestAPI.trackingEventController -> trackingIngestAPI.trackingEventService "Valida y procesa evento recibido" "" "001 - Fase 1"
+    trackingIngestAPI.trackingEventService -> trackingIngestAPI.trackingEventPublisher "Publica evento en cola" "SQS" "001 - Fase 1"
+    trackingIngestAPI.trackingEventService -> trackingIngestAPI.tenantSettingsRepository "Consulta configuración por tenant" "" "001 - Fase 1"
+    trackingIngestAPI.tenantSettingsRepository -> trackingDatabase "Lee configuraciones de tenant" "EF Core/PostgreSQL" "001 - Fase 1"
 
     // // Ingest API - Configuración
     // trackingIngestAPI.ingestConfigurationManager -> trackingIngestAPI.ingestTenantConfigRepository "Lee configuración por tenant" "EF Core" "001 - Fase 1"
 
     // Query API - Flujo principal
-    trackingQueryAPI.trackingQueryController -> trackingQueryAPI.trackingQueryService "Orquesta consulta de tracking" "C#" "001 - Fase 1"
-    trackingQueryAPI.trackingQueryService -> trackingQueryAPI.trackingDataRepository "Accede a datos de tracking" "EF Core" "001 - Fase 1"
+    trackingQueryAPI.trackingQueryController -> trackingQueryAPI.trackingQueryService "Orquesta consulta de tracking" "" "001 - Fase 1"
+    trackingQueryAPI.trackingQueryService -> trackingQueryAPI.trackingDataRepository "Accede a datos de tracking" "" "001 - Fase 1"
+    trackingQueryAPI.trackingQueryService -> trackingQueryAPI.tenantSettingsRepository "Consulta configuración por tenant" "" "001 - Fase 1"
+    trackingQueryAPI.tenantSettingsRepository -> trackingDatabase "Lee configuraciones de tenant" "EF Core/PostgreSQL" "001 - Fase 1"
 
     // // Query API - Relaciones internas
     // trackingQueryAPI.queryConfigurationManager -> trackingQueryAPI.queryTenantConfigRepository "Lee configuración por tenant" "EF Core" "001 - Fase 1"
 
     // Event Processor - Flujo principal
-    trackingEventProcessor.trackingEventConsumer -> trackingEventProcessor.trackingEventHandler "Entrega evento para validación" "C#" "001 - Fase 1"
-    trackingEventProcessor.trackingEventHandler -> trackingEventProcessor.trackingProcessingService "Aplica reglas de negocio" "C#" "001 - Fase 1"
-    trackingEventProcessor.trackingProcessingService -> trackingEventProcessor.trackingEventRepository "Persiste evento procesado" "EF Core" "001 - Fase 1"
-    trackingEventProcessor.trackingProcessingService -> trackingEventProcessor.downstreamEventPublisher "Publica evento downstream" "AWS SNS" "001 - Fase 1"
+    trackingEventProcessor.trackingEventConsumer -> trackingEventProcessor.trackingEventHandler "Entrega evento para validación" "" "001 - Fase 1"
+    trackingEventProcessor.trackingEventHandler -> trackingEventProcessor.trackingProcessingService "Aplica reglas de negocio" "" "001 - Fase 1"
+    trackingEventProcessor.trackingProcessingService -> trackingEventProcessor.trackingEventRepository "Persiste evento procesado" "" "001 - Fase 1"
+    trackingEventProcessor.trackingProcessingService -> trackingEventProcessor.downstreamEventPublisher "Publica evento downstream" "SNS" "001 - Fase 1"
+    trackingEventProcessor.trackingProcessingService -> trackingEventProcessor.tenantSettingsRepository "Consulta configuración por tenant" "" "001 - Fase 1"
+    trackingEventProcessor.tenantSettingsRepository -> trackingDatabase "Lee configuraciones de tenant" "EF Core/PostgreSQL" "001 - Fase 1"
 
     // // Event Processor - Configuración
     // trackingEventProcessor.processorConfigurationManager -> trackingEventProcessor.processorTenantConfigRepository "Lee configuración por tenant" "EF Core" "001 - Fase 1"
-
-    // Enrutamiento a servicios corporativos
-    apiGateway.reverseProxyGateway.resilienceHandler -> trackAndTrace.trackingIngestAPI "Enruta a tracking" "HTTPS" "001 - Fase 1"
-
-    // Health checks de servicios downstream
-    apiGateway.reverseProxyGateway.healthCheck -> trackAndTrace.trackingIngestAPI "Verifica disponibilidad" "HTTPS" "001 - Fase 1"
+    trackingIngestAPI.observability  -> observabilitySystem "Envía logs, métricas y health checks" "HTTPS/REST" "001 - Fase 1"
+    trackingQueryAPI.observability  -> observabilitySystem "Envía logs, métricas y health checks" "HTTPS/REST" "001 - Fase 1"
+    trackingEventProcessor.observability  -> observabilitySystem "Envía logs, métricas y health checks" "HTTPS/REST" "001 - Fase 1"
 }

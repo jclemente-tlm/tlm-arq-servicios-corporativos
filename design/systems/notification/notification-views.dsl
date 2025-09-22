@@ -17,13 +17,13 @@ container notification "notification_system" {
 component notification.api "notification_system_api" {
     include *
 
-    // Excluir solo componentes de observabilidad para limpiar telaraña
-    exclude notification.api.healthCheck
-    exclude notification.api.metricsCollector
-    exclude notification.api.structuredLogger
+    // // Excluir solo componentes de observabilidad para limpiar telaraña
+    // exclude notification.api.healthCheck
+    // exclude notification.api.metricsCollector
+    // exclude notification.api.structuredLogger
 
-    // Excluir sistemas externos
-    exclude observabilitySystem
+    // // Excluir sistemas externos
+    // exclude observabilitySystem
     exclude "notification.scheduler -> *"
 
     title "[Diagrama de Componentes] Notification System - Notification API"
@@ -50,12 +50,12 @@ component notification.scheduler "notification_system_scheduler" {
     include *
 
     // Excluir solo componentes de observabilidad para limpiar telaraña
-    exclude notification.scheduler.healthCheck
-    exclude notification.scheduler.metricsCollector
-    exclude notification.scheduler.structuredLogger
+    // exclude notification.scheduler.healthCheck
+    // exclude notification.scheduler.metricsCollector
+    // exclude notification.scheduler.structuredLogger
 
     // Excluir sistemas externos
-    exclude observabilitySystem
+    // exclude observabilitySystem
     exclude "notification.api -> notification.emailQueue"
     exclude "notification.api -> notification.smsQueue"
     exclude "notification.api -> notification.whatsappQueue"
@@ -70,13 +70,13 @@ component notification.scheduler "notification_system_scheduler" {
 component notification.emailProcessor "notification_system_email_processor" {
     include *
 
-    // Excluir solo componentes de observabilidad para limpiar telaraña
-    exclude notification.emailProcessor.healthCheck
-    exclude notification.emailProcessor.metricsCollector
-    exclude notification.emailProcessor.structuredLogger
+    // // Excluir solo componentes de observabilidad para limpiar telaraña
+    // exclude notification.emailProcessor.healthCheck
+    // exclude notification.emailProcessor.metricsCollector
+    // exclude notification.emailProcessor.structuredLogger
 
-    // Excluir sistemas externos
-    exclude observabilitySystem
+    // // Excluir sistemas externos
+    // exclude observabilitySystem
 
     exclude apiGateway
     title "[Diagrama de Componentes] Notification System - Email Processor"
@@ -85,13 +85,13 @@ component notification.emailProcessor "notification_system_email_processor" {
 component notification.smsProcessor "notification_system_sms_processor" {
     include *
 
-    // Excluir solo componentes de observabilidad para limpiar telaraña
-    exclude notification.smsProcessor.healthCheck
-    exclude notification.smsProcessor.metricsCollector
-    exclude notification.smsProcessor.structuredLogger
+    // // Excluir solo componentes de observabilidad para limpiar telaraña
+    // exclude notification.smsProcessor.healthCheck
+    // exclude notification.smsProcessor.metricsCollector
+    // exclude notification.smsProcessor.structuredLogger
 
-    // Excluir sistemas externos
-    exclude observabilitySystem
+    // // Excluir sistemas externos
+    // exclude observabilitySystem
 
     exclude apiGateway
     title "[Diagrama de Componentes] Notification System - SMS Processor"
@@ -100,13 +100,13 @@ component notification.smsProcessor "notification_system_sms_processor" {
 component notification.whatsappProcessor "notification_system_whatsapp_processor" {
     include *
 
-    // Excluir solo componentes de observabilidad para limpiar telaraña
-    exclude notification.whatsappProcessor.healthCheck
-    exclude notification.whatsappProcessor.metricsCollector
-    exclude notification.whatsappProcessor.structuredLogger
+    // // Excluir solo componentes de observabilidad para limpiar telaraña
+    // exclude notification.whatsappProcessor.healthCheck
+    // exclude notification.whatsappProcessor.metricsCollector
+    // exclude notification.whatsappProcessor.structuredLogger
 
-    // Excluir sistemas externos
-    exclude observabilitySystem
+    // // Excluir sistemas externos
+    // exclude observabilitySystem
 
     exclude apiGateway
     title "[Diagrama de Componentes] Notification System - WhatsApp Processor"
@@ -115,13 +115,13 @@ component notification.whatsappProcessor "notification_system_whatsapp_processor
 component notification.pushProcessor "notification_system_push_processor" {
     include *
 
-    // Excluir solo componentes de observabilidad para limpiar telaraña
-    exclude notification.pushProcessor.healthCheck
-    exclude notification.pushProcessor.metricsCollector
-    exclude notification.pushProcessor.structuredLogger
+    // // Excluir solo componentes de observabilidad para limpiar telaraña
+    // exclude notification.pushProcessor.healthCheck
+    // exclude notification.pushProcessor.metricsCollector
+    // exclude notification.pushProcessor.structuredLogger
 
-    // Excluir sistemas externos
-    exclude observabilitySystem
+    // // Excluir sistemas externos
+    // exclude observabilitySystem
 
     exclude apiGateway
     title "[Diagrama de Componentes] Notification System - Push Processor"

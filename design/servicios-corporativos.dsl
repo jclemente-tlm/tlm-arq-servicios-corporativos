@@ -97,17 +97,17 @@ workspace {
 
             smsProvider = softwareSystem "SMS Notification Provider" {
                 description "Proveedor de notificaciones SMS"
-                tags "External" "SMS" "AWS SNS" "001 - Fase 1"
+                tags "External, SMS, AWS SNS, 001 - Fase 1"
             }
 
             whatsappProvider = softwareSystem "WhatsApp Notification Provider" {
                 description "Proveedor de notificaciones WhatsApp"
-                tags "External" "WhatsApp" "Twilio" "001 - Fase 1"
+                tags "External, WhatsApp, Twilio, 001 - Fase 1"
             }
 
             pushProvider = softwareSystem "Push Notification Provider" {
                 description "Proveedor de notificaciones push"
-                tags "External" "Push" "Firebase" "001 - Fase 1"
+                tags "External, Push, Firebase, 001 - Fase 1"
             }
         }
 
@@ -142,7 +142,7 @@ workspace {
                 tags "External, Airlines, 001 - Fase 1"
             }
 
-            descartes = softwareSystem "Descartes / SITATEX" {
+            descartes = softwareSystem "Descartes" {
                 description "Proveedor de servicios de mensajería SITA"
                 tags "External, Descartes, 001 - Fase 1"
             }

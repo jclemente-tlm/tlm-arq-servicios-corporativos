@@ -26,8 +26,8 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
             tags "Middleware" "001 - Fase 1"
         }
 
-        // Componente de resiliencia unificado
-        resilienceHandler = component "Resilience Handler" {
+        // Resiliencia y tolerancia a fallos
+        resilienceMiddleware = component "Resilience Middleware" {
             technology "Polly"
             description "Implementa circuit breakers y reintentos para llamadas downstream"
             tags "Middleware" "Resilience" "001 - Fase 1"
@@ -47,35 +47,25 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
             tags "Performance" "002 - Fase 2"
         }
 
-        configManager = component "Configuration Manager" {
-            technology "C#, .NET 8, EF Core"
-            description "Gestiona configuraciones del servicio y por tenant"
-            tags "Configuration" "Multi-Tenant" "001 - Fase 1"
+        secretsAndConfigs = component "SecretsAndConfigs (Cross-Cutting)" {
+            technology "NuGet (AWS Secrets Manager, AppConfig)"
+            description "Provee acceso centralizado a configuraciones y secretos"
+            tags "Configuration" "Cross-Cutting"
         }
 
-        // Componentes de observabilidad
-        healthCheck = component "Health Check" {
-            technology "ASP.NET Core Health Checks"
-            description "Monitorea salud del gateway y servicios downstream corporativos"
-            tags "Observability" "001 - Fase 1"
+        observability = component "Observability\n(Cross-Cutting)" {
+            technology "NuGet (Serilog, Prometheus, HealthChecks)"
+            description "Provee logging estructurado, métricas y health checks"
+            tags "Observability" "Cross-Cutting"
         }
 
-        metricsCollector = component "Metrics Collector" {
-            technology "Prometheus.NET"
-            description "Recolecta métricas de latencia, throughput y errores por tenant"
-            tags "Observability" "001 - Fase 1"
-        }
-
-        structuredLogger = component "Structured Logger" {
-            technology "Serilog"
-            description "Registra eventos con correlación de requests y contexto de tenant"
-            tags "Observability" "001 - Fase 1"
-        }
+        // // Componentes de observabilidad
+        // healthCheck = component "Health Check" {
+        //     technology "ASP.NET Core Health Checks"
+        //     description "Monitorea salud del gateway y servicios downstream corporativos"
+        //     tags "Observability" "001 - Fase 1"
+        // }
     }
-
-    // ========================================
-    // PIPELINE DE MIDDLEWARE OPTIMIZADO
-    // ========================================
 
     // Seguridad y contexto
     reverseProxyGateway.securityMiddleware -> reverseProxyGateway.tenantResolutionMiddleware "Pasa a resolución tenant" "Pipeline" "001 - Fase 1"
@@ -85,76 +75,15 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.dataProcessingMiddleware "Pasa a procesamiento" "Pipeline" "001 - Fase 1"
 
     // Resiliencia y downstream
-    reverseProxyGateway.dataProcessingMiddleware -> reverseProxyGateway.resilienceHandler "Pasa a resiliencia" "Pipeline" "001 - Fase 1"
+    reverseProxyGateway.dataProcessingMiddleware -> reverseProxyGateway.resilienceMiddleware "Pasa a resiliencia" "Pipeline" "001 - Fase 1"
 
-    // Cache opcional (Fase 2) - se insertaría entre rate limiting y data processing
-    // reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.cacheMiddleware "Pipeline: Rate Limit → Cache" "" "002 - Fase 2"
-    // reverseProxyGateway.cacheMiddleware -> reverseProxyGateway.dataProcessingMiddleware "Pipeline: Cache → Data Processing" "" "002 - Fase 2"
 
-    // ========================================
-    // RELACIONES INTERNAS - OBSERVABILIDAD
-    // ========================================
+    reverseProxyGateway.secretsAndConfigs -> configPlatform.configService "Lee secretos y configuraciones" "HTTPS/REST" "001 - Fase 1"
+    reverseProxyGateway.observability  -> observabilitySystem "Envía logs, métricas y health checks" "HTTPS/REST" "001 - Fase 1"
 
-    // Observabilidad cross-cutting
-    reverseProxyGateway.structuredLogger -> reverseProxyGateway.metricsCollector "Correlaciona logs y métricas" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.healthCheck -> reverseProxyGateway.resilienceHandler "Evalúa estado resiliencia" "In-Memory" "001 - Fase 1"
-
-    // Observabilidad de middleware crítico - Logs estructurados
-    reverseProxyGateway.securityMiddleware -> reverseProxyGateway.structuredLogger "Registra eventos auth y autorizaciones" "Serilog" "001 - Fase 1"
-    reverseProxyGateway.tenantResolutionMiddleware -> reverseProxyGateway.structuredLogger "Registra resolución tenant y contexto" "Serilog" "001 - Fase 1"
-    reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.structuredLogger "Registra rate limiting y requests bloqueadas" "Serilog" "001 - Fase 1"
-    reverseProxyGateway.dataProcessingMiddleware -> reverseProxyGateway.structuredLogger "Registra transformaciones y mapeos" "Serilog" "001 - Fase 1"
-    reverseProxyGateway.resilienceHandler -> reverseProxyGateway.structuredLogger "Registra circuit breaker y fallos" "Serilog" "001 - Fase 1"
-    reverseProxyGateway.configManager -> reverseProxyGateway.structuredLogger "Registra cambios de configuración" "Serilog" "001 - Fase 1"
-    reverseProxyGateway.healthCheck -> reverseProxyGateway.structuredLogger "Registra health checks y disponibilidad" "Serilog" "001 - Fase 1"
-
-    // Observabilidad de middleware crítico - Métricas de negocio y técnicas
-    reverseProxyGateway.securityMiddleware -> reverseProxyGateway.metricsCollector "Publica métricas de autenticación y autorización" "Prometheus" "001 - Fase 1"
-    reverseProxyGateway.tenantResolutionMiddleware -> reverseProxyGateway.metricsCollector "Publica métricas de resolución tenant" "Prometheus" "001 - Fase 1"
-    reverseProxyGateway.rateLimitingMiddleware -> reverseProxyGateway.metricsCollector "Publica métricas de rate limiting" "Prometheus" "001 - Fase 1"
-    reverseProxyGateway.dataProcessingMiddleware -> reverseProxyGateway.metricsCollector "Publica métricas de transformación" "Prometheus" "001 - Fase 1"
-    reverseProxyGateway.resilienceHandler -> reverseProxyGateway.metricsCollector "Publica métricas de circuit breaker" "Prometheus" "001 - Fase 1"
-    reverseProxyGateway.configManager -> reverseProxyGateway.metricsCollector "Publica métricas de configuración dinámica" "Prometheus" "001 - Fase 1"
-    reverseProxyGateway.healthCheck -> reverseProxyGateway.metricsCollector "Publica métricas de health status" "Prometheus" "001 - Fase 1"
-
-    // ========================================
-    // RELACIONES EXTERNAS - ACTORES
-    // ========================================
-
-    // Administradores y aplicaciones entran por seguridad unificada
-    // admin -> reverseProxyGateway.securityMiddleware "Gestiona configuraciones de servicios" "HTTPS" "001 - Fase 1"
     appPeru -> reverseProxyGateway.securityMiddleware "Realiza llamadas API tenant Peru" "HTTPS" "001 - Fase 1"
     appEcuador -> reverseProxyGateway.securityMiddleware "Realiza llamadas API tenant Ecuador" "HTTPS" "001 - Fase 1"
     appColombia -> reverseProxyGateway.securityMiddleware "Realiza llamadas API tenant Colombia" "HTTPS" "001 - Fase 1"
     appMexico -> reverseProxyGateway.securityMiddleware "Realiza llamadas API tenant Mexico" "HTTPS" "001 - Fase 1"
 
-
-
-    // ========================================
-    // RELACIONES DE CONFIGURACIÓN DINÁMICA
-    // ========================================
-
-    // Configuración dinámica vía polling (patrón correcto)
-    reverseProxyGateway.configManager -> configPlatform.configService "Consulta configuración" "HTTPS/REST" "001 - Fase 1"
-
-    // Invalidación selectiva de cache tras cambios de configuración
-    reverseProxyGateway.configManager -> reverseProxyGateway.securityMiddleware "Invalida cache seguridad" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.configManager -> reverseProxyGateway.rateLimitingMiddleware "Invalida cache rate limits" "In-Memory" "001 - Fase 1"
-    reverseProxyGateway.configManager -> reverseProxyGateway.dataProcessingMiddleware "Invalida cache esquemas" "In-Memory" "001 - Fase 1"
-
-    // ========================================
-    // RELACIONES EXTERNAS - OBSERVABILIDAD
-    // ========================================
-
-    // Métricas
-    apiGateway.reverseProxyGateway.metricsCollector -> observabilitySystem.metricsCollector "Expone métricas de performance" "HTTP" "001 - Fase 1"
-
-    // Health Checks
-    apiGateway.reverseProxyGateway.healthCheck -> observabilitySystem.metricsCollector "Expone health checks" "HTTP" "001 - Fase 1"
-
-    // Logs estructurados
-    apiGateway.reverseProxyGateway.structuredLogger -> observabilitySystem.logAggregator "Envía logs estructurados" "HTTP" "001 - Fase 1"
-
-    // Tracing distribuido (Fase 2)
-    apiGateway.reverseProxyGateway.metricsCollector -> observabilitySystem.tracingPlatform "Envía trazas distribuidas" "OpenTelemetry" "002 - Fase 2"
 }

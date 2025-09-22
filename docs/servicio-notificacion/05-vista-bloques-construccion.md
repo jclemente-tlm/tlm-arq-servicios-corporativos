@@ -190,10 +190,9 @@ erDiagram
         TIMESTAMP updated_at
     }
 
-    tenant_notification_settings ||--o{ notifications : "1:N"
+
     notifications ||--o{ notification_logs : "1:N"
-    tenant_notification_settings ||--o{ notification_templates : "1:N"
-    tenant_notification_settings ||--o{ scheduled_notifications : "1:N"
+
 ```
 
 ---
@@ -348,7 +347,7 @@ Se describen los principales endpoints REST para la gestión y consulta de notif
 
 ---
 
-## 5.6 Contratos de datos (DTOs)
+## 5.6 Contratos de datos
 
 Los siguientes contratos definen la estructura de los datos de entrada y salida de la API:
 

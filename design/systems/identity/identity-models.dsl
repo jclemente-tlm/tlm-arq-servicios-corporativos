@@ -25,7 +25,7 @@ identity = softwareSystem "Identity & Access Management System" {
     // ========================================
 
     // Keycloak con su base de datos
-    keycloakServer -> keycloakDatabase "Almacena configuración y usuarios" "PostgreSQL JDBC" "001 - Fase 1"
+    keycloakServer -> keycloakDatabase "Almacena configuración y usuarios" "JDBC/PostgreSQL" "001 - Fase 1"
 
     // ========================================
     // RELACIONES EXTERNAS - ACTORES
@@ -53,5 +53,5 @@ identity = softwareSystem "Identity & Access Management System" {
     // NOTA: Keycloak es sistema externo - solo métricas nativas, NO observabilidad custom
 
     // Métricas nativas de Keycloak
-    identity.keycloakServer -> observabilitySystem.metricsCollector "Expone métricas nativas Keycloak" "HTTP" "001 - Fase 1"
+    identity.keycloakServer -> observabilitySystem.metricsCollector "Expone métricas nativas Keycloak" "HTTP/Metrics" "001 - Fase 1"
 }

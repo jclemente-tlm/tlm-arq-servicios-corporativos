@@ -28,6 +28,7 @@ container trackAndTrace "track_and_trace_system" {
     exclude "observabilitySystem -> sitaMessaging"
     exclude "sitaMessaging -> configPlatform"
     exclude "sitaMessaging -> observabilitySystem"
+    exclude "operationalUser -> observabilitySystem"
 
     title "[Diagrama de Contenedores] Track and Trace"
 }
@@ -48,28 +49,41 @@ container trackAndTrace "track_and_trace_system" {
 //     title "[Diagrama de Contenedores] Track and Trace - Fase 1"
 // }
 
-component trackAndTrace.trackingIngestAPI "track_and_trace_tracking_api" {
+component trackAndTrace.trackingIngestAPI "track_and_trace_tracking_ingest_api" {
     include *
 
     // Exclusión inteligente de componentes de observabilidad para diagrama limpio
-    exclude observabilitySystem
+    // exclude observabilitySystem
     exclude apiGateway
-    exclude trackAndTrace.trackingIngestAPI.healthCheck
-    exclude trackAndTrace.trackingIngestAPI.metricsCollector
-    exclude trackAndTrace.trackingIngestAPI.structuredLogger
+    // exclude trackAndTrace.trackingIngestAPI.healthCheck
+    // exclude trackAndTrace.trackingIngestAPI.metricsCollector
+    // exclude trackAndTrace.trackingIngestAPI.structuredLogger
 
-    title "[Diagrama de Componentes] Track & Trace - Tracking API"
+    title "[Diagrama de Componentes] Track & Trace - Tracking Ingest API"
+}
+
+component trackAndTrace.trackingQueryAPI "track_and_trace_tracking_query_api" {
+    include *
+
+    // Exclusión inteligente de componentes de observabilidad para diagrama limpio
+    // exclude observabilitySystem
+    exclude apiGateway
+    // exclude trackAndTrace.trackingQueryAPI.healthCheck
+    // exclude trackAndTrace.trackingQueryAPI.metricsCollector
+    // exclude trackAndTrace.trackingQueryAPI.structuredLogger
+
+    title "[Diagrama de Componentes] Track & Trace - Tracking Query API"
 }
 
 component trackAndTrace.trackingEventProcessor "track_and_trace_event_processor" {
     include *
 
     // Exclusión inteligente de componentes de observabilidad para diagrama limpio
-    exclude observabilitySystem
+    // exclude observabilitySystem
     exclude apiGateway
-    exclude trackAndTrace.trackingEventProcessor.healthCheck
-    exclude trackAndTrace.trackingEventProcessor.metricsCollector
-    exclude trackAndTrace.trackingEventProcessor.structuredLogger
+    // exclude trackAndTrace.trackingEventProcessor.healthCheck
+    // exclude trackAndTrace.trackingEventProcessor.metricsCollector
+    // exclude trackAndTrace.trackingEventProcessor.structuredLogger
 
     // Exclusión de relaciones externas innecesarias
     exclude "sitaMessaging -> configPlatform"
