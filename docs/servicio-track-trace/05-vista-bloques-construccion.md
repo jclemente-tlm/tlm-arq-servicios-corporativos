@@ -24,13 +24,12 @@ Esta sección describe la estructura modular del sistema **Track & Trace**, pres
 
 | Componente                  | Función                                                        | Tecnología                 |
 |-----------------------------|----------------------------------------------------------------|----------------------------|
-| Tracking Event Controller   | Expone endpoints REST para recepción masiva de eventos          | ASP.NET Core               |
-| Tracking Event Service      | Procesa y valida eventos, aplica reglas de negocio y enriquecimiento | C#                    |
-| Tracking Event Publisher    | Publica eventos validados en la cola AWS SQS                    | C#, AWS SDK (SQS)          |
-| Configuration Manager       | Gestiona configuraciones del servicio y por tenant              | C#, .NET 8, EF Core        |
-| Health Check                | Monitoreo de salud del API                                      | ASP.NET Core Health Checks |
-| Metrics Collector           | Recolección de métricas para observabilidad                     | Prometheus.NET             |
-| Structured Logger           | Logging estructurado unificado                                  | Serilog                    |
+| Tracking Event Controller   | Endpoints REST para recepción masiva de eventos                 | ASP.NET Core               |
+| Tracking Event Service      | Procesa y valida eventos, reglas de negocio                     | C#                         |
+| Tracking Event Publisher    | Publica eventos validados en la cola SQS                        | C#, AWS SDK (SQS)          |
+| TenantSettings Repository   | Gestiona configuraciones por tenant                             | C#, .NET 8, EF Core        |
+| SecretsAndConfigs           | Acceso centralizado a configuraciones y secretos                | AWS Secrets Manager, AppConfig |
+| Observability               | Logging, métricas, health checks                                | Serilog, Prometheus, HealthChecks |
 
 ### Tracking Query API
 
@@ -38,13 +37,12 @@ Esta sección describe la estructura modular del sistema **Track & Trace**, pres
 
 | Componente                  | Función                                                        | Tecnología                 |
 |-----------------------------|----------------------------------------------------------------|----------------------------|
-| Tracking Query Controller   | Expone endpoints REST para consultas                            | ASP.NET Core               |
-| Tracking Query Service      | Orquesta operaciones de consulta y aplica lógica de negocio     | C#                         |
+| Tracking Query Controller   | Endpoints REST para consultas de trazabilidad                   | ASP.NET Core               |
+| Tracking Query Service      | Orquesta consultas y lógica de negocio                          | C#                         |
 | Tracking Data Repository    | Acceso optimizado a datos de tracking                           | C#, EF Core                |
-| Configuration Manager       | Gestión de configuraciones                                      | C#, .NET 8, EF Core        |
-| Health Check                | Monitoreo de salud del API                                      | ASP.NET Core Health Checks |
-| Metrics Collector           | Recolección de métricas                                         | Prometheus.NET             |
-| Structured Logger           | Logging estructurado                                            | Serilog                    |
+| TenantSettings Repository   | Gestiona configuraciones por tenant                             | C#, .NET 8, EF Core        |
+| SecretsAndConfigs           | Acceso centralizado a configuraciones y secretos                | AWS Secrets Manager, AppConfig |
+| Observabilidad               | Logging, métricas, health checks                                | Serilog, Prometheus, HealthChecks |
 
 ### Tracking Event Processor
 
@@ -52,15 +50,14 @@ Esta sección describe la estructura modular del sistema **Track & Trace**, pres
 
 | Componente                  | Función                                                        | Tecnología                 |
 |-----------------------------|----------------------------------------------------------------|----------------------------|
-| Tracking Event Consumer     | Consume eventos desde la cola                                   | C#, AWS SDK (SQS)          |
-| Tracking Event Handler      | Valida y aplica reglas de negocio a los eventos                 | C#                         |
-| Tracking Processing Service | Lógica de enriquecimiento y correlación                         | C#                         |
-| Tracking Event Repository   | Persistencia de eventos                                         | C#, EF Core                |
+| Tracking Event Consumer     | Consume eventos desde la cola SQS                               | C#, AWS SDK (SQS)          |
+| Tracking Event Handler      | Validaciones y reglas de negocio                                | C#                         |
+| Tracking Processing Service | Lógica de negocio para enriquecimiento y correlación            | C#                         |
+| Tracking Event Repository   | Persiste eventos crudos y enriquecidos                          | C#, EF Core                |
 | Downstream Event Publisher  | Publica eventos procesados a sistemas downstream                | C#, AWS SDK (SNS)          |
-| Configuration Manager       | Gestión de configuraciones                                      | C#, .NET 8, EF Core        |
-| Health Check                | Monitoreo de salud                                              | ASP.NET Core Health Checks |
-| Metrics Collector           | Métricas                                                       | Prometheus.NET             |
-| Structured Logger           | Logging estructurado                                            | Serilog                    |
+| TenantSettings Repository   | Gestiona configuraciones por tenant                             | C#, .NET 8, EF Core        |
+| SecretsAndConfigs           | Acceso centralizado a configuraciones y secretos                | AWS Secrets Manager, AppConfig |
+| Observabilidad               | Logging, métricas, health checks                                | Serilog, Prometheus, HealthChecks |
 
 ## 5.3 Esquemas de datos
 

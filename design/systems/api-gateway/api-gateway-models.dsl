@@ -67,6 +67,8 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
         // }
     }
 
+    reverseProxyGateway.securityMiddleware -> identity.keycloakServer "Genera tokens JWT" "HTTPS" "001 - Fase 1"
+
     // Seguridad y contexto
     reverseProxyGateway.securityMiddleware -> reverseProxyGateway.tenantResolutionMiddleware "Pasa a resolución tenant" "Pipeline" "001 - Fase 1"
 
@@ -81,9 +83,9 @@ apiGateway = softwareSystem "Enterprise API Gateway" {
     reverseProxyGateway.secretsAndConfigs -> configPlatform.configService "Lee secretos y configuraciones" "HTTPS/REST" "001 - Fase 1"
     reverseProxyGateway.observability  -> observabilitySystem "Envía logs, métricas y health checks" "HTTPS/REST" "001 - Fase 1"
 
-    appPeru -> reverseProxyGateway.securityMiddleware "Realiza llamadas API tenant Peru" "HTTPS" "001 - Fase 1"
-    appEcuador -> reverseProxyGateway.securityMiddleware "Realiza llamadas API tenant Ecuador" "HTTPS" "001 - Fase 1"
-    appColombia -> reverseProxyGateway.securityMiddleware "Realiza llamadas API tenant Colombia" "HTTPS" "001 - Fase 1"
-    appMexico -> reverseProxyGateway.securityMiddleware "Realiza llamadas API tenant Mexico" "HTTPS" "001 - Fase 1"
+    appPeru -> reverseProxyGateway.securityMiddleware "Realiza llamadas API" "HTTPS" "001 - Fase 1"
+    appEcuador -> reverseProxyGateway.securityMiddleware "Realiza llamadas API" "HTTPS" "001 - Fase 1"
+    appColombia -> reverseProxyGateway.securityMiddleware "Realiza llamadas API" "HTTPS" "001 - Fase 1"
+    appMexico -> reverseProxyGateway.securityMiddleware "Realiza llamadas API" "HTTPS" "001 - Fase 1"
 
 }

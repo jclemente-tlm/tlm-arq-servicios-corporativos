@@ -7,7 +7,7 @@ container sitaMessaging "sita_messaging_system" {
     // include configPlatform
 
     // // Excluir sistemas no relacionados directamente
-    // exclude apiGateway identity notification
+    exclude apiGateway
     // exclude "appPeru -> trackAndTrace"
     // exclude "appEcuador -> trackAndTrace"
     // exclude "appColombia -> trackAndTrace"
@@ -28,6 +28,7 @@ component sitaMessaging.eventProcessor "sita_messaging_system_event_processor" {
     include *
 
     // Exclusión inteligente de componentes de observabilidad para diagrama limpio
+    exclude apiGateway
     // exclude observabilitySystem
     // exclude sitaMessaging.eventProcessor.healthCheck
     // exclude sitaMessaging.eventProcessor.metricsCollector
@@ -41,6 +42,7 @@ component sitaMessaging.sender "sita_messaging_system_sender" {
     include *
 
     // Exclusión inteligente de componentes de observabilidad para diagrama limpio
+    exclude apiGateway
     // exclude observabilitySystem
     // exclude sitaMessaging.sender.healthCheck
     // exclude sitaMessaging.sender.metricsCollector

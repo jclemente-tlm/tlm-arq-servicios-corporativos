@@ -192,8 +192,9 @@ workspace {
             // RELACIONES CROSS-SYSTEM
             // ========================================
 
-            // Integración API Gateway -> Identity System (Autenticación y Autorización)
-            apiGateway.reverseProxyGateway.securityMiddleware -> identity.keycloakServer "Valida tokens JWT" "HTTPS" "001 - Fase 1"
+            sitaMessaging.sender.emailSender -> apiGateway.reverseProxyGateway.securityMiddleware "Realiza llamadas API para envío de email" "HTTPS" "001 - Fase 1"
+
+            emailProvider -> airlines "Entrega emails" "SMTP, HTTPS" "001 - Fase 1"
         }
 
 
@@ -210,6 +211,7 @@ workspace {
             exclude "* -> notification"
             exclude "* -> sitaMessaging"
             exclude "* -> trackAndTrace"
+            exclude "sitaMessaging -> airlines"
 
             exclude countryAdmin
             include "apiGateway -> *"

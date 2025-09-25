@@ -6,17 +6,17 @@
 
 ## 5.1 Componentes principales
 
-| Componente            | Responsabilidad                        | Tecnología                  |
-|-----------------------|----------------------------------------|-----------------------------|
-| `YARP Proxy`          | Enrutamiento y proxy reverso           | `YARP`                      |
-| `Auth Middleware`     | Validación de tokens `JWT`             | `.NET 8`, `Keycloak`        |
-| `Rate Limiter`        | Control de velocidad multi-tenant      | `Redis`                     |
-| `Load Balancer`       | Distribución de carga                  | `ALB`, `YARP`               |
-| `Circuit Breaker`     | Resiliencia ante fallos                | `Polly`                     |
-| `Logging`             | Registro estructurado de eventos       | `Serilog`, `Loki`           |
-| `Metrics`             | Recolección de métricas                | `Prometheus`                |
-| `Tracing`             | Trazabilidad distribuida               | `Jaeger`, `OpenTelemetry`   |
-| `Configuración`       | Configuración dinámica y secretos      | `AWS SSM`, `Secrets Manager`|
+| Componente                    | Responsabilidad                                               | Tecnología                        |
+|-------------------------------|--------------------------------------------------------------|-----------------------------------|
+| YARP Proxy                    | Proxy inverso, enrutamiento y balanceo de carga              | YARP, ASP.NET Core                |
+| Security Middleware           | Validación de tokens JWT y políticas de autorización         | ASP.NET Core Middleware, JWT      |
+| Tenant Resolution Middleware  | Resolución y validación de contexto de tenant                | ASP.NET Core Middleware           |
+| Rate Limiting Middleware      | Límites de velocidad por tenant y endpoint                   | ASP.NET Core Middleware, Redis    |
+| Resilience Middleware         | Circuit breakers y reintentos para resiliencia               | Polly                             |
+| Data Processing Middleware    | Validación de esquemas y transformación de payloads          | ASP.NET Core Middleware, JSON Schema |
+| Cache Middleware (opcional)   | Cache distribuido con invalidación inteligente               | Redis, ASP.NET Core Response Caching |
+| SecretsAndConfigs             | Acceso centralizado a configuraciones y secretos             | AWS Secrets Manager, AppConfig    |
+| Observabilidad                | Logging, métricas, health checks                            | Serilog, Prometheus, HealthChecks |
 
 ## 5.2 Flujo de procesamiento
 
